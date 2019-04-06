@@ -23,7 +23,17 @@ db = SQLAlchemy(app)
 
 class Material(db.Model):
     __tablename__ = 'material'
-    id = Column(Integer(), autoincrement=True, primary_key=True)
+    id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
     unit = Column(String(50))
     unit_price = Column(Numeric(10, 2))
+    is_organic = Column(Boolean)
+
+class Customer(db.Model):
+    __tablename__ = 'customer'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(50))
+    address = Column(String(200))
+    phone = Column(String(50))
+    email_address = Column(String(200))
+    recommended_by = Column(Integer, default=-1)
