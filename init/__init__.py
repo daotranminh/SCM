@@ -1,6 +1,8 @@
 import configparser
+import datetime
 
 from flask import Flask
+from flask_babel import Babel
 from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy import Boolean, DateTime, Column, Integer, String, LargeBinary, Numeric
@@ -31,9 +33,11 @@ class Material(db.Model):
 
 class Customer(db.Model):
     __tablename__ = 'customer'
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    customer_id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
     address = Column(String(200))
     phone = Column(String(50))
     email_address = Column(String(200))
+    facebook = Column(String(200))    
     recommended_by = Column(Integer, default=-1)
+    registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
