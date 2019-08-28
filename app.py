@@ -55,6 +55,11 @@ def add_customer():
                                    facebook)
         db.session.commit()
     return render_template('add_customer.html', form=form)
-        
+
+@app.route('/list_customers', methods=['GET', 'POST'])
+def list_customers():
+    customers = customer_repo.get_all_customers()
+    return render_template('list_customers.html', customers=customers)
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
