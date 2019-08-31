@@ -1,0 +1,19 @@
+<div class="row" style="padding: 10px">
+  <div class="col-md-3">
+  </div>
+  <div class="col-md-7">
+    {% if customer_funcs|count > 0 %}
+    <div class="dropdown" style="display:inline">
+      <button id="dropdown_customer" class="btn btn-primary dropdown-toggle" type="button" data-toggle="drop-down">
+	Customer
+	<span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+      {% for customer_func in customer_funcs %}
+      <li><a href="/{{customer_func[0]}}">{{customer_func[1]}}</a></li>
+      {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</div>

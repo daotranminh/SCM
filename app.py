@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template, request, flash, redirect, make_response
+from flask import Flask, Response, render_template, request, flash, redirect, make_response, session
 
 from init import app, db
 from lib.forms.material_forms import AddMaterialForm
@@ -7,9 +7,42 @@ from lib.forms.customer_forms import AddCustomerForm
 from lib.repo.material_repository import MaterialRepository
 from lib.repo.customer_repository import CustomerRepository
 
+from utilities import scm_constants
+
 material_repo = MaterialRepository(db)
 customer_repo = CustomerRepository(db)
 
+####################################################################################
+# MENU
+####################################################################################
+@app.before_request
+def menu_setup():
+    customer_funcs = [
+        ['add_customer', 'Add customer'],
+        ['list_customers', 'List customers']
+    ]
+    
+    statistics_funcs = [
+        ['statistics_order', 'Order'],
+        ['statistics_income', 'Income']
+    ]
+
+    menu_configuration = {
+        scm_constants.MENU_CUSTOMER: customer_funcs,
+        scm_constants.MENU_STATISTICS: statistics_funcs
+    }
+
+    session[scm_constants.MENU_CONFIGURATION] = menu_configuration
+
+####################################################################################
+# HELPERS
+####################################################################################
+def render_scm_template(site_html, **kwargs):
+    return render_template(site_html,
+                           **kwargs,
+                           customer_funcs=session[scm_constants.MENU_CONFIGURATION][scm_constants.MENU_CUSTOMER],
+                           statistics_funcs=session[scm_constants.MENU_CONFIGURATION][scm_constants.MENU_STATISTICS])
+    
 ####################################################################################
 # MATERIALS
 ####################################################################################
@@ -28,12 +61,12 @@ def add_material():
                                    unit_price=unit_price)
         db.session.commit()
 
-    return render_template('add_material.html', form=form)
+    return render_scm_template('add_material.html', form=form)
 
 @app.route('/list_materials', methods=['GET', 'POST'])
 def list_materials():
     materials = material_repo.get_all_materials()
-    return render_template('list_materials.html', materials=materials)
+    return render_scm_template('list_materials.html', materials=materials)
 
 ####################################################################################
 # CUSTOMERS
@@ -54,12 +87,12 @@ def add_customer():
                                    email_address,
                                    facebook)
         db.session.commit()
-    return render_template('add_customer.html', form=form)
+    return render_scm_template('add_customer.html', form=form)
 
 @app.route('/list_customers', methods=['GET', 'POST'])
 def list_customers():
     customers = customer_repo.get_all_customers()
-    return render_template('list_customers.html', customers=customers)
+    return render_scm_template('list_customers.html', customers=customers)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
