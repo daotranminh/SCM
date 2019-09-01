@@ -27,13 +27,55 @@ class Material(db.Model):
     __tablename__ = 'material'
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
+    description = Column(String(400))
     unit = Column(String(50))
-    unit_price = Column(Numeric(10, 2))
     is_organic = Column(Boolean)
 
+class MaterialVersion(db.Model):
+    __tablename__ = 'material_version'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    material_id = Column(Integer, ForeignKey(Material.id))
+    unit_price = Column(Numeric(10, 2))
+    registered_on = Column(DateTime(), default=datetime.datetime.utcnow)    
+
+class Taste(db.Model):
+    __tablename__ = 'taste'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(50))
+    description = Column(String(400))
+    
+class Formula(db.Model):
+    __tablename__ = 'formula'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    taste_id = Column(Integer, ForeignKey(Taste.id))
+    name = Column(String(50))
+    description = Column(String(400))
+
+class MaterialVersionFormula(db.Model):
+    __tablename__ = 'material_version_formula'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    material_version_id = Column(Integer, ForeignKey(MaterialVersion.id))
+    formula_id = Column(Integer, ForeignKey(Formula.id))
+    ammount = Column(Numeric(10, 2))
+    cost = Column(Numeric(10, 2))
+    
+class Topic(db.Model):
+    __tablename__ = 'topic'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(50))
+    description = Column(String(400))
+    
+class Decoration(db.Model):
+    __tablename__ = 'decoration'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    topic_id = Column(Integer, ForeignKey(Topic.id))
+    form = Column(Integer)
+    technique = Column(Integer)
+    template_path = Column(String(400))
+    
 class Customer(db.Model):
     __tablename__ = 'customer'
-    customer_id = Column(Integer, autoincrement=True, primary_key=True)
+    id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
     address = Column(String(200))
     phone = Column(String(50))
@@ -41,3 +83,22 @@ class Customer(db.Model):
     facebook = Column(String(200))    
     recommended_by = Column(Integer, default=-1)
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
+
+class Order(db.Model):
+    __tablename__ = 'order'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    customer_id = Column(Integer, ForeignKey(Customer.id))
+    taste_id = Column(Integer, ForeignKey(Taste.id))
+    decoration_id = Column(Integer, ForeignKey(Decoration.id))
+    message = Column(String(200))
+    ordered_on = Column(DateTime(), default=datetime.datetime.utcnow)
+    delivered_on = Column(DateTime())
+    deliver_method = Column(Integer)
+
+class Cake(db.Model):
+    __tablename__ = 'cake'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    order_id = Column(Integer, ForeignKey(Order.id))
+    formula_id = Column(Integer, ForeignKey(Formula.id))
+    cost = Column(Numeric(10, 2))    
+    photos_path = Column(String(400))
