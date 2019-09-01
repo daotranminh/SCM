@@ -17,9 +17,21 @@ customer_repo = CustomerRepository(db)
 ####################################################################################
 @app.before_request
 def menu_setup():
-    customer_funcs = [
-        ['add_customer', 'Add customer'],
-        ['list_customers', 'List customers']
+    production_funcs = [
+        ['list_materials', 'List of materials'],
+        ['list_formulas', 'List of formulas'],
+        ['list_decorations', 'List of decorations'],
+        ['list_tastes', 'List of tastes']
+    ]
+
+    business_funcs = [
+        ['list_customers', 'List of customers'],
+        ['list_orders', 'List of orders'],        
+    ]
+
+    exhibition_funcs = [
+        ['list_topics', 'List of topics'],        
+        ['list_cakes', 'List of cakes']      
     ]
     
     statistics_funcs = [
@@ -28,8 +40,10 @@ def menu_setup():
     ]
 
     menu_configuration = {
-        'Statistics': statistics_funcs,
-        'Customer': customer_funcs        
+        'Production': production_funcs,
+        'Business': business_funcs,
+        'Exhibition': exhibition_funcs,
+        'Statistics': statistics_funcs
     }
 
     session[scm_constants.MENU_CONFIGURATION] = menu_configuration
