@@ -28,8 +28,8 @@ def menu_setup():
     ]
 
     menu_configuration = {
-        scm_constants.MENU_CUSTOMER: customer_funcs,
-        scm_constants.MENU_STATISTICS: statistics_funcs
+        'Statistics': statistics_funcs,
+        'Customer': customer_funcs        
     }
 
     session[scm_constants.MENU_CONFIGURATION] = menu_configuration
@@ -40,8 +40,7 @@ def menu_setup():
 def render_scm_template(site_html, **kwargs):
     return render_template(site_html,
                            **kwargs,
-                           customer_funcs=session[scm_constants.MENU_CONFIGURATION][scm_constants.MENU_CUSTOMER],
-                           statistics_funcs=session[scm_constants.MENU_CONFIGURATION][scm_constants.MENU_STATISTICS])
+                           menu_configuration=session[scm_constants.MENU_CONFIGURATION])
     
 ####################################################################################
 # MATERIALS

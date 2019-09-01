@@ -2,18 +2,18 @@
   <div class="col-md-3">
   </div>
   <div class="col-md-7">
-    {% if customer_funcs|count > 0 %}
+    {% for menu_name, items in menu_configuration.items() %}
     <div class="dropdown" style="display:inline">
       <button id="dropdown_customer" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-	Customer
+	{{ menu_name }}
 	<span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
-      {% for customer_func in customer_funcs %}
-      <li><a href="/{{customer_func[0]}}">{{customer_func[1]}}</a></li>
-      {% endfor %}
+	{% for item in items %}
+	<li><a href="/{{item[0]}}">{{item[1]}}</a></li>
+	{% endfor %}
       </ul>
     </div>
-    {% endif %}
+    {% endfor %}
   </div>
 </div>
