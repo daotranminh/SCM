@@ -103,8 +103,8 @@ def add_material():
 
 @app.route('/list_materials', methods=['GET', 'POST'])
 def list_materials():
-    materials = material_repo.get_all_materials()
-    return render_scm_template('list_materials.html', materials=materials)
+    material_dtos = material_manager.get_material_dtos()
+    return render_scm_template('list_materials.html', material_dtos=material_dtos)
 
 ####################################################################################
 # CUSTOMERS

@@ -1,6 +1,7 @@
 import logging
 
 from init import config
+from dto.material_dto import MaterialDto
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler(config['DEFAULT']['log_file'])
@@ -36,3 +37,17 @@ class MaterialManager:
         logger.debug(message)
         self.material_version_repo.add_material_version(new_material_id,
                                                         unit_price)
+
+    def get_material_dtos(self):
+        materials = self.material_repo.get_all_materials()
+        material_dtos = []
+        for material in materials:
+            material_version = self.material_version_repo.get_latest_version_of_material(material.id)
+            material_dto = MaterialDto(material.name,
+                                       material.description,
+                                       material.is_organic,
+                                       material.unit,
+                                       material_version.unit_price)
+            material_dtos.append(material_dto)
+
+        return material_dtos
