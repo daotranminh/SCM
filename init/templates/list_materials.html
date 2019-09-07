@@ -9,15 +9,17 @@
 <table class="table table-striped">
   <tr>
     <th>Name</th>
-    <th>Unit price</th>
+    <th>Unit</th>
     <th>Is organic</th>
+    <th>Unit price</th>    
   </tr>
 
-  {% for material in materials %}
+  {% for material_dto in material_dtos %}
   <tr>
-    <td>{{material.name}}</td>
-    <td>{{material.unit_price}}</td>
-    <td>{{material.is_organic}}</td>
+    <td>{{material_dto.name}}</td>
+    <td>{{material_dto.unit}}</td>
+    <td>{{material_dto.is_organic}}</td>
+    <td>{{material_dto.unit_price}}</td>    
   </tr>
   {% endfor %}
 </table>

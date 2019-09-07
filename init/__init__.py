@@ -36,7 +36,8 @@ class MaterialVersion(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     material_id = Column(Integer, ForeignKey(Material.id))
     unit_price = Column(Numeric(10, 2))
-    registered_on = Column(DateTime(), default=datetime.datetime.utcnow)    
+    registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
+    is_current = Column(Boolean, default=True)
 
 class Taste(db.Model):
     __tablename__ = 'taste'

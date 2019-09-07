@@ -7,7 +7,7 @@ handler = logging.FileHandler(config['DEFAULT']['log_file'])
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 class MaterialRepository:
     def __init__(self, db):
@@ -21,15 +21,17 @@ class MaterialRepository:
 
     def add_material(self,
                      name,
+                     description,
                      is_organic,
-                     unit,
-                     unit_price):
+                     unit):
         try:
             material_rec = Material(name=name,
+                                    description=description,
                                     is_organic=is_organic,
-                                    unit=unit,
-                                    unit_price=unit_price)
+                                    unit=unit)
             self.db.session.add(material_rec)
+            self.db.session.flush()
+            return material_rec.id
         
         except sqlalchemy.exc.SQLAlchemyError as e:
             message = 'Error: failed to add material. Details: %s' % (str(e))

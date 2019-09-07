@@ -17,9 +17,9 @@ logger.setLevel(logging.INFO)
 
 class AddMaterialForm(Form):
     name = StringField('Material name*', [validators.InputRequired(), validators.Length(min=1, max=50)])
-    description = StringField('Description', [validators.Length(min=1, max=400)])
+    description = StringField('Description', [validators.Length(min=0, max=400)])
     unit = SelectField('Unit')
-    #unit_price = StringField('Unit price*', [validators.InputRequired(), validators.Regexp('^\d*[.,]?\d*$', message='Unit price must be a decimal number')])
+    unit_price = StringField('Unit price*', [validators.InputRequired(), validators.Regexp('^\d*[.,]?\d*$', message='Unit price must be a decimal number')])
     is_organic = base_elements.MultiCheckboxField('', coerce=int, choices=[(0, 'Is organic')]) 
 
     def __init__(self, form):

@@ -1,16 +1,23 @@
-from flask import Flask, Response, render_template, request, flash, redirect, make_response, session
+from flask import Flask, Response, render_template, request, flash, redirect, make_response, session, url_for
 
 from init import app, db
 from lib.forms.material_forms import AddMaterialForm
 from lib.forms.customer_forms import AddCustomerForm
 
 from lib.repo.material_repository import MaterialRepository
+from lib.repo.material_version_repository import MaterialVersionRepository
 from lib.repo.customer_repository import CustomerRepository
+
+from lib.managers.material_manager import MaterialManager
 
 from utilities import scm_constants
 
 material_repo = MaterialRepository(db)
+material_version_repo = MaterialVersionRepository(db)
 customer_repo = CustomerRepository(db)
+
+material_manager = MaterialManager(material_repo,
+                                   material_version_repo)
 
 ####################################################################################
 # MENU
@@ -63,18 +70,36 @@ def render_scm_template(site_html, **kwargs):
 def add_material():
     form = AddMaterialForm(request.form)
     if request.method == 'POST' and form.validate():
-        name = form.name.data.strip()
-        unit = form.unit.data
-        unit_price = form.unit_price.data.strip()
-        #is_organic = form.is_organic
-        
-        material_repo.add_material(name=name,
-                                   is_organic=False,
-                                   unit=unit,
-                                   unit_price=unit_price)
-        db.session.commit()
+        try:
+            name = form.name.data.strip()
+            description = form.description.data.strip()
+            unit = form.unit.data
+            unit_price = form.unit_price.data.strip()
+            #is_organic = form.is_organic
 
-    return render_scm_template('add_material.html', form=form)
+            print(1)
+            material_manager.add_material(name=name,
+                                          description=description,
+                                          is_organic=False,
+                                          unit=unit,
+                                          unit_price=unit_price)
+            db.session.commit()
+
+            message = 'Successfully added material (%s, %s/%s)' % \
+                      (name,
+                       unit_price,
+                       unit)
+            flash(message, 'info')
+            return redirect(url_for('list_materials'))
+        except ScmException as ex:
+            message = 'Failed to add material (%s, %s/%s)' % \
+                      (name,
+                       unit_price,
+                       unit)
+            flash(message, 'danger')            
+            return render_scm_template('add_material.html', form=form)
+    else:
+        return render_scm_template('add_material.html', form=form)
 
 @app.route('/list_materials', methods=['GET', 'POST'])
 def list_materials():
