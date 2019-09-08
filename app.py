@@ -166,8 +166,11 @@ def update_material(material_id):
 
 @app.route('/show_material_unit_price_history/<int:material_id>', methods=['GET', 'POST'])
 def show_material_unit_price_history(material_id):
-    pass
-
+    material_rec = material_repo.get_material(material_id)
+    material_versions = material_version_repo.get_material_history(material_id)
+    return render_scm_template('material_history.html',
+                               material_rec=material_rec,
+                               material_versions=material_versions)
     
 @app.route('/list_materials', methods=['GET', 'POST'])
 def list_materials():

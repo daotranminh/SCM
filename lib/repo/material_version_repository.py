@@ -1,6 +1,6 @@
 import logging
 
-from sqlalchemy import and_
+from sqlalchemy import and_, desc
 
 from init import MaterialVersion, config
 
@@ -24,6 +24,12 @@ class MaterialVersionRepository:
         return MaterialVersion.query. \
             filter(and_(MaterialVersion.material_id == material_id, MaterialVersion.is_current == True)). \
             first()
+
+    def get_material_history(self, material_id):
+        return MaterialVersion.query. \
+            filter(MaterialVersion.material_id == material_id). \
+            order_by(desc(MaterialVersion.registered_on)). \
+            all()
     
     def add_material_version(self,
                              material_id,
