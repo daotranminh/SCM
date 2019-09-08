@@ -26,7 +26,6 @@ class MaterialManager:
         message = 'name=%s, unit=%s, unit_price=%s' % (name,
                                                        unit,
                                                        unit_price)
-        print(message)
         logger.debug(message)
         new_material_id = self.material_repo.add_material(name,
                                                           description,
@@ -38,6 +37,25 @@ class MaterialManager:
         self.material_version_repo.add_material_version(new_material_id,
                                                         unit_price)
 
+    def update_material(self,
+                        material_id,
+                        name,
+                        description,
+                        unit,
+                        unit_price,
+                        is_organic):
+        material_rec = self.material_repo.get_material(material_id)
+        material_version_rec = self.material_version_repo.get_latest_version_of_material(material_id)
+
+        material_rec.name = name
+        material_rec.description = description
+        material_rec.unit = unit
+        material_rec.is_organic = is_organic
+        
+        if unit_price != material_version_rec.unit_price:
+            material_version_rec.is_current = False
+            self.material_version_repo.add_material_version(material_id, unit_price)
+        
     def get_material_dtos(self):
         materials = self.material_repo.get_all_materials()
         material_dtos = []

@@ -25,3 +25,18 @@ class AddMaterialForm(Form):
     def __init__(self, form):
         super(AddMaterialForm, self).__init__(form)
         self.unit.choices = scm_constants.UNIT_CHOICES
+
+class UpdateMaterialForm(AddMaterialForm):
+    def __init__(self, form, material_rec, material_version_rec):
+        super(UpdateMaterialForm, self).__init__(form)
+
+        if material_rec is not None:
+            self.unit.default = material_rec.unit
+            self.process()
+            self.name.data = material_rec.name
+            self.description.data = material_rec.description
+            self.unit_price.data = material_version_rec.unit_price
+            if material_rec.is_organic:
+                self.is_organic.data = [0]
+
+
