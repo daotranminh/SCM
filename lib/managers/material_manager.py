@@ -43,10 +43,12 @@ class MaterialManager:
         material_dtos = []
         for material in materials:
             material_version = self.material_version_repo.get_latest_version_of_material(material.id)
-            material_dto = MaterialDto(material.name,
+            material_dto = MaterialDto(material.id,
+                                       material.name,
                                        material.description,
                                        material.is_organic,
                                        material.unit,
+                                       material_version.id,
                                        material_version.unit_price)
             material_dtos.append(material_dto)
 

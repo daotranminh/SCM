@@ -11,13 +11,17 @@ logger.setLevel(logging.DEBUG)
 
 class MaterialDto:
     def __init__(self,
+                 material_id,
                  name,
                  description,
                  is_organic,
                  unit,
+                 material_version_id,
                  unit_price):
+        self.material_id = material_id
         self.name = name
         self.description = description
         self.is_organic = is_organic
         self.unit = unit
+        self.material_version_id = material_version_id
         self.unit_price = unit_price
