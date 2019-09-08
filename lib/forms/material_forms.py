@@ -6,7 +6,6 @@ from utilities import scm_constants
 from wtforms import Form, BooleanField, StringField, SelectField, DateTimeField, SubmitField, validators
 
 from . import base_elements
-#from base_forms import MultiCheckboxField
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler(config['DEFAULT']['log_file'])
