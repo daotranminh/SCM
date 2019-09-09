@@ -14,10 +14,10 @@ logger.setLevel(logging.INFO)
 
 class AddCustomerForm(Form):
     name = StringField('Customer name*', [validators.InputRequired(), validators.Length(min=1, max=50)])
-    address = StringField('Address')
-    phone = StringField('Phone')
-    email_address = StringField('Email')
-    facebook = StringField('Facebook')    
-
+    address = StringField('Address', [validators.Length(min=0, max=200)])
+    phone = StringField('Phone', [validators.Length(min=0, max=50)])
+    email_address = StringField('Email', [validators.Length(min=0, max=200)])
+    facebook = StringField('Facebook', [validators.Length(min=0, max=200)])    
     def __init__(self, form):
         super(AddCustomerForm, self).__init__(form)
+
