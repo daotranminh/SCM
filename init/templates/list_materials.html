@@ -7,29 +7,32 @@
 {% from "includes/_formhelpers.html" import render_field %}
 
 <table class="table table-striped">
-  <tr>
-    <th>Name</th>
-    <th>Unit</th>
-    <th>Is organic</th>
-    <th>Unit price</th>
-    <th></th>
-    <th></th>
-  </tr>
-
-  {% for material_dto in material_dtos %}
-  <tr>
-    <td><span data-toggle="tooltip" title="{{material_dto.description}}">{{material_dto.name}}</span></td>
-    <td>{{material_dto.unit}}</td>
-    <td>{{material_dto.is_organic}}</td>
-    <td>{{material_dto.unit_price}}</td>
-    <td><a href="{{ url_for('update_material', 
-		 material_id=material_dto.material_id) }}"
-	   class="btn btn-default pullright">Update</a></td>
-    <td><a href="{{ url_for('show_material_unit_price_history',
-		 material_id=material_dto.material_id) }}"
-	   class="btn btn-default pullright">Show history</a></td>
-  </tr>
-  {% endfor %}
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Unit</th>
+      <th>Is organic</th>
+      <th>Unit price</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for material_dto in material_dtos %}
+    <tr>
+      <td><span data-toggle="tooltip" title="{{material_dto.description}}">{{material_dto.name}}</span></td>
+      <td>{{material_dto.unit}}</td>
+      <td>{{material_dto.is_organic}}</td>
+      <td>{{material_dto.unit_price}}</td>
+      <td><a href="{{ url_for('update_material', 
+		   material_id=material_dto.material_id) }}"
+	     class="btn btn-default pullright">Update</a></td>
+      <td><a href="{{ url_for('show_material_unit_price_history',
+		   material_id=material_dto.material_id) }}"
+	     class="btn btn-default pullright">Show history</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
 
 <a href="{{ url_for('add_material') }}"
