@@ -17,7 +17,7 @@ class CustomerRepository:
         return Customer.query.all()
 
     def get_customer(self, customer_id):
-        return Customer.query.filter(Customer.customer_id == customer_id).first()
+        return Customer.query.filter(Customer.id == customer_id).first()
 
     def add_customer(self,
                      name,
@@ -38,4 +38,16 @@ class CustomerRepository:
             logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_CUSTOMER_FAILED, message)
 
-    
+    def update_customer(self,
+                        customer_id,
+                        name,
+                        address,
+                        phone,
+                        email_address,
+                        facebook):
+        customer_rec = self.get_customer(customer_id)
+        customer_rec.name = name
+        customer_rec.address = address
+        customer_rec.phone = phone
+        customer_rec.email_address = email_address
+        customer_rec.facebook = facebook
