@@ -14,6 +14,7 @@
       <th>Phone</th>
       <th>Email</th>
       <th>Facebook</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -23,7 +24,14 @@
       <td>{{customer.address}}</td>
       <td>{{customer.phone}}</td>
       <td>{{customer.email_address}}</td>
-      <td>{{customer.facebook}}</td>    
+      <td>{{customer.facebook}}</td>
+      <td><a href="{{ url_for('update_customer', 
+		   customer_id=customer.id) }}"
+	     class="btn btn-default pullright">Update</a></td>
+      <td><a href="{{ url_for('show_customer_order_history', 
+		   customer_id=customer.id) }}"
+	     class="btn btn-default pullright">Order history</a></td>
+      
     </tr>
     {% endfor %}
   </tbody>
