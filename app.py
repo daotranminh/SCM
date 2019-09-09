@@ -111,8 +111,7 @@ def add_material():
                       (name,
                        unit_price,
                        unit)
-            flash(message, 'info')
-            return redirect(url_for('list_materials'))
+            return redirect_with_message(url_for('list_materials'), message, 'info')
         except ScmException as ex:
             message = 'Failed to add material (%s, %s/%s)' % \
                       (name,
@@ -154,8 +153,7 @@ def update_material(material_id):
                       (name,
                        unit_price,
                        unit)
-            flash(message, 'info')
-            return redirect(url_for('list_materials'))
+            return redirect_with_message(url_for('list_materials'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
             return render_scm_template_with_message('material.html',
@@ -184,20 +182,33 @@ def list_materials():
 def add_customer():
     form = AddCustomerForm(request.form)
     if request.method == 'POST' and form.validate():
-        name = form.name.data.strip()
-        address = form.address.data.strip()
-        phone = form.phone.data.strip()
-        email_address = form.email_address.data.strip()
-        facebook = form.facebook.data.strip()
+        try:
+            name = form.name.data.strip()
+            address = form.address.data.strip()
+            phone = form.phone.data.strip()
+            email_address = form.email_address.data.strip()
+            facebook = form.facebook.data.strip()
 
-        customer_repo.add_customer(name,
-                                   address,
-                                   phone,
-                                   email_address,
-                                   facebook)
-        db.session.commit()
-    return render_scm_template('add_customer.html', form=form)
+            customer_repo.add_customer(name,
+                                       address,
+                                       phone,
+                                       email_address,
+                                       facebook)
+            db.session.commit()
+            message = 'Successfully added customer %s' % name
+            return redirect_with_message(url_for('list_customers'), message, 'info')
+        except ScmException as ex:
+            message = ex.message
+            db.session.rollback()
+            return render_scm_template_with_message('add_customer.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    form=form)
+    else:
+        return render_scm_template('add_customer.html', form=form)
 
+            
 @app.route('/list_customers', methods=['GET', 'POST'])
 def list_customers():
     customers = customer_repo.get_all_customers()

@@ -7,23 +7,30 @@
 {% from "includes/_formhelpers.html" import render_field %}
 
 <table class="table table-striped">
-  <tr>
-    <th>Name</th>
-    <th>Address</th>
-    <th>Phone</th>
-    <th>Email</th>
-    <th>Facebook</th>
-  </tr>
-
-  {% for customer in customers %}
-  <tr>
-    <td>{{customer.name}}</td>
-    <td>{{customer.address}}</td>
-    <td>{{customer.phone}}</td>
-    <td>{{customer.email_address}}</td>
-    <td>{{customer.facebook}}</td>    
-  </tr>
-  {% endfor %}
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Address</th>
+      <th>Phone</th>
+      <th>Email</th>
+      <th>Facebook</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for customer in customers %}
+    <tr>
+      <td>{{customer.name}}</td>
+      <td>{{customer.address}}</td>
+      <td>{{customer.phone}}</td>
+      <td>{{customer.email_address}}</td>
+      <td>{{customer.facebook}}</td>    
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
+
+<a href="{{ url_for('add_customer') }}"
+   class="btn btn-default pullright">Add a new customer</a>
+
 
 {% endblock %}
