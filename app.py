@@ -208,7 +208,15 @@ def add_customer():
     else:
         return render_scm_template('add_customer.html', form=form)
 
-            
+@app.route('/update_customer/<int:customer_id>', methods=['GET', 'POST'])
+def update_customer(customer_id):
+    pass
+
+@app.route('/show_customer_order_history/<int:customer_id>', methods=['GET', 'POST'])
+def show_customer_order_history(customer_id):
+    pass
+
+
 @app.route('/list_customers', methods=['GET', 'POST'])
 def list_customers():
     customers = customer_repo.get_all_customers()
