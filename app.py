@@ -2,6 +2,7 @@ from flask import Flask, Response, render_template, request, flash, redirect, ma
 
 from init import app, db
 from lib.forms.customer_forms import AddCustomerForm
+from lib.forms.customer_forms import UpdateCustomerForm
 from lib.forms.material_forms import AddMaterialForm
 from lib.forms.material_forms import UpdateMaterialForm
 
@@ -210,7 +211,36 @@ def add_customer():
 
 @app.route('/update_customer/<int:customer_id>', methods=['GET', 'POST'])
 def update_customer(customer_id):
-    pass
+    if request.method == 'GET':
+        customer_rec = customer_repo.get_customer(customer_id)
+        form = UpdateCustomerForm(request.form, customer_rec)
+    
+        return render_scm_template('update_customer.html', form=form)
+    elif request.method == 'POST':
+        try:
+            form = UpdateCustomerForm(request.form, None)
+            name = form.name.data
+            address = form.address.data
+            phone = form.phone.data
+            email_address = form.email_address.data
+            facebook = form.facebook.data
+
+            customer_repo.update_customer(customer_id,
+                                          name,
+                                          address,
+                                          phone,
+                                          email_address,
+                                          facebook)
+            db.session.commit()
+            message = 'Successfully updated customer %s' % name
+            return redirect_with_message(url_for('list_customers'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('material.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    form=form)            
 
 @app.route('/show_customer_order_history/<int:customer_id>', methods=['GET', 'POST'])
 def show_customer_order_history(customer_id):

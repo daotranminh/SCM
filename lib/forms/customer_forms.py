@@ -21,3 +21,13 @@ class AddCustomerForm(Form):
     def __init__(self, form):
         super(AddCustomerForm, self).__init__(form)
 
+class UpdateCustomerForm(AddCustomerForm):
+    def __init__(self, form, customer_rec):
+        super(UpdateCustomerForm, self).__init__(form)
+        
+        if customer_rec is not None:
+            self.name.data = customer_rec.name
+            self.address.data = customer_rec.address
+            self.phone.data = customer_rec.phone
+            self.email_address.data = customer_rec.email_address
+            self.facebook.data = customer_rec.facebook
