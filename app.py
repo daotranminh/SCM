@@ -185,12 +185,14 @@ def add_customer():
     if request.method == 'POST' and form.validate():
         try:
             name = form.name.data.strip()
+            birthday = form.birthday.data
             address = form.address.data.strip()
             phone = form.phone.data.strip()
             email_address = form.email_address.data.strip()
             facebook = form.facebook.data.strip()
 
             customer_repo.add_customer(name,
+                                       birthday,
                                        address,
                                        phone,
                                        email_address,
@@ -220,6 +222,7 @@ def update_customer(customer_id):
         try:
             form = UpdateCustomerForm(request.form, None)
             name = form.name.data
+            birthday = form.birthday.data
             address = form.address.data
             phone = form.phone.data
             email_address = form.email_address.data
@@ -227,6 +230,7 @@ def update_customer(customer_id):
 
             customer_repo.update_customer(customer_id,
                                           name,
+                                          birthday,
                                           address,
                                           phone,
                                           email_address,

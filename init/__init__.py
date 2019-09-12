@@ -51,6 +51,7 @@ class Formula(db.Model):
     taste_id = Column(Integer, ForeignKey(Taste.id))
     name = Column(String(50))
     description = Column(String(400))
+    note = Column(String(5000))
 
 class MaterialVersionFormula(db.Model):
     __tablename__ = 'material_version_formula'
@@ -78,6 +79,7 @@ class Customer(db.Model):
     __tablename__ = 'customer'
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
+    birthday = Column(DateTime())
     address = Column(String(200))
     phone = Column(String(50))
     email_address = Column(String(200))

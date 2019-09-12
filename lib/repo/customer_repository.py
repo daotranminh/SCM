@@ -21,12 +21,14 @@ class CustomerRepository:
 
     def add_customer(self,
                      name,
+                     birthday,
                      address,
                      phone,
                      email_address,
                      facebook):
         try:
             customer_rec = Customer(name=name,
+                                    birthday=birthday,
                                     address=address,
                                     phone=phone,
                                     email_address=email_address,
@@ -41,12 +43,14 @@ class CustomerRepository:
     def update_customer(self,
                         customer_id,
                         name,
+                        birthday,
                         address,
                         phone,
                         email_address,
                         facebook):
         customer_rec = self.get_customer(customer_id)
         customer_rec.name = name
+        customer_rec.birthday = birthday
         customer_rec.address = address
         customer_rec.phone = phone
         customer_rec.email_address = email_address
