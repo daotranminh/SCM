@@ -20,12 +20,15 @@ class AddCustomerForm(Form):
     phone = StringField('Phone', [validators.Length(min=0, max=50)])
     email_address = StringField('Email', [validators.Length(min=0, max=200)])
     facebook = StringField('Facebook', [validators.Length(min=0, max=200)])    
-    def __init__(self, form):
+    recommended_by = SelectField('Recommended by', coerce=int)
+
+    def __init__(self, form, customer_choices):
         super(AddCustomerForm, self).__init__(form)
+        self.recommended_by.choices = customer_choices
 
 class UpdateCustomerForm(AddCustomerForm):
-    def __init__(self, form, customer_rec):
-        super(UpdateCustomerForm, self).__init__(form)
+    def __init__(self, form, customer_choices, customer_rec):
+        super(UpdateCustomerForm, self).__init__(form, customer_choices)
         
         if customer_rec is not None:
             self.name.data = customer_rec.name
@@ -34,3 +37,4 @@ class UpdateCustomerForm(AddCustomerForm):
             self.phone.data = customer_rec.phone
             self.email_address.data = customer_rec.email_address
             self.facebook.data = customer_rec.facebook            
+            self.recommended_by.data = customer_rec.recommended_by

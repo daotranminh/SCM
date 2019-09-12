@@ -15,6 +15,7 @@
       <th>Phone</th>
       <th>Email</th>
       <th>Facebook</th>
+      <th>Recommended by</th>
       <th></th>
     </tr>
   </thead>
@@ -27,6 +28,7 @@
       <td>{{customer.phone}}</td>
       <td>{{customer.email_address}}</td>
       <td>{{customer.facebook}}</td>
+      <td>{{customer.recommended_by}}</td>      
       <td><a href="{{ url_for('update_customer', 
 		   customer_id=customer.id) }}"
 	     class="btn btn-default pullright">Update</a></td>

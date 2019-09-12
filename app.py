@@ -11,6 +11,7 @@ from lib.repo.material_version_repository import MaterialVersionRepository
 from lib.repo.customer_repository import CustomerRepository
 
 from lib.managers.material_manager import MaterialManager
+from lib.managers.customer_manager import CustomerManager
 
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
@@ -21,6 +22,7 @@ customer_repo = CustomerRepository(db)
 
 material_manager = MaterialManager(material_repo,
                                    material_version_repo)
+customer_manager = CustomerManager(customer_repo)
 
 ####################################################################################
 # MENU
@@ -181,7 +183,8 @@ def list_materials():
 ####################################################################################
 @app.route('/add_customer', methods=['GET', 'POST'])
 def add_customer():
-    form = AddCustomerForm(request.form)
+    customer_choices = customer_manager.get_customer_choices()
+    form = AddCustomerForm(request.form, customer_choices)
     if request.method == 'POST' and form.validate():
         try:
             name = form.name.data.strip()
@@ -190,13 +193,15 @@ def add_customer():
             phone = form.phone.data.strip()
             email_address = form.email_address.data.strip()
             facebook = form.facebook.data.strip()
-
+            recommended_by = form.recommended_by.data
+            
             customer_repo.add_customer(name,
                                        birthday,
                                        address,
                                        phone,
                                        email_address,
-                                       facebook)
+                                       facebook,
+                                       recommended_by)
             db.session.commit()
             message = 'Successfully added customer %s' % name
             return redirect_with_message(url_for('list_customers'), message, 'info')
@@ -213,20 +218,22 @@ def add_customer():
 
 @app.route('/update_customer/<int:customer_id>', methods=['GET', 'POST'])
 def update_customer(customer_id):
+    customer_choices = customer_manager.get_customer_choices()
     if request.method == 'GET':
         customer_rec = customer_repo.get_customer(customer_id)
-        form = UpdateCustomerForm(request.form, customer_rec)
+        form = UpdateCustomerForm(request.form, customer_choices, customer_rec)
     
         return render_scm_template('update_customer.html', form=form)
     elif request.method == 'POST':
         try:
-            form = UpdateCustomerForm(request.form, None)
+            form = UpdateCustomerForm(request.form, customer_choices, None)
             name = form.name.data
             birthday = form.birthday.data
             address = form.address.data
             phone = form.phone.data
             email_address = form.email_address.data
             facebook = form.facebook.data
+            recommended_by = form.recommended_by.data
 
             customer_repo.update_customer(customer_id,
                                           name,
@@ -234,7 +241,8 @@ def update_customer(customer_id):
                                           address,
                                           phone,
                                           email_address,
-                                          facebook)
+                                          facebook,
+                                          recommended_by)
             db.session.commit()
             message = 'Successfully updated customer %s' % name
             return redirect_with_message(url_for('list_customers'), message, 'info')
