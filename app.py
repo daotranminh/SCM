@@ -5,10 +5,13 @@ from lib.forms.customer_forms import AddCustomerForm
 from lib.forms.customer_forms import UpdateCustomerForm
 from lib.forms.material_forms import AddMaterialForm
 from lib.forms.material_forms import UpdateMaterialForm
+from lib.forms.taste_forms import AddTasteForm
+from lib.forms.taste_forms import UpdateTasteForm
 
 from lib.repo.material_repository import MaterialRepository
 from lib.repo.material_version_repository import MaterialVersionRepository
 from lib.repo.customer_repository import CustomerRepository
+from lib.repo.taste_repository import TasteRepository
 
 from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
@@ -19,6 +22,7 @@ from utilities.scm_exceptions import ScmException
 material_repo = MaterialRepository(db)
 material_version_repo = MaterialVersionRepository(db)
 customer_repo = CustomerRepository(db)
+taste_repo = TasteRepository(db)
 
 material_manager = MaterialManager(material_repo,
                                    material_version_repo)
@@ -88,6 +92,53 @@ def redirect_with_message(url, message, message_type):
     return redirect(url)
 
 ####################################################################################
+# TASTE
+####################################################################################
+@app.route('/add_taste', methods=['GET', 'POST'])
+def add_taste():
+    form = AddTasteForm(request.form)
+    if request.method == 'POST' and form.validate():
+        try:
+            name = form.name.data.strip()
+            description = form.description.data.strip()
+            taste_repo.add_taste(name=name, description=description)
+            db.session.commit()
+            message = 'Successfully added taste %s' % name
+            return redirect_with_message(url_for('list_tastes'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            message = 'Failed to add taste %s' % name
+            flash(message, 'danger')
+            return render_scm_template('add_taste.html', form=form)
+    else:
+        return render_scm_template('add_taste.html', form=form)
+
+@app.route('/update_taste/<int:taste_id>', methods=['GET', 'POST'])
+def update_taste(taste_id):
+    if request.method == 'GET':
+        taste_rec = taste_repo.get_taste(taste_id)
+        form = UpdateTasteForm(request.form, taste_rec)
+        return render_scm_template('update_taste.html', form=form)
+    elif request.method == 'POST':
+        try:
+            form = UpdateTastForm(request.form, None)
+            name = form.name.data.strip()
+            description = form.description.strip()
+            taste_repo.update_taste(taste_id,
+                                    name,
+                                    description)
+            db.session.commit()
+            message = 'Successfully updated taste %s (%s)' % (name, taste_id)
+            return redirect_with_message(url_for('list_tastes'), message, 'info')
+        except SmcException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('update_taste.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    form=form)            
+            
+####################################################################################
 # MATERIALS
 ####################################################################################
 @app.route('/add_material', methods=['GET', 'POST'])
@@ -133,7 +184,7 @@ def update_material(material_id):
         form = UpdateMaterialForm(request.form,
                                   material_rec,
                                   material_version_rec)
-        return render_scm_template('material.html', form=form)
+        return render_scm_template('update_material.html', form=form)
     elif request.method == 'POST':
         try:
             form = UpdateMaterialForm(request.form, None, None)
@@ -159,7 +210,7 @@ def update_material(material_id):
             return redirect_with_message(url_for('list_materials'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('material.html',
+            return render_scm_template_with_message('update_material.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,

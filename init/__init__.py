@@ -44,6 +44,7 @@ class Taste(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
     description = Column(String(400))
+    registered_on = Column(DateTime(), default=datetime.datetime.utcnow)    
     
 class Formula(db.Model):
     __tablename__ = 'formula'
