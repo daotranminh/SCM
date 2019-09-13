@@ -20,20 +20,20 @@
     </tr>
   </thead>
   <tbody>
-    {% for customer in customers %}
+    {% for customer_dto in customer_dtos %}
     <tr>
-      <td>{{customer.name}}</td>
-      <td>{{customer.birthday}}</td>      
-      <td>{{customer.address}}</td>
-      <td>{{customer.phone}}</td>
-      <td>{{customer.email_address}}</td>
-      <td>{{customer.facebook}}</td>
-      <td>{{customer.recommended_by}}</td>      
+      <td>{{customer_dto.name}}</td>
+      <td>{{customer_dto.birthday}}</td>      
+      <td>{{customer_dto.address}}</td>
+      <td>{{customer_dto.phone}}</td>
+      <td>{{customer_dto.email_address}}</td>
+      <td>{{customer_dto.facebook}}</td>
+      <td>{{customer_dto.recommended_by_name}}</td>      
       <td><a href="{{ url_for('update_customer', 
-		   customer_id=customer.id) }}"
+		   customer_id=customer_dto.customer_id) }}"
 	     class="btn btn-default pullright">Update</a></td>
       <td><a href="{{ url_for('show_customer_order_history', 
-		   customer_id=customer.id) }}"
+		   customer_id=customer_dto.customer_id) }}"
 	     class="btn btn-default pullright">Order history</a></td>
       
     </tr>

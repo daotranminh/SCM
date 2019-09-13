@@ -261,8 +261,8 @@ def show_customer_order_history(customer_id):
 
 @app.route('/list_customers', methods=['GET', 'POST'])
 def list_customers():
-    customers = customer_repo.get_all_customers()
-    return render_scm_template('list_customers.html', customers=customers)
+    customer_dtos = customer_manager.get_customer_dtos()
+    return render_scm_template('list_customers.html', customer_dtos=customer_dtos)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
