@@ -1,6 +1,9 @@
 import logging
 
+from flask_sqlalchemy import sqlalchemy
+
 from init import Material, config
+from utilities.scm_exceptions import ScmException
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler(config['DEFAULT']['log_file'])
@@ -33,8 +36,8 @@ class MaterialRepository:
             self.db.session.flush()
             return material_rec.id
         
-        except sqlalchemy.exc.SQLAlchemyError as e:
-            message = 'Error: failed to add material. Details: %s' % (str(e))
+        except sqlalchemy.exc.SQLAlchemyError as ex:
+            message = 'Error: failed to add material. Details: %s' % (str(ex))
             logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_MATERIAL_FAILED, message)
 

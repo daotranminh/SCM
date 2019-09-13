@@ -1,6 +1,9 @@
 import logging
 
+from flask_sqlalchemy import sqlalchemy
+
 from init import Customer, config
+from utilities.scm_exceptions import ScmException
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler(config['DEFAULT']['log_file'])
