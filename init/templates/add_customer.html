@@ -12,6 +12,9 @@
 	{{render_field(form.name, class_="form-control")}}
       </div>
       <div class="form-group">
+	{{render_field(form.recommended_by, class_="form-control")}}
+      </div>
+      <div class="form-group">
 	{{render_field(form.birthday, class_="form-control")}}
       </div>
       <div class="form-group">
@@ -26,12 +29,13 @@
       <div class="form-group">
 	{{render_field(form.facebook, class_="form-control")}}
       </div>
-      <div class="form-group">
-	{{render_field(form.recommended_by, class_="form-control")}}
-      </div>
       <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
     </form>
   </div>
 </div>
+
+<script>
+  $('#recommended_by').select2();
+</script>
 
 {% endblock %}
