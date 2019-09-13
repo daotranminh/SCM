@@ -86,6 +86,7 @@ class Customer(db.Model):
     facebook = Column(String(200))    
     recommended_by = Column(Integer, default=-1)
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
+    note = Column(String(5000))
 
 class Order(db.Model):
     __tablename__ = 'order'

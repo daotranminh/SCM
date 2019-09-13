@@ -194,6 +194,7 @@ def add_customer():
             email_address = form.email_address.data.strip()
             facebook = form.facebook.data.strip()
             recommended_by = form.recommended_by.data
+            note = form.note.data
             
             customer_repo.add_customer(name,
                                        birthday,
@@ -201,7 +202,8 @@ def add_customer():
                                        phone,
                                        email_address,
                                        facebook,
-                                       recommended_by)
+                                       recommended_by,
+                                       note)
             db.session.commit()
             message = 'Successfully added customer %s' % name
             return redirect_with_message(url_for('list_customers'), message, 'info')
@@ -234,6 +236,7 @@ def update_customer(customer_id):
             email_address = form.email_address.data
             facebook = form.facebook.data
             recommended_by = form.recommended_by.data
+            note = form.note.data
 
             customer_repo.update_customer(customer_id,
                                           name,
@@ -242,7 +245,8 @@ def update_customer(customer_id):
                                           phone,
                                           email_address,
                                           facebook,
-                                          recommended_by)
+                                          recommended_by,
+                                          note)
             db.session.commit()
             message = 'Successfully updated customer %s' % name
             return redirect_with_message(url_for('list_customers'), message, 'info')
@@ -257,7 +261,6 @@ def update_customer(customer_id):
 @app.route('/show_customer_order_history/<int:customer_id>', methods=['GET', 'POST'])
 def show_customer_order_history(customer_id):
     pass
-
 
 @app.route('/list_customers', methods=['GET', 'POST'])
 def list_customers():

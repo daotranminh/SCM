@@ -3,7 +3,7 @@ import logging
 from init import config
 from utilities import scm_constants
 
-from wtforms import Form, BooleanField, StringField, SelectField, DateTimeField, SubmitField, validators, widgets
+from wtforms import Form, BooleanField, StringField, SelectField, DateTimeField, SubmitField, validators, widgets, TextAreaField
 from wtforms.fields.html5 import DateField
 
 logger = logging.getLogger(__name__)
@@ -21,6 +21,7 @@ class AddCustomerForm(Form):
     email_address = StringField('Email', [validators.Length(min=0, max=200)])
     facebook = StringField('Facebook', [validators.Length(min=0, max=200)])    
     recommended_by = SelectField('Recommended by', coerce=int)
+    note = TextAreaField('Note', render_kw={"rows": 10, "cols": 80})
 
     def __init__(self, form, customer_choices):
         super(AddCustomerForm, self).__init__(form)
@@ -38,3 +39,4 @@ class UpdateCustomerForm(AddCustomerForm):
             self.email_address.data = customer_rec.email_address
             self.facebook.data = customer_rec.facebook            
             self.recommended_by.data = customer_rec.recommended_by
+            self.note.data = customer_rec.note

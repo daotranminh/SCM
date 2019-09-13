@@ -26,7 +26,8 @@ class CustomerRepository:
                      phone,
                      email_address,
                      facebook,
-                     recommended_by):
+                     recommended_by,
+                     note):
         try:
             customer_rec = Customer(name=name,
                                     birthday=birthday,
@@ -34,7 +35,8 @@ class CustomerRepository:
                                     phone=phone,
                                     email_address=email_address,
                                     facebook=facebook,
-                                    recommended_by=recommended_by)
+                                    recommended_by=recommended_by,
+                                    note=note)
             self.db.session.add(customer_rec)
         
         except sqlalchemy.exc.SQLAlchemyError as e:
@@ -50,7 +52,8 @@ class CustomerRepository:
                         phone,
                         email_address,
                         facebook,
-                        recommended_by):
+                        recommended_by,
+                        note):
         customer_rec = self.get_customer(customer_id)
         customer_rec.name = name
         customer_rec.birthday = birthday
@@ -59,3 +62,4 @@ class CustomerRepository:
         customer_rec.email_address = email_address
         customer_rec.facebook = facebook
         customer_rec.recommended_by = recommended_by
+        customer_rec.note = note
