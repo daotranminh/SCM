@@ -137,7 +137,13 @@ def update_taste(taste_id):
                                                     'danger',
                                                     ex,
                                                     form=form)            
-            
+
+@app.route('/list_tastes', methods=['GET', 'POST'])
+def list_tastes():
+    tastes = taste_repo.get_all_tastes()
+    return render_scm_template('list_tastes.html', tastes=tastes)
+
+        
 ####################################################################################
 # MATERIALS
 ####################################################################################
@@ -236,6 +242,7 @@ def list_materials():
 def add_customer():
     customer_choices = customer_manager.get_customer_choices()
     form = AddCustomerForm(request.form, customer_choices)
+
     if request.method == 'POST' and form.validate():
         try:
             name = form.name.data.strip()
