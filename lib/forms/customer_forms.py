@@ -15,7 +15,7 @@ logger.setLevel(logging.INFO)
 
 class AddCustomerForm(Form):
     name = StringField('Customer name*', [validators.InputRequired(), validators.Length(min=1, max=50)])
-    birthday = DateField('Birthday', format='%Y-%m-%d')
+    birthday = DateField('Birthday', format='%Y-%m-%d', validators=(validators.Optional(),))
     address = StringField('Address', [validators.Length(min=0, max=200)])
     phone = StringField('Phone', [validators.Length(min=0, max=50)])
     email_address = StringField('Email', [validators.Length(min=0, max=200)])
