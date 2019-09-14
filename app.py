@@ -7,14 +7,18 @@ from lib.forms.material_forms import AddMaterialForm
 from lib.forms.material_forms import UpdateMaterialForm
 from lib.forms.taste_forms import AddTasteForm
 from lib.forms.taste_forms import UpdateTasteForm
+from lib.forms.topic_forms import AddTopicForm
+from lib.forms.topic_forms import UpdateTopicForm
 
 from lib.repo.material_repository import MaterialRepository
 from lib.repo.material_version_repository import MaterialVersionRepository
 from lib.repo.customer_repository import CustomerRepository
 from lib.repo.taste_repository import TasteRepository
+from lib.repo.topic_repository import TopicRepository
 
 from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
+from lib.managers.topic_manager import TopicManager
 
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
@@ -23,10 +27,12 @@ material_repo = MaterialRepository(db)
 material_version_repo = MaterialVersionRepository(db)
 customer_repo = CustomerRepository(db)
 taste_repo = TasteRepository(db)
+topic_repo = TopicRepository(db)
 
 material_manager = MaterialManager(material_repo,
                                    material_version_repo)
 customer_manager = CustomerManager(customer_repo)
+topic_manager = TopicManager(topic_repo)
 
 ####################################################################################
 # MENU
@@ -121,7 +127,7 @@ def update_taste(taste_id):
         return render_scm_template('update_taste.html', form=form)
     elif request.method == 'POST':
         try:
-            form = UpdateTastForm(request.form, None)
+            form = UpdateTasteForm(request.form, None)
             name = form.name.data.strip()
             description = form.description.strip()
             taste_repo.update_taste(taste_id,
@@ -143,6 +149,66 @@ def list_tastes():
     tastes = taste_repo.get_all_tastes()
     return render_scm_template('list_tastes.html', tastes=tastes)
 
+####################################################################################
+# TOPIC
+####################################################################################
+@app.route('/add_topic', methods=['GET', 'POST'])
+def add_topic():
+    topic_choices = topic_manager.get_topic_choices()
+    form = AddTopicForm(request.form, topic_choices)
+    if request.method == 'POST' and form.validate():
+        try:
+            name = form.name.data.strip()
+            description = form.description.data.strip()
+            parent_id = form.parent_topic.data
+            
+            topic_repo.add_topic(name=name,
+                                 description=description,
+                                 parent_id=parent_id)
+            db.session.commit()
+            message = 'Successfully added topic %s' % name
+            return redirect_with_message(url_for('list_topics'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            message = 'Failed to add topic %s' % name
+            flash(message, 'danger')
+            return render_scm_template('add_topic.html', form=form)
+    else:
+        return render_scm_template('add_topic.html', form=form)
+
+@app.route('/update_topic/<int:topic_id>', methods=['GET', 'POST'])
+def update_topic(topic_id):
+    topic_choices = topic_manager.get_topic_choices()
+    if request.method == 'GET':
+        topic_rec = topic_repo.get_topic(topic_id)
+        form = UpdateTopicForm(request.form, topic_rec, topic_choices)
+        return render_scm_template('update_topic.html', form=form)
+    elif request.method == 'POST':
+        try:
+            form = UpdateTopicForm(request.form, None)
+            name = form.name.data.strip()
+            description = form.description.strip()
+            parent_id = form.parent_topic.data            
+            
+            topic_repo.update_topic(topic_id,
+                                    name,
+                                    description,
+                                    parent_id)
+            db.session.commit()
+            message = 'Successfully updated topic %s (%s)' % (name, topic_id)
+            return redirect_with_message(url_for('list_topics'), message, 'info')
+        except SmcException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('update_topic.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    form=form)            
+
+@app.route('/list_topics', methods=['GET', 'POST'])
+def list_topics():
+    topic_dtos = topic_manager.get_topic_dtos()
+    return render_scm_template('list_topics.html', topic_dtos=topic_dtos)
         
 ####################################################################################
 # MATERIALS

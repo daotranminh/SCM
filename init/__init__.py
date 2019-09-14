@@ -67,6 +67,7 @@ class Topic(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
     description = Column(String(400))
+    parent_id = Column(Integer, default=-1)
     
 class Decoration(db.Model):
     __tablename__ = 'decoration'
