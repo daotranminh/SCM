@@ -15,8 +15,7 @@ logger.setLevel(logging.INFO)
 
 class AddTasteForm(Form):
     name = StringField('Name*', [validators.InputRequired(), validators.Length(min=1, max=50)])
-    description = StringField('Description', [validators.Length(min=0, max=40)])
-
+    description = TextAreaField('Description', render_kw={"rows": 10, "cols": 80})    
     def __init__(self, form):
         super(AddTasteForm, self).__init__(form)
 
