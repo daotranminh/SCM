@@ -3,6 +3,7 @@ import logging
 from flask_sqlalchemy import sqlalchemy
 
 from init import Customer, config
+from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
 
 logger = logging.getLogger(__name__)
