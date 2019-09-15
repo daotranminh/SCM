@@ -1,6 +1,7 @@
+import logging
 from flask import Flask, Response, render_template, request, flash, redirect, make_response, session, url_for
 
-from init import app, db
+from init import app, db, config
 from lib.forms.customer_forms import AddCustomerForm
 from lib.forms.customer_forms import UpdateCustomerForm
 from lib.forms.material_forms import AddMaterialForm
@@ -22,6 +23,13 @@ from lib.managers.topic_manager import TopicManager
 
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
+
+logger = logging.getLogger(__name__)
+handler = logging.FileHandler(config['DEFAULT']['log_file'])
+formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
 
 material_repo = MaterialRepository(db)
 material_version_repo = MaterialVersionRepository(db)
@@ -89,6 +97,7 @@ def render_scm_template_with_message(site_html,
     else:
         logger.info(message)
 
+    flash(message, message_type)
     return render_template(site_html,
                            **kwargs,
                            menu_configuration=session[scm_constants.MENU_CONFIGURATION])
@@ -185,9 +194,9 @@ def update_topic(topic_id):
         return render_scm_template('update_topic.html', form=form)
     elif request.method == 'POST':
         try:
-            form = UpdateTopicForm(request.form, None)
+            form = UpdateTopicForm(request.form, None, topic_choices)
             name = form.name.data.strip()
-            description = form.description.strip()
+            description = form.description.data.strip()
             parent_id = form.parent_topic.data            
             
             topic_repo.update_topic(topic_id,
@@ -197,7 +206,7 @@ def update_topic(topic_id):
             db.session.commit()
             message = 'Successfully updated topic %s (%s)' % (name, topic_id)
             return redirect_with_message(url_for('list_topics'), message, 'info')
-        except SmcException as ex:
+        except ScmException as ex:
             db.session.rollback()
             return render_scm_template_with_message('update_topic.html',
                                                     ex.message,

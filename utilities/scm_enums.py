@@ -6,7 +6,8 @@ class ErrorCodes(IntEnum):
     ERROR_ADD_MATERIAL_VERSION_FAILED = 2    
     ERROR_ADD_CUSTOMER_FAILED = 3
     ERROR_ADD_TASTE_FAILED = 4
-    ERROR_ADD_TOPIC_FAILED = 5    
+    ERROR_ADD_TOPIC_FAILED = 5
+    ERROR_UPDATE_TOPIC_FAILED = 6
 
 class DecorationForms(IntEnum):
     ROUND = 0

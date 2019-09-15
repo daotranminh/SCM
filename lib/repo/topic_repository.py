@@ -3,6 +3,7 @@ import logging
 from flask_sqlalchemy import sqlalchemy
 
 from init import Topic, config
+from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
 
 logger = logging.getLogger(__name__)
@@ -38,12 +39,16 @@ class TopicRepository:
             logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_TOPIC_FAILED, message)
 
-    def update_taste(self,
+    def update_topic(self,
                      topic_id,
                      name,
                      description,
                      parent_id):
-        topic_rec = self.get_taste(topic_id)
+        if parent_id == topic_id:
+            message = 'Topic %s cannot be its own parent' % topic_id
+            raise ScmException(ErrorCodes.ERROR_UPDATE_TOPIC_FAILED, message)
+        
+        topic_rec = self.get_topic(topic_id)
         topic_rec.name = name
         topic_rec.description = description
         topic_rec.parent_id = parent_id
