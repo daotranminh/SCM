@@ -395,9 +395,14 @@ def update_customer(customer_id):
 def show_customer_order_history(customer_id):
     pass
 
-@app.route('/list_customers', methods=['GET', 'POST'])
-def list_customers():
-    customer_dtos = customer_manager.get_customer_dtos()
+@app.route('/list_customers', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_customers/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_customers/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_customers/<int:page>/', methods=['GET', 'POST'])
+def list_customers(page):
+    per_page = int(config['PAGING']['customer_per_page'])
+    
+    customer_dtos = customer_manager.get_paginated_customer_dtos(page, per_page)
     return render_scm_template('list_customers.html', customer_dtos=customer_dtos)
 
 if __name__ == '__main__':

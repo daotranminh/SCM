@@ -20,6 +20,12 @@ class CustomerRepository:
     def get_all_customers(self):
         return Customer.query.all()
 
+    def get_paginated_customers(self,
+                                page,
+                                per_page):
+        return Customer.query. \
+            paginate(page, per_page, error_out=False)
+    
     def get_customer(self, customer_id):
         return Customer.query.filter(Customer.id == customer_id).first()
 

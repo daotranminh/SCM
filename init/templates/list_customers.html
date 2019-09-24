@@ -20,7 +20,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for customer_dto in customer_dtos %}
+    {% for customer_dto in customer_dtos.items %}
     <tr>
       <td>{{customer_dto.name}}</td>
       <td>{{customer_dto.birthday}}</td>      
@@ -40,6 +40,29 @@
     {% endfor %}
   </tbody>
 </table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{customer_dtos.page}}/{{customer_dtos.pages}}</li>
+
+  {% if customer_dtos.has_prev %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_customers', 
+				 page=customer_dtos.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if customer_dtos.has_next %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_customers', 
+				 page=customer_dtos.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
 
 <a href="{{ url_for('add_customer') }}"
    class="btn btn-default pullright">Add a new customer</a>
