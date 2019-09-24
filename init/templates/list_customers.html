@@ -20,10 +20,16 @@
   <tbody>
     {% for customer_dto in customer_dtos.items %}
     <tr>
-      <td>{{customer_dto.name}}</td>
+      <td><a href="{{ url_for('customer_details', 
+		   customer_id=customer_dto.customer_id) }}">{{customer_dto.name}}</a></td>
       <td>{{customer_dto.phone}}</td>
       <td>{{customer_dto.registered_on}}</td>
-      <td>{{customer_dto.recommended_by_name}}</td>      
+      {% if customer_dto.recommended_by_name %}
+      <td><a href="{{ url_for('customer_details',
+		   customer_id=customer_dto.recommended_by_id)}}">{{customer_dto.recommended_by_name}}</a></td>
+      {% else %}
+      <td></td>
+      {% endif %}
       <td><a href="{{ url_for('update_customer', 
 		   customer_id=customer_dto.customer_id) }}"
 	     class="btn btn-default pullright">Update</a></td>
