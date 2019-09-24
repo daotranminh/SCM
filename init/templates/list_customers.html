@@ -10,24 +10,19 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Birthday</th>
-      <th>Address</th>
       <th>Phone</th>
-      <th>Email</th>
-      <th>Facebook</th>
+      <th>Registered on</th>
       <th>Recommended by</th>
       <th></th>
+      <th></th>      
     </tr>
   </thead>
   <tbody>
     {% for customer_dto in customer_dtos.items %}
     <tr>
       <td>{{customer_dto.name}}</td>
-      <td>{{customer_dto.birthday}}</td>      
-      <td>{{customer_dto.address}}</td>
       <td>{{customer_dto.phone}}</td>
-      <td>{{customer_dto.email_address}}</td>
-      <td>{{customer_dto.facebook}}</td>
+      <td>{{customer_dto.registered_on}}</td>
       <td>{{customer_dto.recommended_by_name}}</td>      
       <td><a href="{{ url_for('update_customer', 
 		   customer_id=customer_dto.customer_id) }}"
