@@ -6,6 +6,8 @@
 
 {% from "includes/_formhelpers.html" import render_field %}
 
+<input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+
 <table class="table table-striped">
   <thead>
     <tr>
@@ -68,5 +70,14 @@
 <a href="{{ url_for('add_customer') }}"
    class="btn btn-default pullright">Add a new customer</a>
 
+<script>
+  $("#searchInput").keyup(function(e) {
+    if (e.keyCode == 13) {
+      let search_text = this.value
+      location.href = "/list_customers/1/?search_text=" + search_text
+    }
+  })
+
+</script>
 
 {% endblock %}

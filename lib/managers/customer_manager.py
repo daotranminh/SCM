@@ -46,7 +46,8 @@ class CustomerManager:
 
     def get_paginated_customer_dtos(self,
                                     page,
-                                    per_page):
+                                    per_page,
+                                    search_text):
         customer_recs = self.customer_repo.get_all_customers()
         customers_dict = {}
 
@@ -54,7 +55,8 @@ class CustomerManager:
             customers_dict[customer_rec.id] = customer_rec
 
         paginated_customer_recs = self.customer_repo.get_paginated_customers(page,
-                                                                             per_page)
+                                                                             per_page,
+                                                                             search_text)
 
         return self.__convert_to_paginated_customer_dtos(customers_dict,
                                                          paginated_customer_recs)

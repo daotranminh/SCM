@@ -22,9 +22,15 @@ class CustomerRepository:
 
     def get_paginated_customers(self,
                                 page,
-                                per_page):
-        return Customer.query. \
-            paginate(page, per_page, error_out=False)
+                                per_page,
+                                search_text):
+        customer_recs = Customer.query
+        if search_text != '':
+            search_pattern = '%' + search_text + '%'
+            customer_recs = customer_recs.filter((Customer.name.ilike(search_pattern)) |
+                                                 (Customer.phone.ilike(search_pattern)) |
+                                                 (Customer.facebook.ilike(search_pattern)))
+        return customer_recs.paginate(page, per_page, error_out=False)
     
     def get_customer(self, customer_id):
         return Customer.query.filter(Customer.id == customer_id).first()

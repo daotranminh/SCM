@@ -402,9 +402,11 @@ def show_customer_order_history(customer_id):
 def list_customers(page):
     per_page = int(config['PAGING']['customer_per_page'])
     search_text = request.args.get('search_text')
-    print(search_text)
     
-    customer_dtos = customer_manager.get_paginated_customer_dtos(page, per_page)
+    customer_dtos = customer_manager.get_paginated_customer_dtos(page,
+                                                                 per_page,
+                                                                 search_text)
+    
     return render_scm_template('list_customers.html', customer_dtos=customer_dtos)
 
 @app.route('/customer_details/<int:customer_id>', methods=['GET', 'POST'])
