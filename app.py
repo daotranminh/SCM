@@ -401,13 +401,16 @@ def show_customer_order_history(customer_id):
 @app.route('/list_customers/<int:page>/', methods=['GET', 'POST'])
 def list_customers(page):
     per_page = int(config['PAGING']['customer_per_page'])
+    search_text = request.args.get('search_text')
+    print(search_text)
     
     customer_dtos = customer_manager.get_paginated_customer_dtos(page, per_page)
     return render_scm_template('list_customers.html', customer_dtos=customer_dtos)
 
 @app.route('/customer_details/<int:customer_id>', methods=['GET', 'POST'])
 def customer_details(customer_id):
-    pass
+    customer_dto = customer_manager.get_customer_details(customer_id)
+    return render_scm_template('customer_details.html', customer_dto=customer_dto)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');

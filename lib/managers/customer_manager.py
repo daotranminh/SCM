@@ -15,6 +15,26 @@ class CustomerManager:
     def __init__(self, customer_repo):
         self.customer_repo = customer_repo
 
+    def get_customer_details(self,
+                             customer_id):
+        customer_rec = self.customer_repo.get_customer(customer_id)
+        recommendator = None
+        if customer_rec.recommended_by != -1:
+            recommendator_rec = self.customer_repo.get_customer(customer_rec.recommended_by)
+            recommnedator = recommendator_rec.name
+        
+        customer_dto = CustomerDto(customer_rec.id,
+                                   customer_rec.name,
+                                   customer_rec.birthday,
+                                   customer_rec.address,
+                                   customer_rec.phone,
+                                   customer_rec.email_address,
+                                   customer_rec.facebook,
+                                   customer_rec.recommended_by,
+                                   recommendator,
+                                   customer_rec.registered_on)
+        return customer_dto
+        
     def get_customer_choices(self):
         customer_recs = self.customer_repo.get_all_customers()
 

@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Customer Details</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>      
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Name</td><td>{{ customer_dto.name }}</td></tr>
+    <tr><td>Birthday</td><td>{{ customer_dto.birthday }}</td></tr>
+    <tr><td>Address</td><td>{{ customer_dto.address }}</td></tr>
+    <tr><td>Phone</td><td>{{ customer_dto.phone }}</td></tr>
+    <tr><td>Email address</td><td>{{ customer_dto.email_address }}</td></tr>
+    <tr><td>Facebook</td><td>{{ customer_dto.facebook }}</td></tr>
+    <tr><td>Recommended by</td><td>{{ customer_dto.recommended_by_name }}</td></tr>
+    <tr><td>Registered on</td><td>{{ customer_dto.registered_on }}</td></tr>
+  </tbody>
+</table>
+
+{% endblock %}
