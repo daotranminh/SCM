@@ -414,5 +414,11 @@ def customer_details(customer_id):
     customer_dto = customer_manager.get_customer_details(customer_id)
     return render_scm_template('customer_details.html', customer_dto=customer_dto)
 
+@app.route('/add_formula', methods=['GET', 'POST'])
+def add_formula():
+    material_recs = material_repo.get_all_materials()
+    return render_scm_template('add_formula.html',
+                               material_recs=material_recs)
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
