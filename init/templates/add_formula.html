@@ -13,13 +13,13 @@
 	<input type="text" name="formula_name"><br>
       </div>
       <div class="form-group" name="material[]">
-	<select id="material_choices_0" onchange="update_price_and_cost(this)">
+	<select id="material_choices_0" onchange="sync_unit_price(this)">
 	  {% for material_dto in material_dtos %}
 	  <option>{{material_dto.name}}</option>
 	  {% endfor %}
 	</select>
 
-	<input type="text" id="material_amount_0">
+	<input type="text" id="material_amount_0" onkeyup="update_cost(this)">
 
 	<select id="material_unit_price_0" disabled>
 	  {% for material_dto in material_dtos %}
@@ -38,6 +38,12 @@
 </div>
 
 <script>
+  $("form").bind("keypress", function (e) {
+  if (e.keyCode == 13) {
+  return false;
+  }
+  });
+  
   function add_another_material()
   {
   var materials_list = document.getElementsByName("material[]")
@@ -65,7 +71,7 @@
   return false;
   }
 
-  function update_price_and_cost(control)
+  function sync_unit_price(control)
   {
   var my_name = control.id
   var pos = my_name.lastIndexOf("_")
@@ -77,6 +83,26 @@
 
   var my_material_unit_price = document.getElementById(my_material_unit_price_id)
   my_material_unit_price.selectedIndex = control.selectedIndex
+  }
+
+  function update_cost(control)
+  {
+  var my_name = control.id
+  var pos = my_name.lastIndexOf("_")
+  var strIndex = my_name.substring(pos+1)
+
+  var my_material_unit_price_id = "material_unit_price_" + strIndex
+  var my_material_cost_id = "material_cost_" + strIndex
+
+  var my_material_unit_price = document.getElementById(my_material_unit_price_id)
+  var my_material_cost = document.getElementById(my_material_cost_id)
+
+  var unit_price = parseFloat(my_material_unit_price.value)
+  var amount = parseFloat(control.value)
+  var cost = amount * unit_price
+  my_material_cost.value = cost
+
+  return false;
   }
 </script>
 
