@@ -27,7 +27,11 @@
 	  {% endfor %}
 	</select>
 	
-	<input type="text" id="material_cost_0" disabled>	
+	<input type="text" id="material_cost_0" disabled>
+      </div>
+
+      <div>
+	<input type="text" id="total_cost" disabled>
       </div>
       
       <p><button type="button" class="btn btn-default pullright" onclick="add_another_material();">Add another material</button></p>
@@ -102,6 +106,21 @@
   var cost = amount * unit_price
   my_material_cost.value = cost
 
+  var materials_list = document.getElementsByName("material[]")
+  var len = materials_list.length
+  var total_cost = 0
+
+  for (var i = 0; i < len; i++) {
+		      var material_cost_id = "material_cost_" + i.toString()
+		      var material_cost = document.getElementById(material_cost_id)
+		      var cost = parseFloat(material_cost.value)
+		      total_cost += cost
+		      }
+
+  var txt_total_cost = document.getElementById("total_cost")
+  txt_total_cost.value = total_cost
+
+  
   return false;
   }
 </script>
