@@ -14,13 +14,19 @@
       </div>
       <div class="form-group" name="material[]">
 	<select id="material_choices_0" onchange="update_price_and_cost(this)">
-	  {% for material_rec in material_recs %}
-	  <option>{{material_rec.name}}</option>
+	  {% for material_dto in material_dtos %}
+	  <option>{{material_dto.name}}</option>
 	  {% endfor %}
 	</select>
 
 	<input type="text" id="material_amount_0">
-	<input type="text" id="material_unit_price_0" disabled>
+
+	<select id="material_unit_price_0" disabled>
+	  {% for material_dto in material_dtos %}
+	  <option>{{material_dto.unit_price}}</option>
+	  {% endfor %}
+	</select>
+	
 	<input type="text" id="material_cost_0" disabled>	
       </div>
       
@@ -52,7 +58,7 @@
 
   material_choices.seletedIndex = 0
   material_amount.value = ""
-  material_unit_price.value = ""
+  material_unit_price.selectedIndex = 0
   material_cost.value = ""
   
   last_material.insertAdjacentElement("afterend", next_material)
@@ -70,7 +76,7 @@
   var my_material_cost_id = "material_cost_" + strIndex
 
   var my_material_unit_price = document.getElementById(my_material_unit_price_id)
-  my_material_unit_price.value = "XXX"
+  my_material_unit_price.selectedIndex = control.selectedIndex
   }
 </script>
 

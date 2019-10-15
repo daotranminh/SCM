@@ -416,9 +416,9 @@ def customer_details(customer_id):
 
 @app.route('/add_formula', methods=['GET', 'POST'])
 def add_formula():
-    material_recs = material_repo.get_all_materials()
+    material_dtos = material_manager.get_material_dtos()
     return render_scm_template('add_formula.html',
-                               material_recs=material_recs)
+                               material_dtos=material_dtos)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
