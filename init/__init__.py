@@ -54,13 +54,12 @@ class Formula(db.Model):
     description = Column(String(400))
     note = Column(String(5000))
 
-class MaterialVersionFormula(db.Model):
+class MaterialFormula(db.Model):
     __tablename__ = 'material_version_formula'
     id = Column(Integer, autoincrement=True, primary_key=True)
-    material_version_id = Column(Integer, ForeignKey(MaterialVersion.id))
+    material_id = Column(Integer, ForeignKey(Material.id))
     formula_id = Column(Integer, ForeignKey(Formula.id))
     ammount = Column(Numeric(10, 2))
-    cost = Column(Numeric(10, 2))
     
 class Topic(db.Model):
     __tablename__ = 'topic'
@@ -101,10 +100,23 @@ class Order(db.Model):
     delivered_on = Column(DateTime())
     deliver_method = Column(Integer)
 
+class CostEstimation(db.Model):
+    __tablename__ = 'cost_estimation'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    formula_id = Column(Integer, ForeignKey(Formula.id))
+    total_cost = Column(Numeric(10, 2))    
+
+class MaterialVersionCostEstimation(db.Model):
+    __tablename__ = 'material_version_cost_estimation'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    material_verion_id = Column(Integer, ForeignKey(MaterialVersion.id))
+    cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
+    ammount = Column(Numeric(10, 2))
+    cost = Column(Numeric(10, 2))
+    
 class Cake(db.Model):
     __tablename__ = 'cake'
     id = Column(Integer, autoincrement=True, primary_key=True)
     order_id = Column(Integer, ForeignKey(Order.id))
-    formula_id = Column(Integer, ForeignKey(Formula.id))
-    cost = Column(Numeric(10, 2))    
+    cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
     photos_path = Column(String(400))
