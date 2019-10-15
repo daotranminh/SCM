@@ -13,29 +13,38 @@
 	<input type="text" name="formula_name"><br>
       </div>
       <div class="form-group" name="material[]">
-	<select id="material_choices_0" onchange="sync_unit_price(this)">
+	<select id="material_choices_0"
+		name="material_choices_0"
+		onchange="sync_unit_price(this)">
 	  {% for material_dto in material_dtos %}
 	  <option>{{material_dto.name}}</option>
 	  {% endfor %}
 	</select>
 
-	<input type="text" id="material_amount_0" onkeyup="update_cost(this)">
+	<input type="text"
+	       id="material_amount_0"
+	       name="material_amount_0"
+	       onkeyup="update_cost(this)">
 
-	<select id="material_unit_price_0" disabled>
+	<select id="material_unit_price_0"
+		name="material_unit_price_0"
+		disabled>
 	  {% for material_dto in material_dtos %}
 	  <option>{{material_dto.unit_price}}</option>
 	  {% endfor %}
 	</select>
 	
-	<input type="text" id="material_cost_0" disabled>
+	<input type="text"
+	       id="material_cost_0"
+	       name="material_cost_0"
+	       disabled>
       </div>
 
       <div>
-	<input type="text" id="total_cost" disabled>
+	<input type="text" id="total_cost" name="total_cost" disabled>
       </div>
       
       <p><button type="button" class="btn btn-default pullright" onclick="add_another_material();">Add another material</button></p>
-      
       <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
     </form>
   </div>
@@ -66,6 +75,11 @@
   material_unit_price.id = "material_unit_price_" + len.toString()
   material_cost.id = "material_cost_" + len.toString()
 
+  material_choices.name = "material_choices_" + len.toString()
+  material_amount.name = "material_amount_" + len.toString()
+  material_unit_price.name = "material_unit_price_" + len.toString()
+  material_cost.name = "material_cost_" + len.toString()
+  
   material_choices.seletedIndex = 0
   material_amount.value = ""
   material_unit_price.selectedIndex = 0
