@@ -53,6 +53,7 @@ class Formula(db.Model):
     name = Column(String(50))
     description = Column(String(400))
     note = Column(String(5000))
+    registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
 
 class MaterialFormula(db.Model):
     __tablename__ = 'material_formula'
