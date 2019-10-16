@@ -17,7 +17,7 @@
 		name="material_choices_0"
 		onchange="sync_unit_price(this)">
 	  {% for material_dto in material_dtos %}
-	  <option>{{material_dto.name}}</option>
+	  <option value="{{material_dto.material_id}}">{{material_dto.name}}</option>
 	  {% endfor %}
 	</select>
 
