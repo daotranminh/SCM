@@ -13,13 +13,16 @@ from lib.forms.topic_forms import UpdateTopicForm
 
 from lib.repo.material_repository import MaterialRepository
 from lib.repo.material_version_repository import MaterialVersionRepository
+from lib.repo.material_formula_repository import MaterialFormulaRepository
 from lib.repo.customer_repository import CustomerRepository
 from lib.repo.taste_repository import TasteRepository
 from lib.repo.topic_repository import TopicRepository
+from lib.repo.formula_repository import FormulaRepository
 
 from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
 from lib.managers.topic_manager import TopicManager
+from lib.managers.formula_manager import FormulaManager
 
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
@@ -32,15 +35,19 @@ logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
 material_repo = MaterialRepository(db)
+material_formula_repo = MaterialFormulaRepository(db)
 material_version_repo = MaterialVersionRepository(db)
 customer_repo = CustomerRepository(db)
 taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
+formula_repo = FormulaRepository(db)
 
 material_manager = MaterialManager(material_repo,
                                    material_version_repo)
 customer_manager = CustomerManager(customer_repo)
 topic_manager = TopicManager(topic_repo)
+formula_manager = FormulaManager(formula_repo,
+                                 material_formula_repo)
 
 ####################################################################################
 # MENU
@@ -417,8 +424,55 @@ def customer_details(customer_id):
 @app.route('/add_formula', methods=['GET', 'POST'])
 def add_formula():
     material_dtos = material_manager.get_material_dtos()
-    return render_scm_template('add_formula.html',
-                               material_dtos=material_dtos)
+    taste_recs = taste_repo.get_all_tastes()
+
+    if request.method == 'POST':
+        try:        
+            formula_name = request.form['formula_name']
+            taste_id = int(request.form['taste_id'])
+            description = request.form['formula_description']
+            note = request.form['formula_note']
+            material_ids = []
+            amounts = []
+        
+            i = 0
+            while True:
+                material_choice_i = 'material_choices_' + str(i)
+                material_amount_i = 'material_amount_' + str(i)
+
+                if material_choice_i not in request.form:
+                    break
+
+                material_id = int(request.form[material_choice_i])
+                amount = float(request.form[material_amount_i])
+            
+                material_ids.append(material_id)
+                amounts.append(amount)
+                i += 1
+
+            formula_manager.add_formula(formula_name,
+                                        taste_id,
+                                        description,
+                                        note,
+                                        material_ids,
+                                        amounts)
+
+            db.session.commit()
+            return render_scm_template('add_formula.html',
+                                       taste_recs=taste_recs,
+                                       material_dtos=material_dtos)
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('material.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    form=form)            
+        
+    else:
+        return render_scm_template('add_formula.html',
+                                   taste_recs=taste_recs,
+                                   material_dtos=material_dtos)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
