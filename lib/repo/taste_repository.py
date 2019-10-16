@@ -32,7 +32,7 @@ class TasteRepository:
             self.db.session.flush()
             return taste_rec.id
         except sqlalchemy.exc.SQLAlchemyError as ex:
-            message = 'Error: failed to add material. Details: %s' % (str(ex))
+            message = 'Error: failed to add taste. Details: %s' % (str(ex))
             logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_TASTE_FAILED, message)
 
