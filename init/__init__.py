@@ -55,11 +55,11 @@ class Formula(db.Model):
     note = Column(String(5000))
 
 class MaterialFormula(db.Model):
-    __tablename__ = 'material_version_formula'
+    __tablename__ = 'material_formula'
     id = Column(Integer, autoincrement=True, primary_key=True)
     material_id = Column(Integer, ForeignKey(Material.id))
     formula_id = Column(Integer, ForeignKey(Formula.id))
-    ammount = Column(Numeric(10, 2))
+    amount = Column(Numeric(10, 2))
     
 class Topic(db.Model):
     __tablename__ = 'topic'
