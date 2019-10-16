@@ -43,3 +43,13 @@ class TasteRepository:
         taste_rec = self.get_taste(taste_id)
         taste_rec.name = name
         taste_rec.description = description
+
+    def get_tastes_dict(self):
+        taste_recs = self.get_all_tastes()
+        tastes_dict = {}
+
+        for taste_rec in taste_recs:
+            tastes_dict[taste_rec.id] = taste_rec
+
+        return tastes_dict
+        
