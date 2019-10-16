@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>List of Formulas</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Taste</th>      
+      <th>Description</th>
+      <th>Registered on<i class="fa fa-sort-asc"></i></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for formula_dto in formula_dtos.items %}
+    <tr>
+      <td><a href="{{ url_for('formula_details', 
+	   formula_id=formula_dto.formula_id) }}">{{formula_dto.name}}</a></td>
+      <td>{{formula_dto.taste}}</td>      
+      <td>{{formula_dto.description}}</td>
+      <td>{{formula_dto.registered_on}}</td>
+      <td><a href="{{ url_for('update_formula', 
+		   formula_id=formula_dto.formula_id) }}"
+		   class="btn btn-default pullright">Update</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{formula_dtos.page}}/{{formula_dtos.pages}}</li>
+
+  {% if formula_dtos.has_prev %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_formulas', 
+				 page=formula_dtos.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if formula_dtos.has_next %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_formulas', 
+				 page=formula_dtos.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
+
+<a href="{{ url_for('add_formula') }}"
+   class="btn btn-default pullright">Add a new formula</a>
+
+<script>
+  $("#searchInput").keyup(function(e) {
+    if (e.keyCode == 13) {
+      let search_text = this.value
+      location.href = "/list_formulas/1/?search_text=" + search_text
+    }
+  })
+
+</script>
+
+{% endblock %}

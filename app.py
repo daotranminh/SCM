@@ -47,7 +47,8 @@ material_manager = MaterialManager(material_repo,
 customer_manager = CustomerManager(customer_repo)
 topic_manager = TopicManager(topic_repo)
 formula_manager = FormulaManager(formula_repo,
-                                 material_formula_repo)
+                                 material_formula_repo,
+                                 taste_repo)
 
 ####################################################################################
 # MENU
@@ -407,7 +408,7 @@ def show_customer_order_history(customer_id):
 @app.route('/list_customers/<int:page>', methods=['GET', 'POST'])
 @app.route('/list_customers/<int:page>/', methods=['GET', 'POST'])
 def list_customers(page):
-    per_page = int(config['PAGING']['customer_per_page'])
+    per_page = int(config['PAGING']['customers_per_page'])
     search_text = request.args.get('search_text')
     
     customer_dtos = customer_manager.get_paginated_customer_dtos(page,
@@ -419,7 +420,22 @@ def list_customers(page):
 @app.route('/customer_details/<int:customer_id>', methods=['GET', 'POST'])
 def customer_details(customer_id):
     customer_dto = customer_manager.get_customer_details(customer_id)
-    return render_scm_template('customer_details.html', customer_dto=customer_dto)
+    return render_scm_template('customer_details.html',
+                               customer_dto=customer_dto)
+
+@app.route('/list_formulas', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_formulas/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_formulas/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_formulas/<int:page>/', methods=['GET', 'POST'])
+def list_formulas(page):
+    per_page = int(config['PAGING']['formulas_per_page'])
+    search_text = request.args.get('search_text')
+    
+    formula_dtos = formula_manager.get_paginated_formula_dtos(page,
+                                                              per_page,
+                                                              search_text)
+    return render_scm_template('list_formulas.html',
+                        formula_dtos=formula_dtos)
 
 @app.route('/add_formula', methods=['GET', 'POST'])
 def add_formula():
@@ -473,6 +489,15 @@ def add_formula():
         return render_scm_template('add_formula.html',
                                    taste_recs=taste_recs,
                                    material_dtos=material_dtos)
+
+@app.route('/formula_details/<int:formula_id>', methods=['GET', 'POST'])
+def formula_details(formula_id):
+    pass
+
+@app.route('/update_formula/<int:formula_id>', methods=['GET', 'POST'])
+def update_formula(formula_id):
+    pass
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
