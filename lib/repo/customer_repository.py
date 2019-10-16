@@ -25,7 +25,7 @@ class CustomerRepository:
                                 per_page,
                                 search_text):
         customer_recs = Customer.query
-        if search_text != '':
+        if search_text is not None and search_text != '':
             search_pattern = '%' + search_text + '%'
             customer_recs = customer_recs.filter((Customer.name.ilike(search_pattern)) |
                                                  (Customer.phone.ilike(search_pattern)) |
