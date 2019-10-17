@@ -474,12 +474,11 @@ def add_formula():
                                         amounts)
 
             db.session.commit()
-            return render_scm_template('add_formula.html',
-                                       taste_recs=taste_recs,
-                                       material_dtos=material_dtos)
+            message = 'Successfully added formula %s' % formula_name
+            return redirect_with_message(url_for('list_formulas'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('material.html',
+            return render_scm_template_with_message('add_formula.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
