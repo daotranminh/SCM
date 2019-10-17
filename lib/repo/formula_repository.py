@@ -17,6 +17,9 @@ class FormulaRepository:
     def __init__(self, db):
         self.db = db
 
+    def get_formula(self, formula_id):
+        return Formula.query.filter(Formula.id == formula_id). first()
+        
     def get_all_formulas(self):
         return Formula.query.all()
 

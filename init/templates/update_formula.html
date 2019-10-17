@@ -1,0 +1,85 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<div class="row">
+  <div class="col-md-9 col-md-offset-3">
+    <h1>Update formula {{formula_name}}</h1>
+    <form method="POST" action="">
+      <div class="form-group">
+	<label for="taste_id">Taste</label>
+	<select id="taste_id" name="taste_id">
+	  {% for taste_rec in taste_recs %}
+	  <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
+	  {% endfor %}
+	</select>
+      </div>
+
+      <div class="form-group">
+	<label for="formula_description">Description</label>
+	<input type="text"
+	       id="formula_description"
+	       name="formula_description"><br>
+      </div>
+      	
+      <div class="form-group" name="material[]">
+	{% for i in range(material_formulas|length) %}
+	<select id="material_choices_{{i}}"
+		name="material_choices_{{i}}"
+		onchange="sync_unit_price(this)">
+	  {% for material_dto in material_dtos %}
+	  <option value="{{material_dto.material_id}}">{{material_dto.name}}</option>
+	  {% endfor %}
+	</select>
+	{% endfor %}
+
+	<input type="text"
+	       id="material_amount_{{i}}"
+	       name="material_amount_{{i}}"
+	       onkeyup="update_cost(this)">
+
+	<select id="material_unit_price_{{i}}"
+		name="material_unit_price_{{i}}"
+		disabled>
+	  {% for material_dto in material_dtos %}
+	  <option>{{material_dto.unit_price}}</option>
+	  {% endfor %}
+	</select>
+	
+	<input type="text"
+	       id="material_cost_{{i}}"
+	       name="material_cost_{{i}}"
+	       disabled>
+      </div>
+
+      <div>
+	<input type="text" id="total_cost" name="total_cost" disabled>
+      </div>
+      
+      <p><button type="button" class="btn btn-default pullright" onclick="add_another_material();">Add another material</button></p>
+
+      <div class="form-group">
+	<label for="formula_note">Note</label>
+	<textarea rows="10"
+		  cols="80"
+		  id="formula_note"
+		  name="formula_note"></textarea>
+      </div>
+      
+      <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
+    </form>
+  </div>
+</div>
+
+<script>
+  $("form").bind("keypress", function (e) {
+  if (e.keyCode == 13) {
+  return false;
+  }
+  });
+  
+</script>
+
+{% endblock %}

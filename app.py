@@ -495,8 +495,18 @@ def formula_details(formula_id):
 
 @app.route('/update_formula/<int:formula_id>', methods=['GET', 'POST'])
 def update_formula(formula_id):
-    pass
-
+    formula_rec, material_formulas = formula_manager.get_formula_info(formula_id)
+    taste_recs = taste_repo.get_all_tastes()
+    material_dtos = material_manager.get_material_dtos()
+    
+    return render_scm_template('update_formula.html',
+                               formula_name=formula_rec.name,
+                               formula_taste_id=formula_rec.taste_id,
+                               formula_description=formula_rec.description,
+                               formula_note=formula_rec.note,
+                               material_formulas=material_formulas,
+                               taste_recs=taste_recs,
+                               material_dtos=material_dtos)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');

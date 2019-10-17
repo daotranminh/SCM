@@ -1,7 +1,7 @@
 import logging
 
 from flask_sqlalchemy import sqlalchemy
-from init import MaterialFormula, config
+from init import MaterialVersion, MaterialFormula, config
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler(config['DEFAULT']['log_file'])
@@ -14,6 +14,21 @@ class MaterialFormulaRepository:
     def __init__(self, db):
         self.db = db
 
+    def get_materials_of_formula(self, formula_id):
+        sub_query_material_version = self.db.session. \
+                                     query(MaterialVersion.material_id, MaterialVersion.unit_price). \
+                                     filter(MaterialVersion.is_current == True). \
+                                     subquery()
+        material_formulas = self.db.session. \
+                            query(MaterialFormula, sub_query_material_version.c.unit_price). \
+                            filter(MaterialFormula.formula_id == formula_id). \
+                            join(sub_query_material_version, sub_query_material_version.c.material_id == MaterialFormula.material_id). \
+                            all()
+
+        print(material_formulas)
+        
+        return material_formulas
+        
     def add_material_formula(self,
                              formula_id,
                              material_id,

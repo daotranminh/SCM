@@ -20,6 +20,12 @@ class FormulaManager:
         self.material_formula_repo = material_formula_repo
         self.taste_repo = taste_repo
 
+    def get_formula_info(self, formula_id):
+        formula_rec = self.formula_repo.get_formula(formula_id)
+        material_formulas = self.material_formula_repo.get_materials_of_formula(formula_id)
+
+        return formula_rec, material_formulas
+        
     def add_formula(self,
                     formula_name,
                     taste_id,
