@@ -22,9 +22,16 @@ class FormulaManager:
 
     def get_formula_info(self, formula_id):
         formula_rec = self.formula_repo.get_formula(formula_id)
-        material_formulas = self.material_formula_repo.get_materials_of_formula(formula_id)
+        material_formulas_w_uprice = self.material_formula_repo.get_materials_of_formula(formula_id)
 
-        return formula_rec, material_formulas
+        total_cost = 0
+        material_formulas = []
+
+        for material_formula_w_uprice in material_formulas_w_uprice:
+            material_formulas.append(material_formula_w_uprice[0])
+            total_cost += material_formula_w_uprice[0].amount * material_formula_w_uprice[1]
+
+        return formula_rec, material_formulas, total_cost
         
     def add_formula(self,
                     formula_name,

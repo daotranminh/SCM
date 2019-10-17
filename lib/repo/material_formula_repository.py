@@ -19,16 +19,13 @@ class MaterialFormulaRepository:
                                      query(MaterialVersion.material_id, MaterialVersion.unit_price). \
                                      filter(MaterialVersion.is_current == True). \
                                      subquery()
-        material_formulas = self.db.session. \
-                            query(MaterialFormula, sub_query_material_version.c.unit_price). \
-                            filter(MaterialFormula.formula_id == formula_id). \
-                            join(sub_query_material_version, sub_query_material_version.c.material_id == MaterialFormula.material_id). \
-                            all()
+        material_formulas_w_uprice = self.db.session. \
+                                     query(MaterialFormula, sub_query_material_version.c.unit_price). \
+                                     filter(MaterialFormula.formula_id == formula_id). \
+                                     join(sub_query_material_version, sub_query_material_version.c.material_id == MaterialFormula.material_id). \
+                                     all()
+        return material_formulas_w_uprice
 
-        print(material_formulas)
-        
-        return material_formulas
-        
     def add_material_formula(self,
                              formula_id,
                              material_id,
