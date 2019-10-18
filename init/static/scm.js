@@ -5,16 +5,19 @@ function add_another_material()
   
     var last_material = materials_list[len - 1]
     var next_material = last_material.cloneNode(true)
-
+    next_material.id = "material_" + len.toString()
+    
     var material_choices = next_material.children[0]
     var material_amount = next_material.children[1]
     var material_unit_price = next_material.children[2]
     var material_cost = next_material.children[3]
+    var delete_btn = next_material.children[4]
 
     material_choices.id = "material_choices_" + len.toString()
     material_amount.id = "material_amount_" + len.toString()
     material_unit_price.id = "material_unit_price_" + len.toString()
     material_cost.id = "material_cost_" + len.toString()
+    delete_btn.id = "delete_material_" + len.toString()
 
     material_choices.name = "material_choices_" + len.toString()
     material_amount.name = "material_amount_" + len.toString()
@@ -44,6 +47,36 @@ function get_index(control)
 
 function delete_material(control)
 {
+    var strIndex = get_index(control)
+    var intIndex = parseInt(strIndex)
+    document.getElementById("material_" + strIndex).remove()
+
+    var materials_list = document.getElementsByName("material[]")
+
+    for (var i = intIndex; i < materials_list.length; i++)
+    {
+	material = materials_list[i]
+	material.id = "material_" + i.toString()
+    
+	var material_choices = material.children[0]
+	var material_amount = material.children[1]
+	var material_unit_price = material.children[2]
+	var material_cost = material.children[3]
+	var delete_btn = material.children[4]
+
+	material_choices.id = "material_choices_" + i.toString()
+	material_amount.id = "material_amount_" + i.toString()
+	material_unit_price.id = "material_unit_price_" + i.toString()
+	material_cost.id = "material_cost_" + i.toString()
+	delete_btn.id = "delete_material_" + i.toString()
+
+	material_choices.name = "material_choices_" + i.toString()
+	material_amount.name = "material_amount_" + i.toString()
+	material_unit_price.name = "material_unit_price_" + i.toString()
+	material_cost.name = "material_cost_" + i.toString()
+    }
+
+    var materials_list = document.getElementsByName("material[]")    
 }
 
 function sync_unit_price(control)

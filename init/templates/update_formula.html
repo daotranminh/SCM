@@ -30,7 +30,7 @@
       </div>
 
       {% for i in range(material_formulas|length) %}
-      <div class="form-group" name="material[]">
+      <div class="form-group" id="material_{{i}}" name="material[]">
       <select id="material_choices_{{i}}"
 		name="material_choices_{{i}}"
 		onchange="sync_unit_price(this)">
