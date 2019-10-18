@@ -30,12 +30,21 @@ function add_another_material()
     return false;
 }
 
-function sync_unit_price(control)
+function get_index(control)
 {
     var my_name = control.id
     var pos = my_name.lastIndexOf("_")
-    var strIndex = my_name.substring(pos+1)
+    return strIndex = my_name.substring(pos+1)
+}
 
+function delete_material(control)
+{
+}
+
+function sync_unit_price(control)
+{
+    var strIndex = get_index(control)
+    
     var my_material_amount_id = "material_amount_" + strIndex  
     var my_material_unit_price_id = "material_unit_price_" + strIndex
     var my_material_cost_id = "material_cost_" + strIndex
@@ -46,9 +55,7 @@ function sync_unit_price(control)
 
 function update_cost(control)
 {
-    var my_name = control.id
-    var pos = my_name.lastIndexOf("_")
-    var strIndex = my_name.substring(pos+1)
+    var strIndex = get_index(control)
     
     var my_material_unit_price_id = "material_unit_price_" + strIndex
     var my_material_cost_id = "material_cost_" + strIndex
