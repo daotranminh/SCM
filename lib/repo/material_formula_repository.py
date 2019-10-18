@@ -26,6 +26,11 @@ class MaterialFormulaRepository:
                                      all()
         return material_formulas_w_uprice
 
+    def delete_materials_of_formula(self, formula_id):
+        materials_of_formula = MaterialFormula.query. \
+                               filter(MaterialFormula.formula_id == formula_id). \
+                               delete()
+
     def add_material_formula(self,
                              formula_id,
                              material_id,

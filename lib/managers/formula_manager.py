@@ -48,7 +48,27 @@ class FormulaManager:
             self.material_formula_repo.add_material_formula(new_formula_id,
                                                             material_ids[i],
                                                             amounts[i])
-                                                            
+
+    def update_formula(self,
+                       formula_id,
+                       formula_name,
+                       taste_id,
+                       description,
+                       note,
+                       material_ids,
+                       amounts):
+        formula_rec = self.formula_repo.get_formula(formula_id)
+        formula_rec.name = formula_name
+        formula_rec.taste_id = taste_id
+        formula_rec.description = description
+        formula_rec.note = note
+
+        self.material_formula_repo.delete_materials_of_formula(formula_id)
+        for i in range(len(material_ids)):
+            self.material_formula_repo.add_material_formula(formula_id,
+                                                            material_ids[i],
+                                                            amounts[i])
+
     def get_paginated_formula_dtos(self,
                                    page,
                                    per_page,

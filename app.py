@@ -437,34 +437,39 @@ def list_formulas(page):
     return render_scm_template('list_formulas.html',
                         formula_dtos=formula_dtos)
 
+def __extract_formula_props(props_dict):
+    formula_name = props_dict['formula_name']
+    taste_id = int(props_dict['taste_id'])
+    description = props_dict['formula_description']
+    note = props_dict['formula_note']
+    material_ids = []
+    amounts = []
+        
+    i = 0
+    while True:
+        material_choice_i = 'material_choices_' + str(i)
+        material_amount_i = 'material_amount_' + str(i)
+        
+        if material_choice_i not in props_dict:
+            break
+
+        material_id = int(props_dict[material_choice_i])
+        amount = float(props_dict[material_amount_i])
+            
+        material_ids.append(material_id)
+        amounts.append(amount)
+        i += 1
+
+    return formula_name, taste_id, description, note, material_ids, amounts
+
 @app.route('/add_formula', methods=['GET', 'POST'])
 def add_formula():
     material_dtos = material_manager.get_material_dtos()
     taste_recs = taste_repo.get_all_tastes()
 
     if request.method == 'POST':
-        try:        
-            formula_name = request.form['formula_name']
-            taste_id = int(request.form['taste_id'])
-            description = request.form['formula_description']
-            note = request.form['formula_note']
-            material_ids = []
-            amounts = []
-        
-            i = 0
-            while True:
-                material_choice_i = 'material_choices_' + str(i)
-                material_amount_i = 'material_amount_' + str(i)
-
-                if material_choice_i not in request.form:
-                    break
-
-                material_id = int(request.form[material_choice_i])
-                amount = float(request.form[material_amount_i])
-            
-                material_ids.append(material_id)
-                amounts.append(amount)
-                i += 1
+        try:
+            formula_name, taste_id, description, note, material_ids, amounts = __extract_formula_props(request.form)
 
             formula_manager.add_formula(formula_name,
                                         taste_id,
@@ -482,8 +487,8 @@ def add_formula():
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    form=form)            
-        
+                                                    tast_recs=taste_recs,
+                                                    material_dtos=material_dtos)
     else:
         return render_scm_template('add_formula.html',
                                    taste_recs=taste_recs,
@@ -498,7 +503,30 @@ def update_formula(formula_id):
     formula_rec, material_formulas, total_cost = formula_manager.get_formula_info(formula_id)
     taste_recs = taste_repo.get_all_tastes()
     material_dtos = material_manager.get_material_dtos()
-    
+
+    if request.method == 'POST':
+        try:
+            formula_name, taste_id, description, note, material_ids, amounts = __extract_formula_props(request.form)
+
+            formula_manager.update_formula(formula_id,
+                                           formula_name,
+                                           taste_id,
+                                           description,
+                                           note,
+                                           material_ids,
+                                           amounts)
+
+            db.session.commit()
+            message = 'Successfully updated formula %s' % formula_id
+            return redirect_with_message(url_for('list_formulas'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('add_formula.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    form=form)            
+        
     return render_scm_template('update_formula.html',
                                formula_rec=formula_rec,
                                material_formulas=material_formulas,
