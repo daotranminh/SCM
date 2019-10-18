@@ -28,10 +28,10 @@
 	       name="formula_description"
 	       value="{{formula_rec.description}}"><br>
       </div>
-      	
+
+      {% for i in range(material_formulas|length) %}
       <div class="form-group" name="material[]">
-	{% for i in range(material_formulas|length) %}
-	<select id="material_choices_{{i}}"
+      <select id="material_choices_{{i}}"
 		name="material_choices_{{i}}"
 		onchange="sync_unit_price(this)">
 	  {% for material_dto in material_dtos %}
@@ -70,9 +70,13 @@
 	         disabled>
 	  {% endif %}
 	{% endfor %}
-	<br/>
-	{% endfor %}
+
+	  <button type="button"
+		  class="btn btn-default pullright"
+		  id="delete_material_{{i}}"
+		  onclick="delete_material(this);">Delete</button>
       </div>
+      {% endfor %}
 
       <div>
 	<input
