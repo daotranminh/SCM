@@ -91,6 +91,7 @@ class FormulaManager:
                                      formula_rec.name,
                                      tastes_dict[formula_rec.taste_id].name,
                                      formula_rec.description,
+                                     formula_rec.note,
                                      formula_rec.registered_on)
             formula_dtos.append(formula_dto)
 

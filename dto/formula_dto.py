@@ -15,10 +15,12 @@ class FormulaDto:
                  name,
                  taste,
                  description,
+                 note,
                  registered_on):
         self.formula_id = formula_id
         self.name = name
         self.taste = taste
         self.description = description
+        self.note = note
         self.registered_on = registered_on
         
