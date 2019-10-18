@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import Formula, config
+from init import Formula, Taste, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
 
@@ -19,6 +19,12 @@ class FormulaRepository:
 
     def get_formula(self, formula_id):
         return Formula.query.filter(Formula.id == formula_id).first()
+
+    def get_formula_dto(self, formula_id):
+        return self.db.session.query(Formula, Taste). \
+            filter(Formula.id == formula_id). \
+            filter(Formula.taste_id == Taste.id). \
+            first()
         
     def get_all_formulas(self):
         return Formula.query.all()

@@ -2,6 +2,7 @@ import logging
 
 from init import config
 from dto.formula_dto import FormulaDto
+from dto.material_dto import MaterialFormulaDto
 from dto.paginated_scm import PaginatedScm
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,27 @@ class FormulaManager:
             total_cost += material_formula_w_uprice[0].amount * material_formula_w_uprice[1]
 
         return formula_rec, material_formulas, total_cost
+
+    def get_formula_details(self, formula_id):
+        formula_rec, taste_rec = self.formula_repo.get_formula_dto(formula_id)
+        material_formula_dtos = self.material_formula_repo.get_material_dtos_of_formula(formula_id)
+
+        total_cost = 0
+        material_dtos = []
+
+        for material_formula_dto in material_formula_dtos:
+            material_dto = MaterialFormulaDto(material_formula_dto[0].id,
+                                              material_formula_dto[1],
+                                              material_formula_dto[2],
+                                              material_formula_dto[3],
+                                              material_formula_dto[4],
+                                              material_formula_dto[5],
+                                              material_formula_dto[6],
+                                              material_formula_dto[0].amount)
+            material_dtos.append(material_dto)
+            total_cost += material_formula_dto[0].amount * material_formula_dto[6]
+            
+        return formula_rec, taste_rec, material_dtos, total_cost
         
     def add_formula(self,
                     formula_name,

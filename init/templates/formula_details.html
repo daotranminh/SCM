@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Formula Details</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>      
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Name</td><td>{{ formula_rec.name }}</td></tr>
+    <tr><td>Taste</td><td>{{ taste_rec.name }}</td></tr>
+    <tr><td>Description</td><td>{{ formula_rec.description }}</td></tr>
+    <tr><td>Registered on</td><td>{{ formula_rec.registered_on }}</td></tr>
+  </tbody>
+</table>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Material name</th>
+      <th>Amount</th>
+      <th>Unit Price</th>
+      <th>Cost</th>      
+    </tr>
+  </thead>
+  <tbody>
+    {% for material_dto in material_dtos %}
+    <tr>
+      <td>{{material_dto.name}}</td>
+      <td>{{material_dto.amount}}</td>      
+      <td>{{material_dto.unit_price}}</td>
+      <td>{{material_dto.amount * material_dto.unit_price}}</td>      
+    </tr>
+    {% endfor %}
+    <tr>
+      <td>Total cost</td>
+      <td></td>
+      <td></td>
+      <td>{{total_cost}}</td>      
+    </tr>
+  </tbody>
+</table>
+
+<h4>Note</h4>
+<div class="form-group">
+  <textarea rows="10"
+	    cols="80"	    
+	    id="formula_note"
+	    name="formula_note">{{formula_rec.note}}</textarea>
+</div>
+
+{% endblock %}

@@ -496,7 +496,13 @@ def add_formula():
 
 @app.route('/formula_details/<int:formula_id>', methods=['GET', 'POST'])
 def formula_details(formula_id):
-    pass
+    formula_rec, taste_rec, material_dtos, total_cost = formula_manager.get_formula_details(formula_id)
+
+    return render_scm_template('formula_details.html',
+                               formula_rec=formula_rec,
+                               taste_rec=taste_rec,
+                               material_dtos=material_dtos,
+                               total_cost=total_cost)
 
 @app.route('/update_formula/<int:formula_id>', methods=['GET', 'POST'])
 def update_formula(formula_id):
@@ -521,12 +527,16 @@ def update_formula(formula_id):
             return redirect_with_message(url_for('list_formulas'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('add_formula.html',
+            return render_scm_template_with_message('update_formula.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    form=form)            
-        
+                                                    formula_rec=formula_rec,
+                                                    material_formulas=material_formulas,
+                                                    taste_recs=taste_recs,
+                                                    material_dtos=material_dtos,
+                                                    total_cost=total_cost)
+
     return render_scm_template('update_formula.html',
                                formula_rec=formula_rec,
                                material_formulas=material_formulas,
