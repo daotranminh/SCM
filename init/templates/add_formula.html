@@ -50,11 +50,16 @@
 	  <option>{{material_dto.unit_price}}</option>
 	  {% endfor %}
 	</select>
-	
+
 	<input type="text"
 	       id="material_cost_0"
 	       name="material_cost_0"
 	       disabled>
+
+	<button type="button"
+		class="btn btn-default pullright"
+		id="delete_material_0"
+		onclick="delete_material(this);">Delete</button>
       </div>
 
       <div>
