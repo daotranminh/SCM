@@ -20,8 +20,13 @@ function add_another_material()
     material_amount.name = "material_amount_" + len.toString()
     material_unit_price.name = "material_unit_price_" + len.toString()
     material_cost.name = "material_cost_" + len.toString()
-  
-    material_choices.seletedIndex = 0
+
+    for (var i = 0; i < material_choices.options.length; i++)
+    {
+	material_choices.options[0].selected = false
+    }
+    
+    material_choices.options[0].selected = true
     material_amount.value = ""
     material_unit_price.selectedIndex = 0
     material_cost.value = ""
@@ -81,7 +86,6 @@ function update_cost(control)
 
     var txt_total_cost = document.getElementById("total_cost")
     txt_total_cost.value = total_cost
-    
     
     return false;
 }
