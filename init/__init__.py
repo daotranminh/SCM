@@ -16,6 +16,8 @@ connection_string = 'postgresql://@' + config_db['host'] + ':' + config_db['port
 
 app = Flask(__name__, static_url_path='/static')
 app.config['DEBUG'] = True
+app.config['UPLOAD_FOLDER'] = config['APP_CONFIG']['UPLOAD_FOLDER']
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['SECRET_KEY'] = config['APP_CONFIG']['SECRET_KEY']
 app.config['SECURITY_PASSWORD_SALT'] = config['APP_CONFIG']['SECURITY_PASSWORD_SALT']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

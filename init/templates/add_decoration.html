@@ -7,7 +7,7 @@
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
     <h1>Add a new decoration</h1>
-    <form method="POST" action="">
+    <form method="POST" action="" enctype="multipart/form-data">
       <div class="form-group">
 	<label for="decoration_name">Decoration name</label>
 	<input type="text" name="decoration_name"><br>
@@ -41,7 +41,7 @@
       </div>
 
       <div id="wrapper" style="margin-top: 20px;">
-	<input id="fileUpload" multiple="multiple" type="file"/>
+	<input id="fileUpload" name="file[]" multiple="multiple" type="file"/>
 	<div id="image_holder"></div>
       </div>
 
