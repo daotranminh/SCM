@@ -544,5 +544,14 @@ def update_formula(formula_id):
                                material_dtos=material_dtos,
                                total_cost=total_cost)
 
+@app.route('/add_decoration', methods=['GET', 'POST'])
+def add_decoration():
+    topic_recs = topic_repo.get_all_topics()
+    
+    return render_scm_template('add_decoration.html',
+                               topic_recs=topic_recs,
+                               decoration_forms=scm_constants.DECORATION_FORMS,
+                               decoration_techniques=scm_constants.DECORATION_TECHNIQUES)
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
