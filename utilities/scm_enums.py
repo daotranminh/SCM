@@ -14,6 +14,7 @@ class ErrorCodes(IntEnum):
 class DecorationForms(IntEnum):
     ROUND = 0
     RECTANGLE = 1
+    BOX = 2
 
 class DecorationTechniques(IntEnum):
     SIMPLE = 0
