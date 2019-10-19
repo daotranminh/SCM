@@ -72,9 +72,15 @@ class Topic(db.Model):
 class Decoration(db.Model):
     __tablename__ = 'decoration'
     id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(50))
     topic_id = Column(Integer, ForeignKey(Topic.id))
     form = Column(Integer)
     technique = Column(Integer)
+
+class DecorationTemplatePath(db.Model):
+    __tablename__ = 'decoration_template_path'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    decoration_id = Column(Integer, ForeignKey(Decoration.id))
     template_path = Column(String(400))
     
 class Customer(db.Model):
