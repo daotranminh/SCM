@@ -25,8 +25,8 @@
       <div class="form-group">
 	<label for="decoration_form_id">Decoration form</label>
 	<select id="decoration_form_id" name="decoration_form_id">
-	  {% for decoration_form in decoration_forms %}
-	  <option value="{{decoration_form[0]}}">{{decoration_form[1]}}</option>
+	  {% for decoration_form_rec in decoration_form_recs %}
+	  <option value="{{decoration_form_rec.id}}">{{decoration_form_rec.name}}</option>
 	  {% endfor %}
 	</select>
       </div>
@@ -34,8 +34,8 @@
       <div class="form-group">
 	<label for="decoration_technique_id">Decoration technique</label>
 	<select id="decoration_technique_id" name="decoration_technique_id">
-	  {% for decoration_technique in decoration_techniques %}
-	  <option value="{{decoration_technique[0]}}">{{decoration_technique[1]}}</option>
+	  {% for decoration_technique_rec in decoration_technique_recs %}
+	  <option value="{{decoration_technique_rec.id}}">{{decoration_technique_rec.name}}</option>
 	  {% endfor %}
 	</select>
       </div>

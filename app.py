@@ -667,6 +667,8 @@ def update_formula(formula_id):
 @app.route('/add_decoration', methods=['GET', 'POST'])
 def add_decoration():
     topic_recs = topic_repo.get_all_topics()
+    decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
+    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
 
     if request.method == 'POST':
         print(request.form)
@@ -675,14 +677,13 @@ def add_decoration():
         
         return render_scm_template('add_decoration.html',
                                    topic_recs=topic_recs,
-                                   decoration_forms=scm_constants.DECORATION_FORMS,
-                                   decoration_techniques=scm_constants.DECORATION_TECHNIQUES)
+                                   decoration_form_recs=decoration_form_recs,
+                                   decoration_technique_recs=decoration_technique_recs)
 
     return render_scm_template('add_decoration.html',
                                topic_recs=topic_recs,
-                               decoration_forms=scm_constants.DECORATION_FORMS,
-                               decoration_techniques=scm_constants.DECORATION_TECHNIQUES)
-
+                               decoration_form_recs=decoration_form_recs,
+                               decoration_technique_recs=decoration_technique_recs)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
