@@ -12,16 +12,6 @@ class ErrorCodes(IntEnum):
     ERROR_ADD_FORMULA_FAILED = 8
     ERROR_ADD_DECORATION_FORM_FAILED = 9
     ERROR_ADD_DECORATION_TECHNIQUE_FAILED = 10
-    
-class DecorationForms(IntEnum):
-    ROUND = 0
-    RECTANGLE = 1
-    BOX = 2
-
-class DecorationTechniques(IntEnum):
-    SIMPLE = 0
-    DRAWING = 1
-    FONDANT = 2
 
 class OrderStatus(IntEnum):
     PENDING = 0
