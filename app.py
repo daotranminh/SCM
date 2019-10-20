@@ -6,6 +6,8 @@ from lib.forms.customer_forms import AddCustomerForm
 from lib.forms.customer_forms import UpdateCustomerForm
 from lib.forms.decoration_form_forms import AddDecorationFormForm
 from lib.forms.decoration_form_forms import UpdateDecorationFormForm
+from lib.forms.decoration_technique_forms import AddDecorationTechniqueForm
+from lib.forms.decoration_technique_forms import UpdateDecorationTechniqueForm
 from lib.forms.material_forms import AddMaterialForm
 from lib.forms.material_forms import UpdateMaterialForm
 from lib.forms.taste_forms import AddTasteForm
@@ -14,6 +16,7 @@ from lib.forms.topic_forms import AddTopicForm
 from lib.forms.topic_forms import UpdateTopicForm
 
 from lib.repo.decoration_form_repository import DecorationFormRepository
+from lib.repo.decoration_technique_repository import DecorationTechniqueRepository
 from lib.repo.material_repository import MaterialRepository
 from lib.repo.material_version_repository import MaterialVersionRepository
 from lib.repo.material_formula_repository import MaterialFormulaRepository
@@ -38,6 +41,7 @@ logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
 decoration_form_repo = DecorationFormRepository(db)
+decoration_technique_repo = DecorationTechniqueRepository(db)
 material_repo = MaterialRepository(db)
 material_formula_repo = MaterialFormulaRepository(db)
 material_version_repo = MaterialVersionRepository(db)
@@ -63,6 +67,8 @@ def menu_setup():
         ['list_materials', 'List of materials'],
         ['list_formulas', 'List of formulas'],
         ['list_decorations', 'List of decorations'],
+        ['list_decoration_forms', 'List of decoration forms'],
+        ['list_decoration_techniques', 'List of decoration techniques'],        
         ['list_tastes', 'List of tastes']
     ]
 
@@ -285,6 +291,61 @@ def update_decoration_form(decoration_form_id):
 def list_decoration_forms():
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     return render_scm_template('list_decoration_forms.html', decoration_form_recs=decoration_form_recs)
+
+####################################################################################
+# DECORATION TECHNIQUES
+####################################################################################
+@app.route('/add_decoration_technique', methods=['GET', 'POST'])
+def add_decoration_technique():
+    form = AddDecorationTechniqueForm(request.form)
+    if request.method == 'POST' and form.validate():
+        try:
+            name = form.name.data.strip()
+            description = form.description.data.strip()
+            
+            decoration_technique_repo.add_decoration_technique(name=name,
+                                                               description=description)
+            db.session.commit()
+            message = 'Successfully added decoration technique %s' % name
+            return redirect_with_message(url_for('list_decoration_techniques'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            message = 'Failed to add decoration form %s' % name
+            flash(message, 'danger')
+            return render_scm_template('add_decoration_technique.html', form=form)
+    else:
+        return render_scm_template('add_decoration_technique.html', form=form)
+
+@app.route('/update_decoration_technique/<int:decoration_technique_id>', methods=['GET', 'POST'])
+def update_decoration_technique(decoration_technique_id):
+    if request.method == 'GET':
+        decoration_technique_rec = decoration_technique_repo.get_decoration_technique(decoration_technique_id)
+        form = UpdateDecorationTechniqueForm(request.form, decoration_technique_rec)
+        return render_scm_template('update_decoration_technique.html', form=form)
+    elif request.method == 'POST':
+        try:
+            form = UpdateDecorationTechniqueForm(request.form, None)
+            name = form.name.data.strip()
+            description = form.description.data.strip()
+            
+            decoration_technique_repo.update_decoration_technique(decoration_technique_id,
+                                                                  name,
+                                                                  description)
+            db.session.commit()
+            message = 'Successfully updated decoration technique %s (%s)' % (name, decoration_technique_id)
+            return redirect_with_message(url_for('list_decoration_techniques'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('update_decoration_technique.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    form=form)
+
+@app.route('/list_decoration_techniques', methods=['GET', 'POST'])
+def list_decoration_techniques():
+    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
+    return render_scm_template('list_decoration_techniques.html', decoration_technique_recs=decoration_technique_recs)
 
 ####################################################################################
 # MATERIALS

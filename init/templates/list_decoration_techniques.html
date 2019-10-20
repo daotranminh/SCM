@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>List of decoration techniques</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for decoration_technique_rec in decoration_technique_recs %}
+    <tr>
+      <td><span data-toggle="tooltip" title="{{decoration_technique_rec.description}}">{{decoration_technique_rec.name}}</span></td>
+      <td><a href="{{ url_for('update_decoration_technique', decoration_technique_id=decoration_technique_rec.id) }}"
+	     class="btn btn-default pullright">Update</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('add_decoration_technique') }}"
+   class="btn btn-default pullright">Add a new decoration technique</a>
+
+{% endblock %}
