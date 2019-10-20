@@ -70,15 +70,28 @@ class Topic(db.Model):
     name = Column(String(50))
     description = Column(String(400))
     parent_id = Column(Integer, default=-1)
-    
+
+class DecorationForm(db.Model):
+    __tablename__ = 'decoration_form'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(50))
+    description = Column(String(400))
+
+class DecorationTechnique(db.Model):
+    __tablename__ = 'decoration_technique'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(50))
+    description = Column(String(400))
+
 class Decoration(db.Model):
     __tablename__ = 'decoration'
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
+    description = Column(String(400))
     topic_id = Column(Integer, ForeignKey(Topic.id))
-    form = Column(Integer)
-    technique = Column(Integer)
-
+    decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
+    decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
+    
 class DecorationTemplatePath(db.Model):
     __tablename__ = 'decoration_template_path'
     id = Column(Integer, autoincrement=True, primary_key=True)

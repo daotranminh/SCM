@@ -4,6 +4,8 @@ from flask import Flask, Response, render_template, request, flash, redirect, ma
 from init import app, db, config
 from lib.forms.customer_forms import AddCustomerForm
 from lib.forms.customer_forms import UpdateCustomerForm
+from lib.forms.decoration_form_forms import AddDecorationFormForm
+from lib.forms.decoration_form_forms import UpdateDecorationFormForm
 from lib.forms.material_forms import AddMaterialForm
 from lib.forms.material_forms import UpdateMaterialForm
 from lib.forms.taste_forms import AddTasteForm
@@ -11,6 +13,7 @@ from lib.forms.taste_forms import UpdateTasteForm
 from lib.forms.topic_forms import AddTopicForm
 from lib.forms.topic_forms import UpdateTopicForm
 
+from lib.repo.decoration_form_repository import DecorationFormRepository
 from lib.repo.material_repository import MaterialRepository
 from lib.repo.material_version_repository import MaterialVersionRepository
 from lib.repo.material_formula_repository import MaterialFormulaRepository
@@ -34,6 +37,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
+decoration_form_repo = DecorationFormRepository(db)
 material_repo = MaterialRepository(db)
 material_formula_repo = MaterialFormulaRepository(db)
 material_version_repo = MaterialVersionRepository(db)
@@ -226,7 +230,62 @@ def update_topic(topic_id):
 def list_topics():
     topic_dtos = topic_manager.get_topic_dtos()
     return render_scm_template('list_topics.html', topic_dtos=topic_dtos)
-        
+
+####################################################################################
+# DECORATION FORMS
+####################################################################################
+@app.route('/add_decoration_form', methods=['GET', 'POST'])
+def add_decoration_form():
+    form = AddDecorationFormForm(request.form)
+    if request.method == 'POST' and form.validate():
+        try:
+            name = form.name.data.strip()
+            description = form.description.data.strip()
+            
+            decoration_form_repo.add_decoration_form(name=name,
+                                                     description=description)
+            db.session.commit()
+            message = 'Successfully added decoration form %s' % name
+            return redirect_with_message(url_for('list_decoration_forms'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            message = 'Failed to add decoration form %s' % name
+            flash(message, 'danger')
+            return render_scm_template('add_decoration_form.html', form=form)
+    else:
+        return render_scm_template('add_decoration_form.html', form=form)
+
+@app.route('/update_decoration_form/<int:decoration_form_id>', methods=['GET', 'POST'])
+def update_decoration_form(decoration_form_id):
+    if request.method == 'GET':
+        decoration_form_rec = decoration_form_repo.get_decoration_form(decoration_form_id)
+        form = UpdateDecorationFormForm(request.form, decoration_form_rec)
+        return render_scm_template('update_decoration_form.html', form=form)
+    elif request.method == 'POST':
+        try:
+            form = UpdateDecorationFormForm(request.form, None)
+            name = form.name.data.strip()
+            description = form.description.data.strip()
+            
+            decoration_form_repo.update_decoration_form(decoration_form_id,
+                                                        name,
+                                                        description)
+            db.session.commit()
+            message = 'Successfully updated decoration form %s (%s)' % (name, decoration_form_id)
+            return redirect_with_message(url_for('list_decoration_forms'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('update_decoration_form.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    form=form)
+
+@app.route('/list_decoration_forms', methods=['GET', 'POST'])
+def list_decoration_forms():
+    decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
+    return render_scm_template('list_decoration_forms.html', decoration_form_recs=decoration_form_recs)
+
 ####################################################################################
 # MATERIALS
 ####################################################################################
