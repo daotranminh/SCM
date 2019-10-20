@@ -1,6 +1,9 @@
 import logging
 from flask import Flask, Response, render_template, request, flash, redirect, make_response, session, url_for
 
+import os
+from werkzeug.utils import secure_filename
+
 from init import app, db, config
 from lib.forms.customer_forms import AddCustomerForm
 from lib.forms.customer_forms import UpdateCustomerForm
@@ -15,6 +18,7 @@ from lib.forms.taste_forms import UpdateTasteForm
 from lib.forms.topic_forms import AddTopicForm
 from lib.forms.topic_forms import UpdateTopicForm
 
+from lib.repo.decoration_repository import DecorationRepository
 from lib.repo.decoration_form_repository import DecorationFormRepository
 from lib.repo.decoration_technique_repository import DecorationTechniqueRepository
 from lib.repo.material_repository import MaterialRepository
@@ -40,6 +44,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
+decoration_repo = DecorationRepository(db)
 decoration_form_repo = DecorationFormRepository(db)
 decoration_technique_repo = DecorationTechniqueRepository(db)
 material_repo = MaterialRepository(db)
@@ -671,15 +676,46 @@ def add_decoration():
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
 
     if request.method == 'POST':
-        print(request.form)
-        uploaded_files = request.files.getlist('file[]')
-        print(uploaded_files)
-        
-        return render_scm_template('add_decoration.html',
-                                   topic_recs=topic_recs,
-                                   decoration_form_recs=decoration_form_recs,
-                                   decoration_technique_recs=decoration_technique_recs)
+        try:
+            decoration_name = request.form['decoration_name']
+            topic_id = int(request.form['topic_id'])
+            decoration_description = request.form['decoration_description']
+            decoration_form_id = int(request.form['decoration_form_id'])
+            decoration_technique_id = int(request.form['decoration_technique_id'])
 
+            new_decoration_id = decoration_repo.add_decoration(decoration_name,
+                                                               decoration_description,
+                                                               topic_id,
+                                                               decoration_form_id,
+                                                               decoration_technique_id)
+        
+            uploaded_files = request.files.getlist('file[]')
+            print(uploaded_files)
+
+            print(os.getcwd())
+            
+            for uploaded_file in uploaded_files:
+                filename = str(new_decoration_id) + '_' + secure_filename(uploaded_file.filename)
+                filepath = os.path.join(config['IMAGES_DB']['DECORATIONS_FOLDER'], filename)
+                uploaded_file.save(filepath)
+                decoration_repo.add_decoration_template(new_decoration_id, filepath)
+
+            db.session.commit()
+                
+            return render_scm_template('add_decoration.html',
+                                       topic_recs=topic_recs,
+                                       decoration_form_recs=decoration_form_recs,
+                                       decoration_technique_recs=decoration_technique_recs)
+        
+        except ScmException as ex:
+            db.session.rollback()
+            message = 'Failed to add decoration %s' % name
+            flash(message, 'danger')
+            return render_scm_template('add_decoration.html',
+                                       topic_recs=topic_recs,
+                                       decoration_form_recs=decoration_form_recs,
+                                       decoration_technique_recs=decoration_technique_recs)
+            
     return render_scm_template('add_decoration.html',
                                topic_recs=topic_recs,
                                decoration_form_recs=decoration_form_recs,
