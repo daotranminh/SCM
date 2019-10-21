@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>List of decorations</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Topic</th>
+      <th>Decoration form</th>
+      <th>Decoration technique</th>
+      <th></th>      
+    </tr>
+  </thead>
+  <tbody>
+    {% for decoration_dto in decoration_dtos.items %}
+    <tr>
+      <td><a href="{{ url_for('decoration_details', 
+		   decoration_id=decoration_dto.decoration_id) }}">{{decoration_dto.name}}</a></td>
+      <td>{{decoration_dto.topic}}</td>
+      <td>{{decoration_dto.decoration_form}}</td>
+      <td>{{decoration_dto.decoration_technique}}</td>
+      <td><a class="btn btn-default pullright">Update</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{decoration_dtos.page}}/{{decoration_dtos.pages}}</li>
+
+  {% if decoration_dtos.has_prev %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_decorations', 
+				 page=decoration_dtos.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if decoration_dtos.has_next %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_decorations', 
+				 page=decoration_dtos.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
+
+<a href="{{ url_for('add_decoration') }}"
+   class="btn btn-default pullright">Add a new decoration</a>
+
+<script>
+  $("#searchInput").keyup(function(e) {
+    if (e.keyCode == 13) {
+      let search_text = this.value
+      location.href = "/list_decorations/1/?search_text=" + search_text
+    }
+  })
+
+</script>
+
+{% endblock %}

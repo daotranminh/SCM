@@ -33,6 +33,7 @@ from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
 from lib.managers.topic_manager import TopicManager
 from lib.managers.formula_manager import FormulaManager
+from lib.managers.decoration_manager import DecorationManager
 
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
@@ -55,6 +56,7 @@ taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
 formula_repo = FormulaRepository(db)
 
+decoration_manager = DecorationManager(decoration_repo)
 material_manager = MaterialManager(material_repo,
                                    material_version_repo)
 customer_manager = CustomerManager(customer_repo)
@@ -548,6 +550,10 @@ def customer_details(customer_id):
     return render_scm_template('customer_details.html',
                                customer_dto=customer_dto)
 
+####################################################################################
+# FORMULAS
+####################################################################################
+
 @app.route('/list_formulas', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_formulas/', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_formulas/<int:page>', methods=['GET', 'POST'])
@@ -669,6 +675,10 @@ def update_formula(formula_id):
                                material_dtos=material_dtos,
                                total_cost=total_cost)
 
+####################################################################################
+# DECORATIONS
+####################################################################################
+
 @app.route('/add_decoration', methods=['GET', 'POST'])
 def add_decoration():
     topic_recs = topic_repo.get_all_topics()
@@ -690,9 +700,6 @@ def add_decoration():
                                                                decoration_technique_id)
         
             uploaded_files = request.files.getlist('file[]')
-            print(uploaded_files)
-
-            print(os.getcwd())
             
             for uploaded_file in uploaded_files:
                 filename = str(new_decoration_id) + '_' + secure_filename(uploaded_file.filename)
@@ -701,11 +708,8 @@ def add_decoration():
                 decoration_repo.add_decoration_template(new_decoration_id, filepath)
 
             db.session.commit()
-                
-            return render_scm_template('add_decoration.html',
-                                       topic_recs=topic_recs,
-                                       decoration_form_recs=decoration_form_recs,
-                                       decoration_technique_recs=decoration_technique_recs)
+            message = 'Successfully updated decoration %s' % decoration_name
+            return redirect_with_message(url_for('list_decorations'), message, 'info')
         
         except ScmException as ex:
             db.session.rollback()
@@ -720,6 +724,24 @@ def add_decoration():
                                topic_recs=topic_recs,
                                decoration_form_recs=decoration_form_recs,
                                decoration_technique_recs=decoration_technique_recs)
+
+@app.route('/list_decorations', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_decorations/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_decorations/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_decorations/<int:page>/', methods=['GET', 'POST'])
+def list_decorations(page):
+    per_page = int(config['PAGING']['decorations_per_page'])
+    search_text = request.args.get('search_text')
+
+    decoration_dtos = decoration_manager.get_paginated_decoration_dtos(page,
+                                                                       per_page,
+                                                                       search_text)
+
+    return render_scm_template('list_decorations.html', decoration_dtos=decoration_dtos)
+
+@app.route('/decoration_details/<int:decoration_id>', methods=['GET', 'POST'])
+def decoration_details(decoration_id):
+    pass
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');

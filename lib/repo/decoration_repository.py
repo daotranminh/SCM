@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import Decoration, DecorationTemplatePath, config
+from init import Decoration, DecorationTemplatePath, Topic, DecorationForm, DecorationTechnique, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
 
@@ -30,7 +30,24 @@ class DecorationRepository:
                                   page,
                                   per_page,
                                   search_text):
-        pass
+        sub_query_topic = self.db.session.query(Topic.id, Topic.name).subquery()
+        sub_query_decoration_form = self.db.session.query(DecorationForm.id, DecorationForm.name).subquery()
+        sub_query_decoration_technique = self.db.session.query(DecorationTechnique.id, DecorationTechnique.name).subquery()
+
+        decorations = self.db.session. \
+                          query(Decoration, \
+                                sub_query_topic.c.name, \
+                                sub_query_decoration_form.c.name, \
+                                sub_query_decoration_technique.c.name). \
+                        join(sub_query_topic, Decoration.topic_id == sub_query_topic.c.id). \
+                        join(sub_query_decoration_form, Decoration.decoration_form_id == sub_query_decoration_form.c.id). \
+                        join(sub_query_decoration_technique, Decoration.decoration_technique_id == sub_query_decoration_technique.c.id)
+
+        if search_text is not None and search_text != '':
+            search_pattern = '%' + search_text + '%'
+            decorations = decorations.filter(Decoration.name.ilkie(seach_pattern))
+
+        return decorations.paginate(page, per_page, error_out=False)
 
     def add_decoration(self,
                        name,
