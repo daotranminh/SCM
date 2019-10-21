@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Decoration Details</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>      
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Name</td><td>{{ decoration_rec.name }}</td></tr>
+    <tr><td>Description</td><td>{{ decoration_rec.description }}</td></tr>    
+    <tr><td>Topic</td><td>{{ topic_rec.name }}</td></tr>
+    <tr><td>Decoration form</td><td>{{ decoration_form_rec.name }}</td></tr>
+    <tr><td>Decoration technique</td><td>{{ decoration_technique_rec.name }}</td></tr>
+  </tbody>
+</table>
+
+{% endblock %}

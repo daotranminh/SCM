@@ -13,8 +13,14 @@ logger.setLevel(logging.DEBUG)
 
 class DecorationManager:
     def __init__(self,
-                 decoration_repo):
+                 decoration_repo,
+                 topic_repo,
+                 decoration_form_repo,
+                 decoration_technique_repo):
         self.decoration_repo = decoration_repo
+        self.topic_repo = topic_repo
+        self.decoration_form_repo = decoration_form_repo
+        self.decoration_technique_repo = decoration_technique_repo
 
     def get_paginated_decoration_dtos(self,
                                    page,
@@ -60,3 +66,12 @@ class DecorationManager:
                                               paginated_formula_recs.page,
                                               paginated_formula_recs.pages)
         return paginated_formula_dtos
+
+    def get_decoration_info(self,
+                            decoration_id):
+        decoration_rec = self.decoration_repo.get_decoration(decoration_id)
+        topic_rec = self.topic_repo.get_topic(decoration_rec.topic_id)
+        decoration_form_rec = self.decoration_form_repo.get_decoration_form(decoration_rec.decoration_form_id)
+        decoration_technique_rec = self.decoration_technique_repo.get_decoration_technique(decoration_rec.decoration_technique_id)
+
+        return decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec

@@ -56,7 +56,10 @@ taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
 formula_repo = FormulaRepository(db)
 
-decoration_manager = DecorationManager(decoration_repo)
+decoration_manager = DecorationManager(decoration_repo,
+                                       topic_repo,
+                                       decoration_form_repo,
+                                       decoration_technique_repo)
 material_manager = MaterialManager(material_repo,
                                    material_version_repo)
 customer_manager = CustomerManager(customer_repo)
@@ -725,6 +728,10 @@ def add_decoration():
                                decoration_form_recs=decoration_form_recs,
                                decoration_technique_recs=decoration_technique_recs)
 
+@app.route('/update_decoration/<int:decoration_id>', methods=['GET', 'POST'])
+def update_decoration(decoration_id):
+    pass
+
 @app.route('/list_decorations', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_decorations/', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_decorations/<int:page>', methods=['GET', 'POST'])
@@ -741,7 +748,13 @@ def list_decorations(page):
 
 @app.route('/decoration_details/<int:decoration_id>', methods=['GET', 'POST'])
 def decoration_details(decoration_id):
-    pass
+    decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec = decoration_manager.get_decoration_info(decoration_id)
+
+    return render_scm_template('decoration_details.html',
+                               decoration_rec=decoration_rec,
+                               topic_rec=topic_rec,
+                               decoration_form_rec=decoration_form_rec,
+                               decoration_technique_rec=decoration_technique_rec)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
