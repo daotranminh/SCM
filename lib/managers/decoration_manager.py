@@ -34,7 +34,8 @@ class DecorationManager:
                                            decoration_rec.description,
                                            topic_name,
                                            decoration_form,
-                                           decoration_technique)
+                                           decoration_technique,
+                                           decoration_rec.registered_on)
             decoration_dtos.append(decoration_dto)
             paginated_decoration_dtos = PaginatedScm(decoration_dtos,
                                                      paginated_decorations.has_prev,

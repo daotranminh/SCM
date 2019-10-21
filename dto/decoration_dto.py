@@ -16,11 +16,12 @@ class DecorationDto:
                  description,
                  topic,
                  decoration_form,
-                 decoration_technique):
+                 decoration_technique,
+                 registered_on):
         self.decoration_id = decoration_id
         self.name = name
         self.description = description
         self.topic = topic
         self.decoration_form = decoration_form
         self.decoration_technique = decoration_technique
-        
+        self.registered_on = registered_on

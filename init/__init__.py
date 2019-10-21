@@ -91,6 +91,7 @@ class Decoration(db.Model):
     topic_id = Column(Integer, ForeignKey(Topic.id))
     decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
     decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
+    registered_on = Column(DateTime(), default=datetime.datetime.utcnow)    
     
 class DecorationTemplatePath(db.Model):
     __tablename__ = 'decoration_template_path'
