@@ -81,3 +81,8 @@ class DecorationRepository:
             logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_DECORATION_TEMPLATE_PATH_FAILED, message)
 
+    def get_template_paths(self,
+                           decoration_id):
+        return DecorationTemplatePath.query. \
+            filter(DecorationTemplatePath.decoration_id == decoration_id). \
+            all()

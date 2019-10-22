@@ -706,9 +706,12 @@ def add_decoration():
             
             for uploaded_file in uploaded_files:
                 filename = str(new_decoration_id) + '_' + secure_filename(uploaded_file.filename)
-                filepath = os.path.join(config['IMAGES_DB']['DECORATIONS_FOLDER'], filename)
-                uploaded_file.save(filepath)
-                decoration_repo.add_decoration_template(new_decoration_id, filepath)
+                
+                filepath_for_saving = os.path.join('init/static', config['IMAGES_DB']['DECORATIONS_FOLDER'], filename)
+                uploaded_file.save(filepath_for_saving)
+                
+                filepath_for_db = url_for('static', filename=os.path.join(config['IMAGES_DB']['DECORATIONS_FOLDER'], filename))                
+                decoration_repo.add_decoration_template(new_decoration_id, filepath_for_db)
 
             db.session.commit()
             message = 'Successfully updated decoration %s' % decoration_name
@@ -748,13 +751,16 @@ def list_decorations(page):
 
 @app.route('/decoration_details/<int:decoration_id>', methods=['GET', 'POST'])
 def decoration_details(decoration_id):
-    decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec = decoration_manager.get_decoration_info(decoration_id)
+    decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_paths = decoration_manager.get_decoration_info(decoration_id)
 
+    print(template_paths)
+    
     return render_scm_template('decoration_details.html',
                                decoration_rec=decoration_rec,
                                topic_rec=topic_rec,
                                decoration_form_rec=decoration_form_rec,
-                               decoration_technique_rec=decoration_technique_rec)
+                               decoration_technique_rec=decoration_technique_rec,
+                               template_paths=template_paths)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');

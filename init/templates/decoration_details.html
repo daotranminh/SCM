@@ -22,4 +22,14 @@
   </tbody>
 </table>
 
+<div class="galleryThumbnailsContainer">
+  <div class="galleryThumbnails">
+    {% for template_path in template_paths %}
+    <!-- <a href="javascript: changeimage('{{template_path}}')"> -->
+    <img src="{{template_path}}" width="auto" height="100" alt="" />
+    <!-- </a> -->
+    {% endfor %}
+  </div>
+</div>
+
 {% endblock %}
