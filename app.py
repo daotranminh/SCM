@@ -752,8 +752,6 @@ def list_decorations(page):
 @app.route('/decoration_details/<int:decoration_id>', methods=['GET', 'POST'])
 def decoration_details(decoration_id):
     decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_paths = decoration_manager.get_decoration_info(decoration_id)
-
-    print(template_paths)
     
     return render_scm_template('decoration_details.html',
                                decoration_rec=decoration_rec,
