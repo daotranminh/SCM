@@ -43,13 +43,14 @@ class DecorationManager:
                                            decoration_technique,
                                            decoration_rec.registered_on)
             decoration_dtos.append(decoration_dto)
-            paginated_decoration_dtos = PaginatedScm(decoration_dtos,
-                                                     paginated_decorations.has_prev,
-                                                     paginated_decorations.has_next,
-                                                     paginated_decorations.prev_num,
-                                                     paginated_decorations.next_num,
-                                                     paginated_decorations.page,
-                                                     paginated_decorations.pages)
+            
+        paginated_decoration_dtos = PaginatedScm(decoration_dtos,
+                                                 paginated_decorations.has_prev,
+                                                 paginated_decorations.has_next,
+                                                 paginated_decorations.prev_num,
+                                                 paginated_decorations.next_num,
+                                                 paginated_decorations.page,
+                                                 paginated_decorations.pages)
             
         return paginated_decoration_dtos
 
