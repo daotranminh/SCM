@@ -42,7 +42,7 @@ function get_index(control)
 {
     var my_name = control.id
     var pos = my_name.lastIndexOf("_")
-    return strIndex = my_name.substring(pos+1)
+    return my_name.substring(pos+1)
 }
 
 function delete_material(control)
