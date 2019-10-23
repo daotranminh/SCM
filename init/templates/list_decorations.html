@@ -28,7 +28,9 @@
       <td>{{decoration_dto.decoration_form}}</td>
       <td>{{decoration_dto.decoration_technique}}</td>
       <td>{{decoration_dto.registered_on}}</td>      
-      <td><a class="btn btn-default pullright">Update</a></td>
+      <td><a href="{{ url_for('update_decoration',
+		   decoration_id=decoration_dto.decoration_id) }}"
+	     class="btn btn-default pullright">Update</a></td>
     </tr>
     {% endfor %}
   </tbody>

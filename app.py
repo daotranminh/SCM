@@ -690,6 +690,7 @@ def add_decoration():
 
     if request.method == 'POST':
         try:
+            print(request.form)
             decoration_name = request.form['decoration_name']
             topic_id = int(request.form['topic_id'])
             decoration_description = request.form['decoration_description']
@@ -714,7 +715,7 @@ def add_decoration():
                 decoration_repo.add_decoration_template(new_decoration_id, filepath_for_db)
 
             db.session.commit()
-            message = 'Successfully updated decoration %s' % decoration_name
+            message = 'Successfully added decoration %s' % decoration_name
             return redirect_with_message(url_for('list_decorations'), message, 'info')
         
         except ScmException as ex:
@@ -731,9 +732,51 @@ def add_decoration():
                                decoration_form_recs=decoration_form_recs,
                                decoration_technique_recs=decoration_technique_recs)
 
+def __extract_decoration_props(props_dict):
+    pass
+
 @app.route('/update_decoration/<int:decoration_id>', methods=['GET', 'POST'])
 def update_decoration(decoration_id):
-    pass
+    decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_paths = decoration_manager.get_decoration_info(decoration_id)    
+    topic_recs = topic_repo.get_all_topics()
+    decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
+    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
+
+    print(template_paths)
+
+    if request.method == 'POST':
+        try:
+            print(request.form)
+            '''name, description, topic, decoration_form, decoration_technique, template_paths = __extract_decoration_props(request.form)
+            decoration_manager.update_decoration(decoration_id,
+                                                 name,
+                                                 description,
+                                                 topic,
+                                                 decoration_form,
+                                                 decoration_technique,
+                                                 template_paths)
+            db.session.commit()
+            message = 'Successfully updated decoration %s' % decoration_id
+            return redirect_with_message(url_for('list_decorations'), message, 'info')'''
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('update_decoration.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    decoration_rec=decoration_rec,
+                                                    template_paths=template_paths,
+                                                    topic_recs=topic_recs,
+                                                    decoration_form_recs=decoration_form_recs,
+                                                    decoration_technique_recs=decoration_technique_recs)
+        
+    return render_scm_template('update_decoration.html',
+                               decoration_rec=decoration_rec,
+                               template_paths=template_paths,
+                               topic_recs=topic_recs,
+                               decoration_form_recs=decoration_form_recs,
+                               decoration_technique_recs=decoration_technique_recs)
+                                                 
 
 @app.route('/list_decorations', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_decorations/', methods=['GET', 'POST'], defaults={'page':1})

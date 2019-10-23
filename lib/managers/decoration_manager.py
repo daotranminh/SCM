@@ -81,3 +81,13 @@ class DecorationManager:
             template_paths.append(template_path_rec.template_path)
 
         return decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_paths
+
+    def update_decoration(self,
+                          decoration_id,
+                          name,
+                          topic,
+                          decoration_form,
+                          decoration_technique,
+                          template_paths):
+        print('TODO: decoration_manager.update_decoration')
+        pass
