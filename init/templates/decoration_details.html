@@ -24,9 +24,9 @@
 
 <div class="galleryThumbnailsContainer">
   <div class="galleryThumbnails">
-    {% for i in range(template_paths|length) %}
+    {% for i in range(template_path_recs|length) %}
     <a href="javascript: changeimage('{{i}}')">
-      <img src="{{template_paths[i]}}" class="thumbnailsimage{{i}}" width="auto" height="100" alt="" />
+      <img src="{{template_path_recs[i].template_path}}" class="thumbnailsimage{{i}}" width="auto" height="100" alt="" />
     </a>
     {% endfor %}
   </div>  
@@ -34,8 +34,8 @@
 
 <div class="galleryPreviewContainer">
   <div class="galleryPreviewImage">
-    {% for i in range(template_paths|length) %}
-    <img src="{{template_paths[i]}}" class="previewImage{{i}}" width="900" height="auto" alt="" />';
+    {% for i in range(template_path_recs|length) %}
+    <img src="{{template_path_recs[i].template_path}}" class="previewImage{{i}}" width="900" height="auto" alt="" />';
     {% endfor %}
   </div>
     
@@ -45,7 +45,7 @@
   </div>
 
   <div class="galleryNavigationBullets">
-    {% for i in range(template_paths|length) %}
+    {% for i in range(template_path_recs|length) %}
     <a href="javascript: changeimage('{{i}}')" class="galleryBullet{{i}}"><span>Bullet</span></a>
     {% endfor %}
   </div>
@@ -53,8 +53,8 @@
 
 <script type="text/javascript">
   // init variables
-  var imagesTotal = {{template_paths|length}};
-  var currentImage = 1;
+  var imagesTotal = {{template_path_recs|length}};
+  var currentImage = 0;
   var thumbsTotalWidth = 0;
 
   $('a.galleryBullet' + currentImage).addClass("active");
@@ -78,7 +78,7 @@
   currentImage--;
 
   if (currentImage == -1) {
-  currentImage = imageTotal-1;
+  currentImage = imagesTotal-1;
   }
   
   $('a.galleryBullet' + currentImage).addClass("active");
