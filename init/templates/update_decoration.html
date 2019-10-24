@@ -65,9 +65,9 @@
 	  </tr>
 	</thead>
 	<tbody>
-	  {% for i in range(template_paths|length) %}
+	  {% for i in range(template_path_recs|length) %}
 	  <tr>
-	    <td><img src="{{template_paths[i]}}" width="auto" height="100" alt="" name="existing_image_{{i}}" id="existing_image_{{i}}" /></td>
+	    <td><img src="{{template_path_recs[i].template_path}}" width="auto" height="100" alt="{{template_path_recs[i].id}}" name="existing_image_{{i}}" id="existing_image_{{i}}" /></td>
 	    <td><a class="btn btn-default pullright" onclick="delete_row(this)" id="delete_btn_{{i}}">Delete</a></td>
 	  </tr>
 	  {% endfor %}
@@ -91,7 +91,7 @@
   var existing_images = document.querySelectorAll('*[id^="existing_image_"]');
   for (var i=0; i < existing_images.length; i++)
   {
-  var existing_image_input = "<input name='" + existing_images[i].name + "' value='" + existing_images[i].src + "'>"
+  var existing_image_input = "<input name='" + existing_images[i].name + "' value='" + existing_images[i].alt + "'>"
   $(this).append(existing_image_input)
   }
   

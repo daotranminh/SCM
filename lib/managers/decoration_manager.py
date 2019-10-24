@@ -76,11 +76,7 @@ class DecorationManager:
         decoration_technique_rec = self.decoration_technique_repo.get_decoration_technique(decoration_rec.decoration_technique_id)
         template_path_recs = self.decoration_repo.get_template_paths(decoration_id)
 
-        template_paths = []
-        for template_path_rec in template_path_recs:
-            template_paths.append(template_path_rec.template_path)
-
-        return decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_paths
+        return decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_path_recs
 
     def update_decoration(self,
                           decoration_id,

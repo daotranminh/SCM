@@ -704,15 +704,7 @@ def add_decoration():
                                                                decoration_technique_id)
         
             uploaded_files = request.files.getlist('file[]')
-            
-            for uploaded_file in uploaded_files:
-                filename = str(new_decoration_id) + '_' + secure_filename(uploaded_file.filename)
-                
-                filepath_for_saving = os.path.join('init/static', config['IMAGES_DB']['DECORATIONS_FOLDER'], filename)
-                uploaded_file.save(filepath_for_saving)
-                
-                filepath_for_db = url_for('static', filename=os.path.join(config['IMAGES_DB']['DECORATIONS_FOLDER'], filename))                
-                decoration_repo.add_decoration_template(new_decoration_id, filepath_for_db)
+            decoration_repo.add_decoration_templates(new_decoration_id, uploaded_files)
 
             db.session.commit()
             message = 'Successfully added decoration %s' % decoration_name
@@ -733,31 +725,63 @@ def add_decoration():
                                decoration_technique_recs=decoration_technique_recs)
 
 def __extract_decoration_props(props_dict):
-    pass
+    name = props_dict['decoration_name']
+    description = props_dict['decoration_description']
+    topic_id = props_dict['topic_id']
+    decoration_form_id = props_dict['decoration_form_id']
+    decoration_technique_id = props_dict['decoration_technique_id']
+
+    i = 0
+    remaining_template_path_ids = []
+    while True:
+        existing_image_i = 'existing_image_' + str(i)
+        if existing_image_i not in props_dict:
+            break
+
+        remaining_template_path_ids.append(int(props_dict[existing_image_i]))
+        i += 1
+
+    return name, description, topic_id, decoration_form_id, decoration_technique_id, remaining_template_path_ids
 
 @app.route('/update_decoration/<int:decoration_id>', methods=['GET', 'POST'])
 def update_decoration(decoration_id):
-    decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_paths = decoration_manager.get_decoration_info(decoration_id)    
+    decoration_rec, \
+        topic_rec, \
+        decoration_form_rec, \
+        decoration_technique_rec, \
+        template_path_recs = decoration_manager.get_decoration_info(decoration_id)    
+
     topic_recs = topic_repo.get_all_topics()
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
 
-    print(template_paths)
-
     if request.method == 'POST':
         try:
             print(request.form)
-            '''name, description, topic, decoration_form, decoration_technique, template_paths = __extract_decoration_props(request.form)
-            decoration_manager.update_decoration(decoration_id,
-                                                 name,
-                                                 description,
-                                                 topic,
-                                                 decoration_form,
-                                                 decoration_technique,
-                                                 template_paths)
+            name, \
+            description, \
+            topic_id, \
+            decoration_form_id, \
+            decoration_technique_id, \
+            remaining_template_path_ids = __extract_decoration_props(request.form)
+            
+            uploaded_files = request.files.getlist('file[]')
+            
+            decoration_repo.update_decoration(decoration_id,
+                                              name,
+                                              description,
+                                              topic_id,
+                                              decoration_form_id,
+                                              decoration_technique_id)
+
+            decoration_repo.update_template_paths(decoration_id,
+                                                  template_path_recs,
+                                                  remaining_template_path_ids,
+                                                  uploaded_files)
+            
             db.session.commit()
             message = 'Successfully updated decoration %s' % decoration_id
-            return redirect_with_message(url_for('list_decorations'), message, 'info')'''
+            return redirect_with_message(url_for('list_decorations'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
             return render_scm_template_with_message('update_decoration.html',
@@ -772,7 +796,7 @@ def update_decoration(decoration_id):
         
     return render_scm_template('update_decoration.html',
                                decoration_rec=decoration_rec,
-                               template_paths=template_paths,
+                               template_path_recs=template_path_recs,
                                topic_recs=topic_recs,
                                decoration_form_recs=decoration_form_recs,
                                decoration_technique_recs=decoration_technique_recs)
@@ -794,14 +818,14 @@ def list_decorations(page):
 
 @app.route('/decoration_details/<int:decoration_id>', methods=['GET', 'POST'])
 def decoration_details(decoration_id):
-    decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_paths = decoration_manager.get_decoration_info(decoration_id)
-    
+    decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_path_recs = decoration_manager.get_decoration_info(decoration_id)
+
     return render_scm_template('decoration_details.html',
                                decoration_rec=decoration_rec,
                                topic_rec=topic_rec,
                                decoration_form_rec=decoration_form_rec,
                                decoration_technique_rec=decoration_technique_rec,
-                               template_paths=template_paths)
+                               template_path_recs=template_path_recs)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
