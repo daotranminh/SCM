@@ -11,13 +11,13 @@ logger.setLevel(logging.DEBUG)
 
 class DeliveryMethodManager:
     def __init__(self, delivery_method_repo):
-        self.taste_repo = taste_repo
+        self.delivery_method_repo = delivery_method_repo
 
-    def get_taste_choices(self):
-        taste_recs = self.taste_repo.get_all_tastes()
+    def get_delivery_method_choices(self):
+        delivery_method_recs = self.delivery_method_repo.get_all_delivery_methods()
 
-        taste_choices = [(-1, '')]
-        for taste_rec in taste_recs:
-            taste_choices.append((taste_rec.id, taste_rec.name))
+        delivery_method_choices = [(-1, '')]
+        for delivery_method_rec in delivery_method_recs:
+            delivery_method_choices.append((delivery_method_rec.id, delivery_method_rec.name))
 
-        return taste_choices
+        return delivery_method_choices

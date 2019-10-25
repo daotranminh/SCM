@@ -19,6 +19,8 @@ from lib.forms.taste_forms import AddTasteForm
 from lib.forms.taste_forms import UpdateTasteForm
 from lib.forms.topic_forms import AddTopicForm
 from lib.forms.topic_forms import UpdateTopicForm
+from lib.forms.order_forms import AddOrderForm
+from lib.forms.order_forms import UpdateOrderForm
 
 from lib.repo.delivery_method_repository import DeliveryMethodRepository
 from lib.repo.decoration_repository import DecorationRepository
@@ -34,9 +36,11 @@ from lib.repo.formula_repository import FormulaRepository
 
 from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
+from lib.managers.taste_manager import TasteManager
 from lib.managers.topic_manager import TopicManager
 from lib.managers.formula_manager import FormulaManager
 from lib.managers.decoration_manager import DecorationManager
+from lib.managers.delivery_method_manager import DeliveryMethodManager
 
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
@@ -60,6 +64,8 @@ taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
 formula_repo = FormulaRepository(db)
 
+taste_manager = TasteManager(taste_repo)
+delivery_method_manager = DeliveryMethodManager(delivery_method_repo)
 decoration_manager = DecorationManager(decoration_repo,
                                        topic_repo,
                                        decoration_form_repo,
@@ -836,7 +842,37 @@ def decoration_details(decoration_id):
 ####################################################################################
 @app.route('/add_order', methods=['GET', 'POST'])
 def add_order():
-    pass
+    customer_choices = customer_manager.get_customer_choices()
+    taste_choices = taste_manager.get_taste_choices()
+    decoration_choices = decoration_manager.get_decoration_choices()
+    delivery_method_choices = delivery_method_manager.get_delivery_method_choices()
+
+    form = AddOrderForm(request.form,
+                        customer_choices,
+                        taste_choices,
+                        decoration_choices,
+                        delivery_method_choices)
+
+    if request.method == 'POST' and form.validate():
+        customer_id = form.customer.data
+        taste_id = form.taste.data
+        decoration_id = form.decoration.data
+        delivery_method_id = form.delivery_method.data
+        ordered_on = form.ordered_on.data
+        delivered_on = form.delivered_on.data
+        message = form.message.data
+        
+        print(customer_id)
+        print(taste_id)
+        print(decoration_id)
+        print(delivery_method_id)
+        print(ordered_on)
+        print(delivered_on)
+        print(message)
+        
+        return render_scm_template('add_order.html', form=form)
+    else:
+        return render_scm_template('add_order.html', form=form)
 
 ####################################################################################
 # DELIVERY METHOD
