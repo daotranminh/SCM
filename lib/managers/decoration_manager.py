@@ -78,12 +78,12 @@ class DecorationManager:
 
         return decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_path_recs
 
-    def update_decoration(self,
-                          decoration_id,
-                          name,
-                          topic,
-                          decoration_form,
-                          decoration_technique,
-                          template_paths):
-        print('TODO: decoration_manager.update_decoration')
-        pass
+    def get_decoration_choices(self):
+        decoration_recs = self.decoration_repo.get_all_decorations()
+
+        decoration_choices = [(-1, '')]
+        for decoration_rec in decoration_recs:
+            decoration_choices.append((decoration_rec.id, decoration_rec.name))
+
+        return decoration_choices
+        
