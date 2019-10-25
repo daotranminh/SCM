@@ -11,6 +11,8 @@ from lib.forms.decoration_form_forms import AddDecorationFormForm
 from lib.forms.decoration_form_forms import UpdateDecorationFormForm
 from lib.forms.decoration_technique_forms import AddDecorationTechniqueForm
 from lib.forms.decoration_technique_forms import UpdateDecorationTechniqueForm
+from lib.forms.delivery_method_forms import AddDeliveryMethodForm
+from lib.forms.delivery_method_forms import UpdateDeliveryMethodForm
 from lib.forms.material_forms import AddMaterialForm
 from lib.forms.material_forms import UpdateMaterialForm
 from lib.forms.taste_forms import AddTasteForm
@@ -18,6 +20,7 @@ from lib.forms.taste_forms import UpdateTasteForm
 from lib.forms.topic_forms import AddTopicForm
 from lib.forms.topic_forms import UpdateTopicForm
 
+from lib.repo.delivery_method_repository import DeliveryMethodRepository
 from lib.repo.decoration_repository import DecorationRepository
 from lib.repo.decoration_form_repository import DecorationFormRepository
 from lib.repo.decoration_technique_repository import DecorationTechniqueRepository
@@ -45,6 +48,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
+delivery_method_repo = DeliveryMethodRepository(db)
 decoration_repo = DecorationRepository(db)
 decoration_form_repo = DecorationFormRepository(db)
 decoration_technique_repo = DecorationTechniqueRepository(db)
@@ -166,14 +170,14 @@ def update_taste(taste_id):
         try:
             form = UpdateTasteForm(request.form, None)
             name = form.name.data.strip()
-            description = form.description.strip()
+            description = form.description.data.strip()
             taste_repo.update_taste(taste_id,
                                     name,
                                     description)
             db.session.commit()
             message = 'Successfully updated taste %s (%s)' % (name, taste_id)
             return redirect_with_message(url_for('list_tastes'), message, 'info')
-        except SmcException as ex:
+        except ScmException as ex:
             db.session.rollback()
             return render_scm_template_with_message('update_taste.html',
                                                     ex.message,
@@ -826,6 +830,65 @@ def decoration_details(decoration_id):
                                decoration_form_rec=decoration_form_rec,
                                decoration_technique_rec=decoration_technique_rec,
                                template_path_recs=template_path_recs)
+
+####################################################################################
+# ORDER
+####################################################################################
+@app.route('/add_order', methods=['GET', 'POST'])
+def add_order():
+    pass
+
+####################################################################################
+# DELIVERY METHOD
+####################################################################################
+@app.route('/add_delivery_method', methods=['GET', 'POST'])
+def add_delivery_method():
+    form = AddDeliveryMethodForm(request.form)
+    if request.method == 'POST' and form.validate():
+        try:
+            name = form.name.data.strip()
+            description = form.description.data.strip()
+            delivery_method_repo.add_delivery_method(name=name, description=description)
+            db.session.commit()
+            message = 'Successfully added delivery method %s' % name
+            return redirect_with_message(url_for('list_delivery_methods'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            message = 'Failed to add delivery method %s' % name
+            flash(message, 'danger')
+            return render_scm_template('add_delivery_method.html', form=form)
+    else:
+        return render_scm_template('add_delivery_method.html', form=form)
+
+@app.route('/update_delivery_method/<int:delivery_method_id>', methods=['GET', 'POST'])
+def update_delivery_method(delivery_method_id):
+    if request.method == 'GET':
+        delivery_method_rec = delivery_method_repo.get_delivery_method(delivery_method_id)
+        form = UpdateDeliveryMethodForm(request.form, delivery_method_rec)
+        return render_scm_template('update_delivery_method.html', form=form)
+    elif request.method == 'POST':
+        try:
+            form = UpdateDeliveryMethodForm(request.form, None)
+            name = form.name.data.strip()
+            description = form.description.data.strip()
+            delivery_method_repo.update_delivery_method(delivery_method_id,
+                                                        name,
+                                                        description)
+            db.session.commit()
+            message = 'Successfully updated delivery method %s (%s)' % (name, delivery_method_id)
+            return redirect_with_message(url_for('list_delivery_methods'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('update_delivery_method.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    form=form)
+
+@app.route('/list_delivery_methods', methods=['GET', 'POST'])
+def list_delivery_methods():
+    delivery_methods = delivery_method_repo.get_all_delivery_methods()
+    return render_scm_template('list_delivery_methods.html', delivery_methods=delivery_methods)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');

@@ -112,16 +112,23 @@ class Customer(db.Model):
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
     note = Column(String(5000))
 
+class DeliveryMethod(db.Model):
+    __tablename__ = 'delivery_method'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(50))
+    description = Column(String(400))
+
 class Order(db.Model):
     __tablename__ = 'order'
     id = Column(Integer, autoincrement=True, primary_key=True)
     customer_id = Column(Integer, ForeignKey(Customer.id))
     taste_id = Column(Integer, ForeignKey(Taste.id))
     decoration_id = Column(Integer, ForeignKey(Decoration.id))
-    message = Column(String(200))
     ordered_on = Column(DateTime(), default=datetime.datetime.utcnow)
     delivered_on = Column(DateTime())
-    deliver_method = Column(Integer)
+    delivery_method_id = Column(Integer, ForeignKey(DeliveryMethod.id))
+    message = Column(String(200))    
+    order_status = Column(Integer, default=0)
 
 class CostEstimation(db.Model):
     __tablename__ = 'cost_estimation'

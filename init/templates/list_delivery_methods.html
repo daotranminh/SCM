@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>List of delivery methods</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for delivery_method in delivery_methods %}
+    <tr>
+      <td><span data-toggle="tooltip" title="{{delivery_method.description}}">{{delivery_method.name}}</span></td>
+      <td><a href="{{ url_for('update_delivery_method', delivery_method_id=delivery_method.id) }}"
+	     class="btn btn-default pullright">Update</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('add_delivery_method') }}"
+   class="btn btn-default pullright">Add a new delivery method</a>
+
+{% endblock %}
