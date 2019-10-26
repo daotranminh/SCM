@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Order Details</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>      
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Order Id</td><td>{{ order_rec.id }}</td></tr>
+    <tr><td>Customer</td><td><a href="{{ url_for('customer_details', customer_id=order_rec.customer_id)}}">{{ customer_rec.name }}</a></td></tr>
+    <tr><td>Taste</td><td>{{ taste_rec.name }}</td></tr>
+    <tr><td>Decoration</td><td><a href="{{ url_for('decoration_details', decoration_id=order_rec.decoration_id) }}">{{ decoration_rec.name }}</a></td></tr>
+    <tr><td>Delivery method</td><td>{{ delivery_method_rec.name }}</td></tr>
+    <tr><td>Ordered on</td><td>{{ order_rec.ordered_on }}</td></tr>
+    <tr><td>Delivered on</td><td>{{ order_rec.delivered_on }}</td></tr>
+    <tr><td>Order status</td><td>{{ order_rec.order_status }}</td></tr> 
+    <tr><td>Message</td><td>{{ order_rec.message }}</td></tr>   
+  </tbody>
+</table>
+
+{% endblock %}

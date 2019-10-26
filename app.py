@@ -896,7 +896,18 @@ def list_orders(page):
 
 @app.route('/order_details/<int:order_id>', methods=['GET', 'POST'])
 def order_details(order_id):
-    pass
+    order_rec = order_repo.get_order(order_id)
+    customer_rec = customer_repo.get_customer(order_rec.customer_id)
+    taste_rec = taste_repo.get_taste(order_rec.taste_id)
+    decoration_rec = decoration_repo.get_decoration(order_rec.decoration_id)
+    delivery_method_rec = delivery_method_repo.get_delivery_method(order_rec.delivery_method_id)
+
+    return render_scm_template('order_details.html',
+                               order_rec=order_rec,
+                               customer_rec=customer_rec,
+                               taste_rec=taste_rec,
+                               decoration_rec=decoration_rec,
+                               delivery_method_rec=delivery_method_rec)
 
 @app.route('/update_order/<int:order_id>', methods=['GET', 'POST'])
 def update_order(order_id):
