@@ -21,16 +21,10 @@ class OrderManager:
                                  search_text):
         paginated_order_recs = self.order_repo.get_paginated_orders(page, per_page, search_text)
         order_dtos = []
-        for order_rec, customer_name, taste, decoration, delivery_method in paginated_order_recs.items:
+        for order_rec, customer_name, in paginated_order_recs.items:
             order_dto = OrderDto(order_rec.id,
                                  order_rec.customer_id,
                                  customer_name,
-                                 order_rec.taste_id,
-                                 taste,
-                                 order_rec.decoration_id,
-                                 decoration,
-                                 order_rec.delivery_method_id,
-                                 delivery_method,
                                  order_rec.ordered_on,
                                  order_rec.delivered_on,
                                  order_rec.message,

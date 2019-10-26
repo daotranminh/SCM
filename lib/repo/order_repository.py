@@ -25,16 +25,10 @@ class OrderRepository:
                                 per_page,
                                 search_text):
         sub_query_customer = self.db.session.query(Customer.id, Customer.name).subquery()
-        sub_query_taste = self.db.session.query(Taste.id, Taste.name).subquery()
-        sub_query_decoration = self.db.session.query(Decoration.id, Decoration.name).subquery()
-        sub_query_delivery_method = self.db.session.query(DeliveryMethod.id, DeliveryMethod.name).subquery()
 
         order_recs = self.db.session. \
-                     query(Order, sub_query_customer.c.name, sub_query_taste.c.name, sub_query_decoration.c.name, sub_query_delivery_method.c.name). \
-                     join(sub_query_customer, Order.customer_id == sub_query_customer.c.id). \
-                     join(sub_query_taste, Order.taste_id == sub_query_taste.c.id). \
-                     join(sub_query_decoration, Order.decoration_id == sub_query_decoration.c.id). \
-                     join(sub_query_delivery_method, Order.delivery_method_id == sub_query_delivery_method.c.id)
+                     query(Order, sub_query_customer.c.name). \
+                     join(sub_query_customer, Order.customer_id == sub_query_customer.c.id)
 
         paginated_order_recs = order_recs.paginate(page, per_page, error_out=False)
 

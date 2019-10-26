@@ -14,12 +14,6 @@ class OrderDto:
                  order_id,
                  customer_id,
                  customer_name,
-                 taste_id,
-                 taste,
-                 decoration_id,
-                 decoration,
-                 delivery_method_id,
-                 delivery_method,
                  ordered_on,
                  delivered_on,
                  message,
@@ -27,12 +21,6 @@ class OrderDto:
         self.order_id = order_id
         self.customer_id = customer_id
         self.customer_name = customer_name
-        self.taste_id = taste_id
-        self.taste = taste
-        self.decoration_id = decoration_id
-        self.decoration = decoration
-        self.delivery_method_id = delivery_method_id
-        self.delivery_method = delivery_method
         self.ordered_on = ordered_on
         self.delivered_on = delivered_on
         self.message = message
