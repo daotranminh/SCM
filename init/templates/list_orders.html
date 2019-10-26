@@ -26,9 +26,11 @@
     <tr>
       <td><a href="{{ url_for('order_details', 
 		   order_id=order_dto.order_id) }}">{{order_dto.order_id}}</a></td>
-      <td>{{order_dto.customer_name}}</td>
+      <td><a href="{{ url_for('customer_details',
+		   customer_id=order_dto.customer_id)}}">{{order_dto.customer_name}}</a></td>
       <td>{{order_dto.taste}}</td>
-      <td>{{order_dto.decoration}}</td>
+      <td><a href="{{ url_for('decoration_details',
+		   decoration_id=order_dto.decoration_id)}}">{{order_dto.decoration}}</a></td>
       <td>{{order_dto.delivery_method}}</td>
       <td>{{order_dto.delivered_on}}</td>
       <td>{{order_dto.order_status}}</td>      
