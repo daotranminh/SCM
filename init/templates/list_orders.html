@@ -1,0 +1,79 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>List of orders</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Order Id</th>
+      <th>Customer</th>
+      <th>Taste</th>
+      <th>Decoration</th>
+      <th>Delivery method</th>
+      <th>Delivery appointment</th>
+      <th>Order status</th>      
+      <th></th>      
+    </tr>
+  </thead>
+  <tbody>
+    {% for order_dto in order_dtos.items %}
+    <tr>
+      <td><a href="{{ url_for('order_details', 
+		   order_id=order_dto.order_id) }}">{{order_dto.order_id}}</a></td>
+      <td>{{order_dto.customer_name}}</td>
+      <td>{{order_dto.taste}}</td>
+      <td>{{order_dto.decoration}}</td>
+      <td>{{order_dto.delivery_method}}</td>
+      <td>{{order_dto.delivered_on}}</td>
+      <td>{{order_dto.order_status}}</td>      
+      <td><a href="{{ url_for('update_order',
+		   order_id=order_dto.order_id) }}"
+	     class="btn btn-default pullright">Update</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{order_dtos.page}}/{{order_dtos.pages}}</li>
+
+  {% if order_dtos.has_prev %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_orders', 
+				 page=order_dtos.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if order_dtos.has_next %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_orders', 
+				 page=order_dtos.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
+
+<a href="{{ url_for('add_order') }}"
+   class="btn btn-default pullright">Add a new order</a>
+
+<script>
+  $("#searchInput").keyup(function(e) {
+    if (e.keyCode == 13) {
+      let search_text = this.value
+      location.href = "/list_orders/1/?search_text=" + search_text
+    }
+  })
+
+</script>
+
+{% endblock %}

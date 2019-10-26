@@ -33,6 +33,7 @@ from lib.repo.customer_repository import CustomerRepository
 from lib.repo.taste_repository import TasteRepository
 from lib.repo.topic_repository import TopicRepository
 from lib.repo.formula_repository import FormulaRepository
+from lib.repo.order_repository import OrderRepository
 
 from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
@@ -41,6 +42,7 @@ from lib.managers.topic_manager import TopicManager
 from lib.managers.formula_manager import FormulaManager
 from lib.managers.decoration_manager import DecorationManager
 from lib.managers.delivery_method_manager import DeliveryMethodManager
+from lib.managers.order_manager import OrderManager
 
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
@@ -63,6 +65,7 @@ customer_repo = CustomerRepository(db)
 taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
 formula_repo = FormulaRepository(db)
+order_repo = OrderRepository(db)
 
 taste_manager = TasteManager(taste_repo)
 delivery_method_manager = DeliveryMethodManager(delivery_method_repo)
@@ -77,6 +80,7 @@ topic_manager = TopicManager(topic_repo)
 formula_manager = FormulaManager(formula_repo,
                                  material_formula_repo,
                                  taste_repo)
+order_manager = OrderManager(order_repo)
 
 ####################################################################################
 # MENU
@@ -861,18 +865,42 @@ def add_order():
         ordered_on = form.ordered_on.data
         delivered_on = form.delivered_on.data
         message = form.message.data
-        
-        print(customer_id)
-        print(taste_id)
-        print(decoration_id)
-        print(delivery_method_id)
-        print(ordered_on)
-        print(delivered_on)
-        print(message)
-        
-        return render_scm_template('add_order.html', form=form)
+
+        new_order_id = order_repo.add_order(customer_id,
+                                            taste_id,
+                                            decoration_id,
+                                            delivery_method_id,
+                                            ordered_on,
+                                            delivered_on,
+                                            message)
+
+        db.session.commit()
+        message = 'Successfully added order %s' % new_order_id
+        return redirect_with_message(url_for('list_orders'), message, 'info')
     else:
         return render_scm_template('add_order.html', form=form)
+
+@app.route('/list_orders', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_orders/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_orders<int:page>', methods=['GET', 'POST'])
+@app.route('/list_orders/<int:page>', methods=['GET', 'POST'])
+def list_orders(page):
+    per_page = int(config['PAGING']['orders_per_page'])
+    search_text = request.args.get('search_text')
+
+    paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
+                                                                  per_page,
+                                                                  search_text)
+
+    return render_scm_template('list_orders.html', order_dtos=paginated_order_dtos)
+
+@app.route('/order_details/<int:order_id>', methods=['GET', 'POST'])
+def order_details(order_id):
+    pass
+
+@app.route('/update_order/<int:order_id>', methods=['GET', 'POST'])
+def update_order(order_id):
+    pass
 
 ####################################################################################
 # DELIVERY METHOD

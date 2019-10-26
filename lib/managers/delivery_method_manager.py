@@ -16,7 +16,7 @@ class DeliveryMethodManager:
     def get_delivery_method_choices(self):
         delivery_method_recs = self.delivery_method_repo.get_all_delivery_methods()
 
-        delivery_method_choices = [(-1, '')]
+        delivery_method_choices = []
         for delivery_method_rec in delivery_method_recs:
             delivery_method_choices.append((delivery_method_rec.id, delivery_method_rec.name))
 

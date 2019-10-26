@@ -81,7 +81,7 @@ class DecorationManager:
     def get_decoration_choices(self):
         decoration_recs = self.decoration_repo.get_all_decorations()
 
-        decoration_choices = [(-1, '')]
+        decoration_choices = []
         for decoration_rec in decoration_recs:
             decoration_choices.append((decoration_rec.id, decoration_rec.name))
 
