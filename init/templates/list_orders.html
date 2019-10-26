@@ -13,9 +13,6 @@
     <tr>
       <th>Order Id</th>
       <th>Customer</th>
-      <th>Taste</th>
-      <th>Decoration</th>
-      <th>Delivery method</th>
       <th>Delivery appointment</th>
       <th>Order status</th>      
       <th></th>      
@@ -28,10 +25,6 @@
 		   order_id=order_dto.order_id) }}">{{order_dto.order_id}}</a></td>
       <td><a href="{{ url_for('customer_details',
 		   customer_id=order_dto.customer_id)}}">{{order_dto.customer_name}}</a></td>
-      <td>{{order_dto.taste}}</td>
-      <td><a href="{{ url_for('decoration_details',
-		   decoration_id=order_dto.decoration_id)}}">{{order_dto.decoration}}</a></td>
-      <td>{{order_dto.delivery_method}}</td>
       <td>{{order_dto.delivered_on}}</td>
       <td>{{order_dto.order_status}}</td>      
       <td><a href="{{ url_for('update_order',
