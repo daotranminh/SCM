@@ -18,7 +18,7 @@ class AddOrderForm(Form):
     taste = SelectField('Taste', coerce=int)
     decoration = SelectField('Decoration', coerce=int)  
     ordered_on = DateField('Ordered on', format='%Y-%m-%d', validators=(validators.Optional(),))
-    delivered_on = DateField('Delivered on', format='%Y-%m-%d', validators=(validators.Required(),))
+    delivery_appointment = DateField('Delivery appointment', format='%Y-%m-%d', validators=(validators.Required(),))
     delivery_method = SelectField('Delivery method', coerce=int)    
     message = TextAreaField('Note', render_kw={"rows": 5, "cols": 80})
 
@@ -53,5 +53,5 @@ class UpdateOrderForm(AddOrderForm):
             self.taste.data = order_rec.taste_id
             self.decoration.data = order_rec.decoration_id
             self.delivery_method.data = order_rec.delivery_method_id
-            self.delivered_on.data = order_rec.delivered_on
+            self.delivery_appointment.data = order_rec.delivery_appointment
             self.message.data = order_rec.message

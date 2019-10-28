@@ -25,7 +25,7 @@
 		   order_id=order_dto.order_id) }}">{{order_dto.order_id}}</a></td>
       <td><a href="{{ url_for('customer_details',
 		   customer_id=order_dto.customer_id)}}">{{order_dto.customer_name}}</a></td>
-      <td>{{order_dto.delivered_on}}</td>
+      <td>{{order_dto.delivery_appointment}}</td>
       <td>{{order_dto.order_status}}</td>      
       <td><a href="{{ url_for('update_order',
 		   order_id=order_dto.order_id) }}"

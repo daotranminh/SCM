@@ -44,7 +44,7 @@ class OrderRepository:
                   decoration_id,
                   delivery_method_id,
                   ordered_on,
-                  delivered_on,
+                  delivered_appointment,
                   message):
         try:
             order_rec = Order(customer_id=customer_id,
@@ -52,7 +52,7 @@ class OrderRepository:
                               decoration_id=decoration_id,
                               delivery_method_id=delivery_method_id,
                               ordered_on=ordered_on,
-                              delivered_on=delivered_on,
+                              delivered_appointment=delivered_appointment,
                               message=message)
             self.db.session.add(order_rec)
             self.db.session.flush()
@@ -69,7 +69,7 @@ class OrderRepository:
                      decoration_id,
                      delivery_method_id,
                      ordered_on,
-                     delivered_on,
+                     delivery_appointment,
                      message):
         order_rec = self.get_order(order_id)
         order_rec.customer_id = customer_id
@@ -77,5 +77,5 @@ class OrderRepository:
         order_rec.decoration_id = decoration_id
         order_rec.delivery_method_id = delivery_method_id
         order_rec.ordered_on = ordered_on
-        order_rec.delivered_on = delivered_on
+        order_rec.delivery_appointment = delivery_appointment
         order_rec.message = message

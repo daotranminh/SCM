@@ -15,14 +15,14 @@ class OrderDto:
                  customer_id,
                  customer_name,
                  ordered_on,
-                 delivered_on,
+                 delivery_appointment,
                  message,
                  order_status):
         self.order_id = order_id
         self.customer_id = customer_id
         self.customer_name = customer_name
         self.ordered_on = ordered_on
-        self.delivered_on = delivered_on
+        self.delivery_appointment = delivery_appointment
         self.message = message
         self.order_status = order_status
         

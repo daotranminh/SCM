@@ -26,7 +26,7 @@ class OrderManager:
                                  order_rec.customer_id,
                                  customer_name,
                                  order_rec.ordered_on,
-                                 order_rec.delivered_on,
+                                 order_rec.delivery_appointment,
                                  order_rec.message,
                                  order_rec.order_status)
             order_dtos.append(order_dto)

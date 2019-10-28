@@ -125,6 +125,7 @@ class Order(db.Model):
     taste_id = Column(Integer, ForeignKey(Taste.id))
     decoration_id = Column(Integer, ForeignKey(Decoration.id))
     ordered_on = Column(DateTime(), default=datetime.datetime.utcnow)
+    delivery_appointment = Column(DateTime())
     delivered_on = Column(DateTime())
     delivery_method_id = Column(Integer, ForeignKey(DeliveryMethod.id))
     message = Column(String(200))    
