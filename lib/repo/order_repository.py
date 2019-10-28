@@ -71,7 +71,7 @@ class OrderRepository:
                      ordered_on,
                      delivered_on,
                      message):
-        order_rec = self.get_customer(order_id)
+        order_rec = self.get_order(order_id)
         order_rec.customer_id = customer_id
         order_rec.taste_id = taste_id
         order_rec.decoration_id = decoration_id
