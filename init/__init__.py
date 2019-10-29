@@ -126,11 +126,15 @@ class Order(db.Model):
     decoration_id = Column(Integer, ForeignKey(Decoration.id))
     ordered_on = Column(DateTime(), default=datetime.datetime.utcnow)
     delivery_appointment = Column(DateTime())
-    delivered_on = Column(DateTime())
     delivery_method_id = Column(Integer, ForeignKey(DeliveryMethod.id))
-    message = Column(String(200))    
-    order_status = Column(Integer, default=0)
-
+    message = Column(String(200))
+    delivery_status = Column(Integer, default=0)
+    delivered_on = Column(DateTime())
+    payment_status = Column(Integer, default=0)    
+    paid_on = Column(DateTime())
+    box_status = Column(Integer, default=0)
+    box_returned_on = Column(DateTime())
+    
 class CostEstimation(db.Model):
     __tablename__ = 'cost_estimation'
     id = Column(Integer, autoincrement=True, primary_key=True)

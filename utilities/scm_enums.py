@@ -16,8 +16,18 @@ class ErrorCodes(IntEnum):
     ERROR_ADD_DECORATION_TEMPLATE_PATH_FAILED = 12
     ERROR_ADD_ORDER_FAILED = 13    
 
-class OrderStatus(IntEnum):
-    PENDING = 0
+class DeliveryStatus(IntEnum):
+    ORDER_PLACED = 0
     CANCELLED = 1
-    DELIVERED_HOLDING_BOX = 2
-    CLOSED = 3
+    DELIVERED = 2
+
+class PaymentStatus(IntEnum):
+    NOT_PAID = 0
+    PARTLY_PAID = 1
+    FULLY_PAID = 2
+
+class BoxStatus(IntEnum):
+    BOX_NOT_NEEDED = 0
+    BOX_WITH_CAKE_IN_PRODUCTION = 1
+    BOX_AT_CUSTOMER_AFTER_DELIVERY = 2
+    BOX_RETURNED = 3

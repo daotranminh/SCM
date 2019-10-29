@@ -3,7 +3,7 @@ import logging
 from flask_sqlalchemy import sqlalchemy
 
 from init import Order, Customer, Taste, Decoration, DeliveryMethod, config
-from utilities.scm_enums import ErrorCodes, OrderStatus
+from utilities.scm_enums import ErrorCodes, DeliveryStatus, PaymentStatus, BoxStatus
 from utilities.scm_exceptions import ScmException
 
 logger = logging.getLogger(__name__)
@@ -45,15 +45,21 @@ class OrderRepository:
                   delivery_method_id,
                   ordered_on,
                   delivered_appointment,
-                  message):
+                  message,
+                  with_box):
         try:
+            box_status = int(BoxStatus.BOX_NOT_NEEDED)
+            if with_box:
+                box_status = int(BoxStatus.BOX_WITH_CAKE_IN_PRODUCTION)
+                
             order_rec = Order(customer_id=customer_id,
                               taste_id=taste_id,
                               decoration_id=decoration_id,
                               delivery_method_id=delivery_method_id,
                               ordered_on=ordered_on,
                               delivered_appointment=delivered_appointment,
-                              message=message)
+                              message=message,
+                              box_status=box_status)
             self.db.session.add(order_rec)
             self.db.session.flush()
             return order_rec.id

@@ -5,6 +5,7 @@ from utilities import scm_constants
 
 from wtforms import Form, BooleanField, StringField, SelectField, DateTimeField, SubmitField, validators, widgets, TextAreaField
 from wtforms.fields.html5 import DateField
+from . import base_elements
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler(config['DEFAULT']['log_file'])
@@ -21,6 +22,7 @@ class AddOrderForm(Form):
     delivery_appointment = DateField('Delivery appointment', format='%Y-%m-%d', validators=(validators.Required(),))
     delivery_method = SelectField('Delivery method', coerce=int)    
     message = TextAreaField('Note', render_kw={"rows": 5, "cols": 80})
+    with_box = base_elements.MultiCheckboxField('', coerce=int, choices=[(0, 'With box')])
 
     def __init__(self,
                  form,

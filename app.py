@@ -866,13 +866,18 @@ def add_order():
         delivered_appointment = form.delivered_appointment.data
         message = form.message.data
 
+        with_box = False
+        if form.with_box.data == [0]:
+            with_box = True
+
         new_order_id = order_repo.add_order(customer_id,
                                             taste_id,
                                             decoration_id,
                                             delivery_method_id,
                                             ordered_on,
                                             delivered_appointment,
-                                            message)
+                                            message,
+                                            with_box)
 
         db.session.commit()
         message = 'Successfully added order %s' % new_order_id

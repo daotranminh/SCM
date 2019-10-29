@@ -28,7 +28,12 @@ class OrderManager:
                                  order_rec.ordered_on,
                                  order_rec.delivery_appointment,
                                  order_rec.message,
-                                 order_rec.order_status)
+                                 order_rec.delivery_status,
+                                 order_rec.delivered_on,
+                                 order_rec.payment_status,
+                                 order_rec.paid_on,
+                                 order_rec.box_status,
+                                 order_rec.box_returned_on)
             order_dtos.append(order_dto)
 
         paginated_order_dtos = PaginatedScm(order_dtos,

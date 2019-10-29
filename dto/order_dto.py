@@ -17,12 +17,21 @@ class OrderDto:
                  ordered_on,
                  delivery_appointment,
                  message,
-                 order_status):
+                 delivery_status,
+                 delivered_on,
+                 payment_status,
+                 paid_on,
+                 box_status,
+                 box_returned_on):
         self.order_id = order_id
         self.customer_id = customer_id
         self.customer_name = customer_name
         self.ordered_on = ordered_on
         self.delivery_appointment = delivery_appointment
         self.message = message
-        self.order_status = order_status
-        
+        self.delivery_status = delivery_status
+        self.delivered_on = delivered_on
+        self.payment_status = payment_status
+        self.paid_on = paid_on
+        self.box_status = box_status
+        self.box_returned_on = box_returned_on
