@@ -863,7 +863,7 @@ def add_order():
         decoration_id = form.decoration.data
         delivery_method_id = form.delivery_method.data
         ordered_on = form.ordered_on.data
-        delivered_appointment = form.delivered_appointment.data
+        delivery_appointment = form.delivery_appointment.data
         message = form.message.data
 
         with_box = False
@@ -875,7 +875,7 @@ def add_order():
                                             decoration_id,
                                             delivery_method_id,
                                             ordered_on,
-                                            delivered_appointment,
+                                            delivery_appointment,
                                             message,
                                             with_box)
 

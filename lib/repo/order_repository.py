@@ -44,7 +44,7 @@ class OrderRepository:
                   decoration_id,
                   delivery_method_id,
                   ordered_on,
-                  delivered_appointment,
+                  delivery_appointment,
                   message,
                   with_box):
         try:
@@ -57,7 +57,7 @@ class OrderRepository:
                               decoration_id=decoration_id,
                               delivery_method_id=delivery_method_id,
                               ordered_on=ordered_on,
-                              delivered_appointment=delivered_appointment,
+                              delivery_appointment=delivery_appointment,
                               message=message,
                               box_status=box_status)
             self.db.session.add(order_rec)
