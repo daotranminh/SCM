@@ -155,3 +155,14 @@ class Cake(db.Model):
     order_id = Column(Integer, ForeignKey(Order.id))
     cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
     photos_path = Column(String(400))
+
+class SampleImages(db.Model):
+    __tablename__ = 'sample_images'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    topic_id = Column(Integer, ForeignKey(Topic.id))
+
+class SampleImagePath(db.Model):
+    __tablename__ = 'sample_image_path'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    sample_images_id = Column(Integer, ForeignKey(SampleImages.id))
+    file_path = Column(String(500))
