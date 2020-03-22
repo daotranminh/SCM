@@ -34,6 +34,8 @@ from lib.repo.taste_repository import TasteRepository
 from lib.repo.topic_repository import TopicRepository
 from lib.repo.formula_repository import FormulaRepository
 from lib.repo.order_repository import OrderRepository
+from lib.repo.sample_image_path_repository import SampleImagePathRepository
+from lib.repo.sample_images_group_repository import SampleImagesGroupRepository
 
 from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
@@ -66,6 +68,9 @@ taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
 formula_repo = FormulaRepository(db)
 order_repo = OrderRepository(db)
+sample_image_path_repo = SampleImagePathRepository(db)
+sample_images_grou_repo = SampleImagesGroupRepository(db)
+
 
 taste_manager = TasteManager(taste_repo)
 delivery_method_manager = DeliveryMethodManager(delivery_method_repo)

@@ -44,10 +44,15 @@ class SampleImagePathRepository:
             logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_SAMPLE_IMAGE_PATH_FAILED, message)
 
+    def delete_sample_image_paths(self,
+                                  sample_images_group_id):
+        sample_image_path_recs = self.get_sample_image_paths(sample_images_group_id)
+        for sample_image_path_rec in sample_image_path_recs:
+            self.delete_sample_image_path_rec(sample_image_path_rec)
+        
     def delete_sample_image_path(self,
-                                 sample_image_path_id):
+                                 sample_image_path_rec):
         try:
-            sample_image_path_rec = self.get_sample_image_path(sample_image_path_id)
             if sample_image_path_rec is not None:
                 filepath_for_deleting = os.path.join('init', sample_image_path_rec.file_path[1:])                
                 self.db.session.delete(sample_image_path_rec)
