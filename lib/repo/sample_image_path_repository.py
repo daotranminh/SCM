@@ -27,9 +27,9 @@ class SampleImagePathRepository:
             first()
 
     def get_sample_image_paths(self,
-                               sample_images_id):
+                               sample_images_group_id):
         return SampleImagePath.query. \
-            filter(SampleImagePath.sample_images_id == sample_images_id). \
+            filter(SampleImagePath.sample_images_group_id == sample_images_group_id). \
             all()
 
     def add_sample_image_path(self,
