@@ -45,6 +45,7 @@ from lib.managers.formula_manager import FormulaManager
 from lib.managers.decoration_manager import DecorationManager
 from lib.managers.delivery_method_manager import DeliveryMethodManager
 from lib.managers.order_manager import OrderManager
+from lib.managers.sample_images_group_manager import SampleImagesGroupManager
 
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
@@ -69,7 +70,7 @@ topic_repo = TopicRepository(db)
 formula_repo = FormulaRepository(db)
 order_repo = OrderRepository(db)
 sample_image_path_repo = SampleImagePathRepository(db)
-sample_images_grou_repo = SampleImagesGroupRepository(db)
+sample_images_group_repo = SampleImagesGroupRepository(db)
 
 
 taste_manager = TasteManager(taste_repo)
@@ -86,6 +87,8 @@ formula_manager = FormulaManager(formula_repo,
                                  material_formula_repo,
                                  taste_repo)
 order_manager = OrderManager(order_repo)
+sample_images_group_manager = SampleImagesGroupManager(sample_image_path_repo,
+                                                       sample_images_group_repo)
 
 ####################################################################################
 # MENU
@@ -107,8 +110,9 @@ def menu_setup():
     ]
 
     exhibition_funcs = [
-        ['list_topics', 'List of topics'],        
-        ['list_cakes', 'List of cakes']      
+        ['list_topics', 'List of topics'],
+        ['list_sample_images', 'List of sample images'],
+        ['list_cakes', 'List of cakes']
     ]
     
     statistics_funcs = [
