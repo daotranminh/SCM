@@ -17,7 +17,7 @@ logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
 class SampleImagesGroupRepository:
-    def __init__(self):
+    def __init__(self, db):
         self.db = db
 
     def get_sample_images_group(self,
