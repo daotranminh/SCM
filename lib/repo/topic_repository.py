@@ -18,7 +18,9 @@ class TopicRepository:
         self.db = db
 
     def get_all_topics(self):
-        return Topic.query.all()
+        return Topic.query. \
+            order_by(Topic.name). \
+            all()
 
     def get_topic(self, id):
         return Topic.query.filter(Topic.id == id).first()

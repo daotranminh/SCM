@@ -157,6 +157,11 @@ def redirect_with_message(url, message, message_type):
     flash(message, message_type)
     return redirect(url)
 
+def render_error(error_message):
+    logger.error(error_message)
+    flash(error_message, 'danger')
+    return render_scm_template('error.html')
+
 ####################################################################################
 # TASTE
 ####################################################################################
@@ -1029,5 +1034,20 @@ def list_delivery_methods():
     delivery_methods = delivery_method_repo.get_all_delivery_methods()
     return render_scm_template('list_delivery_methods.html', delivery_methods=delivery_methods)
 
+@app.route('/list_sample_images', methods=['GET', 'POST'])
+def list_sample_images_default():
+    topic_recs = topic_repo.get_all_topics()
+
+    if len(topic_recs) == 0:
+        return render_error('No topic exists in the database. Please add a topic!')
+
+    return redirect('list_sample_images/' + str(topics_rec[0].id))
+
+@app.route('/list_sample_images/<int:topic_id>', methods=['GET', 'POST'])
+def list_sample_images_default(topic_id):
+    pass
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
+    
+
