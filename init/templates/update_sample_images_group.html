@@ -1,0 +1,114 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <h1>Update sample images group</h1>
+    <form method="POST" action="" enctype="multipart/form-data" id="update_decoration_form">
+      <table class="table table-striped" id="existing_images_table">
+	<thead>
+	  <tr>
+	    <th>Exsiting images</th>
+	    <th></th> 
+	  </tr>
+	</thead>
+	<tbody>
+	  {% for i in range(sample_image_path_recs|length) %}
+	  <tr>
+	    <td><img src="{{sample_image_path_recs[i].file_path}}" width="auto" height="100" alt="{{sample_image_path_recs[i].id}}" name="existing_image_{{i}}" id="existing_image_{{i}}" /></td>
+	    <td><a class="btn btn-default pullright" onclick="delete_row(this)" id="delete_btn_{{i}}">Delete</a></td>
+	  </tr>
+	  {% endfor %}
+	</tbody>
+      </table>
+
+      <b>Add new images</b>
+      <div id="wrapper" style="margin-top: 20px;">
+	<input id="fileUpload" name="file[]" multiple="multiple" type="file"/>
+	<div id="image_holder"></div>
+      </div>
+      <br/>
+      
+      <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
+    </form>
+  </div>
+</div>
+
+<script>
+  $('#update_decoration_form').submit(function() {
+  var existing_images = document.querySelectorAll('*[id^="existing_image_"]');
+  for (var i=0; i < existing_images.length; i++)
+  {
+  var existing_image_input = "<input name='" + existing_images[i].name + "' value='" + existing_images[i].alt + "'>"
+  $(this).append(existing_image_input)
+  }
+  
+  })
+  
+  function delete_row(btn)
+  {
+    var strIndex = get_index(btn)
+    var intIndex = parseInt(strIndex)
+  
+    var row = btn.parentNode.parentNode
+    row.parentNode.removeChild(row)
+
+    var len = document.getElementById("existing_images_table").rows.length - 1
+    var existing_images = document.querySelectorAll('*[id^="existing_image_"]');
+    var delete_btns = document.querySelectorAll('*[id^="delete_btn__"]');
+    for (var i = intIndex; i < len; i++)
+    {			     
+			       existing_images[i].name = "existing_image_" + i.toString()
+			       existing_images[i].id = "existing_image_" + i.toString()
+			       delete_btns[i].name = "delete_btn_" + i.toString()
+			       delete_btns[i].id = "delete_btn_" + i.toString()
+			       
+    }
+			       
+  }
+			       
+  $(document).ready(function() {
+  $("#fileUpload").on('change', function() {
+    var countFiles = $(this)[0].files.length;
+    var imgPath = $(this)[0].value;
+    var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+    var image_holder = $("#image_holder");
+
+    image_holder.empty();
+
+    if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg")
+    {
+	if (typeof(FileReader) != "undefined")
+	{
+	    //loop for each file selected for uploaded.
+	    for (var i = 0; i < countFiles; i++)
+	    {
+		var reader = new FileReader();
+		reader.onload = function(e)
+		{
+		    $("<img />", {
+			"src": e.target.result,
+			"class": "thumb-image"
+		    }).appendTo(image_holder);
+		}
+		image_holder.show();
+		reader.readAsDataURL($(this)[0].files[i]);
+	    }
+	}
+	else
+	{
+	    alert("This browser does not support FileReader.");
+	}
+    }
+    else
+    {
+	alert("Please select only images");
+    }
+  });
+});
+</script>
+
+{% endblock %}

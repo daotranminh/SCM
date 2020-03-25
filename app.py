@@ -1077,6 +1077,44 @@ def add_sample_images_group(topic_id):
     return render_scm_template('add_sample_images_group.html',
                                topic_rec=topic_rec)
 
+@app.route('/update_sample_images_group/<int:sample_images_group_id>', methods=['GET', 'POST'])
+def update_sample_images_group(sample_images_group_id):
+    sample_image_path_recs = sample_image_path_repo.get_sample_image_paths(sample_images_group_id)
+
+    if request.method == 'POST':
+        try:
+            remaining_sample_image_path_ids = __extract_remaining_image_path_ids(request.form)
+            uploaded_files = request.files.getlist('file[]')
+            sample_image_path_repo.update_sample_image_paths(sample_images_group_id,
+                                                             sample_image_path_recs,
+                                                             remaining_sample_image_path_ids,
+                                                             uploaded_files)
+            db.session.commit()
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('update_sample_images_group.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    sample_image_path_recs=sample_image_path_recs)
+    
+    return render_scm_template('update_sample_images_group.html',
+                               sample_image_path_recs=sample_image_path_recs)
+
+def __extract_remaining_image_path_ids(props_dict):
+    i = 0
+    remaining_image_path_ids = []
+
+    while True:
+        existing_image_i = 'existing_image_' + str(i)
+        if existing_image_i not in props_dict:
+            break
+
+        remaining_image_path_ids.append(int(props_dict[existing_image_i]))
+        i += 1
+
+    return remaining_image_path_ids
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
     

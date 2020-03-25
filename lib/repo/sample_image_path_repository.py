@@ -83,4 +83,31 @@ class SampleImagePathRepository:
             logger.error(message)
             raise ScmException(ErrorCodes.ERROR_DELETE_SAMPLE_IMAGE_PATH_FAILED, message)
                 
-                
+    def update_sample_image_paths(self,
+                                  sample_images_group_id,
+                                  sample_image_path_recs,
+                                  remaining_sample_image_path_ids,
+                                  uploaded_files):
+        if len(remaining_sample_image_path_ids) < len(sample_image_path_recs):
+            for sample_image_path_rec in sample_image_path_recs:
+                if sample_image_path_rec.id not in remaining_sample_image_path_ids:
+                    self.db.session.delete(sample_image_path_rec)
+                    filepath_for_deleting = os.path.join('init', sample_image_path_rec.file_path[1:])
+                    os.remove(filepath_for_deleting)
+
+        self.add_sample_image_paths(sample_images_group_id,
+                                    uploaded_files)
+
+    def add_sample_image_paths(self,
+                               sample_images_group_id,
+                               uploaded_files):
+        for uploaded_file in uploaded_files:
+            filename = str(sample_images_group_id) + '_' + secure_filename(uploaded_file.filename)
+            filepath_for_saving = os.path.join('init/static', config['IMAGES_DB']['SAMPLE_IMAGES_FOLDER'], filename)
+            uploaded_file.save(filepath_for_saving)
+
+            filepath_for_db = url_for('static', filename=os.path.join(config['IMAGES_DB']['SAMPLE_IMAGES_FOLDER'], filename))
+            self.add_sample_image_path(sample_images_group_id,
+                                       filepath_for_db)
+        
+        
