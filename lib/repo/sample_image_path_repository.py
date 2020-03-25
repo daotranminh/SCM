@@ -33,10 +33,10 @@ class SampleImagePathRepository:
             all()
 
     def add_sample_image_path(self,
-                              sample_images_id,
+                              sample_images_group_id,
                               file_path):
         try:
-            sample_image_path_rec = SampleImagePath(sample_images_id=sample_images_id,
+            sample_image_path_rec = SampleImagePath(sample_images_group_id=sample_images_group_id,
                                                     file_path=file_path)
             self.db.session.add(sample_image_path_rec)
         except sqlalchemy.exc.SQLAlchemyError as ex:

@@ -26,8 +26,8 @@ class SampleImagesGroupRepository:
             filter(SampleImagesGroup.id == sample_images_group_id). \
             first()
 
-    def get_sample_images_group_by_topic(self,
-                                         topic_id):
+    def get_sample_images_groups_by_topic(self,
+                                          topic_id):
         return SampleImagesGroup.query. \
             filter(SampleImagesGroup.topic_id == topic_id). \
             all()
@@ -37,6 +37,8 @@ class SampleImagesGroupRepository:
         try:
             sample_images_group_rec = SampleImagesGroup(topic_id=topic_id)
             self.db.session.add(sample_images_group_rec)
+            self.db.session.flush()
+            return sample_images_group_rec.id
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add sample_images_group record. Detail: %s' % (str(ex))
             logger.error(message)

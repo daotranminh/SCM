@@ -87,8 +87,8 @@ formula_manager = FormulaManager(formula_repo,
                                  material_formula_repo,
                                  taste_repo)
 order_manager = OrderManager(order_repo)
-sample_images_group_manager = SampleImagesGroupManager(sample_image_path_repo,
-                                                       sample_images_group_repo)
+sample_images_group_manager = SampleImagesGroupManager(sample_images_group_repo,
+                                                       sample_image_path_repo)
 
 ####################################################################################
 # MENU
@@ -718,7 +718,7 @@ def add_decoration():
 
     if request.method == 'POST':
         try:
-            print(request.form)
+            #print(request.form)
             decoration_name = request.form['decoration_name']
             topic_id = int(request.form['topic_id'])
             decoration_description = request.form['decoration_description']
@@ -1050,6 +1050,24 @@ def list_sample_images(topic_id):
     return render_scm_template('list_sample_images.html',
                                topic_recs=topic_recs,
                                selected_topic_id=topic_id)
+
+@app.route('/add_sample_images_group/<int:topic_id>', methods=['GET', 'POST'])
+def add_sample_images_group(topic_id):
+    topic_rec = topic_repo.get_topic(topic_id)
+
+    if request.method == 'POST':
+        try:
+            uploaded_files = request.files.getlist('file[]')
+            sample_images_group_manager.add_sample_images_group(topic_id, uploaded_files)
+            db.session.commit()
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('add_sample_images_group.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex)
+    return render_scm_template('add_sample_images_group.html',
+                               topic_rec=topic_rec)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
