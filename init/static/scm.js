@@ -122,3 +122,16 @@ function update_cost(control)
     
     return false;
 }
+
+sComboBoxChangeOneLevel = function(element) {
+    $(element).select2();
+    jQuery(element).change(function() {
+	let currentHref = location.href;
+
+	let currentHrefComponents = currentHref.split("/");
+	let parentHref = currentHrefComponents.slice(0, currentHrefComponents.length-1).join("/");
+
+	let chosen_item = jQuery(this).val();
+	location.href = parentHref + "/" + chosen_item
+    })
+};

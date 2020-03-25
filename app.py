@@ -1041,11 +1041,15 @@ def list_sample_images_default():
     if len(topic_recs) == 0:
         return render_error('No topic exists in the database. Please add a topic!')
 
-    return redirect('list_sample_images/' + str(topics_rec[0].id))
+    return redirect('list_sample_images/' + str(topic_recs[0].id))
 
 @app.route('/list_sample_images/<int:topic_id>', methods=['GET', 'POST'])
-def list_sample_images_default(topic_id):
-    pass
+def list_sample_images(topic_id):
+    topic_recs = topic_repo.get_all_topics()
+
+    return render_scm_template('list_sample_images.html',
+                               topic_recs=topic_recs,
+                               selected_topic_id=topic_id)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
