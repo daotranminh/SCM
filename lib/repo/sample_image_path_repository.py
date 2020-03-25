@@ -5,6 +5,8 @@ from flask import url_for
 from flask_sqlalchemy import sqlalchemy
 from werkzeug.utils import secure_filename
 
+from sqlalchemy import desc
+
 from init import SampleImagePath, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
@@ -31,6 +33,25 @@ class SampleImagePathRepository:
         return SampleImagePath.query. \
             filter(SampleImagePath.sample_images_group_id == sample_images_group_id). \
             all()
+
+    def get_latest_3_sample_image_paths(self,
+                                       sample_images_group_id):
+        sample_image_recs = self.db.session.query(SampleImagePath.file_path). \
+            filter(SampleImagePath.sample_images_group_id == sample_images_group_id). \
+            order_by(desc(SampleImagePath.uploaded_on)). \
+            limit(3). \
+            all()
+
+        most_3_latest_sample_image_paths = []
+        for sample_image_rec in sample_image_recs:
+            most_3_latest_sample_image_paths.append(sample_image_rec.file_path)
+
+        l = len(most_3_latest_sample_image_paths)
+        if l < 3:
+            for i in range(l, 3):
+                most_3_latest_sample_image_paths.append('')
+
+        return most_3_latest_sample_image_paths
 
     def add_sample_image_path(self,
                               sample_images_group_id,

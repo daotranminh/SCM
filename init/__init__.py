@@ -166,3 +166,4 @@ class SampleImagePath(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     sample_images_group_id = Column(Integer, ForeignKey(SampleImagesGroup.id))
     file_path = Column(String(500))
+    uploaded_on = Column(DateTime(), default=datetime.datetime.utcnow)

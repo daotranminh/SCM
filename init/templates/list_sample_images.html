@@ -20,6 +20,35 @@
 	  {% endfor %}
 	</select>
       </div>
+
+      <table class="table table-striped">
+	<thead>
+	  <th></th>
+	  <th></th>
+	  <th></th>
+	  <th></th>
+	  <!-- -->
+	  <th></th>
+	  <th></th>
+	  <th></th>
+	</thead>
+	<tbody>
+	  {% for i in range(sample_images_group_recs|length) %}
+	  <tr>
+	    {% for j in range(3*i, 3*i+3) %}
+	    <td>
+	      {% if latest_groups_3_image_paths[j] != '' %}
+	      <img src="{{latest_groups_3_image_paths[j]}}" width="auto" height="50"/>
+	      {% endif %}
+	    </td>
+	    {% endfor %}
+	    <td><a href="" class="btn btn-default pullright">Details</a></td>
+	    <td><a href="" class="btn btn-default pullright">Update</a></td>
+	    <td><a href="" class="btn btn-default pullright">Delete</a></td>	    
+	  </tr>
+	  {% endfor %}
+	</tbody>
+      </table>
     </form>
 
     <a href="{{ url_for('add_sample_images_group', topic_id=selected_topic_id) }}"

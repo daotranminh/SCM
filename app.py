@@ -1046,9 +1046,15 @@ def list_sample_images_default():
 @app.route('/list_sample_images/<int:topic_id>', methods=['GET', 'POST'])
 def list_sample_images(topic_id):
     topic_recs = topic_repo.get_all_topics()
+    sample_images_group_recs = sample_images_group_repo.get_sample_images_groups_by_topic(topic_id)
+    latest_groups_3_image_paths = sample_images_group_manager.get_latest_groups_3_image_paths(sample_images_group_recs)
+
+    print(latest_groups_3_image_paths)
 
     return render_scm_template('list_sample_images.html',
                                topic_recs=topic_recs,
+                               sample_images_group_recs=sample_images_group_recs,
+                               latest_groups_3_image_paths=latest_groups_3_image_paths,
                                selected_topic_id=topic_id)
 
 @app.route('/add_sample_images_group/<int:topic_id>', methods=['GET', 'POST'])
@@ -1066,6 +1072,8 @@ def add_sample_images_group(topic_id):
                                                     ex.message,
                                                     'danger',
                                                     ex)
+        message = 'Successfully added a new sample images group.'
+        return redirect_with_message(url_for('list_sample_images', topic_id=topic_id), message, 'info')
     return render_scm_template('add_sample_images_group.html',
                                topic_rec=topic_rec)
 

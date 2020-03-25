@@ -20,6 +20,15 @@ class SampleImagesGroupManager:
         self.sample_images_group_repo = sample_images_group_repo
         self.sample_image_path_repo = sample_image_path_repo
 
+    def get_latest_groups_3_image_paths(self,
+                                        sample_images_group_recs):
+        latest_groups_3_image_paths = []
+        for sample_images_group_rec in sample_images_group_recs:
+            most_3_latest_sample_image_paths = self.sample_image_path_repo.get_latest_3_sample_image_paths(sample_images_group_rec.id)
+            latest_groups_3_image_paths += most_3_latest_sample_image_paths
+
+        return latest_groups_3_image_paths
+        
     def add_sample_images_group(self,
                                 topic_id,
                                 uploaded_files):
