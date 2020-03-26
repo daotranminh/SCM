@@ -46,7 +46,8 @@
 	    {% endfor %}
 	    <td><a href="" class="btn btn-default pullright">Details</a></td>
 	    <td><a href="{{ url_for('update_sample_images_group', sample_images_group_id=sample_images_group_recs[i].id) }}" class="btn btn-default pullright">Update</a></td>
-	    <td><a href="" class="btn btn-default pullright">Delete</a></td>	    
+	    <td><a href="{{ url_for('delete_sample_images_group',
+			 sample_images_group_id=sample_images_group_recs[i].id)}}" class="btn btn-default pullright">Delete</a></td>	    
 	  </tr>
 	  {% endfor %}
 	</tbody>

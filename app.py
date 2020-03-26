@@ -1049,8 +1049,6 @@ def list_sample_images(topic_id):
     sample_images_group_recs = sample_images_group_repo.get_sample_images_groups_by_topic(topic_id)
     latest_groups_3_image_paths = sample_images_group_manager.get_latest_groups_3_image_paths(sample_images_group_recs)
 
-    print(latest_groups_3_image_paths)
-
     return render_scm_template('list_sample_images.html',
                                topic_recs=topic_recs,
                                sample_images_group_recs=sample_images_group_recs,
@@ -1133,6 +1131,28 @@ def __extract_remaining_image_path_ids(props_dict):
         i += 1
 
     return remaining_image_path_ids
+
+@app.route('/delete_sample_images_group/<int:sample_images_group_id>', methods=['GET', 'POST'])
+def delete_sample_images_group(sample_images_group_id):
+    sample_images_group_rec = sample_images_group_repo.get_sample_images_group(sample_images_group_id)
+    topic_id = sample_images_group_rec.topic_id
+    sample_images_group_name = sample_images_group_rec.name
+
+    try:
+        sample_images_group_manager.delete_sample_images_group(sample_images_group_id)
+        db.session.commit()
+    except ScmException as ex:
+        db.session.rollback()
+        message = 'Failed to delete sample_images_group "%s" (%s)' % (sample_images_group_name, sample_images_group_id)
+        return redirect_with_message(url_for('list_sample_images', topic_id=topic_id),
+                                    message,
+                                    'danger')
+    
+    message = 'Successfully deleted sample_images_group "%s" (%s)' % (sample_images_group_name, sample_images_group_id)
+    return redirect_with_message(url_for('list_sample_images', topic_id=topic_id),
+                                message,
+                                'info')
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');

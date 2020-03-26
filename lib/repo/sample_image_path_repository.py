@@ -69,7 +69,7 @@ class SampleImagePathRepository:
                                   sample_images_group_id):
         sample_image_path_recs = self.get_sample_image_paths(sample_images_group_id)
         for sample_image_path_rec in sample_image_path_recs:
-            self.delete_sample_image_path_rec(sample_image_path_rec)
+            self.delete_sample_image_path(sample_image_path_rec)
         
     def delete_sample_image_path(self,
                                  sample_image_path_rec):
