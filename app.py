@@ -1083,11 +1083,18 @@ def add_sample_images_group(topic_id):
 @app.route('/update_sample_images_group/<int:sample_images_group_id>', methods=['GET', 'POST'])
 def update_sample_images_group(sample_images_group_id):
     sample_image_path_recs = sample_image_path_repo.get_sample_image_paths(sample_images_group_id)
+    sample_images_group_rec = sample_images_group_repo.get_sample_images_group(sample_images_group_id)
+    topic_recs = topic_repo.get_all_topics()
     
     if request.method == 'POST':
         try:
-            print(request.form)
             remaining_sample_image_path_ids = __extract_remaining_image_path_ids(request.form)
+            sample_images_group_name = request.form['sample_images_group_name']
+            topic_id = int(request.form['topic_id'])
+
+            sample_images_group_repo.update_sample_images_group(sample_images_group_id,
+                                                                topic_id,
+                                                                sample_images_group_name)
             
             uploaded_files = request.files.getlist('file[]')
             sample_image_path_repo.update_sample_image_paths(sample_images_group_id,
@@ -1104,9 +1111,13 @@ def update_sample_images_group(sample_images_group_id):
                                                     ex.message,
                                                     'danger',
                                                     ex,
+                                                    topic_recs=topics_recs,
+                                                    sample_images_group_rec=sample_images_group_rec,
                                                     sample_image_path_recs=sample_image_path_recs)
     
     return render_scm_template('update_sample_images_group.html',
+                               topic_recs=topic_recs,
+                               sample_images_group_rec=sample_images_group_rec,
                                sample_image_path_recs=sample_image_path_recs)
 
 def __extract_remaining_image_path_ids(props_dict):

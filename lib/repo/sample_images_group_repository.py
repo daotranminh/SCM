@@ -32,6 +32,15 @@ class SampleImagesGroupRepository:
             filter(SampleImagesGroup.topic_id == topic_id). \
             all()
 
+    def update_sample_images_group(self,
+                                   sample_images_group_id,
+                                   topic_id,
+                                   sample_images_group_name):
+        sample_images_group_rec = self.get_sample_images_group(sample_images_group_id)
+        if sample_images_group_rec is not None:
+            sample_images_group_rec.topic_id = topic_id
+            sample_images_group_rec.name = sample_images_group_name
+    
     def add_sample_images_group(self,
                                 topic_id,
                                 sample_images_group_name):
