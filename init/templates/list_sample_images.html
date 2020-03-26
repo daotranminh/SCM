@@ -27,6 +27,7 @@
 	  <th></th>
 	  <th></th>
 	  <th></th>
+	  <th></th>	  
 	  <!-- -->
 	  <th></th>
 	  <th></th>
@@ -35,6 +36,7 @@
 	<tbody>
 	  {% for i in range(sample_images_group_recs|length) %}
 	  <tr>
+	    <td>{{sample_images_group_recs[i].name}}</td>
 	    {% for j in range(3*i, 3*i+3) %}
 	    <td>
 	      {% if latest_groups_3_image_paths[j] != '' %}
