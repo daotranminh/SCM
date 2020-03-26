@@ -1063,8 +1063,11 @@ def add_sample_images_group(topic_id):
 
     if request.method == 'POST':
         try:
+            sample_images_group_name = request.form['sample_images_group_name']
             uploaded_files = request.files.getlist('file[]')
-            sample_images_group_manager.add_sample_images_group(topic_id, uploaded_files)
+            sample_images_group_manager.add_sample_images_group(topic_id,
+                                                                sample_images_group_name,
+                                                                uploaded_files)
             db.session.commit()
         except ScmException as ex:
             db.session.rollback()
@@ -1085,8 +1088,6 @@ def update_sample_images_group(sample_images_group_id):
         try:
             print(request.form)
             remaining_sample_image_path_ids = __extract_remaining_image_path_ids(request.form)
-
-            print(remaining_sample_image_path_ids)
             
             uploaded_files = request.files.getlist('file[]')
             sample_image_path_repo.update_sample_image_paths(sample_images_group_id,

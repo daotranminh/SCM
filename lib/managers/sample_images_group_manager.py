@@ -29,8 +29,10 @@ class SampleImagesGroupManager:
         
     def add_sample_images_group(self,
                                 topic_id,
+                                sample_images_group_name,
                                 uploaded_files):
-        new_sample_images_group_id = self.sample_images_group_repo.add_sample_images_group(topic_id)
+        new_sample_images_group_id = self.sample_images_group_repo.add_sample_images_group(topic_id,
+                                                                                           sample_images_group_name)
         self.sample_image_path_repo.add_sample_image_paths(new_sample_images_group_id,
                                                            uploaded_files)
         

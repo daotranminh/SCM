@@ -33,9 +33,11 @@ class SampleImagesGroupRepository:
             all()
 
     def add_sample_images_group(self,
-                                topic_id):
+                                topic_id,
+                                sample_images_group_name):
         try:
-            sample_images_group_rec = SampleImagesGroup(topic_id=topic_id)
+            sample_images_group_rec = SampleImagesGroup(topic_id=topic_id,
+                                                        name=sample_images_group_name)
             self.db.session.add(sample_images_group_rec)
             self.db.session.flush()
             return sample_images_group_rec.id

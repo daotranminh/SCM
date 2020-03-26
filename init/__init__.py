@@ -160,6 +160,7 @@ class SampleImagesGroup(db.Model):
     __tablename__ = 'sample_images_group'
     id = Column(Integer, autoincrement=True, primary_key=True)
     topic_id = Column(Integer, ForeignKey(Topic.id))
+    name = Column(String(100))    
 
 class SampleImagePath(db.Model):
     __tablename__ = 'sample_image_path'

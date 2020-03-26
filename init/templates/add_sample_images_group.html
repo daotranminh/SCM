@@ -8,6 +8,11 @@
   <div class="col-md-6 col-md-offset-3">
     <h1>Add a new sample images group for topic "{{topic_rec.name}}"</h1>
     <form method="POST" action="" enctype="multipart/form-data">
+      <div class="form-group">
+	<label for="sample_images_group_name">Sample images group name</label>
+	<input type="text" name="sample_images_group_name"><br>
+      </div>
+
       <div id="wrapper" style="margin-top: 20px;">
 	<input id="fileUpload" name="file[]" multiple="multiple" type="file"/>
 	<div id="image_holder"></div>
