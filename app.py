@@ -1080,16 +1080,23 @@ def add_sample_images_group(topic_id):
 @app.route('/update_sample_images_group/<int:sample_images_group_id>', methods=['GET', 'POST'])
 def update_sample_images_group(sample_images_group_id):
     sample_image_path_recs = sample_image_path_repo.get_sample_image_paths(sample_images_group_id)
-
+    
     if request.method == 'POST':
         try:
+            print(request.form)
             remaining_sample_image_path_ids = __extract_remaining_image_path_ids(request.form)
+
+            print(remaining_sample_image_path_ids)
+            
             uploaded_files = request.files.getlist('file[]')
             sample_image_path_repo.update_sample_image_paths(sample_images_group_id,
                                                              sample_image_path_recs,
                                                              remaining_sample_image_path_ids,
                                                              uploaded_files)
             db.session.commit()
+            sample_image_path_recs = sample_image_path_repo.get_sample_image_paths(sample_images_group_id)
+            message = 'Successfully updated sample images'
+            flash(message, 'info')
         except ScmException as ex:
             db.session.rollback()
             return render_scm_template_with_message('update_sample_images_group.html',

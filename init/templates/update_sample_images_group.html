@@ -7,7 +7,7 @@
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
     <h1>Update sample images group</h1>
-    <form method="POST" action="" enctype="multipart/form-data" id="update_decoration_form">
+    <form method="POST" action="" enctype="multipart/form-data" id="update_sample_images_form">
       <table class="table table-striped" id="existing_images_table">
 	<thead>
 	  <tr>
@@ -38,7 +38,7 @@
 </div>
 
 <script>
-  $('#update_decoration_form').submit(function() {
+  $('#update_sample_images_form').submit(function() {
   var existing_images = document.querySelectorAll('*[id^="existing_image_"]');
   for (var i=0; i < existing_images.length; i++)
   {
@@ -58,7 +58,7 @@
 
     var len = document.getElementById("existing_images_table").rows.length - 1
     var existing_images = document.querySelectorAll('*[id^="existing_image_"]');
-    var delete_btns = document.querySelectorAll('*[id^="delete_btn__"]');
+    var delete_btns = document.querySelectorAll('*[id^="delete_btn_"]');
     for (var i = intIndex; i < len; i++)
     {			     
 			       existing_images[i].name = "existing_image_" + i.toString()
