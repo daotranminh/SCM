@@ -873,8 +873,6 @@ def add_order():
 
     if request.method == 'POST' and form.validate():
         customer_id = form.customer.data
-        taste_id = form.taste.data
-        decoration_id = form.decoration.data
         delivery_method_id = form.delivery_method.data
         ordered_on = form.ordered_on.data
         delivery_appointment = form.delivery_appointment.data
@@ -885,8 +883,6 @@ def add_order():
             with_box = True
 
         new_order_id = order_repo.add_order(customer_id,
-                                            taste_id,
-                                            decoration_id,
                                             delivery_method_id,
                                             ordered_on,
                                             delivery_appointment,

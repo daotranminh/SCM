@@ -40,8 +40,6 @@ class OrderRepository:
 
     def add_order(self,
                   customer_id,
-                  taste_id,
-                  decoration_id,
                   delivery_method_id,
                   ordered_on,
                   delivery_appointment,
@@ -50,11 +48,9 @@ class OrderRepository:
         try:
             box_status = int(BoxStatus.BOX_NOT_NEEDED)
             if with_box:
-                box_status = int(BoxStatus.BOX_WITH_CAKE_IN_PRODUCTION)
+                box_status = int(BoxStatus.BOX_WITH_PRODUCT_IN_PRODUCTION)
                 
             order_rec = Order(customer_id=customer_id,
-                              taste_id=taste_id,
-                              decoration_id=decoration_id,
                               delivery_method_id=delivery_method_id,
                               ordered_on=ordered_on,
                               delivery_appointment=delivery_appointment,
@@ -71,7 +67,6 @@ class OrderRepository:
     def update_order(self,
                      order_id,
                      customer_id,
-                     taste_id,
                      decoration_id,
                      delivery_method_id,
                      ordered_on,
@@ -79,7 +74,6 @@ class OrderRepository:
                      message):
         order_rec = self.get_order(order_id)
         order_rec.customer_id = customer_id
-        order_rec.taste_id = taste_id
         order_rec.decoration_id = decoration_id
         order_rec.delivery_method_id = delivery_method_id
         order_rec.ordered_on = ordered_on
