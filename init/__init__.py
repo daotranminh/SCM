@@ -118,12 +118,25 @@ class DeliveryMethod(db.Model):
     name = Column(String(50))
     description = Column(String(400))
 
+class SampleImagesGroup(db.Model):
+    __tablename__ = 'sample_images_group'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    topic_id = Column(Integer, ForeignKey(Topic.id))
+    name = Column(String(100))    
+
+class SampleImagePath(db.Model):
+    __tablename__ = 'sample_image_path'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    sample_images_group_id = Column(Integer, ForeignKey(SampleImagesGroup.id))
+    file_path = Column(String(500))
+    uploaded_on = Column(DateTime(), default=datetime.datetime.utcnow)
+
 class Order(db.Model):
     __tablename__ = 'order'
     id = Column(Integer, autoincrement=True, primary_key=True)
     customer_id = Column(Integer, ForeignKey(Customer.id))
-    taste_id = Column(Integer, ForeignKey(Taste.id))
-    decoration_id = Column(Integer, ForeignKey(Decoration.id))
+    registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
+    last_update_on = Column(DateTime(), default=datetime.datetime.utcnow)
     ordered_on = Column(DateTime(), default=datetime.datetime.utcnow)
     delivery_appointment = Column(DateTime())
     delivery_method_id = Column(Integer, ForeignKey(DeliveryMethod.id))
@@ -134,6 +147,23 @@ class Order(db.Model):
     paid_on = Column(DateTime())
     box_status = Column(Integer, default=0)
     box_returned_on = Column(DateTime())
+
+class Product(db.Model):
+    __tablename__ = 'product'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    order_id = Column(Integer, ForeignKey(Order.id))
+    taste_id = Column(Integer, ForeignKey(Taste.id))
+    decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
+    decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
+    formula_id = Column(Integer, ForeignKey(Formula.id))
+    sample_images_group_id = Column(Integer, ForeignKey(SampleImagesGroup.id))
+
+class ProductImagePath(db.Model):
+    __tablename__ = 'product_image_path'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    product_id = Column(Integer, ForeignKey(Product.id))
+    file_path = Column(String(500))
+    uploaded_on = Column(DateTime(), default=datetime.datetime.utcnow)
     
 class CostEstimation(db.Model):
     __tablename__ = 'cost_estimation'
@@ -148,23 +178,3 @@ class MaterialVersionCostEstimation(db.Model):
     cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
     ammount = Column(Numeric(10, 2))
     cost = Column(Numeric(10, 2))
-    
-class Cake(db.Model):
-    __tablename__ = 'cake'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    order_id = Column(Integer, ForeignKey(Order.id))
-    cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
-    photos_path = Column(String(400))
-
-class SampleImagesGroup(db.Model):
-    __tablename__ = 'sample_images_group'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    topic_id = Column(Integer, ForeignKey(Topic.id))
-    name = Column(String(100))    
-
-class SampleImagePath(db.Model):
-    __tablename__ = 'sample_image_path'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    sample_images_group_id = Column(Integer, ForeignKey(SampleImagesGroup.id))
-    file_path = Column(String(500))
-    uploaded_on = Column(DateTime(), default=datetime.datetime.utcnow)
