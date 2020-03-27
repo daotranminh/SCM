@@ -1,0 +1,109 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Sample images group {{sample_images_group_rec.name}}</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<div class="galleryThumbnailsContainer">
+  <div class="galleryThumbnails">
+    {% for i in range(sample_image_path_recs|length) %}
+    <a href="javascript: changeimage('{{i}}')">
+      <img src="{{sample_image_path_recs[i].file_path}}" class="thumbnailsimage{{i}}" width="auto" height="100" alt="" />
+    </a>
+    {% endfor %}
+  </div>  
+</div>
+
+<div class="galleryPreviewContainer">
+  <div class="galleryPreviewImage">
+    {% for i in range(sample_image_path_recs|length) %}
+    <img src="{{sample_image_path_recs[i].file_path}}" class="previewImage{{i}}" width="900" height="auto" alt="" />';
+    {% endfor %}
+  </div>
+    
+  <div class="galleryPreviewArrows">
+    <a href="#" class="previousSlideArrow" onclick="change_previous_image()">&lt;</a>
+    <a href="#" class="nextSlideArrow" onclick="change_next_image()">&gt;</a>
+  </div>
+
+  <div class="galleryNavigationBullets">
+    {% for i in range(sample_image_path_recs|length) %}
+    <a href="javascript: changeimage('{{i}}')" class="galleryBullet{{i}}"><span>Bullet</span></a>
+    {% endfor %}
+  </div>
+</div>
+
+<script type="text/javascript">
+  // init variables
+  var imagesTotal = {{sample_image_path_recs|length}};
+  var currentImage = 0;
+  var thumbsTotalWidth = 0;
+
+  $('a.galleryBullet' + currentImage).addClass("active");
+  $('a.thumbnailsimage' + currentImage).addClass("active");
+
+
+  // SET WIDTH for THUMBNAILS CONTAINER
+  $(window).load(function() {
+  $('.galleryThumbnails a img').each(function() {
+  thumbsTotalWidth += $(this).width() + 10 + 8;
+  });
+  $('.galleryThumbnails').width(thumbsTotalWidth);
+  });
+
+  // PREVIOUS ARROW CODE
+  function change_previous_image() {
+  $('img.previewImage' + currentImage).hide();
+  $('a.galleryBullet' + currentImage).removeClass("active");
+  $('a.thumbnailsimage' + currentImage).removeClass("active");
+
+  currentImage--;
+
+  if (currentImage == -1) {
+  currentImage = imagesTotal-1;
+  }
+  
+  $('a.galleryBullet' + currentImage).addClass("active");
+  $('a.thumbnailsimage' + currentImage).addClass("active");
+  $('img.previewImage' + currentImage).show();
+  return false;
+  }
+  // ===================
+
+  // NEXT ARROW CODE
+  function change_next_image() {
+  $('img.previewImage' + currentImage).hide();
+  $('a.galleryBullet' + currentImage).removeClass("active");
+  $('a.thumbnailsimage' + currentImage).removeClass("active");
+
+  currentImage++;
+
+  if (currentImage == imagesTotal) {
+  currentImage = 0;
+  }
+  
+  $('a.galleryBullet' + currentImage).addClass("active");
+  $('a.thumbnailsimage' + currentImage).addClass("active");
+  $('img.previewImage' + currentImage).show();
+  return false;
+  }
+  // ===================
+
+
+  // BULLETS CODE
+  function changeimage(imageNumber) {
+  $('img.previewImage' + currentImage).hide();
+  currentImage = imageNumber;
+  $('img.previewImage' + imageNumber).show();
+  $('.galleryNavigationBullets a').removeClass("active");
+  $('.galleryThumbnails a').removeClass("active");
+  $('a.galleryBullet' + imageNumber).addClass("active");
+  $('a.thumbnailsimage' + currentImage).addClass("active");
+  }
+  // ===================
+
+</script>
+
+{% endblock %}

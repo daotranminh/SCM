@@ -28,23 +28,21 @@
 	  <th></th>
 	  <th></th>
 	  <th></th>	  
-	  <!-- -->
-	  <th></th>
+	  <!-- -->	  
 	  <th></th>
 	  <th></th>
 	</thead>
 	<tbody>
 	  {% for i in range(sample_images_group_recs|length) %}
 	  <tr>
-	    <td>{{sample_images_group_recs[i].name}}</td>
+	    <td><a href="{{ url_for('sample_images_group_details', sample_images_group_id=sample_images_group_recs[i].id) }}">{{sample_images_group_recs[i].name}}</a></td>
 	    {% for j in range(3*i, 3*i+3) %}
 	    <td>
 	      {% if latest_groups_3_image_paths[j] != '' %}
 	      <img src="{{latest_groups_3_image_paths[j]}}" width="auto" height="50"/>
 	      {% endif %}
 	    </td>
-	    {% endfor %}
-	    <td><a href="" class="btn btn-default pullright">Details</a></td>
+	    {% endfor %}	    
 	    <td><a href="{{ url_for('update_sample_images_group', sample_images_group_id=sample_images_group_recs[i].id) }}" class="btn btn-default pullright">Update</a></td>
 	    <td><a href="{{ url_for('delete_sample_images_group',
 			 sample_images_group_id=sample_images_group_recs[i].id)}}" class="btn btn-default pullright">Delete</a></td>	    

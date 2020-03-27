@@ -1153,6 +1153,16 @@ def delete_sample_images_group(sample_images_group_id):
                                 message,
                                 'info')
 
+@app.route('/sample_images_group_details/<int:sample_images_group_id>', methods=['GET', 'POST'])
+def sample_images_group_details(sample_images_group_id):
+    sample_images_group_rec = sample_images_group_repo.get_sample_images_group(sample_images_group_id)
+    sample_image_path_recs = sample_image_path_repo.get_sample_image_paths(sample_images_group_id)
+
+    print(sample_image_path_recs)
+
+    return render_scm_template('sample_images_group_details.html',
+                                sample_images_group_rec=sample_images_group_rec,
+                                sample_image_path_recs=sample_image_path_recs)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
