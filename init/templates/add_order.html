@@ -37,12 +37,34 @@
       </div>
 
       <div class="form-group" name="product[]">
+            <br/>
+            <p><label id="product_label_0">Details on product 1:</label></p>
+            <p>
             <label for="taste_choices_0">Taste</label>
             <select id="taste_choices_0" name="taste_choices_0">
 	      {% for taste_choice in taste_choices %}
 	            <option value="{{taste_choice[0]}}">{{taste_choice[1]}}</option>
 	      {% endfor %}
-	      </select>
+            </select>
+            </p>
+            
+            <p>
+            <label for="decoration_form_choices_0">Decoration form</label>
+            <select id="decoration_form_choices_0" name="decoration_form_choices_0">
+	      {% for decoration_form_choice in decoration_form_choices %}
+	            <option value="{{decoration_form_choice[0]}}">{{decoration_form_choice[1]}}</option>
+	      {% endfor %}
+            </select>
+            </p>
+
+            <p>
+            <label for="decoration_technique_choices_0">Decoration technique</label>
+            <select id="decoration_technique_choices_0" name="decoration_technique_choices_0">
+	      {% for decoration_technique_choice in decoration_technique_choices %}
+	            <option value="{{decoration_technique_choice[0]}}">{{decoration_technique_choice[1]}}</option>
+	      {% endfor %}
+            </select>
+            </p>
       </div>
 
       <p><button type="button" 

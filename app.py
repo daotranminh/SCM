@@ -46,6 +46,8 @@ from lib.managers.decoration_manager import DecorationManager
 from lib.managers.delivery_method_manager import DeliveryMethodManager
 from lib.managers.order_manager import OrderManager
 from lib.managers.sample_images_group_manager import SampleImagesGroupManager
+from lib.managers.decoration_form_manager import DecorationFormManager
+from lib.managers.decoration_technique_manager import DecorationTechniqueManager
 
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
@@ -72,7 +74,6 @@ order_repo = OrderRepository(db)
 sample_image_path_repo = SampleImagePathRepository(db)
 sample_images_group_repo = SampleImagesGroupRepository(db)
 
-
 taste_manager = TasteManager(taste_repo)
 delivery_method_manager = DeliveryMethodManager(delivery_method_repo)
 decoration_manager = DecorationManager(decoration_repo,
@@ -89,6 +90,8 @@ formula_manager = FormulaManager(formula_repo,
 order_manager = OrderManager(order_repo)
 sample_images_group_manager = SampleImagesGroupManager(sample_images_group_repo,
                                                        sample_image_path_repo)
+decoration_form_manager = DecorationFormManager(decoration_form_repo)
+decoration_technique_manager = DecorationTechniqueManager(decoration_technique_repo)
 
 ####################################################################################
 # MENU
@@ -863,6 +866,8 @@ def add_order():
     customer_choices = customer_manager.get_customer_choices()
     delivery_method_choices = delivery_method_manager.get_delivery_method_choices()
     taste_choices = taste_manager.get_taste_choices()
+    decoration_form_choices = decoration_form_manager.get_decoration_form_choices()
+    decoration_technique_choices = decoration_technique_manager.get_decoration_technique_choices()
 
     if request.method == 'POST':
         print(request.form)
@@ -870,7 +875,9 @@ def add_order():
     return render_scm_template('add_order.html', 
                                 customer_choices=customer_choices,
                                 delivery_method_choices=delivery_method_choices,
-                                taste_choices=taste_choices)    
+                                taste_choices=taste_choices,
+                                decoration_form_choices=decoration_form_choices,
+                                decoration_technique_choices=decoration_technique_choices)    
 
 @app.route('/list_orders', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_orders/', methods=['GET', 'POST'], defaults={'page':1})
@@ -1015,6 +1022,10 @@ def list_sample_images_default():
         return render_error('No topic exists in the database. Please add a topic!')
 
     return redirect('list_sample_images/' + str(topic_recs[0].id))
+
+####################################################################################
+# SAMPLE IMAGES
+####################################################################################
 
 @app.route('/list_sample_images/<int:topic_id>', methods=['GET', 'POST'])
 def list_sample_images(topic_id):
