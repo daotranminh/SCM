@@ -481,7 +481,7 @@ def list_materials():
 ####################################################################################
 @app.route('/add_customer', methods=['GET', 'POST'])
 def add_customer():
-    customer_choices = customer_manager.get_customer_choices()
+    customer_choices = customer_manager.get_customer_choices1()
     form = AddCustomerForm(request.form, customer_choices)
 
     if request.method == 'POST' and form.validate():
@@ -519,7 +519,7 @@ def add_customer():
 
 @app.route('/update_customer/<int:customer_id>', methods=['GET', 'POST'])
 def update_customer(customer_id):
-    customer_choices = customer_manager.get_customer_choices()
+    customer_choices = customer_manager.get_customer_choices1()
     if request.method == 'GET':
         customer_rec = customer_repo.get_customer(customer_id)
         form = UpdateCustomerForm(request.form, customer_choices, customer_rec)
@@ -861,39 +861,16 @@ def decoration_details(decoration_id):
 @app.route('/add_order', methods=['GET', 'POST'])
 def add_order():
     customer_choices = customer_manager.get_customer_choices()
-    taste_choices = taste_manager.get_taste_choices()
-    decoration_choices = decoration_manager.get_decoration_choices()
     delivery_method_choices = delivery_method_manager.get_delivery_method_choices()
+    taste_choices = taste_manager.get_taste_choices()
 
-    form = AddOrderForm(request.form,
-                        customer_choices,
-                        taste_choices,
-                        decoration_choices,
-                        delivery_method_choices)
+    if request.method == 'POST':
+        print(request.form)
 
-    if request.method == 'POST' and form.validate():
-        customer_id = form.customer.data
-        delivery_method_id = form.delivery_method.data
-        ordered_on = form.ordered_on.data
-        delivery_appointment = form.delivery_appointment.data
-        message = form.message.data
-
-        with_box = False
-        if form.with_box.data == [0]:
-            with_box = True
-
-        new_order_id = order_repo.add_order(customer_id,
-                                            delivery_method_id,
-                                            ordered_on,
-                                            delivery_appointment,
-                                            message,
-                                            with_box)
-
-        db.session.commit()
-        message = 'Successfully added order %s' % new_order_id
-        return redirect_with_message(url_for('list_orders'), message, 'info')
-    else:
-        return render_scm_template('add_order.html', form=form)
+    return render_scm_template('add_order.html', 
+                                customer_choices=customer_choices,
+                                delivery_method_choices=delivery_method_choices,
+                                taste_choices=taste_choices)    
 
 @app.route('/list_orders', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_orders/', methods=['GET', 'POST'], defaults={'page':1})

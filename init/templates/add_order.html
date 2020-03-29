@@ -9,30 +9,57 @@
     <h1>Add a new order</h1>
     <form method="POST" action="">
       <div class="form-group">
-	{{render_field(form.customer, class_="form-control")}}
+            <label for="customer_id">Customer</label>
+            <select id="customer_id" name="customer_id">
+              {% for customer_choice in customer_choices %}
+              <option value="{{customer_choice[0]}}">{{customer_choice[1]}}</option>
+              {% endfor %}
+            </select>
       </div>
+
       <div class="form-group">
-      {{render_field(form.ordered_on, class_="form-control")}}
+            <label for="ordered_on">Ordered on</label>
+            <input type="text" name="ordered_on" value="">
       </div>
+
       <div class="form-group">
-      {{render_field(form.delivery_appointment, class_="form-control")}}
+            <label for="delivery_appointment">Delivery appointment</label>
+            <input type="text" name="delivery_appointment" value="">
       </div>
+
       <div class="form-group">
-	{{render_field(form.delivery_method, class_="form-control")}}
+            <label for="delivery_method_id">Delivery method</label>
+            <select id="delivery_method_id" name="delivery_method_id">
+              {% for delivery_method_choice in delivery_method_choices %}
+              <option value="{{delivery_method_choice[0]}}">{{delivery_method_choice[1]}}</option>
+              {% endfor %}
+            </select>
       </div>
-      <div class="form-group">
-	{{render_field(form.with_box, class_="form-control")}}
-      </div>      
-      <div class="form-group">
-	{{render_field(form.message, class_="form-control")}}
+
+      <div class="form-group" name="product[]">
+            <label for="taste_choices_0">Taste</label>
+            <select id="taste_choices_0" name="taste_choices_0">
+	      {% for taste_choice in taste_choices %}
+	            <option value="{{taste_choice[0]}}">{{taste_choice[1]}}</option>
+	      {% endfor %}
+	      </select>
       </div>
+
+      <p><button type="button" 
+            class="btn btn-default pullright" 
+            onclick="add_product_to_order();">Add product to order</button></p>
+
+
       <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
     </form>
   </div>
 </div>
 
 <script>
-  $('#customer').select2();
+  $('#delivery_method_id').select2();
+  $('#customer_id').select2();
+  $('*[name=ordered_on]').appendDtpicker();
+  $('*[name=delivery_appointment]').appendDtpicker();
 </script>
 
 {% endblock %}

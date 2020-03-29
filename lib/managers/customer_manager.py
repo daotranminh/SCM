@@ -35,10 +35,15 @@ class CustomerManager:
                                    customer_rec.registered_on)
         return customer_dto
         
+    def get_customer_choices1(self):
+        customer_choices = self.get_customer_choices()
+        customer_choices.insert(0, (-1, ''))
+        return customer_choices
+
     def get_customer_choices(self):
         customer_recs = self.customer_repo.get_all_customers()
 
-        customer_choices = [(-1, '')]
+        customer_choices = []
         for customer_rec in customer_recs:
             customer_choices.append((customer_rec.id, customer_rec.name))
 

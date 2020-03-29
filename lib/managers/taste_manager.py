@@ -15,8 +15,7 @@ class TasteManager:
 
     def get_taste_choices(self):
         taste_recs = self.taste_repo.get_all_tastes()
-
-        taste_choices = [(-1, '')]
+        taste_choices = []
         for taste_rec in taste_recs:
             taste_choices.append((taste_rec.id, taste_rec.name))
 
