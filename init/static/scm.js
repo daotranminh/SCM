@@ -1,3 +1,33 @@
+function add_product_to_order()
+{
+    var products_list = document.getElementsByName("product[]")
+    var len = products_list.length
+
+    var last_product = products_list[len - 1]
+    var next_product = last_product.cloneNode(true)
+    next_product.id = "product_" + len.toString()
+
+    var product_label = next_product.children[1].children[0]
+    product_label.innerHTML = `Details on product ${(len + 1).toString()}:`
+
+    var taste_choices = next_product.children[2].children[1]
+    var decoration_form_choices = next_product.children[3].children[1]    
+    var decoration_technique_choices = next_product.children[4].children[1]
+    var delete_btn = next_product.children[5].children[0]
+
+    taste_choices.id = "taste_choices_" + len.toString()
+    decoration_form_choices.id = "decoration_form_choices_" + len.toString()
+    decoration_technique_choices.id = "decoration_technique_choices_" + len.toString()
+    delete_btn.id = "delete_product_" + len.toString()
+
+    taste_choices.name = "taste_choices_" + len.toString()
+    decoration_form_choices.name = "decoration_form_choices_" + len.toString()
+    decoration_technique_choices.name = "decoration_technique_choices_" + len.toString()
+
+    last_product.insertAdjacentElement("afterend", next_product)
+    return false;
+}
+
 function add_another_material()
 {
     var materials_list = document.getElementsByName("material[]")
@@ -26,7 +56,7 @@ function add_another_material()
 
     for (var i = 0; i < material_choices.options.length; i++)
     {
-	material_choices.options[0].selected = false
+	material_choices.options[i].selected = false
     }
     
     material_choices.options[0].selected = true

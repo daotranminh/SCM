@@ -39,6 +39,7 @@
       <div class="form-group" name="product[]">
             <br/>
             <p><label id="product_label_0">Details on product 1:</label></p>
+            
             <p>
             <label for="taste_choices_0">Taste</label>
             <select id="taste_choices_0" name="taste_choices_0">
@@ -65,8 +66,17 @@
 	      {% endfor %}
             </select>
             </p>
+
+            <p>
+            <button type="button"
+		class="btn btn-default pullright"
+		id="delete_product_0"
+            onclick="delete_product(this);">Delete</button>
+            </p>
+            <hr>
       </div>
 
+      <br/>
       <p><button type="button" 
             class="btn btn-default pullright" 
             onclick="add_product_to_order();">Add product to order</button></p>
