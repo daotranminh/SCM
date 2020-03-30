@@ -75,6 +75,7 @@ function add_another_material()
     var len = materials_list.length
   
     var last_material = materials_list[len - 1]
+    last_material.id = "material_" + (len-1).toString()
     var next_material = last_material.cloneNode(true)
     next_material.id = "material_" + len.toString()
 
@@ -118,36 +119,44 @@ function get_index(control)
 
 function delete_material(control)
 {
-    var strIndex = get_index(control)
-    var intIndex = parseInt(strIndex)
-    document.getElementById("material_" + strIndex).remove()
-
     var materials_list = document.getElementsByName("material[]")
+    var len = materials_list.length
 
-    for (var i = intIndex; i < materials_list.length; i++)
+    if (len > 1)
     {
-	material = materials_list[i]
-	material.id = "material_" + i.toString()
-    
-	var material_choices = material.children[0]
-	var material_amount = material.children[1]
-	var material_unit_price = material.children[2]
-	var material_cost = material.children[3]
-	var delete_btn = material.children[4]
+        var strIndex = get_index(control)
+        var intIndex = parseInt(strIndex)
+        document.getElementById("material_" + strIndex).remove()
 
-	material_choices.id = "material_choices_" + i.toString()
-	material_amount.id = "material_amount_" + i.toString()
-	material_unit_price.id = "material_unit_price_" + i.toString()
-	material_cost.id = "material_cost_" + i.toString()
-	delete_btn.id = "delete_material_" + i.toString()
+        materials_list = document.getElementsByName("material[]")
 
-	material_choices.name = "material_choices_" + i.toString()
-	material_amount.name = "material_amount_" + i.toString()
-	material_unit_price.name = "material_unit_price_" + i.toString()
-	material_cost.name = "material_cost_" + i.toString()
+        for (var i = intIndex; i < materials_list.length; i++)
+        {
+            material = materials_list[i]
+            material.id = "material_" + i.toString()
+            
+            var material_choices = material.children[0]
+            var material_amount = material.children[1]
+            var material_unit_price = material.children[2]
+            var material_cost = material.children[3]
+            var delete_btn = material.children[4]
+
+            material_choices.id = "material_choices_" + i.toString()
+            material_amount.id = "material_amount_" + i.toString()
+            material_unit_price.id = "material_unit_price_" + i.toString()
+            material_cost.id = "material_cost_" + i.toString()
+            delete_btn.id = "delete_material_" + i.toString()
+
+            material_choices.name = "material_choices_" + i.toString()
+            material_amount.name = "material_amount_" + i.toString()
+            material_unit_price.name = "material_unit_price_" + i.toString()
+            material_cost.name = "material_cost_" + i.toString()
+        }
     }
-
-    var materials_list = document.getElementsByName("material[]")    
+    else
+    {
+        window.alert('Cannot delete this only material!')
+    }
 }
 
 function sync_unit_price(control)
