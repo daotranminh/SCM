@@ -4,6 +4,7 @@ function add_product_to_order()
     var len = products_list.length
 
     var last_product = products_list[len - 1]
+    last_product.id = "product_" + (len-1).toString()
     var next_product = last_product.cloneNode(true)
     next_product.id = "product_" + len.toString()
 
@@ -28,6 +29,46 @@ function add_product_to_order()
     return false;
 }
 
+function delete_product(control)
+{
+    var products_list = document.getElementsByName("product[]")
+    var len = products_list.length
+    if (len > 1)
+    {
+        var strIndex = get_index(control)
+        var intIndex = parseInt(strIndex)
+        document.getElementById("product_" + strIndex).remove()
+        products_list = document.getElementsByName("product[]")
+
+        for (var i = intIndex; i < products_list.length; i++)
+        {
+	        product = products_list[i]
+	        product.id = "product_" + i.toString()
+    
+            var product_label = product.children[1].children[0]
+            product_label.innerHTML = `Details on product ${(i+1).toString()}:`
+
+            var taste_choices = product.children[2].children[1]
+            var decoration_form_choices = product.children[3].children[1]    
+            var decoration_technique_choices = product.children[4].children[1]
+            var delete_btn = product.children[5].children[0]
+
+	        taste_choices.id = "taste_choices_" + i.toString()
+	        decoration_form_choices.id = "decoration_form_choices_" + i.toString()
+	        decoration_technique_choices.id = "decoration_technique_choices_" + i.toString()
+	        delete_btn.id = "delete_product_" + i.toString()
+
+	        taste_choices.name = "taste_choices_" + i.toString()
+	        decoration_form_choices.name = "decoration_form_choices_" + i.toString()
+            decoration_technique_choices.name = "decoration_technique_choices_" + i.toString()
+        }
+    }
+    else
+    {
+        window.alert('Cannot delete this only product!')
+    }
+}
+
 function add_another_material()
 {
     var materials_list = document.getElementsByName("material[]")
@@ -36,7 +77,7 @@ function add_another_material()
     var last_material = materials_list[len - 1]
     var next_material = last_material.cloneNode(true)
     next_material.id = "material_" + len.toString()
-    
+
     var material_choices = next_material.children[0]
     var material_amount = next_material.children[1]
     var material_unit_price = next_material.children[2]
