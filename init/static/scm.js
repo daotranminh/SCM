@@ -11,16 +11,20 @@ function add_product_to_order()
     var product_label = next_product.children[1].children[0]
     product_label.innerHTML = `Details on product ${(len + 1).toString()}:`
 
-    var taste_choices = next_product.children[2].children[1]
-    var decoration_form_choices = next_product.children[3].children[1]    
-    var decoration_technique_choices = next_product.children[4].children[1]
-    var delete_btn = next_product.children[5].children[0]
+    var product_name = next_product.children[2].children[1]
+    var taste_choices = next_product.children[3].children[1]
+    var decoration_form_choices = next_product.children[4].children[1]    
+    var decoration_technique_choices = next_product.children[5].children[1]
+    var delete_btn = next_product.children[6].children[0]
 
+    product_name.id = "product_name_" + len.toString()
+    product_name.value = ""
     taste_choices.id = "taste_choices_" + len.toString()
     decoration_form_choices.id = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.id = "decoration_technique_choices_" + len.toString()
     delete_btn.id = "delete_product_" + len.toString()
 
+    product_name.name = "product_name_" + len.toString()
     taste_choices.name = "taste_choices_" + len.toString()
     decoration_form_choices.name = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.name = "decoration_technique_choices_" + len.toString()
@@ -48,16 +52,19 @@ function delete_product(control)
             var product_label = product.children[1].children[0]
             product_label.innerHTML = `Details on product ${(i+1).toString()}:`
 
-            var taste_choices = product.children[2].children[1]
-            var decoration_form_choices = product.children[3].children[1]    
-            var decoration_technique_choices = product.children[4].children[1]
-            var delete_btn = product.children[5].children[0]
+            var product_name = product.children[2].children[1]
+            var taste_choices = product.children[3].children[1]
+            var decoration_form_choices = product.children[4].children[1]    
+            var decoration_technique_choices = product.children[5].children[1]
+            var delete_btn = product.children[6].children[0]
 
+            product_name.id = "product_name_" + i.toString()
 	        taste_choices.id = "taste_choices_" + i.toString()
 	        decoration_form_choices.id = "decoration_form_choices_" + i.toString()
 	        decoration_technique_choices.id = "decoration_technique_choices_" + i.toString()
 	        delete_btn.id = "delete_product_" + i.toString()
 
+            product_name.name = "product_name_" + i.toString()
 	        taste_choices.name = "taste_choices_" + i.toString()
 	        decoration_form_choices.name = "decoration_form_choices_" + i.toString()
             decoration_technique_choices.name = "decoration_technique_choices_" + i.toString()

@@ -151,6 +151,7 @@ class Order(db.Model):
 class Product(db.Model):
     __tablename__ = 'product'
     id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(100))
     order_id = Column(Integer, ForeignKey(Order.id))
     taste_id = Column(Integer, ForeignKey(Taste.id))
     decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
