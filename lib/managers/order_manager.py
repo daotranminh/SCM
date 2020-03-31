@@ -34,9 +34,6 @@ class OrderManager:
                                                 ordered_on,
                                                 delivery_appointment,
                                                 message)
-        print(new_order_id)
-
-
         for i in range(len(product_names)):
             self.product_repo.add_product(product_names[i],
                                           new_order_id,
