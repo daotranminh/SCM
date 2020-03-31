@@ -1,7 +1,8 @@
 import logging
-from flask import Flask, Response, render_template, request, flash, redirect, make_response, session, url_for
-
 import os
+import datetime
+
+from flask import Flask, Response, render_template, request, flash, redirect, make_response, session, url_for
 from werkzeug.utils import secure_filename
 
 from init import app, db, config
@@ -34,6 +35,8 @@ from lib.repo.taste_repository import TasteRepository
 from lib.repo.topic_repository import TopicRepository
 from lib.repo.formula_repository import FormulaRepository
 from lib.repo.order_repository import OrderRepository
+from lib.repo.product_repository import ProductRepository
+from lib.repo.product_image_path_repository import ProductImagePathRepository
 from lib.repo.sample_image_path_repository import SampleImagePathRepository
 from lib.repo.sample_images_group_repository import SampleImagesGroupRepository
 
@@ -45,6 +48,7 @@ from lib.managers.formula_manager import FormulaManager
 from lib.managers.decoration_manager import DecorationManager
 from lib.managers.delivery_method_manager import DeliveryMethodManager
 from lib.managers.order_manager import OrderManager
+from lib.managers.product_manager import ProductManager
 from lib.managers.sample_images_group_manager import SampleImagesGroupManager
 from lib.managers.decoration_form_manager import DecorationFormManager
 from lib.managers.decoration_technique_manager import DecorationTechniqueManager
@@ -73,6 +77,8 @@ formula_repo = FormulaRepository(db)
 order_repo = OrderRepository(db)
 sample_image_path_repo = SampleImagePathRepository(db)
 sample_images_group_repo = SampleImagesGroupRepository(db)
+product_repo = ProductRepository(db)
+product_image_path_repo = ProductImagePathRepository(db)
 
 taste_manager = TasteManager(taste_repo)
 delivery_method_manager = DeliveryMethodManager(delivery_method_repo)
@@ -87,11 +93,13 @@ topic_manager = TopicManager(topic_repo)
 formula_manager = FormulaManager(formula_repo,
                                  material_formula_repo,
                                  taste_repo)
-order_manager = OrderManager(order_repo)
+order_manager = OrderManager(order_repo,
+                            product_repo)
 sample_images_group_manager = SampleImagesGroupManager(sample_images_group_repo,
                                                        sample_image_path_repo)
 decoration_form_manager = DecorationFormManager(decoration_form_repo)
 decoration_technique_manager = DecorationTechniqueManager(decoration_technique_repo)
+product_manager = ProductManager(product_repo, product_image_path_repo)
 
 ####################################################################################
 # MENU
@@ -861,6 +869,52 @@ def decoration_details(decoration_id):
 ####################################################################################
 # ORDER
 ####################################################################################
+
+def __extract_order_props(props_dict):
+    customer_id = int(props_dict['customer_id'])
+    ordered_on = datetime.datetime.strptime(props_dict['ordered_on'], '%Y-%m-%d %H:%M')
+    delivery_appointment = datetime.datetime.strptime(props_dict['delivery_appointment'], '%Y-%m-%d %H:%M')
+    delivery_method_id = int(props_dict['delivery_method_id'])
+    message = props_dict['message']
+
+    product_names = []
+    taste_ids = []
+    decoration_form_ids = []
+    decoration_technique_ids = []
+    with_boxes = []
+
+    i = 0
+    while True:
+        product_name_id = 'product_name_' + str(i)
+        taste_choices_id = 'taste_choices_' + str(i)
+        decoration_form_choices_id = 'decoration_form_choices_' + str(i)
+        decoration_technique_choices_id = 'decoration_technique_choices_' + str(i)
+        with_box_id = 'with_box_' + str(i)
+        
+        if product_name_id in props_dict:
+            product_names.append(props_dict[product_name_id])
+            taste_ids.append(int(props_dict[taste_choices_id]))
+            decoration_form_ids.append(int(props_dict[decoration_form_choices_id]))
+            decoration_technique_ids.append(int(props_dict[decoration_technique_choices_id]))
+            if with_box_id in props_dict:
+                with_boxes.append(True)
+            else:
+                with_boxes.append(False)
+            i += 1
+        else:
+            break
+
+    return customer_id, \
+           ordered_on, \
+           delivery_appointment, \
+           delivery_method_id, \
+           message, \
+           product_names, \
+           taste_ids, \
+           decoration_form_ids, \
+           decoration_technique_ids, \
+           with_boxes
+
 @app.route('/add_order', methods=['GET', 'POST'])
 def add_order():
     customer_choices = customer_manager.get_customer_choices()
@@ -871,6 +925,35 @@ def add_order():
 
     if request.method == 'POST':
         print(request.form)
+        try:
+            customer_id, \
+            ordered_on, \
+            delivery_appointment, \
+            delivery_method_id, \
+            message, \
+            product_names, \
+            taste_ids, \
+            decoration_form_ids, \
+            decoration_technique_ids, \
+            with_boxes = __extract_order_props(request.form)
+
+            print(product_names)
+
+            new_order_id = order_manager.add_order(customer_id,
+                                                   ordered_on,
+                                                   delivery_appointment,
+                                                   delivery_method_id,
+                                                   message,
+                                                   product_names,
+                                                   taste_ids,
+                                                   decoration_form_ids,
+                                                   decoration_technique_ids,
+                                                   with_boxes)
+            db.session.commit()
+            message = 'Successfully added order %s' % str(new_order_id)
+            return redirect_with_message(url_for('list_orders'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
 
     return render_scm_template('add_order.html', 
                                 customer_choices=customer_choices,

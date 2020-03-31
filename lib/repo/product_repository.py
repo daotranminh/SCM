@@ -3,7 +3,7 @@ import logging
 from flask_sqlalchemy import sqlalchemy
 
 from init import Product, config
-from utilities.scm_enums import ErrorCodes
+from utilities.scm_enums import ErrorCodes, BoxStatus
 from utilities.scm_exceptions import ScmException
 
 logger = logging.getLogger(__name__)
@@ -28,13 +28,19 @@ class ProductRepository:
                     order_id,
                     taste_id,
                     decoration_form_id,
-                    decoration_technique_id):
+                    decoration_technique_id,
+                    with_box):
         try:
+            box_status = int(BoxStatus.BOX_NOT_NEEDED)
+            if with_box:
+                box_status = int(BoxStatus.BOX_WITH_PRODUCT_IN_PRODUCTION)
+                
             product_rec = Product(name=name, 
                                   order_id=order_id,
                                   taste_id=taste_id,
                                   decoration_form_id=decoration_form_id,
-                                  decoration_technique_id=decoration_technique_id)
+                                  decoration_technique_id=decoration_technique_id,
+                                  box_status=box_status)
             self.db.session.add(product_rec)
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add product. Details: %s' % (str(ex))

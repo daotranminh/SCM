@@ -144,9 +144,7 @@ class Order(db.Model):
     delivery_status = Column(Integer, default=0)
     delivered_on = Column(DateTime())
     payment_status = Column(Integer, default=0)    
-    paid_on = Column(DateTime())
-    box_status = Column(Integer, default=0)
-    box_returned_on = Column(DateTime())
+    paid_on = Column(DateTime())    
 
 class Product(db.Model):
     __tablename__ = 'product'
@@ -158,6 +156,8 @@ class Product(db.Model):
     decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
     formula_id = Column(Integer, ForeignKey(Formula.id))
     sample_images_group_id = Column(Integer, ForeignKey(SampleImagesGroup.id))
+    box_status = Column(Integer, default=0)
+    box_returned_on = Column(DateTime())
 
 class ProductImagePath(db.Model):
     __tablename__ = 'product_image_path'

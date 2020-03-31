@@ -15,7 +15,6 @@
       <th>Customer</th>
       <th>Delivery appointment</th>
       <th>Order status</th>      
-      <th></th>      
     </tr>
   </thead>
   <tbody>
@@ -40,11 +39,6 @@
 	/ fully paid
 	{% endif %}
 
-	{% if order_dto.box_status == 2 %}
-	/ box at customer
-	{% elif order_dto.box_status == 3 %}
-	/ box returned
-	{% endif %}
       </td>
       {% endif %}
       <td><a href="{{ url_for('update_order',

@@ -12,8 +12,40 @@ logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
 class OrderManager:
-    def __init__(self, order_repo):
+    def __init__(self, 
+                order_repo,
+                product_repo):
         self.order_repo = order_repo
+        self.product_repo = product_repo
+
+    def add_order(self,
+                  customer_id,
+                  ordered_on,
+                  delivery_appointment,
+                  delivery_method_id,
+                  message,
+                  product_names,
+                  taste_ids,
+                  decoration_form_ids,
+                  decoration_technique_ids,
+                  with_boxes):
+        new_order_id = self.order_repo.add_order(customer_id,
+                                                delivery_method_id,
+                                                ordered_on,
+                                                delivery_appointment,
+                                                message)
+        print(new_order_id)
+
+
+        for i in range(len(product_names)):
+            self.product_repo.add_product(product_names[i],
+                                          new_order_id,
+                                          taste_ids[i],
+                                          decoration_form_ids[i],
+                                          decoration_technique_ids[i],
+                                          with_boxes[i])
+        
+        return new_order_id
 
     def get_paginated_order_dtos(self,
                                  page,
@@ -31,9 +63,7 @@ class OrderManager:
                                  order_rec.delivery_status,
                                  order_rec.delivered_on,
                                  order_rec.payment_status,
-                                 order_rec.paid_on,
-                                 order_rec.box_status,
-                                 order_rec.box_returned_on)
+                                 order_rec.paid_on)
             order_dtos.append(order_dto)
 
         paginated_order_dtos = PaginatedScm(order_dtos,
