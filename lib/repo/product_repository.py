@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import Product, config
+from init import Product, Taste, DecorationForm, DecorationTechnique, SampleImagesGroup, config
 from utilities.scm_enums import ErrorCodes, BoxStatus
 from utilities.scm_exceptions import ScmException
 
@@ -56,3 +56,22 @@ class ProductRepository:
             message = 'Error: failed to delete product_rec %s. Detail: %s' % (str(product_id), str(ex))
             logger.error(message)
             raise ScmException(ErrorCodes.ERROR_DELETE_PRODUCT_FAILED, message)
+
+    def get_product_dto(self, product_id):        
+        taste_query = self.db.session.query(Taste.id, Taste.name).subquery()
+        decoration_form_query = self.db.session.query(DecorationForm.id, DecorationForm.name).subquery()
+        decoration_technique_query = self.db.session.query(DecorationTechnique.id, DecorationTechnique.name).subquery()
+        sample_images_group_query = self.db.session.query(SampleImagesGroup.id, SampleImagesGroup.name).subquery()
+
+        product_dto_query = self.db.session.query(Product, \
+                                                  taste_query.c.name, \
+                                                  decoration_form_query.c.name, \
+                                                  decoration_technique_query.c.name, \
+                                                  sample_images_group_query.c.name). \
+            filter(Product.id == product_id). \
+            join(taste_query, Product.taste_id == taste_query.c.id). \
+            join(decoration_form_query, Product.decoration_form_id == decoration_form_query.c.id). \
+            join(decoration_technique_query, Product.decoration_technique_id == decoration_technique_query.c.id). \
+            outerjoin(sample_images_group_query, Product.sample_images_group_id == sample_images_group_query.c.id)
+            
+        return product_dto_query.all()
