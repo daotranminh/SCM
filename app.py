@@ -182,12 +182,11 @@ def render_error(error_message):
 # TASTE
 ####################################################################################
 @app.route('/add_taste', methods=['GET', 'POST'])
-def add_taste():
-    form = AddTasteForm(request.form)
-    if request.method == 'POST' and form.validate():
+def add_taste():    
+    if request.method == 'POST':
         try:
-            name = form.name.data.strip()
-            description = form.description.data.strip()
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
             taste_repo.add_taste(name=name, description=description)
             db.session.commit()
             message = 'Successfully added taste %s' % name
@@ -196,21 +195,24 @@ def add_taste():
             db.session.rollback()
             message = 'Failed to add taste %s' % name
             flash(message, 'danger')
-            return render_scm_template('add_taste.html', form=form)
+            return render_scm_template('name_description.html',
+                                        site_title='Add a new taste')
     else:
-        return render_scm_template('add_taste.html', form=form)
+        return render_scm_template('name_description.html',
+                                    site_title='Add a new taste')
 
 @app.route('/update_taste/<int:taste_id>', methods=['GET', 'POST'])
 def update_taste(taste_id):
+    taste_rec = taste_repo.get_taste(taste_id)
     if request.method == 'GET':
-        taste_rec = taste_repo.get_taste(taste_id)
-        form = UpdateTasteForm(request.form, taste_rec)
-        return render_scm_template('update_taste.html', form=form)
+        return render_scm_template('name_description.html',
+                                    site_title='Update taste', 
+                                    old_name=taste_rec.name,
+                                    old_description=taste_rec.description)
     elif request.method == 'POST':
         try:
-            form = UpdateTasteForm(request.form, None)
-            name = form.name.data.strip()
-            description = form.description.data.strip()
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
             taste_repo.update_taste(taste_id,
                                     name,
                                     description)
@@ -219,11 +221,13 @@ def update_taste(taste_id):
             return redirect_with_message(url_for('list_tastes'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('update_taste.html',
+            return render_scm_template_with_message('name_description.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    form=form)            
+                                                    site_title='Update taste', 
+                                                    old_name=taste_rec.name,
+                                                    old_description=taste_rec.description)            
 
 @app.route('/list_tastes', methods=['GET', 'POST'])
 def list_tastes():
