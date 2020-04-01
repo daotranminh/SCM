@@ -131,6 +131,12 @@ class SampleImagePath(db.Model):
     file_path = Column(String(500))
     uploaded_on = Column(DateTime(), default=datetime.datetime.utcnow)
 
+class OrderStatus(db.Model):
+    __tablename__ = 'order_status'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(100))
+    description = Column(String(400))
+
 class Order(db.Model):
     __tablename__ = 'order'
     id = Column(Integer, autoincrement=True, primary_key=True)
@@ -141,7 +147,7 @@ class Order(db.Model):
     delivery_appointment = Column(DateTime())
     delivery_method_id = Column(Integer, ForeignKey(DeliveryMethod.id))
     message = Column(String(200))
-    delivery_status = Column(Integer, default=0)
+    order_status_id = Column(Integer, ForeignKey(OrderStatus.id))
     delivered_on = Column(DateTime())
     payment_status = Column(Integer, default=0)    
     paid_on = Column(DateTime())    

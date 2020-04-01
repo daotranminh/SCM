@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<div class="row">
+  <div class="col-md-9 col-md-offset-1">
+    <h1>Update status of order {{order_rec.order_id}}</h1>
+    <form method="POST" action="">
+      <div class="form-group">
+	<label for="delivery_status">Delivery status</label>
+	<select id="delivery_status" name="delivery_status">
+	  {% for delivery_status_pair in delivery_status_pairs %}
+  	    {% if delivery_status_pair[0] == order_rec.delivery_status %}
+	    <option value="{{delivery_status_pair[0]}}" selected>{{delivery_status_pair[1]}}</option>
+	    {% else %}
+	    <option value="{{delivery_status_pair[0]}}">{{delivery_status_pair[1]}}</option>
+	    {% endif %}
+          {% endfor %}
+	</select>
+      </div>
+      
+      <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

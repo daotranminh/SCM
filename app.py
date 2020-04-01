@@ -35,6 +35,7 @@ from lib.repo.taste_repository import TasteRepository
 from lib.repo.topic_repository import TopicRepository
 from lib.repo.formula_repository import FormulaRepository
 from lib.repo.order_repository import OrderRepository
+from lib.repo.order_status_repository import OrderStatusRepository
 from lib.repo.product_repository import ProductRepository
 from lib.repo.product_image_path_repository import ProductImagePathRepository
 from lib.repo.sample_image_path_repository import SampleImagePathRepository
@@ -75,6 +76,7 @@ taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
 formula_repo = FormulaRepository(db)
 order_repo = OrderRepository(db)
+order_status_repo = OrderStatusRepository(db)
 sample_image_path_repo = SampleImagePathRepository(db)
 sample_images_group_repo = SampleImagesGroupRepository(db)
 product_repo = ProductRepository(db)
@@ -113,7 +115,8 @@ def menu_setup():
         ['list_formulas', 'List of formulas'],
         ['list_decorations', 'List of decorations'],
         ['list_decoration_forms', 'List of decoration forms'],
-        ['list_decoration_techniques', 'List of decoration techniques'],        
+        ['list_decoration_techniques', 'List of decoration techniques'],
+        ['list_order_status', 'List of order status'],
         ['list_tastes', 'List of tastes']
     ]
 
@@ -867,6 +870,62 @@ def decoration_details(decoration_id):
                                decoration_form_rec=decoration_form_rec,
                                decoration_technique_rec=decoration_technique_rec,
                                template_path_recs=template_path_recs)
+
+####################################################################################
+# ORDER STATUS
+####################################################################################
+@app.route('/add_order_status', methods=['GET', 'POST'])
+def add_order_status():
+    if request.method == 'POST':
+        try:
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
+            order_status_repo.add_order_status(name=name, description=description)
+            db.session.commit()
+            message = 'Successfully added order_status %s' % name
+            return redirect_with_message(url_for('list_order_status'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            message = 'Failed to add order_status %s' % name
+            flash(message, 'danger')
+            return render_scm_template('name_description.html',
+                                        site_title='Add a new order status')
+    else:
+        return render_scm_template('name_description.html',
+                                    site_title='Add a new order status')
+
+@app.route('/update_order_status/<int:order_status_id>', methods=['GET', 'POST'])
+def update_order_status(order_status_id):
+    order_status_rec = order_status_repo.get_order_status(order_status_id)
+    if request.method == 'GET':        
+        return render_scm_template('name_description.html',
+                                    site_title='Update order status',
+                                    old_name=order_status_rec.name,
+                                    old_description=order_status_rec.description)
+    elif request.method == 'POST':
+        try:
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
+            order_status_repo.update_order_status(order_status_id,
+                                                  name,
+                                                  description)
+            db.session.commit()
+            message = 'Successfully updated order_status %s (%s)' % (name, order_status_id)
+            return redirect_with_message(url_for('list_order_status'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('name_description.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    site_title='Update order status',
+                                                    old_name=order_status_rec.name,
+                                                    old_description=order_status_rec.description)            
+
+@app.route('/list_order_status', methods=['GET', 'POST'])
+def list_order_status():
+    order_status_recs = order_status_repo.get_all_order_status()
+    return render_scm_template('list_order_status.html', order_status_recs=order_status_recs)
 
 ####################################################################################
 # ORDER
