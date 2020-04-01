@@ -25,22 +25,7 @@
       <td><a href="{{ url_for('customer_details',
 		   customer_id=order_dto.customer_id)}}">{{order_dto.customer_name}}</a></td>
       <td>{{order_dto.delivery_appointment}}</td>
-      {% if order_dto.delivery_status == 0 %}
-      <td>Pending</td>
-      {% elif order_dto.delivery_status == 1 %}
-      <td>Cancelled</td>
-      {% else %}
-      <td>Delivered
-	{% if order_dto.payment_status == 0 %}
-	/ not paid
-	{% elif order_dto.payment_status == 1 %}
-	/ partially paid
-	{% elif order_dto.payment_status == 2 %}
-	/ fully paid
-	{% endif %}
-
-      </td>
-      {% endif %}
+      <td>{{order_dto.order_status_name}}</td>      
       <td><a href="{{ url_for('update_order',
 		   order_id=order_dto.order_id) }}"
 	     class="btn btn-default pullright">Update</a></td>

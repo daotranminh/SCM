@@ -68,27 +68,27 @@ class OrderManager:
                                  page,
                                  per_page,
                                  search_text):
-        paginated_order_recs = self.order_repo.get_paginated_orders(page, per_page, search_text)
+        paginated_order_dtos = self.order_repo.get_paginated_order_dtos(page, per_page, search_text)
         order_dtos = []
-        for order_rec, customer_name, in paginated_order_recs.items:
+        for order_rec, customer_name, delivery_method_name, order_status_name in paginated_order_dtos.items:
             order_dto = OrderDto(order_rec.id,
                                  order_rec.customer_id,
                                  customer_name,
                                  order_rec.ordered_on,
                                  order_rec.delivery_appointment,
-                                 '',
+                                 delivery_method_name,
                                  order_rec.message,
-                                 '',
+                                 order_status_name,
                                  order_rec.delivered_on,
                                  order_rec.payment_status,
                                  order_rec.paid_on)
             order_dtos.append(order_dto)
 
-        paginated_order_dtos = PaginatedScm(order_dtos,
-                                            paginated_order_recs.has_prev,
-                                            paginated_order_recs.has_next,
-                                            paginated_order_recs.prev_num,
-                                            paginated_order_recs.next_num,
-                                            paginated_order_recs.page,
-                                            paginated_order_recs.pages)
-        return paginated_order_dtos
+        paginated_order_dtos1 = PaginatedScm(order_dtos,
+                                            paginated_order_dtos.has_prev,
+                                            paginated_order_dtos.has_next,
+                                            paginated_order_dtos.prev_num,
+                                            paginated_order_dtos.next_num,
+                                            paginated_order_dtos.page,
+                                            paginated_order_dtos.pages)
+        return paginated_order_dtos1

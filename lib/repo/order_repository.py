@@ -20,19 +20,26 @@ class OrderRepository:
     def get_all_orders(self):
         return Order.query.all()
 
-    def get_paginated_orders(self,
+    def get_paginated_order_dtos(self,
                                 page,
                                 per_page,
                                 search_text):
-        sub_query_customer = self.db.session.query(Customer.id, Customer.name).subquery()
 
-        order_recs = self.db.session. \
-                     query(Order, sub_query_customer.c.name). \
-                     join(sub_query_customer, Order.customer_id == sub_query_customer.c.id)
+        customer_query = self.db.session.query(Customer.id, Customer.name).subquery()
+        delivery_method_query = self.db.session.query(DeliveryMethod.id, DeliveryMethod.name).subquery()
+        order_status_query = self.db.session.query(OrderStatus.id, OrderStatus.name).subquery()
 
-        paginated_order_recs = order_recs.paginate(page, per_page, error_out=False)
+        order_dto_query = self.db.session.query(Order, \
+                                                customer_query.c.name, \
+                                                delivery_method_query.c.name, \
+                                                order_status_query.c.name). \
+            join(customer_query, Order.customer_id == customer_query.c.id). \
+            join(delivery_method_query, Order.delivery_method_id == delivery_method_query.c.id). \
+            join(order_status_query, Order.order_status_id == order_status_query.c.id)
 
-        return paginated_order_recs
+        paginated_order_dtos = order_dto_query.paginate(page, per_page, error_out=False)
+
+        return paginated_order_dtos
     
     def get_order(self, order_id):
         return Order.query.filter(Order.id == order_id).first()
