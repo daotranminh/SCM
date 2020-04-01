@@ -13,16 +13,48 @@
     </tr>
   </thead>
   <tbody>
-    <tr><td>Order Id</td><td>{{ order_rec.id }}</td></tr>
-    <tr><td>Customer</td><td><a href="{{ url_for('customer_details', customer_id=order_rec.customer_id)}}">{{ customer_rec.name }}</a></td></tr>
-    <tr><td>Taste</td><td>{{ taste_rec.name }}</td></tr>
-    <tr><td>Decoration</td><td><a href="{{ url_for('decoration_details', decoration_id=order_rec.decoration_id) }}">{{ decoration_rec.name }}</a></td></tr>
-    <tr><td>Delivery method</td><td>{{ delivery_method_rec.name }}</td></tr>
-    <tr><td>Ordered on</td><td>{{ order_rec.ordered_on }}</td></tr>
-    <tr><td>Delivery appointment</td><td>{{ order_rec.delivery_appointment }}</td></tr>
-    <tr><td>Order status</td><td>{{ order_rec.order_status }}</td></tr> 
-    <tr><td>Message</td><td>{{ order_rec.message }}</td></tr>   
+    <tr><td>Order Id</td><td>{{ order_dto.id }}</td></tr>
+    <tr><td>Customer</td><td><a href="{{ url_for('customer_details', customer_id=order_dto.customer_id) }}">{{ order_dto.customer_name }}</a></td></tr>    
+    <tr><td>Delivery method</td><td>{{ order_dto.delivery_method_name }}</td></tr>
+    <tr><td>Ordered on</td><td>{{ order_dto.ordered_on }}</td></tr>
+    <tr><td>Delivery appointment</td><td>{{ order_dto.delivery_appointment }}</td></tr>
+    <tr><td>Order status</td><td>{{ order_dto.order_status }}</td></tr> 
+    <tr><td>Message</td><td>{{ order_dto.message }}</td></tr>   
   </tbody>
 </table>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Product Id</th>
+      <th>Product Name</th>
+      <th>Taste</th>
+      <th>Decoration Form</th>
+      <th>Decoration Technique</th>
+      <th>Formula</th>
+      <th>Sample Images</th>
+      <th>Product Images</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product_dto in product_dtos %}
+    <tr>
+      <td>{{product_dto.product_id}}</td>
+      <td>{{product_dto.product_name}}</td>
+      <td>{{product_dto.taste_name}}</td>
+      <td>{{product_dto.decoration_form_name}}</td>
+      <td>{{product_dto.decoration_technique_name}}</td>
+      <td>{{product_dto.formula_name}}</td>
+      <td>{{product_dto.sample_images_group_name}}</td>
+      <td><a href="{{ url_for('update_product', product_id=product_dto.product_id) }}"
+             class="btn btn-default pullright">Update</a></td></td>
+      <td><a href="{{ url_for('delete_product', product_id=product_dto.product_id) }}"
+             class="btn btn-default pullright">Delete</a></td></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>  
 
 {% endblock %}

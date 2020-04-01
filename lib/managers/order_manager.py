@@ -44,6 +44,26 @@ class OrderManager:
         
         return new_order_id
 
+    def get_order_dto(self, order_id):
+        order_rec, \
+        customer_name, \
+        delivery_method_name, \
+        order_status_name = self.order_repo.get_order_dto(order_id)
+        
+        order_dto = OrderDto(order_id,
+                             order_rec.customer_id,
+                             customer_name,
+                             order_rec.ordered_on,
+                             order_rec.delivery_appointment,
+                             delivery_method_name,
+                             order_rec.message,
+                             order_status_name,
+                             order_rec.delivered_on,
+                             order_rec.payment_status,
+                             order_rec.paid_on)
+
+        return order_dto
+
     def get_paginated_order_dtos(self,
                                  page,
                                  per_page,

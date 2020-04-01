@@ -16,8 +16,9 @@ class OrderDto:
                  customer_name,
                  ordered_on,
                  delivery_appointment,
+                 delivery_method_name,
                  message,
-                 delivery_status,
+                 order_status,
                  delivered_on,
                  payment_status,
                  paid_on):
@@ -26,8 +27,9 @@ class OrderDto:
         self.customer_name = customer_name
         self.ordered_on = ordered_on
         self.delivery_appointment = delivery_appointment
+        self.delivery_method_name = delivery_method_name
         self.message = message
-        self.delivery_status = delivery_status
+        self.order_status = order_status
         self.delivered_on = delivered_on
         self.payment_status = payment_status
         self.paid_on = paid_on
