@@ -13,12 +13,12 @@
     </tr>
   </thead>
   <tbody>
-    <tr><td>Order Id</td><td>{{ order_dto.id }}</td></tr>
+    <tr><td>Order Id</td><td>{{ order_dto.order_id }}</td></tr>
     <tr><td>Customer</td><td><a href="{{ url_for('customer_details', customer_id=order_dto.customer_id) }}">{{ order_dto.customer_name }}</a></td></tr>    
     <tr><td>Delivery method</td><td>{{ order_dto.delivery_method_name }}</td></tr>
     <tr><td>Ordered on</td><td>{{ order_dto.ordered_on }}</td></tr>
     <tr><td>Delivery appointment</td><td>{{ order_dto.delivery_appointment }}</td></tr>
-    <tr><td>Order status</td><td>{{ order_dto.order_status }}</td></tr> 
+    <tr><td>Order status</td><td>{{ order_dto.order_status_name }}</td></tr> 
     <tr><td>Message</td><td>{{ order_dto.message }}</td></tr>   
   </tbody>
 </table>

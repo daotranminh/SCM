@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import Order, Customer, DeliveryMethod, config
+from init import Order, Customer, DeliveryMethod, OrderStatus, config
 from utilities.scm_enums import ErrorCodes, DeliveryStatus, PaymentStatus
 from utilities.scm_exceptions import ScmException
 
@@ -40,11 +40,16 @@ class OrderRepository:
     def get_order_dto(self, order_id):
         customer_query = self.db.session.query(Customer.id, Customer.name).subquery()
         delivery_method_query = self.db.session.query(DeliveryMethod.id, DeliveryMethod.name).subquery()
+        order_status_query = self.db.session.query(OrderStatus.id, OrderStatus.name).subquery()
 
-        order_dto_query = self.db.session.query(Order, customer_query.c.name, delivery_method_query.c.name). \
+        order_dto_query = self.db.session.query(Order, \
+                                                customer_query.c.name, \
+                                                delivery_method_query.c.name, \
+                                                order_status_query.c.name). \
             filter(Order.id == order_id). \
             join(customer_query, Order.customer_id == customer_query.c.id). \
-            join(delivery_method_query, Order.delivery_method_id == delivery_method_query.c.id)
+            join(delivery_method_query, Order.delivery_method_id == delivery_method_query.c.id). \
+            join(order_status_query, Order.order_status_id == order_status_query.c.id)
         
         return order_dto_query.first()
 
