@@ -71,7 +71,8 @@ class OrderRepository:
                               delivery_method_id=delivery_method_id,
                               ordered_on=ordered_on,
                               delivery_appointment=delivery_appointment,
-                              message=message)
+                              message=message,
+                              order_status_id=1)
             self.db.session.add(order_rec)
             self.db.session.flush()
             return order_rec.id
