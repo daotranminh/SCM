@@ -1166,7 +1166,24 @@ def update_product(product_id):
 
 @app.route('/delete_product/<int:product_id>', methods=['GET', 'POST'])
 def delete_product(product_id):
-    pass
+    product_rec = product_repo.get_product(product_id)
+    order_id = product_rec.order_id
+    product_name = product_rec.name
+
+    try:
+        product_manager.delete_product(product_id)
+        db.session.commit()
+    except ScmException as ex:
+        db.session.rollback()
+        message = 'Failed to delete product "%s" (%s)' % (product_name, product_id)
+        return redirect_with_message(url_for('order_details', order_id=order_id),
+                                     message,
+                                     'danger')
+    
+    message = 'Successfully deleted product "%s" (%s)' % (product_name, product_id)
+    return redirect_with_message(url_for('order_details', order_id=order_id),
+                                 message,
+                                 'info')
 
 ####################################################################################
 # DELIVERY METHOD
