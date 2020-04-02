@@ -122,7 +122,8 @@ def menu_setup():
 
     business_funcs = [
         ['list_customers', 'List of customers'],
-        ['list_orders', 'List of orders'],        
+        ['list_orders', 'List of orders'],
+        ['list_delivery_methods', 'List of delivery methods']
     ]
 
     exhibition_funcs = [
@@ -1171,12 +1172,11 @@ def delete_product(product_id):
 # DELIVERY METHOD
 ####################################################################################
 @app.route('/add_delivery_method', methods=['GET', 'POST'])
-def add_delivery_method():
-    form = AddDeliveryMethodForm(request.form)
-    if request.method == 'POST' and form.validate():
+def add_delivery_method():    
+    if request.method == 'POST':
         try:
-            name = form.name.data.strip()
-            description = form.description.data.strip()
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
             delivery_method_repo.add_delivery_method(name=name, description=description)
             db.session.commit()
             message = 'Successfully added delivery method %s' % name
@@ -1185,21 +1185,24 @@ def add_delivery_method():
             db.session.rollback()
             message = 'Failed to add delivery method %s' % name
             flash(message, 'danger')
-            return render_scm_template('add_delivery_method.html', form=form)
+            return render_scm_template('name_description.html',
+                                       site_title='Add a new delivery method')
     else:
-        return render_scm_template('add_delivery_method.html', form=form)
+        return render_scm_template('name_description.html',
+                                    site_title='Add a new delivery method')
 
 @app.route('/update_delivery_method/<int:delivery_method_id>', methods=['GET', 'POST'])
 def update_delivery_method(delivery_method_id):
+    delivery_method_rec = delivery_method_repo.get_delivery_method(delivery_method_id)
     if request.method == 'GET':
-        delivery_method_rec = delivery_method_repo.get_delivery_method(delivery_method_id)
-        form = UpdateDeliveryMethodForm(request.form, delivery_method_rec)
-        return render_scm_template('update_delivery_method.html', form=form)
+        return render_scm_template('name_description.html',
+                                    site_title='Add a new delivery method',
+                                    old_name=delivery_method_rec.name,
+                                    old_description=delivery_method_rec.description)
     elif request.method == 'POST':
         try:
-            form = UpdateDeliveryMethodForm(request.form, None)
-            name = form.name.data.strip()
-            description = form.description.data.strip()
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
             delivery_method_repo.update_delivery_method(delivery_method_id,
                                                         name,
                                                         description)
@@ -1208,11 +1211,13 @@ def update_delivery_method(delivery_method_id):
             return redirect_with_message(url_for('list_delivery_methods'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('update_delivery_method.html',
+            return render_scm_template_with_message('name_description.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    form=form)
+                                                    site_title='Add a new delivery method',
+                                                    old_name=delivery_method_rec.name,
+                                                    old_description=delivery_method_rec.description)
 
 @app.route('/list_delivery_methods', methods=['GET', 'POST'])
 def list_delivery_methods():
