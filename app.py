@@ -359,11 +359,10 @@ def list_decoration_forms():
 ####################################################################################
 @app.route('/add_decoration_technique', methods=['GET', 'POST'])
 def add_decoration_technique():
-    form = AddDecorationTechniqueForm(request.form)
-    if request.method == 'POST' and form.validate():
+    if request.method == 'POST':
         try:
-            name = form.name.data.strip()
-            description = form.description.data.strip()
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
             
             decoration_technique_repo.add_decoration_technique(name=name,
                                                                description=description)
@@ -374,21 +373,24 @@ def add_decoration_technique():
             db.session.rollback()
             message = 'Failed to add decoration form %s' % name
             flash(message, 'danger')
-            return render_scm_template('add_decoration_technique.html', form=form)
+            return render_scm_template('name_description.html',
+                                        site_title='Add a new decoration technique')
     else:
-        return render_scm_template('add_decoration_technique.html', form=form)
+        return render_scm_template('name_description.html',
+                                    site_title='Add a new decoration technique')
 
 @app.route('/update_decoration_technique/<int:decoration_technique_id>', methods=['GET', 'POST'])
 def update_decoration_technique(decoration_technique_id):
-    if request.method == 'GET':
-        decoration_technique_rec = decoration_technique_repo.get_decoration_technique(decoration_technique_id)
-        form = UpdateDecorationTechniqueForm(request.form, decoration_technique_rec)
-        return render_scm_template('update_decoration_technique.html', form=form)
+    decoration_technique_rec = decoration_technique_repo.get_decoration_technique(decoration_technique_id)
+    if request.method == 'GET':        
+        return render_scm_template('name_description.html',
+                                    site_title='Update decoration technique',
+                                    old_name=decoration_technique_rec.name,
+                                    old_description=decoration_technique_rec.description)
     elif request.method == 'POST':
         try:
-            form = UpdateDecorationTechniqueForm(request.form, None)
-            name = form.name.data.strip()
-            description = form.description.data.strip()
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
             
             decoration_technique_repo.update_decoration_technique(decoration_technique_id,
                                                                   name,
@@ -398,11 +400,13 @@ def update_decoration_technique(decoration_technique_id):
             return redirect_with_message(url_for('list_decoration_techniques'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('update_decoration_technique.html',
+            return render_scm_template_with_message('name_description.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    form=form)
+                                                    site_title='Update decoration technique',
+                                                    old_name=decoration_technique_rec.name,
+                                                    old_description=decoration_technique_rec.description)
 
 @app.route('/list_decoration_techniques', methods=['GET', 'POST'])
 def list_decoration_techniques():
