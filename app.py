@@ -1116,7 +1116,52 @@ def update_order(order_id):
 ####################################################################################
 @app.route('/update_product/<int:product_id>', methods=['GET', 'POST'])
 def update_product(product_id):
-    pass
+    product_rec = product_repo.get_product(product_id)    
+    product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
+    taste_recs = taste_repo.get_all_tastes()
+    decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
+    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()    
+    
+    if request.method == 'POST':
+        try:
+            remaining_product_image_path_ids = __extract_remaining_image_path_ids(request.form)
+            product_name = request.form['product_name']
+            taste_id = int(request.form['taste_id'])
+            decoration_form_id = int(request.form['decoration_form_id'])
+            decoration_technique_id = int(request.form['decoration_technique_id'])
+
+            uploaded_files = request.files.getlist('file[]')
+
+            product_manager.update_product(product_id,
+                                           product_name,
+                                           taste_id,
+                                           decoration_form_id,
+                                           decoration_technique_id,
+                                           product_image_path_recs,
+                                           remaining_product_image_path_ids,
+                                           uploaded_files)
+            db.session.commit()
+            product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
+            message = 'Successfully updated product %s (%s)' % (product_name, product_id)
+            flash(message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('update_sample_images_group.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    taste_recs=taste_recs,
+                                                    decoration_form_recs=decoration_form_recs,
+                                                    decoration_technique_recs=decoration_technique_recs,
+                                                    product_rec=product_rec,
+                                                    product_image_path_recs=product_image_path_recs)
+    
+    return render_scm_template('update_product.html',
+                               taste_recs=taste_recs,
+                               decoration_form_recs=decoration_form_recs,
+                               decoration_technique_recs=decoration_technique_recs,
+                               product_rec=product_rec,
+                               product_image_path_recs=product_image_path_recs)
 
 @app.route('/delete_product/<int:product_id>', methods=['GET', 'POST'])
 def delete_product(product_id):
@@ -1233,16 +1278,14 @@ def update_sample_images_group(sample_images_group_id):
             remaining_sample_image_path_ids = __extract_remaining_image_path_ids(request.form)
             sample_images_group_name = request.form['sample_images_group_name']
             topic_id = int(request.form['topic_id'])
-
-            sample_images_group_repo.update_sample_images_group(sample_images_group_id,
-                                                                topic_id,
-                                                                sample_images_group_name)
-            
             uploaded_files = request.files.getlist('file[]')
-            sample_image_path_repo.update_sample_image_paths(sample_images_group_id,
-                                                             sample_image_path_recs,
-                                                             remaining_sample_image_path_ids,
-                                                             uploaded_files)
+
+            sample_images_group_manager.update_sample_images_group(sample_images_group_id,
+                                                                   topic_id,
+                                                                   sample_images_group_name,
+                                                                   sample_image_path_recs,
+                                                                   remaining_sample_image_path_ids,
+                                                                   uploaded_files)
             db.session.commit()
             sample_image_path_recs = sample_image_path_repo.get_sample_image_paths(sample_images_group_id)
             message = 'Successfully updated sample images'

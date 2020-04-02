@@ -1,0 +1,158 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <h1>Update product</h1>
+    <form method="POST" action="" enctype="multipart/form-data" id="update_product_form">
+        <div class="form-group">
+            <label for="product_name">Name</label>
+            <input type="text" id="product_name" name="product_name" value="{{product_rec.name}}"/>
+        </div>
+
+        <div class="form-group">
+	        <label for="taste_id">Taste</label>
+	        <select id="taste_id" name="taste_id">
+	        {% for taste_rec in taste_recs %}
+	            {% if taste_rec.id == product_rec.taste_id %}
+	            <option value="{{taste_rec.id}}" selected>{{taste_rec.name}}</option>
+	            {% else %}
+	            <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
+	            {% endif %}
+	        {% endfor %}
+	        </select>
+        </div>
+
+        <div class="form-group">
+	        <label for="decoration_form_id">Decoration form</label>
+	        <select id="decoration_form_id" name="decoration_form_id">
+	        {% for decoration_form_rec in decoration_form_recs %}
+	            {% if decoration_form_rec.id == product_rec.decoration_id %}
+	            <option value="{{decoration_rec.id}}" selected>{{decoration_form_rec.name}}</option>
+	            {% else %}
+	            <option value="{{decoration_form_rec.id}}">{{decoration_form_rec.name}}</option>
+	            {% endif %}
+	        {% endfor %}
+	        </select>
+        </div>
+
+        <div class="form-group">
+	        <label for="decoration_technique_id">Decoration technique</label>
+	        <select id="decoration_technique_id" name="decoration_technique_id">
+	        {% for decoration_technique_rec in decoration_technique_recs %}
+	            {% if decoration_technique_rec.id == product_rec.decoration_technique_id %}
+	            <option value="{{decoration_technique_rec.id}}" selected>{{decoration_technique_rec.name}}</option>
+	            {% else %}
+	            <option value="{{decoration_technique_rec.id}}">{{decoration_technique_rec.name}}</option>
+	            {% endif %}
+	        {% endfor %}
+	        </select>
+        </div>
+
+        <table class="table table-striped" id="existing_images_table">
+	        <thead>
+	            <tr>
+	                <th>Exsiting images</th>
+	                <th></th> 
+	            </tr>
+	        </thead>
+	        <tbody>
+	            {% for i in range(product_image_path_recs|length) %}
+	            <tr>
+	                <td><img src="{{product_image_path_recs[i].file_path}}" width="auto" height="100" alt="{{product_image_path_recs[i].id}}" name="existing_image_{{i}}" id="existing_image_{{i}}" /></td>
+	                <td><a class="btn btn-default pullright" onclick="delete_row(this)" id="delete_btn_{{i}}">Delete</a></td>
+	            </tr>
+	            {% endfor %}
+	        </tbody>
+      </table>
+
+      <b>Add new images</b>
+        <div id="wrapper" style="margin-top: 20px;">
+	        <input id="fileUpload" name="file[]" multiple="multiple" type="file"/>
+	    <div id="image_holder"></div>
+      </div>
+      <br/>
+      
+      <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
+    </form>
+  </div>
+</div>
+
+<script>
+  $('#update_product_form').submit(function() {
+  var existing_images = document.querySelectorAll('*[id^="existing_image_"]');
+  for (var i=0; i < existing_images.length; i++)
+  {
+  var existing_image_input = "<input name='" + existing_images[i].name + "' value='" + existing_images[i].alt + "'>"
+  $(this).append(existing_image_input)
+  }
+  
+  })
+  
+  function delete_row(btn)
+  {
+    var strIndex = get_index(btn)
+    var intIndex = parseInt(strIndex)
+  
+    var row = btn.parentNode.parentNode
+    row.parentNode.removeChild(row)
+
+    var len = document.getElementById("existing_images_table").rows.length - 1
+    var existing_images = document.querySelectorAll('*[id^="existing_image_"]');
+    var delete_btns = document.querySelectorAll('*[id^="delete_btn_"]');
+    for (var i = intIndex; i < len; i++)
+    {			     
+			       existing_images[i].name = "existing_image_" + i.toString()
+			       existing_images[i].id = "existing_image_" + i.toString()
+			       delete_btns[i].name = "delete_btn_" + i.toString()
+			       delete_btns[i].id = "delete_btn_" + i.toString()
+			       
+    }
+			       
+  }
+			       
+  $(document).ready(function() {
+  $("#fileUpload").on('change', function() {
+    var countFiles = $(this)[0].files.length;
+    var imgPath = $(this)[0].value;
+    var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+    var image_holder = $("#image_holder");
+
+    image_holder.empty();
+
+    if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg")
+    {
+	if (typeof(FileReader) != "undefined")
+	{
+	    //loop for each file selected for uploaded.
+	    for (var i = 0; i < countFiles; i++)
+	    {
+		var reader = new FileReader();
+		reader.onload = function(e)
+		{
+		    $("<img />", {
+			"src": e.target.result,
+			"class": "thumb-image"
+		    }).appendTo(image_holder);
+		}
+		image_holder.show();
+		reader.readAsDataURL($(this)[0].files[i]);
+	    }
+	}
+	else
+	{
+	    alert("This browser does not support FileReader.");
+	}
+    }
+    else
+    {
+	alert("Please select only images");
+    }
+  });
+});
+</script>
+
+{% endblock %}

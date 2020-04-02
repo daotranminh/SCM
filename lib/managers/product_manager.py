@@ -94,3 +94,23 @@ class ProductManager:
             product_dtos.append(product_dto)
 
         return product_dtos
+
+    def update_product(self,
+                       product_id,
+                       product_name,
+                       taste_id,
+                       decoration_form_id,
+                       decoration_technique_id,
+                       product_image_path_recs,
+                       remaining_product_image_path_ids,
+                       uploaded_files):
+        self.product_repo.update_product(product_id,
+                                         product_name,
+                                         taste_id,
+                                         decoration_form_id,
+                                         decoration_technique_id)
+
+        self.product_image_path_repo.update_product_image_paths(product_id,
+                                                                product_image_path_recs,
+                                                                remaining_product_image_path_ids,
+                                                                uploaded_files)

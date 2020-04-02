@@ -41,5 +41,20 @@ class SampleImagesGroupManager:
         self.sample_image_path_repo.delete_sample_image_paths(sample_images_group_id)
         self.sample_images_group_repo.delete_sample_images_group(sample_images_group_id)
         
-
+    def update_sample_images_group(self,
+                                   sample_images_group_id,
+                                   topic_id,
+                                   sample_images_group_name,
+                                   sample_image_path_recs,
+                                   remaining_sample_image_path_ids,
+                                   uploaded_files):
+        self.sample_images_group_repo.update_sample_images_group(sample_images_group_id,
+                                                                 topic_id,
+                                                                 sample_images_group_name)
+            
+            
+        self.sample_image_path_repo.update_sample_image_paths(sample_images_group_id,
+                                                              sample_image_path_recs,
+                                                              remaining_sample_image_path_ids,
+                                                              uploaded_files)
     
