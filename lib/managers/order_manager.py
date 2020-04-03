@@ -4,6 +4,8 @@ from init import config
 from dto.order_dto import OrderDto
 from dto.paginated_scm import PaginatedScm
 from utilities import scm_constants
+from utilities.scm_exceptions import ScmException
+from utilities.scm_enums import ErrorCodes
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler(config['DEFAULT']['log_file'])
@@ -50,6 +52,8 @@ class OrderManager:
         customer_name, \
         delivery_method_name = self.order_repo.get_order_dto(order_id)
         
+        order_status_name = self.__get_order_status_name(order_rec.order_status)
+
         order_dto = OrderDto(order_id,
                              order_rec.customer_id,
                              customer_name,
@@ -57,7 +61,7 @@ class OrderManager:
                              order_rec.delivery_appointment,
                              delivery_method_name,
                              order_rec.message,
-                             scm_constants.ORDER_STATUS_NAMES[order_rec.order_status],
+                             order_status_name,
                              order_rec.delivered_on,
                              order_rec.payment_status,
                              order_rec.paid_on)
@@ -70,7 +74,8 @@ class OrderManager:
                                  search_text):
         paginated_order_dtos = self.order_repo.get_paginated_order_dtos(page, per_page, search_text)
         order_dtos = []
-        for order_rec, customer_name, delivery_method_name, order_status_name in paginated_order_dtos.items:
+        for order_rec, customer_name, delivery_method_name in paginated_order_dtos.items:
+            order_status_name = self.__get_order_status_name(order_rec.order_status)
             order_dto = OrderDto(order_rec.id,
                                  order_rec.customer_id,
                                  customer_name,
@@ -78,7 +83,7 @@ class OrderManager:
                                  order_rec.delivery_appointment,
                                  delivery_method_name,
                                  order_rec.message,
-                                 scm_constants.ORDER_STATUS_NAMES[order_rec.order_status],
+                                 order_status_name,
                                  order_rec.delivered_on,
                                  order_rec.payment_status,
                                  order_rec.paid_on)
@@ -92,3 +97,11 @@ class OrderManager:
                                             paginated_order_dtos.page,
                                             paginated_order_dtos.pages)
         return paginated_order_dtos1
+
+    def __get_order_status_name(self, order_status):
+        for order_status_name in scm_constants.ORDER_STATUS_NAMES:
+            if order_status_name[0] == order_status:
+                return order_status_name[1]
+
+        message = 'Order status key %s does not exist' % (str(order_status))
+        raise ScmException(ErrorCodes.ERROR_ORDER_STATUS_KEY_NOT_EXIST, message)
