@@ -24,11 +24,6 @@ class ErrorCodes(IntEnum):
     ERROR_DELETE_PRODUCT_FAILED = 20
     ERROR_ADD_ORDER_STATUS_FAILED = 21
 
-class DeliveryStatus(IntEnum):
-    ORDER_PLACED = 0
-    CANCELLED = 1
-    DELIVERED = 2
-
 class PaymentStatus(IntEnum):
     NOT_PAID = 0
     PARTLY_PAID = 1
@@ -39,3 +34,8 @@ class BoxStatus(IntEnum):
     BOX_WITH_PRODUCT_IN_PRODUCTION = 1
     BOX_AT_CUSTOMER_AFTER_DELIVERY = 2
     BOX_RETURNED = 3
+
+class OrderStatus(IntEnum):
+    PENDING = 0
+    IN_PRODUCTION = 1
+    DELIVERED = 2

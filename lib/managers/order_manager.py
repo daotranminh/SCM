@@ -3,6 +3,7 @@ import logging
 from init import config
 from dto.order_dto import OrderDto
 from dto.paginated_scm import PaginatedScm
+from utilities import scm_constants
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler(config['DEFAULT']['log_file'])
@@ -47,8 +48,7 @@ class OrderManager:
     def get_order_dto(self, order_id):
         order_rec, \
         customer_name, \
-        delivery_method_name, \
-        order_status_name = self.order_repo.get_order_dto(order_id)
+        delivery_method_name = self.order_repo.get_order_dto(order_id)
         
         order_dto = OrderDto(order_id,
                              order_rec.customer_id,
@@ -57,7 +57,7 @@ class OrderManager:
                              order_rec.delivery_appointment,
                              delivery_method_name,
                              order_rec.message,
-                             order_status_name,
+                             scm_constants.ORDER_STATUS_NAMES[order_rec.order_status],
                              order_rec.delivered_on,
                              order_rec.payment_status,
                              order_rec.paid_on)
@@ -78,7 +78,7 @@ class OrderManager:
                                  order_rec.delivery_appointment,
                                  delivery_method_name,
                                  order_rec.message,
-                                 order_status_name,
+                                 scm_constants.ORDER_STATUS_NAMES[order_rec.order_status],
                                  order_rec.delivered_on,
                                  order_rec.payment_status,
                                  order_rec.paid_on)

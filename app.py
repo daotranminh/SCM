@@ -24,7 +24,6 @@ from lib.forms.order_forms import AddOrderForm
 from lib.forms.order_forms import UpdateOrderForm
 
 from lib.repo.delivery_method_repository import DeliveryMethodRepository
-from lib.repo.decoration_repository import DecorationRepository
 from lib.repo.decoration_form_repository import DecorationFormRepository
 from lib.repo.decoration_technique_repository import DecorationTechniqueRepository
 from lib.repo.material_repository import MaterialRepository
@@ -35,7 +34,6 @@ from lib.repo.taste_repository import TasteRepository
 from lib.repo.topic_repository import TopicRepository
 from lib.repo.formula_repository import FormulaRepository
 from lib.repo.order_repository import OrderRepository
-from lib.repo.order_status_repository import OrderStatusRepository
 from lib.repo.product_repository import ProductRepository
 from lib.repo.product_image_path_repository import ProductImagePathRepository
 from lib.repo.sample_image_path_repository import SampleImagePathRepository
@@ -46,7 +44,6 @@ from lib.managers.customer_manager import CustomerManager
 from lib.managers.taste_manager import TasteManager
 from lib.managers.topic_manager import TopicManager
 from lib.managers.formula_manager import FormulaManager
-from lib.managers.decoration_manager import DecorationManager
 from lib.managers.delivery_method_manager import DeliveryMethodManager
 from lib.managers.order_manager import OrderManager
 from lib.managers.product_manager import ProductManager
@@ -65,7 +62,6 @@ logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
 delivery_method_repo = DeliveryMethodRepository(db)
-decoration_repo = DecorationRepository(db)
 decoration_form_repo = DecorationFormRepository(db)
 decoration_technique_repo = DecorationTechniqueRepository(db)
 material_repo = MaterialRepository(db)
@@ -76,7 +72,6 @@ taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
 formula_repo = FormulaRepository(db)
 order_repo = OrderRepository(db)
-order_status_repo = OrderStatusRepository(db)
 sample_image_path_repo = SampleImagePathRepository(db)
 sample_images_group_repo = SampleImagesGroupRepository(db)
 product_repo = ProductRepository(db)
@@ -84,10 +79,6 @@ product_image_path_repo = ProductImagePathRepository(db)
 
 taste_manager = TasteManager(taste_repo)
 delivery_method_manager = DeliveryMethodManager(delivery_method_repo)
-decoration_manager = DecorationManager(decoration_repo,
-                                       topic_repo,
-                                       decoration_form_repo,
-                                       decoration_technique_repo)
 material_manager = MaterialManager(material_repo,
                                    material_version_repo)
 customer_manager = CustomerManager(customer_repo)
@@ -112,11 +103,9 @@ product_manager = ProductManager(product_repo,
 def menu_setup():
     production_funcs = [
         ['list_materials', 'List of materials'],
-        ['list_formulas', 'List of formulas'],
-        ['list_decorations', 'List of decorations'],
+        ['list_formulas', 'List of formulas'],        
         ['list_decoration_forms', 'List of decoration forms'],
-        ['list_decoration_techniques', 'List of decoration techniques'],
-        ['list_order_status', 'List of order status'],
+        ['list_decoration_techniques', 'List of decoration techniques'],        
         ['list_tastes', 'List of tastes']
     ]
 
@@ -734,211 +723,6 @@ def update_formula(formula_id):
                                taste_recs=taste_recs,
                                material_dtos=material_dtos,
                                total_cost=total_cost)
-
-####################################################################################
-# DECORATIONS
-####################################################################################
-
-@app.route('/add_decoration', methods=['GET', 'POST'])
-def add_decoration():
-    topic_recs = topic_repo.get_all_topics()
-    decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
-    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
-
-    if request.method == 'POST':
-        try:
-            #print(request.form)
-            decoration_name = request.form['decoration_name']
-            topic_id = int(request.form['topic_id'])
-            decoration_description = request.form['decoration_description']
-            decoration_form_id = int(request.form['decoration_form_id'])
-            decoration_technique_id = int(request.form['decoration_technique_id'])
-
-            new_decoration_id = decoration_repo.add_decoration(decoration_name,
-                                                               decoration_description,
-                                                               topic_id,
-                                                               decoration_form_id,
-                                                               decoration_technique_id)
-        
-            uploaded_files = request.files.getlist('file[]')
-            decoration_repo.add_decoration_templates(new_decoration_id, uploaded_files)
-
-            db.session.commit()
-            message = 'Successfully added decoration %s' % decoration_name
-            return redirect_with_message(url_for('list_decorations'), message, 'info')
-        
-        except ScmException as ex:
-            db.session.rollback()
-            message = 'Failed to add decoration %s' % name
-            flash(message, 'danger')
-            return render_scm_template('add_decoration.html',
-                                       topic_recs=topic_recs,
-                                       decoration_form_recs=decoration_form_recs,
-                                       decoration_technique_recs=decoration_technique_recs)
-            
-    return render_scm_template('add_decoration.html',
-                               topic_recs=topic_recs,
-                               decoration_form_recs=decoration_form_recs,
-                               decoration_technique_recs=decoration_technique_recs)
-
-def __extract_decoration_props(props_dict):
-    name = props_dict['decoration_name']
-    description = props_dict['decoration_description']
-    topic_id = props_dict['topic_id']
-    decoration_form_id = props_dict['decoration_form_id']
-    decoration_technique_id = props_dict['decoration_technique_id']
-
-    i = 0
-    remaining_template_path_ids = []
-    while True:
-        existing_image_i = 'existing_image_' + str(i)
-        if existing_image_i not in props_dict:
-            break
-
-        remaining_template_path_ids.append(int(props_dict[existing_image_i]))
-        i += 1
-
-    return name, description, topic_id, decoration_form_id, decoration_technique_id, remaining_template_path_ids
-
-@app.route('/update_decoration/<int:decoration_id>', methods=['GET', 'POST'])
-def update_decoration(decoration_id):
-    decoration_rec, \
-        topic_rec, \
-        decoration_form_rec, \
-        decoration_technique_rec, \
-        template_path_recs = decoration_manager.get_decoration_info(decoration_id)    
-
-    topic_recs = topic_repo.get_all_topics()
-    decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
-    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
-
-    if request.method == 'POST':
-        try:
-            print(request.form)
-            name, \
-            description, \
-            topic_id, \
-            decoration_form_id, \
-            decoration_technique_id, \
-            remaining_template_path_ids = __extract_decoration_props(request.form)
-            
-            uploaded_files = request.files.getlist('file[]')
-            
-            decoration_repo.update_decoration(decoration_id,
-                                              name,
-                                              description,
-                                              topic_id,
-                                              decoration_form_id,
-                                              decoration_technique_id)
-
-            decoration_repo.update_template_paths(decoration_id,
-                                                  template_path_recs,
-                                                  remaining_template_path_ids,
-                                                  uploaded_files)
-            
-            db.session.commit()
-            message = 'Successfully updated decoration %s' % decoration_id
-            return redirect_with_message(url_for('list_decorations'), message, 'info')
-        except ScmException as ex:
-            db.session.rollback()
-            return render_scm_template_with_message('update_decoration.html',
-                                                    ex.message,
-                                                    'danger',
-                                                    ex,
-                                                    decoration_rec=decoration_rec,
-                                                    template_paths=template_paths,
-                                                    topic_recs=topic_recs,
-                                                    decoration_form_recs=decoration_form_recs,
-                                                    decoration_technique_recs=decoration_technique_recs)
-        
-    return render_scm_template('update_decoration.html',
-                               decoration_rec=decoration_rec,
-                               template_path_recs=template_path_recs,
-                               topic_recs=topic_recs,
-                               decoration_form_recs=decoration_form_recs,
-                               decoration_technique_recs=decoration_technique_recs)
-                                                 
-
-@app.route('/list_decorations', methods=['GET', 'POST'], defaults={'page':1})
-@app.route('/list_decorations/', methods=['GET', 'POST'], defaults={'page':1})
-@app.route('/list_decorations/<int:page>', methods=['GET', 'POST'])
-@app.route('/list_decorations/<int:page>/', methods=['GET', 'POST'])
-def list_decorations(page):
-    per_page = int(config['PAGING']['decorations_per_page'])
-    search_text = request.args.get('search_text')
-
-    decoration_dtos = decoration_manager.get_paginated_decoration_dtos(page,
-                                                                       per_page,
-                                                                       search_text)
-
-    return render_scm_template('list_decorations.html', decoration_dtos=decoration_dtos)
-
-@app.route('/decoration_details/<int:decoration_id>', methods=['GET', 'POST'])
-def decoration_details(decoration_id):
-    decoration_rec, topic_rec, decoration_form_rec, decoration_technique_rec, template_path_recs = decoration_manager.get_decoration_info(decoration_id)
-
-    return render_scm_template('decoration_details.html',
-                               decoration_rec=decoration_rec,
-                               topic_rec=topic_rec,
-                               decoration_form_rec=decoration_form_rec,
-                               decoration_technique_rec=decoration_technique_rec,
-                               template_path_recs=template_path_recs)
-
-####################################################################################
-# ORDER STATUS
-####################################################################################
-@app.route('/add_order_status', methods=['GET', 'POST'])
-def add_order_status():
-    if request.method == 'POST':
-        try:
-            name = request.form['name'].strip()
-            description = request.form['description'].strip()
-            order_status_repo.add_order_status(name=name, description=description)
-            db.session.commit()
-            message = 'Successfully added order_status %s' % name
-            return redirect_with_message(url_for('list_order_status'), message, 'info')
-        except ScmException as ex:
-            db.session.rollback()
-            message = 'Failed to add order_status %s' % name
-            flash(message, 'danger')
-            return render_scm_template('name_description.html',
-                                        site_title='Add a new order status')
-    else:
-        return render_scm_template('name_description.html',
-                                    site_title='Add a new order status')
-
-@app.route('/update_order_status/<int:order_status_id>', methods=['GET', 'POST'])
-def update_order_status(order_status_id):
-    order_status_rec = order_status_repo.get_order_status(order_status_id)
-    if request.method == 'GET':        
-        return render_scm_template('name_description.html',
-                                    site_title='Update order status',
-                                    old_name=order_status_rec.name,
-                                    old_description=order_status_rec.description)
-    elif request.method == 'POST':
-        try:
-            name = request.form['name'].strip()
-            description = request.form['description'].strip()
-            order_status_repo.update_order_status(order_status_id,
-                                                  name,
-                                                  description)
-            db.session.commit()
-            message = 'Successfully updated order_status %s (%s)' % (name, order_status_id)
-            return redirect_with_message(url_for('list_order_status'), message, 'info')
-        except ScmException as ex:
-            db.session.rollback()
-            return render_scm_template_with_message('name_description.html',
-                                                    ex.message,
-                                                    'danger',
-                                                    ex,
-                                                    site_title='Update order status',
-                                                    old_name=order_status_rec.name,
-                                                    old_description=order_status_rec.description)            
-
-@app.route('/list_order_status', methods=['GET', 'POST'])
-def list_order_status():
-    order_status_recs = order_status_repo.get_all_order_status()
-    return render_scm_template('list_order_status.html', order_status_recs=order_status_recs)
 
 ####################################################################################
 # ORDER

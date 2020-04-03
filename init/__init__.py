@@ -82,23 +82,7 @@ class DecorationTechnique(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
     description = Column(String(400))
-
-class Decoration(db.Model):
-    __tablename__ = 'decoration'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(50))
-    description = Column(String(400))
-    topic_id = Column(Integer, ForeignKey(Topic.id))
-    decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
-    decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
-    registered_on = Column(DateTime(), default=datetime.datetime.utcnow)    
-    
-class DecorationTemplatePath(db.Model):
-    __tablename__ = 'decoration_template_path'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    decoration_id = Column(Integer, ForeignKey(Decoration.id))
-    template_path = Column(String(400))
-    
+  
 class Customer(db.Model):
     __tablename__ = 'customer'
     id = Column(Integer, autoincrement=True, primary_key=True)
@@ -131,12 +115,6 @@ class SampleImagePath(db.Model):
     file_path = Column(String(500))
     uploaded_on = Column(DateTime(), default=datetime.datetime.utcnow)
 
-class OrderStatus(db.Model):
-    __tablename__ = 'order_status'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(100))
-    description = Column(String(400))
-
 class Order(db.Model):
     __tablename__ = 'order'
     id = Column(Integer, autoincrement=True, primary_key=True)
@@ -147,7 +125,7 @@ class Order(db.Model):
     delivery_appointment = Column(DateTime())
     delivery_method_id = Column(Integer, ForeignKey(DeliveryMethod.id))
     message = Column(String(200))
-    order_status_id = Column(Integer, ForeignKey(OrderStatus.id))
+    order_status = Column(Integer, default=0)
     delivered_on = Column(DateTime())
     payment_status = Column(Integer, default=0)    
     paid_on = Column(DateTime())    
