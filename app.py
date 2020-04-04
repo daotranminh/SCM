@@ -52,6 +52,7 @@ from lib.managers.decoration_form_manager import DecorationFormManager
 from lib.managers.decoration_technique_manager import DecorationTechniqueManager
 
 from utilities import scm_constants
+from utilities.scm_enums import OrderStatus, PaymentStatus
 from utilities.scm_exceptions import ScmException
 
 logger = logging.getLogger(__name__)
@@ -848,7 +849,6 @@ def update_order(order_id):
     customer_choices = customer_manager.get_customer_choices()
     delivery_method_choices = delivery_method_manager.get_delivery_method_choices()
     product_dtos = product_manager.get_product_dtos(order_id)
-
     
     if request.method == 'GET':
         order_rec = order_repo.get_order(order_id)
@@ -861,6 +861,34 @@ def update_order(order_id):
                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES)
     elif request.method == 'POST':        
         try:
+            customer_id = request.form['customer_id']
+            ordered_on = request.form['ordered_on']
+            delivery_appointment = request.form['delivery_appointment']
+            delivery_method_id = request.form['delivery_method_id']
+            
+            order_status = request.form['order_status']
+            delivered_on = None
+            if order_status == OrderStatus.DELIVERED:
+                delivered_on = request.form['delivered_on']
+
+            paid_on = None
+            payment_status = request.form['payment_status']
+            if payment_status != PaymentStatus.NOT_PAID:
+                paid_on = request.form['paid_on']
+
+            message = request.form['message']
+
+            order_repo.update_order(order_id,
+                                    customer_id,
+                                    delivery_appointment,
+                                    delivery_method_id,
+                                    ordered_on,
+                                    order_status,
+                                    delivered_on,
+                                    payment_status,
+                                    paid_on,
+                                    message)
+            db.session.commit()
             message = 'Successfully updated order %s' % order_id
             return redirect_with_message(url_for('list_orders'), message, 'info')
         except ScmException as ex:
@@ -869,7 +897,12 @@ def update_order(order_id):
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    form=form)
+                                                    order_rec=order_rec,
+                                                    customer_choices=customer_choices,
+                                                    delivery_method_choices=delivery_method_choices,
+                                                    product_dtos=product_dtos,
+                                                    order_status_names=scm_constants.ORDER_STATUS_NAMES,
+                                                    payment_status_names=scm_constants.PAYMENT_STATUS_NAMES)
 
 ####################################################################################
 # PRODUCT

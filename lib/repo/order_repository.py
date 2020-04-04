@@ -78,15 +78,21 @@ class OrderRepository:
     def update_order(self,
                      order_id,
                      customer_id,
-                     decoration_id,
+                     delivery_appointment,
                      delivery_method_id,
                      ordered_on,
-                     delivery_appointment,
+                     order_status,
+                     delivered_on,
+                     payment_status,
+                     paid_on,
                      message):
         order_rec = self.get_order(order_id)
         order_rec.customer_id = customer_id
-        order_rec.decoration_id = decoration_id
+        order_rec.delivery_appointment = delivery_appointment
         order_rec.delivery_method_id = delivery_method_id
         order_rec.ordered_on = ordered_on
-        order_rec.delivery_appointment = delivery_appointment
+        order_rec.order_status = order_status
+        order_rec.delivered_on = delivered_on
+        order_rec.payment_status = payment_status
+        order_rec.paid_on = paid_on  
         order_rec.message = message
