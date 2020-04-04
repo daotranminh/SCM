@@ -783,7 +783,6 @@ def add_order():
     decoration_technique_choices = decoration_technique_manager.get_decoration_technique_choices()
 
     if request.method == 'POST':
-        print(request.form)
         try:
             customer_id, \
             ordered_on, \
@@ -795,8 +794,6 @@ def add_order():
             decoration_form_ids, \
             decoration_technique_ids, \
             with_boxes = __extract_order_props(request.form)
-
-            print(product_names)
 
             new_order_id = order_manager.add_order(customer_id,
                                                    ordered_on,
@@ -919,9 +916,6 @@ def update_product(product_id):
     if request.method == 'POST':
         try:
             remaining_product_image_path_ids = __extract_remaining_image_path_ids(request.form, 'existing_product_image_')
-
-            print(remaining_product_image_path_ids)
-
             product_name = request.form['product_name']
             taste_id = int(request.form['taste_id'])
             decoration_form_id = int(request.form['decoration_form_id'])
@@ -1099,7 +1093,6 @@ def update_sample_images_group(sample_images_group_id):
     
     if request.method == 'POST':
         try:
-            print(request.form)
             remaining_sample_image_path_ids = __extract_remaining_image_path_ids(request.form, 'existing_image_')
             sample_images_group_name = request.form['sample_images_group_name']
             topic_id = int(request.form['topic_id'])
@@ -1133,8 +1126,6 @@ def update_sample_images_group(sample_images_group_id):
 def __extract_remaining_image_path_ids(props_dict, existing_image_prefix):
     i = 0
     remaining_image_path_ids = []
-
-    print(props_dict)
 
     while True:
         existing_image_i = existing_image_prefix + str(i)
@@ -1171,8 +1162,6 @@ def delete_sample_images_group(sample_images_group_id):
 def sample_images_group_details(sample_images_group_id):
     sample_images_group_rec = sample_images_group_repo.get_sample_images_group(sample_images_group_id)
     sample_image_path_recs = sample_image_path_repo.get_sample_image_paths(sample_images_group_id)
-
-    print(sample_image_path_recs)
 
     return render_scm_template('sample_images_group_details.html',
                                 sample_images_group_rec=sample_images_group_rec,
