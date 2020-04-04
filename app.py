@@ -951,7 +951,8 @@ def update_product(product_id):
                                                     decoration_technique_recs=decoration_technique_recs,
                                                     product_rec=product_rec,
                                                     product_image_path_recs=product_image_path_recs,
-                                                    formula_recs=formula_recs)
+                                                    formula_recs=formula_recs,
+                                                    box_status_names=scm_constants.BOX_STATUS_NAMES)
     
     return render_scm_template('update_product.html',
                                taste_recs=taste_recs,
@@ -959,7 +960,8 @@ def update_product(product_id):
                                decoration_technique_recs=decoration_technique_recs,
                                product_rec=product_rec,
                                product_image_path_recs=product_image_path_recs,
-                               formula_recs=formula_recs)
+                               formula_recs=formula_recs,
+                               box_status_names=scm_constants.BOX_STATUS_NAMES)
 
 @app.route('/delete_product/<int:product_id>', methods=['GET', 'POST'])
 def delete_product(product_id):
