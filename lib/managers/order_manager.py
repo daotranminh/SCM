@@ -53,6 +53,7 @@ class OrderManager:
         delivery_method_name = self.order_repo.get_order_dto(order_id)
         
         order_status_name = self.__get_order_status_name(order_rec.order_status)
+        payment_status_name = self.__get_payment_status_name(order_rec.payment_status)
 
         order_dto = OrderDto(order_id,
                              order_rec.customer_id,
@@ -63,7 +64,7 @@ class OrderManager:
                              order_rec.message,
                              order_status_name,
                              order_rec.delivered_on,
-                             order_rec.payment_status,
+                             payment_status_name,
                              order_rec.paid_on)
 
         return order_dto
@@ -76,6 +77,8 @@ class OrderManager:
         order_dtos = []
         for order_rec, customer_name, delivery_method_name in paginated_order_dtos.items:
             order_status_name = self.__get_order_status_name(order_rec.order_status)
+            payment_status_name = self.__get_payment_status_name(order_rec.payment_status)
+
             order_dto = OrderDto(order_rec.id,
                                  order_rec.customer_id,
                                  customer_name,
@@ -85,7 +88,7 @@ class OrderManager:
                                  order_rec.message,
                                  order_status_name,
                                  order_rec.delivered_on,
-                                 order_rec.payment_status,
+                                 payment_status_name,
                                  order_rec.paid_on)
             order_dtos.append(order_dto)
 
@@ -105,3 +108,11 @@ class OrderManager:
 
         message = 'Order status key %s does not exist' % (str(order_status))
         raise ScmException(ErrorCodes.ERROR_ORDER_STATUS_KEY_NOT_EXIST, message)
+
+    def __get_payment_status_name(self, payment_status):
+        for payment_status_name in scm_constants.PAYMENT_STATUS_NAMES:
+            if payment_status_name[0] == payment_status:
+                return payment_status_name[1]
+
+        message = 'Payment status key %s does not exist' % (str(payment_status))
+        raise ScmException(ErrorCodes.ERROR_PAYMENT_STATUS_KEY_NOT_EXIST, message)

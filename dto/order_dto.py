@@ -20,7 +20,7 @@ class OrderDto:
                  message,
                  order_status_name,
                  delivered_on,
-                 payment_status,
+                 payment_status_name,
                  paid_on):
         self.order_id = order_id
         self.customer_id = customer_id
@@ -31,5 +31,5 @@ class OrderDto:
         self.message = message
         self.order_status_name = order_status_name
         self.delivered_on = delivered_on
-        self.payment_status = payment_status
+        self.payment_status_name = payment_status_name
         self.paid_on = paid_on
