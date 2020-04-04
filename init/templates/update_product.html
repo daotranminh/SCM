@@ -50,6 +50,19 @@
 	            {% endif %}
 	        {% endfor %}
 	        </select>
+		</div>
+		
+		<div class="form-group">
+	        <label for="formula_id">Formula</label>
+	        <select id="formula_id" name="formula_id">
+	        {% for formula_rec in formula_recs %}
+	            {% if formula_rec.id == product_rec.formula_id %}
+	            <option value="{{formula_rec.id}}" selected>{{formula_rec.name}}</option>
+	            {% else %}
+	            <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
+	            {% endif %}
+	        {% endfor %}
+	        </select>
         </div>
 
         <table class="table table-striped" id="existing_images_table">

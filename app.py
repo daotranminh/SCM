@@ -913,7 +913,8 @@ def update_product(product_id):
     product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
     taste_recs = taste_repo.get_all_tastes()
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
-    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()    
+    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
+    formula_recs = formula_repo.get_all_formulas()  
     
     if request.method == 'POST':
         try:
@@ -922,6 +923,7 @@ def update_product(product_id):
             taste_id = int(request.form['taste_id'])
             decoration_form_id = int(request.form['decoration_form_id'])
             decoration_technique_id = int(request.form['decoration_technique_id'])
+            formula_id = int(request.form['formula_id'])
 
             uploaded_files = request.files.getlist('file[]')
 
@@ -930,6 +932,7 @@ def update_product(product_id):
                                            taste_id,
                                            decoration_form_id,
                                            decoration_technique_id,
+                                           formula_id,
                                            product_image_path_recs,
                                            remaining_product_image_path_ids,
                                            uploaded_files)
@@ -947,14 +950,16 @@ def update_product(product_id):
                                                     decoration_form_recs=decoration_form_recs,
                                                     decoration_technique_recs=decoration_technique_recs,
                                                     product_rec=product_rec,
-                                                    product_image_path_recs=product_image_path_recs)
+                                                    product_image_path_recs=product_image_path_recs,
+                                                    formula_recs=formula_recs)
     
     return render_scm_template('update_product.html',
                                taste_recs=taste_recs,
                                decoration_form_recs=decoration_form_recs,
                                decoration_technique_recs=decoration_technique_recs,
                                product_rec=product_rec,
-                               product_image_path_recs=product_image_path_recs)
+                               product_image_path_recs=product_image_path_recs,
+                               formula_recs=formula_recs)
 
 @app.route('/delete_product/<int:product_id>', methods=['GET', 'POST'])
 def delete_product(product_id):
