@@ -846,46 +846,21 @@ def order_details(order_id):
 @app.route('/update_order/<int:order_id>', methods=['GET', 'POST'])
 def update_order(order_id):
     customer_choices = customer_manager.get_customer_choices()
-    taste_choices = taste_manager.get_taste_choices()
-    decoration_choices = decoration_manager.get_decoration_choices()
     delivery_method_choices = delivery_method_manager.get_delivery_method_choices()
+    product_dtos = product_manager.get_product_dtos(order_id)
 
+    
     if request.method == 'GET':
         order_rec = order_repo.get_order(order_id)
-
-        form = UpdateOrderForm(request.form,
-                               customer_choices,
-                               taste_choices,
-                               decoration_choices,
-                               delivery_method_choices,
-                               order_rec)
-        return render_scm_template('update_order.html', form=form)
-    elif request.method == 'POST':
+        return render_scm_template('update_order.html',
+                                    order_rec=order_rec,
+                                    customer_choices=customer_choices,
+                                    delivery_method_choices=delivery_method_choices,
+                                    product_dtos=product_dtos,
+                                    order_status_names=scm_constants.ORDER_STATUS_NAMES,
+                                    payment_status_names=scm_constants.PAYMENT_STATUS_NAMES)
+    elif request.method == 'POST':        
         try:
-            form = UpdateOrderForm(request.form,
-                                   customer_choices,
-                                   taste_choices,
-                                   decoration_choices,
-                                   delivery_method_choices,
-                                   None)
-
-            customer_id = form.customer.data
-            taste_id = form.taste.data
-            decoration_id = form.decoration.data
-            delivery_method_id = form.delivery_method.data
-            ordered_on = form.ordered_on.data
-            delivery_appointment = form.delivery_appointment.data
-            message = form.message.data
-
-            order_repo.update_order(order_id,
-                                    customer_id,
-                                    taste_id,
-                                    decoration_id,
-                                    delivery_method_id,
-                                    ordered_on,
-                                    delivery_appointment,
-                                    message)
-            db.session.commit()
             message = 'Successfully updated order %s' % order_id
             return redirect_with_message(url_for('list_orders'), message, 'info')
         except ScmException as ex:

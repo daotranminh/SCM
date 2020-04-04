@@ -16,5 +16,4 @@ ORDER_STATUS_NAMES = [(int(OrderStatus.PENDING), 'Pending'),
 
 PAYMENT_STATUS_NAMES = [(int(PaymentStatus.NOT_PAID), 'Not paid'),
                         (int(PaymentStatus.PARTLY_PAID), 'Partly paid'),
-                        (int(PaymentStatus.FULLY_PAID), 'Fully paid')
-]
+                        (int(PaymentStatus.FULLY_PAID), 'Fully paid')]

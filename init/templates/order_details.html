@@ -15,9 +15,9 @@
   <tbody>
     <tr><td>Order Id</td><td>{{ order_dto.order_id }}</td></tr>
     <tr><td>Customer</td><td><a href="{{ url_for('customer_details', customer_id=order_dto.customer_id) }}">{{ order_dto.customer_name }}</a></td></tr>    
-    <tr><td>Delivery method</td><td>{{ order_dto.delivery_method_name }}</td></tr>
     <tr><td>Ordered on</td><td>{{ order_dto.ordered_on }}</td></tr>
     <tr><td>Delivery appointment</td><td>{{ order_dto.delivery_appointment }}</td></tr>
+    <tr><td>Delivery method</td><td>{{ order_dto.delivery_method_name }}</td></tr>
     <tr><td>Order status</td><td>{{ order_dto.order_status_name }}</td></tr> 
     <tr><td>Delivered on</td><td>{{ order_dto.delivered_on }}</td></tr> 
     <tr><td>Payment status</td><td>{{ order_dto.payment_status_name }}</td></tr>
@@ -37,8 +37,6 @@
       <th>Formula</th>
       <th>Sample Images</th>
       <th>Product Images</th>
-      <th></th>
-      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -51,10 +49,7 @@
       <td>{{product_dto.decoration_technique_name}}</td>
       <td>{{product_dto.formula_name}}</td>
       <td>{{product_dto.sample_images_group_name}}</td>
-      <td><a href="{{ url_for('update_product', product_id=product_dto.product_id) }}"
-             class="btn btn-default pullright">Update</a></td></td>
-      <td><a href="{{ url_for('delete_product', product_id=product_dto.product_id) }}"
-             class="btn btn-default pullright">Delete</a></td></td>
+      <td></td>
     </tr>
     {% endfor %}
   </tbody>
