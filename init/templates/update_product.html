@@ -83,18 +83,18 @@
             <input type="text" name="box_returned_on" value="{{product_rec.box_returned_on}}">
       	</div>
 
-        <table class="table table-striped" id="existing_images_table">
+        <table class="table table-striped" id="existing_product_images_table">
 	        <thead>
 	            <tr>
-	                <th>Exsiting images</th>
+	                <th>Exsiting product images</th>
 	                <th></th> 
 	            </tr>
 	        </thead>
 	        <tbody>
 	            {% for i in range(product_image_path_recs|length) %}
 	            <tr>
-	                <td><img src="{{product_image_path_recs[i].file_path}}" width="auto" height="100" alt="{{product_image_path_recs[i].id}}" name="existing_image_{{i}}" id="existing_image_{{i}}" /></td>
-	                <td><a class="btn btn-default pullright" onclick="delete_row(this)" id="delete_btn_{{i}}">Delete</a></td>
+	                <td><img src="{{product_image_path_recs[i].file_path}}" width="auto" height="100" alt="{{product_image_path_recs[i].id}}" name="existing_product_image_{{i}}" id="existing_product_image_{{i}}" /></td>
+	                <td><a class="btn btn-default pullright" onclick="delete_row(this, 'existing_product_images_table', 'existing_product_image_', 'delete_product_image_btn_')" id="delete_product_image_btn_{{i}}">Delete</a></td>
 	            </tr>
 	            {% endfor %}
 	        </tbody>
@@ -116,7 +116,7 @@
   $('*[name=box_returned_on]').appendDtpicker();
 
   $('#update_product_form').submit(function() {
-  var existing_images = document.querySelectorAll('*[id^="existing_image_"]');
+  var existing_images = document.querySelectorAll('*[id^="existing_product_image_"]');
   for (var i=0; i < existing_images.length; i++)
   {
   var existing_image_input = "<input name='" + existing_images[i].name + "' value='" + existing_images[i].alt + "'>"
@@ -125,7 +125,7 @@
   
   })
   
-  function delete_row(btn)
+  function delete_row(btn, table_name, existing_image_prefix, delete_btn_prefix)
   {
     var strIndex = get_index(btn)
     var intIndex = parseInt(strIndex)
@@ -133,16 +133,15 @@
     var row = btn.parentNode.parentNode
     row.parentNode.removeChild(row)
 
-    var len = document.getElementById("existing_images_table").rows.length - 1
-    var existing_images = document.querySelectorAll('*[id^="existing_image_"]');
-    var delete_btns = document.querySelectorAll('*[id^="delete_btn_"]');
+    var len = document.getElementById(table_name).rows.length - 1
+    var existing_images = document.querySelectorAll(`*[id^=${existing_image_prefix}]`);
+    var delete_btns = document.querySelectorAll(`*[id^=${delete_btn_prefix}]`);
     for (var i = intIndex; i < len; i++)
     {			     
-			       existing_images[i].name = "existing_image_" + i.toString()
-			       existing_images[i].id = "existing_image_" + i.toString()
-			       delete_btns[i].name = "delete_btn_" + i.toString()
-			       delete_btns[i].id = "delete_btn_" + i.toString()
-			       
+		existing_images[i].name = existing_image_prefix + i.toString()
+		existing_images[i].id = existing_image_prefix + i.toString()
+		delete_btns[i].name = delete_btn_prefix + i.toString()
+		delete_btns[i].id = delete_btn_prefix + i.toString()
     }
 			       
   }

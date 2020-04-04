@@ -918,7 +918,10 @@ def update_product(product_id):
     
     if request.method == 'POST':
         try:
-            remaining_product_image_path_ids = __extract_remaining_image_path_ids(request.form)
+            remaining_product_image_path_ids = __extract_remaining_image_path_ids(request.form, 'existing_product_image_')
+
+            print(remaining_product_image_path_ids)
+
             product_name = request.form['product_name']
             taste_id = int(request.form['taste_id'])
             decoration_form_id = int(request.form['decoration_form_id'])
@@ -1096,7 +1099,8 @@ def update_sample_images_group(sample_images_group_id):
     
     if request.method == 'POST':
         try:
-            remaining_sample_image_path_ids = __extract_remaining_image_path_ids(request.form)
+            print(request.form)
+            remaining_sample_image_path_ids = __extract_remaining_image_path_ids(request.form, 'existing_image_')
             sample_images_group_name = request.form['sample_images_group_name']
             topic_id = int(request.form['topic_id'])
             uploaded_files = request.files.getlist('file[]')
@@ -1126,12 +1130,14 @@ def update_sample_images_group(sample_images_group_id):
                                sample_images_group_rec=sample_images_group_rec,
                                sample_image_path_recs=sample_image_path_recs)
 
-def __extract_remaining_image_path_ids(props_dict):
+def __extract_remaining_image_path_ids(props_dict, existing_image_prefix):
     i = 0
     remaining_image_path_ids = []
 
+    print(props_dict)
+
     while True:
-        existing_image_i = 'existing_image_' + str(i)
+        existing_image_i = existing_image_prefix + str(i)
         if existing_image_i not in props_dict:
             break
 
