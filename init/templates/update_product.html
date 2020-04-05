@@ -82,14 +82,7 @@
 
 		<div class="form-group">
             <label for="box_returned_on">Box returned on</label>
-			<input type="text" id="box_returned_on" name="box_returned_on" value="{{chosen_box_returned_on}}">
-			<script type="text/javascript">
-				$(function(){
-					$('*[name=box_returned_on]').appendDtpicker({
-						"inline": true
-					});
-				});
-			</script>
+			<input type="text" id="box_returned_on" name="box_returned_on" value="{{chosen_box_returned_on}}">			
       	</div>		
 
 		<div class="form-group">
@@ -135,6 +128,8 @@
 </div>
 
 <script>
+  $('*[name=box_returned_on]').appendDtpicker();
+  
   $('#update_product_form').submit(function() {
   var existing_images = document.querySelectorAll('*[id^="existing_product_image_"]');
   for (var i=0; i < existing_images.length; i++)
