@@ -910,14 +910,9 @@ def update_product(product_id):
     product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
     taste_recs = taste_repo.get_all_tastes()
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
-    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
-    formula_recs = formula_repo.get_all_formulas()
+    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()    
     sample_images_group_recs = sample_images_group_repo.get_all_sample_images_groups()
     
-    latest_3_sample_image_paths = []
-    if product_rec.sample_images_group_id is not None:
-        latest_3_sample_image_paths = sample_image_path_repo.get_latest_3_sample_image_paths(product_rec.sample_images_group_id)
-
     selected_taste_id = product_rec.taste_id
     current_product_name = product_rec.name
     selected_decoration_form_id = product_rec.decoration_form_id
@@ -927,6 +922,12 @@ def update_product(product_id):
     chosen_box_returned_on = product_rec.box_returned_on
     selected_sample_images_group_id = product_rec.sample_images_group_id
 
+    latest_3_sample_image_paths = []
+    if product_rec.sample_images_group_id is not None:
+        latest_3_sample_image_paths = sample_image_path_repo.get_latest_3_sample_image_paths(product_rec.sample_images_group_id)
+
+    formula_recs = formula_repo.get_formulas_of_taste(selected_taste_id)
+
     if request.method == 'GET':
         current_product_name = request.args.get('product_name_arg')
         if current_product_name is None:
@@ -935,6 +936,7 @@ def update_product(product_id):
         taste_id_arg = request.args.get('taste_id_arg')
         if taste_id_arg is not None: 
             selected_taste_id = int(taste_id_arg)
+            formula_recs = formula_repo.get_formulas_of_taste(selected_taste_id)
 
         decoration_form_id_arg = request.args.get('decoration_form_id_arg')
         if decoration_form_id_arg is not None:

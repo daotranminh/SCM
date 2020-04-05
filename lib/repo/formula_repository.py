@@ -29,6 +29,9 @@ class FormulaRepository:
     def get_all_formulas(self):
         return Formula.query.all()
 
+    def get_formulas_of_taste(self, taste_id):
+        return Formula.query.filter(Formula.taste_id == taste_id).all()
+
     def get_paginated_formulas(self,
                                page,
                                per_page,

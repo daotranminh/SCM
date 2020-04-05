@@ -17,7 +17,7 @@
 
         <div class="form-group">
 	        <label for="taste_id">Taste</label>
-	        <select id="taste_id" name="taste_id">
+	        <select id="taste_id" name="taste_id" onchange="reload_after_select_changed()">
 	        {% for taste_rec in taste_recs %}
 	            {% if taste_rec.id == selected_taste_id %}
 	            <option value="{{taste_rec.id}}" selected>{{taste_rec.name}}</option>
@@ -87,7 +87,7 @@
 
 		<div class="form-group">
 	        <label for="sample_images_group_id">Sample images</label>
-		<select id="sample_images_group_id" name="sample_images_group_id" onchange="change_sample_images_group(this)">
+		<select id="sample_images_group_id" name="sample_images_group_id" onchange="reload_after_select_changed()">
 	        {% for sample_images_group_rec in sample_images_group_recs %}
 	            {% if sample_images_group_rec.id == selected_sample_images_group_id %}
 	            <option value="{{sample_images_group_rec.id}}" selected>{{sample_images_group_rec.name}}</option>
@@ -209,7 +209,7 @@
 });
 
 
-function change_sample_images_group(select_sample_images_group)
+function reload_after_select_changed()
 {
 	var productId = document.getElementById("product_id").value
 	var productName = document.getElementById("product_name").value
@@ -218,7 +218,7 @@ function change_sample_images_group(select_sample_images_group)
 	var decorationTechniqueId = document.getElementById("decoration_technique_id").value 
 	var formulaId = document.getElementById("formula_id").value
 	var boxStatus = document.getElementById("box_status").value
-	var sampleImagesGroupId = select_sample_images_group.value
+	var sampleImagesGroupId = document.getElementById("sample_images_group_id").value
 	var boxReturnedOn = document.getElementById("box_returned_on").value
 	var existingProductImages = document.querySelectorAll('*[id^="existing_product_image_"]');
 
