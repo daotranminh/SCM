@@ -1,0 +1,141 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Product details</h1>
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr><td>Product Id</td><td>{{ product_dto.product_id }}</td><td></td></tr>
+        <tr><td>Product name</td><td>{{ product_dto.product_name }}</td><td></td></tr>    
+        <tr><td>Taste</td><td>{{ product_dto.taste_name }}</td><td></td></tr>    
+        <tr><td>Decoration form</td><td>{{ product_dto.decoration_form_name }}</td><td></td></tr>    
+        <tr><td>Decoration technique</td><td>{{ product_dto.decoration_technique_name }}</td><td></td></tr>    
+        <tr><td>Formula</td><td>{{ product_dto.formula_name }}</td><td></td></tr>
+        <tr>
+            <td>Sample images</td><td>{{ product_dto.sample_images_group_name }}</td>
+            <td>
+                {% if product_dto.sample_image_0 != '' %}
+                    <img src="{{product_dto.sample_image_0}}" class="thumbnailsimage0" width="auto" height="100" alt="" />
+                {% endif %}
+                {% if product_dto.sample_image_1 != '' %}
+                    <img src="{{product_dto.sample_image_1}}" class="thumbnailsimage1" width="auto" height="100" alt="" />
+                {% endif %}
+                {% if product_dto.sample_image_2 != '' %}
+                    <img src="{{product_dto.sample_image_2}}" class="thumbnailsimage2" width="auto" height="100" alt="" />
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+<div class="galleryThumbnailsContainer">
+  <div class="galleryThumbnails">
+    {% for i in range(product_image_path_recs|length) %}
+    <a href="javascript: changeimage('{{i}}')">
+      <img src="{{product_image_path_recs[i].file_path}}" class="thumbnailsimage{{i}}" width="auto" height="100" alt="" />
+    </a>
+    {% endfor %}
+  </div>  
+</div>
+
+<div class="galleryPreviewContainer">
+  <div class="galleryPreviewImage">
+    {% for i in range(product_image_path_recs|length) %}
+    <img src="{{product_image_path_recs[i].file_path}}" class="previewImage{{i}}" width="900" height="auto" alt="" />';
+    {% endfor %}
+  </div>
+    
+  <div class="galleryPreviewArrows">
+    <a href="#" class="previousSlideArrow" onclick="change_previous_image()">&lt;</a>
+    <a href="#" class="nextSlideArrow" onclick="change_next_image()">&gt;</a>
+  </div>
+
+  <div class="galleryNavigationBullets">
+    {% for i in range(sample_image_path_recs|length) %}
+    <a href="javascript: changeimage('{{i}}')" class="galleryBullet{{i}}"><span>Bullet</span></a>
+    {% endfor %}
+  </div>
+</div>
+
+<script type="text/javascript">
+  // init variables
+  var imagesTotal = {{sample_image_path_recs|length}};
+  var currentImage = 0;
+  var thumbsTotalWidth = 0;
+
+  $('a.galleryBullet' + currentImage).addClass("active");
+  $('a.thumbnailsimage' + currentImage).addClass("active");
+
+
+  // SET WIDTH for THUMBNAILS CONTAINER
+  $(window).load(function() {
+  $('.galleryThumbnails a img').each(function() {
+  thumbsTotalWidth += $(this).width() + 10 + 8;
+  });
+  $('.galleryThumbnails').width(thumbsTotalWidth);
+  });
+
+  // PREVIOUS ARROW CODE
+  function change_previous_image() {
+  $('img.previewImage' + currentImage).hide();
+  $('a.galleryBullet' + currentImage).removeClass("active");
+  $('a.thumbnailsimage' + currentImage).removeClass("active");
+
+  currentImage--;
+
+  if (currentImage == -1) {
+  currentImage = imagesTotal-1;
+  }
+  
+  $('a.galleryBullet' + currentImage).addClass("active");
+  $('a.thumbnailsimage' + currentImage).addClass("active");
+  $('img.previewImage' + currentImage).show();
+  return false;
+  }
+  // ===================
+
+  // NEXT ARROW CODE
+  function change_next_image() {
+  $('img.previewImage' + currentImage).hide();
+  $('a.galleryBullet' + currentImage).removeClass("active");
+  $('a.thumbnailsimage' + currentImage).removeClass("active");
+
+  currentImage++;
+
+  if (currentImage == imagesTotal) {
+  currentImage = 0;
+  }
+  
+  $('a.galleryBullet' + currentImage).addClass("active");
+  $('a.thumbnailsimage' + currentImage).addClass("active");
+  $('img.previewImage' + currentImage).show();
+  return false;
+  }
+  // ===================
+
+
+  // BULLETS CODE
+  function changeimage(imageNumber) {
+  $('img.previewImage' + currentImage).hide();
+  currentImage = imageNumber;
+  $('img.previewImage' + imageNumber).show();
+  $('.galleryNavigationBullets a').removeClass("active");
+  $('.galleryThumbnails a').removeClass("active");
+  $('a.galleryBullet' + imageNumber).addClass("active");
+  $('a.thumbnailsimage' + currentImage).addClass("active");
+  }
+  // ===================
+
+</script>
+
+{% endblock %}

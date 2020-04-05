@@ -904,6 +904,18 @@ def update_order(order_id):
 ####################################################################################
 # PRODUCT
 ####################################################################################
+
+@app.route('/product_details/<int:product_id>', methods=['GET', 'POST'])
+def product_details(product_id):
+    product_dto = product_manager.get_product_dto(product_id)
+    product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
+
+    print(product_dto.sample_image_0)
+
+    return render_scm_template('product_details.html',
+                                product_dto=product_dto,
+                                product_image_path_recs=product_image_path_recs)
+
 @app.route('/update_product/<int:product_id>', methods=['GET', 'POST'])
 def update_product(product_id):
     product_rec = product_repo.get_product(product_id)    
