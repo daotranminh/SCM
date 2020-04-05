@@ -920,14 +920,30 @@ def update_product(product_id):
     
     if request.method == 'GET':
         product_name = request.args.get('product_name_arg')
-        taste_id = request.args.get('taste_id_arg')
-        decoration_form_id = request.args.get('decoration_form_id_arg')
-        decoration_technique_id = request.args.get('decoration_technique_id_arg')        
-        formula_id = request.args.get('formula_id_arg')
-        box_status = request.args.get('box_status_arg')
+        
+        taste_id_arg = request.args.get('taste_id_arg')
+        taste_id = int(taste_id_arg) if taste_id_arg is not None else product_rec.taste_id
+
+        decoration_form_id_arg = request.args.get('decoration_form_id_arg')
+        decoration_form_id = int(decoration_form_id_arg) if decoration_form_id_arg is not None else product_rec.decoration_form_id
+
+        decoration_technique_id_arg = request.args.get('decoration_technique_id_arg')
+        decoration_technique_id = int(decoration_technique_id_arg) if decoration_technique_id_arg is not None else product_rec.decoration_technique_id
+
+        formula_id_arg = request.args.get('formula_id_arg')
+        formula_id = int(formula_id_arg) if formula_id_arg is not None else None
+
+        box_status_arg = request.args.get('box_status_arg')
+        box_status = int(box_status_arg) if box_status_arg is not None else product_rec.box_status
+
         box_returned_on = request.args.get('box_returned_on_arg')
-        existing_product_image_paths = request.args.get('existing_product_image_paths_arg')
-        sample_images_group_id = request.args.get('sample_images_group_id_arg')
+
+        existing_product_image_paths_arg = request.args.get('existing_product_image_paths_arg')
+        product_image_path_recs = __infer_product_image_path_recs(product_id, existing_product_image_paths_arg)
+
+        sample_images_group_id_arg = request.args.get('sample_images_group_id_arg')
+        sample_images_group_id = int(sample_images_group_id_arg) if sample_images_group_id_arg is not None else product_rec.sample_images_group_id
+
         latest_3_sample_image_paths = sample_image_path_repo.get_latest_3_sample_image_paths(sample_images_group_id)
 
         print(product_name)
@@ -937,7 +953,7 @@ def update_product(product_id):
         print(formula_id)
         print(box_status)
         print(box_returned_on)
-        print(existing_product_image_paths)        
+        print(product_image_path_recs)        
         print(sample_images_group_id)
         print(latest_3_sample_image_paths)
     elif request.method == 'POST':
@@ -1012,6 +1028,27 @@ def delete_product(product_id):
     return redirect_with_message(url_for('order_details', order_id=order_id),
                                  message,
                                  'info')
+
+def __infer_product_image_path_recs(product_id,
+                                    existing_product_image_paths_arg):
+    all_product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
+
+    if existing_product_image_paths_arg is None:
+        return all_product_image_path_recs
+
+    existing_product_image_paths = existing_product_image_paths_arg.split("!!!")
+    print(existing_product_image_paths)
+    all_product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
+    product_image_path_recs = []
+    for product_image_path_rec in all_product_image_path_recs:
+        print(product_image_path_rec.file_path)
+        for existing_product_image_path in existing_product_image_paths:
+            print(existing_product_image_path)
+            if existing_product_image_path == product_image_path_rec.file_path:
+                print("FOUND")
+                product_image_path_recs.append(product_image_path_rec)
+
+    return product_image_path_recs
 
 ####################################################################################
 # DELIVERY METHOD

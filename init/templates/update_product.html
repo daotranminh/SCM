@@ -221,7 +221,7 @@ function change_sample_images_group(select_sample_images_group)
 	{
 		var subs = existingProductImages[i].src.split("/")
 		var imgPath = subs.slice(3, subs.length).join("/")
-		existingProductImagesStr = existingProductImagesStr + imgPath + "!!!"
+		existingProductImagesStr = existingProductImagesStr + "/" +imgPath + "!!!"
 	}
 
 	currentHref = location.href
