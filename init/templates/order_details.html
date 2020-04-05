@@ -47,8 +47,8 @@
       <td>{{product_dto.taste_name}}</td>
       <td>{{product_dto.decoration_form_name}}</td>
       <td>{{product_dto.decoration_technique_name}}</td>
-      <td>{{product_dto.formula_name}}</td>
-      <td>{{product_dto.sample_images_group_name}}</td>
+      <td><a href="{{ url_for('formula_details', formula_id=product_dto.formula_id) }}">{{product_dto.formula_name}}</a></td>
+      <td><a href="{{ url_for('sample_images_group_details', sample_images_group_id=product_dto.sample_images_group_id) }}">{{product_dto.sample_images_group_name}}</a></td>
       <td></td>
     </tr>
     {% endfor %}

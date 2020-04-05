@@ -96,7 +96,15 @@
 	            {% endif %}
 	        {% endfor %}
 	        </select>
-        </div>
+		</div>
+		
+		<table class="table table-striped" id="sample_images_group_table">
+			<tbody>
+				{% for sample_image_path in latest_3_sample_image_paths %}
+				<td><img src="{{sample_image_path}}" width="auto" height="100"/></td>
+				{% endfor %}
+			</tbody>
+		</table>
 
         <table class="table table-striped" id="existing_product_images_table">
 	        <thead>
@@ -129,7 +137,7 @@
 
 <script>
   $('*[name=box_returned_on]').appendDtpicker();
-  
+
   $('#update_product_form').submit(function() {
   var existing_images = document.querySelectorAll('*[id^="existing_product_image_"]');
   for (var i=0; i < existing_images.length; i++)
