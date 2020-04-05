@@ -926,7 +926,7 @@ def update_product(product_id):
     selected_box_status = product_rec.box_status
     chosen_box_returned_on = product_rec.box_returned_on
     selected_sample_images_group_id = product_rec.sample_images_group_id
-        
+
     if request.method == 'GET':
         current_product_name = request.args.get('product_name_arg')
         if current_product_name is None:
@@ -951,8 +951,7 @@ def update_product(product_id):
         box_status_arg = request.args.get('box_status_arg')
         if box_status_arg is not None:
             selected_box_status = int(box_status_arg)
-
-        chosen_box_returned_on = request.args.get('box_returned_on_arg')
+            chosen_box_returned_on = request.args.get('box_returned_on_arg')
 
         existing_product_image_paths_arg = request.args.get('existing_product_image_paths_arg')
         product_image_path_recs = __infer_product_image_path_recs(product_id, existing_product_image_paths_arg)
