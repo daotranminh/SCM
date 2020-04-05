@@ -26,6 +26,10 @@ class SampleImagesGroupRepository:
             filter(SampleImagesGroup.id == sample_images_group_id). \
             first()
 
+    def get_all_sample_images_groups(self):
+        return SampleImagesGroup.query. \
+            all()
+
     def get_sample_images_groups_by_topic(self,
                                           topic_id):
         return SampleImagesGroup.query. \

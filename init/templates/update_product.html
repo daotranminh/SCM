@@ -6,8 +6,10 @@
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
-    <h1>Update product</h1>
-    <form method="POST" action="" enctype="multipart/form-data" id="update_product_form">
+	<h1>Update product</h1>	
+	<form method="POST" action="" enctype="multipart/form-data" id="update_product_form">
+		<input type=text id="product_id" value="{{product_rec.id}}" display="none" disabled/>
+
         <div class="form-group">
             <label for="product_name">Name</label>
             <input type="text" id="product_name" name="product_name" value="{{product_rec.name}}"/>
@@ -77,11 +79,24 @@
               {% endfor %}
             </select>
 		</div>
-		  
+
 		<div class="form-group">
             <label for="box_returned_on">Box returned on</label>
-            <input type="text" name="box_returned_on" value="{{product_rec.box_returned_on}}">
-      	</div>
+            <input type="text" id="box_returned_on" name="box_returned_on" value="{{product_rec.box_returned_on}}">
+      	</div>		
+
+		<div class="form-group">
+	        <label for="sample_images_group_id">Sample images</label>
+		<select id="sample_images_group_id" name="sample_images_group_id" onchange="change_sample_images_group(this)">
+	        {% for sample_images_group_rec in sample_images_group_recs %}
+	            {% if sample_images_group_rec.id == product_rec.sample_images_group_id %}
+	            <option value="{{sample_images_group_rec.id}}" selected>{{sample_images_group_rec.name}}</option>
+	            {% else %}
+	            <option value="{{sample_images_group_rec.id}}">{{sample_images_group_rec.name}}</option>
+	            {% endif %}
+	        {% endfor %}
+	        </select>
+        </div>
 
         <table class="table table-striped" id="existing_product_images_table">
 	        <thead>
@@ -185,6 +200,50 @@
     }
   });
 });
+
+
+function change_sample_images_group(select_sample_images_group)
+{
+	var productId = document.getElementById("product_id").value
+	var productName = document.getElementById("product_name").value
+	var tasteId = document.getElementById("taste_id").value	
+	var decorationFormId = document.getElementById("decoration_form_id").value 
+	var decorationTechniqueId = document.getElementById("decoration_technique_id").value 
+	var formulaId = document.getElementById("formula_id").value
+	var boxStatus = document.getElementById("box_status").value
+	var sampleImagesGroupId = select_sample_images_group.value
+	var boxReturnedOn = document.getElementById("box_returned_on").value
+	var existingProductImages = document.querySelectorAll('*[id^="existing_product_image_"]');
+
+	var len = document.getElementById("existing_product_images_table").rows.length - 1
+	var existingProductImagesStr = ""
+	for (var i=0; i < existingProductImages.length; i++)
+	{
+		var subs = existingProductImages[i].src.split("/")
+		var imgPath = subs.slice(3, subs.length).join("/")
+		existingProductImagesStr = existingProductImagesStr + imgPath + "!!!"
+	}
+
+	currentHref = location.href
+	currentHrefComponents = currentHref.split("/")
+	baseHref = currentHrefComponents.slice(0,4).join("/")
+	newHref = baseHref + 
+		"/" + productId +
+		"?product_name_arg=" + productName +
+		"&taste_id_arg=" + tasteId +
+		"&decoration_form_id_arg=" + decorationFormId +
+		"&decoration_technique_id_arg=" + decorationTechniqueId + 
+		"&formula_id_arg=" + formulaId +
+		"&box_status_arg=" + boxStatus + 
+		"&sample_images_group_id_arg=" + sampleImagesGroupId +
+		"&box_returned_on_arg=" + boxReturnedOn +
+		"&existing_product_image_paths_arg=" + existingProductImagesStr
+
+	location.href = newHref
+}
+
+
+
 </script>
 
 {% endblock %}
