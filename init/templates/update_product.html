@@ -57,6 +57,7 @@
 		<div class="form-group">
 	        <label for="formula_id">Formula</label>
 	        <select id="formula_id" name="formula_id">
+			<option value="-1" selected></option>
 	        {% for formula_rec in formula_recs %}
 	            {% if formula_rec.id == selected_formula_id %}
 	            <option value="{{formula_rec.id}}" selected>{{formula_rec.name}}</option>
@@ -87,7 +88,8 @@
 
 		<div class="form-group">
 	        <label for="sample_images_group_id">Sample images</label>
-		<select id="sample_images_group_id" name="sample_images_group_id" onchange="reload_after_select_changed()">
+			<select id="sample_images_group_id" name="sample_images_group_id" onchange="reload_after_select_changed()">
+			<option value="-1" selected></option>
 	        {% for sample_images_group_rec in sample_images_group_recs %}
 	            {% if sample_images_group_rec.id == selected_sample_images_group_id %}
 	            <option value="{{sample_images_group_rec.id}}" selected>{{sample_images_group_rec.name}}</option>

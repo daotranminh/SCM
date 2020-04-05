@@ -917,7 +917,7 @@ def update_product(product_id):
     current_product_name = product_rec.name
     selected_decoration_form_id = product_rec.decoration_form_id
     selected_decoration_technique_id = product_rec.decoration_technique_id
-    selected_formula_id = None
+    selected_formula_id = product_rec.formula_id
     selected_box_status = product_rec.box_status
     chosen_box_returned_on = product_rec.box_returned_on
     selected_sample_images_group_id = product_rec.sample_images_group_id
@@ -968,12 +968,18 @@ def update_product(product_id):
             current_product_name = request.form['product_name']
             selected_taste_id = int(request.form['taste_id'])
             selected_decoration_form_id = int(request.form['decoration_form_id'])
-            selected_decoration_technique_id = int(request.form['decoration_technique_id'])
-            selected_formula_id = int(request.form['formula_id'])
-            selected_sample_images_group_id = int(request.form['sample_images_group_id'])
+            selected_decoration_technique_id = int(request.form['decoration_technique_id'])            
             selected_box_status = int(request.form['box_status'])
             chosen_box_returned_on = request.form['box_returned_on']
+            
+            selected_formula_id = int(request.form['formula_id'])
+            if selected_formula_id == -1:
+                selected_formula_id = None
+
             selected_sample_images_group_id = int(request.form['sample_images_group_id'])
+            if selected_sample_images_group_id == -1:
+                selected_sample_images_group_id = None
+                latest_3_sample_image_paths = []
 
             uploaded_files = request.files.getlist('file[]')
 
