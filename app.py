@@ -917,69 +917,80 @@ def update_product(product_id):
     latest_3_sample_image_paths = []
     if product_rec.sample_images_group_id is not None:
         latest_3_sample_image_paths = sample_image_path_repo.get_latest_3_sample_image_paths(product_rec.sample_images_group_id)
-    
+
+    selected_taste_id = product_rec.taste_id
+    current_product_name = product_rec.name
+    selected_decoration_form_id = product_rec.decoration_form_id
+    selected_decoration_technique_id = product_rec.decoration_technique_id
+    selected_formula_id = None
+    selected_box_status = product_rec.box_status
+    chosen_box_returned_on = product_rec.box_returned_on
+    selected_sample_images_group_id = product_rec.sample_images_group_id
+        
     if request.method == 'GET':
-        product_name = request.args.get('product_name_arg')
+        current_product_name = request.args.get('product_name_arg')
+        if current_product_name is None:
+            current_product_name = product_rec.name
         
         taste_id_arg = request.args.get('taste_id_arg')
-        taste_id = int(taste_id_arg) if taste_id_arg is not None else product_rec.taste_id
+        if taste_id_arg is not None: 
+            selected_taste_id = int(taste_id_arg)
 
         decoration_form_id_arg = request.args.get('decoration_form_id_arg')
-        decoration_form_id = int(decoration_form_id_arg) if decoration_form_id_arg is not None else product_rec.decoration_form_id
+        if decoration_form_id_arg is not None:
+            selected_decoration_form_id = int(decoration_form_id_arg)
 
         decoration_technique_id_arg = request.args.get('decoration_technique_id_arg')
-        decoration_technique_id = int(decoration_technique_id_arg) if decoration_technique_id_arg is not None else product_rec.decoration_technique_id
+        if decoration_technique_id_arg is not None:
+            selected_decoration_technique_id = int(decoration_technique_id_arg)
 
         formula_id_arg = request.args.get('formula_id_arg')
-        formula_id = int(formula_id_arg) if formula_id_arg is not None else None
+        if formula_id_arg is not None:
+            selected_formula_id = int(formula_id_arg)
 
         box_status_arg = request.args.get('box_status_arg')
-        box_status = int(box_status_arg) if box_status_arg is not None else product_rec.box_status
+        if box_status_arg is not None:
+            selected_box_status = int(box_status_arg)
 
-        box_returned_on = request.args.get('box_returned_on_arg')
+        chosen_box_returned_on = request.args.get('box_returned_on_arg')
 
         existing_product_image_paths_arg = request.args.get('existing_product_image_paths_arg')
         product_image_path_recs = __infer_product_image_path_recs(product_id, existing_product_image_paths_arg)
 
         sample_images_group_id_arg = request.args.get('sample_images_group_id_arg')
-        sample_images_group_id = int(sample_images_group_id_arg) if sample_images_group_id_arg is not None else product_rec.sample_images_group_id
-
-        latest_3_sample_image_paths = sample_image_path_repo.get_latest_3_sample_image_paths(sample_images_group_id)
-
-        print(product_name)
-        print(taste_id)
-        print(decoration_form_id)
-        print(decoration_technique_id)        
-        print(formula_id)
-        print(box_status)
-        print(box_returned_on)
-        print(product_image_path_recs)        
-        print(sample_images_group_id)
-        print(latest_3_sample_image_paths)
+        if sample_images_group_id_arg is not None:
+            selected_sample_images_group_id = int(sample_images_group_id_arg)
+            latest_3_sample_image_paths = sample_image_path_repo.get_latest_3_sample_image_paths(selected_sample_images_group_id)
     elif request.method == 'POST':
         try:
             remaining_product_image_path_ids = __extract_remaining_image_path_ids(request.form, 'existing_product_image_')
-            product_name = request.form['product_name']
-            taste_id = int(request.form['taste_id'])
-            decoration_form_id = int(request.form['decoration_form_id'])
-            decoration_technique_id = int(request.form['decoration_technique_id'])
-            formula_id = int(request.form['formula_id'])
-            sample_images_group_id = int(request.form['sample_images_group_id'])            
+            current_product_name = request.form['product_name']
+            selected_taste_id = int(request.form['taste_id'])
+            selected_decoration_form_id = int(request.form['decoration_form_id'])
+            selected_decoration_technique_id = int(request.form['decoration_technique_id'])
+            selected_formula_id = int(request.form['formula_id'])
+            selected_sample_images_group_id = int(request.form['sample_images_group_id'])
+            selected_box_status = int(request.form['box_status'])
+            chosen_box_returned_on = request.form['box_returned_on']
+            selected_sample_images_group_id = int(request.form['sample_images_group_id'])
 
             uploaded_files = request.files.getlist('file[]')
 
             product_manager.update_product(product_id,
-                                           product_name,
-                                           taste_id,
-                                           decoration_form_id,
-                                           decoration_technique_id,
-                                           formula_id,
+                                           current_product_name,
+                                           selected_taste_id,
+                                           selected_decoration_form_id,
+                                           selected_decoration_technique_id,
+                                           selected_formula_id,
+                                           selected_box_status,
+                                           chosen_box_returned_on,
+                                           selected_sample_images_group_id,
                                            product_image_path_recs,
                                            remaining_product_image_path_ids,
                                            uploaded_files)
             db.session.commit()
             product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
-            message = 'Successfully updated product %s (%s)' % (product_name, product_id)
+            message = 'Successfully updated product %s (%s)' % (current_product_name, product_id)
             flash(message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -995,7 +1006,15 @@ def update_product(product_id):
                                                     formula_recs=formula_recs,
                                                     box_status_names=scm_constants.BOX_STATUS_NAMES,
                                                     sample_images_group_recs=sample_images_group_recs,
-                                                    latest_3_sample_image_paths=latest_3_sample_image_paths)
+                                                    latest_3_sample_image_paths=latest_3_sample_image_paths,
+                                                    current_product_name=current_product_name,
+                                                    selected_taste_id=selected_taste_id,
+                                                    selected_decoration_form_id=selected_decoration_form_id,
+                                                    selected_decoration_technique_id=selected_decoration_technique_id,
+                                                    selected_formula_id=selected_formula_id,
+                                                    selected_box_status=selected_box_status,
+                                                    chosen_box_returned_on=chosen_box_returned_on,
+                                                    selected_sample_images_group_id=selected_sample_images_group_id)
     
     return render_scm_template('update_product.html',
                                taste_recs=taste_recs,
@@ -1006,7 +1025,15 @@ def update_product(product_id):
                                formula_recs=formula_recs,
                                box_status_names=scm_constants.BOX_STATUS_NAMES,
                                sample_images_group_recs=sample_images_group_recs,
-                               latest_3_sample_image_paths=latest_3_sample_image_paths)
+                               latest_3_sample_image_paths=latest_3_sample_image_paths,
+                               current_product_name=current_product_name,
+                               selected_taste_id=selected_taste_id,
+                               selected_decoration_form_id=selected_decoration_form_id,
+                               selected_decoration_technique_id=selected_decoration_technique_id,
+                               selected_formula_id=selected_formula_id,
+                               selected_box_status=selected_box_status,
+                               chosen_box_returned_on=chosen_box_returned_on,
+                               selected_sample_images_group_id=selected_sample_images_group_id)
 
 @app.route('/delete_product/<int:product_id>', methods=['GET', 'POST'])
 def delete_product(product_id):
@@ -1037,15 +1064,11 @@ def __infer_product_image_path_recs(product_id,
         return all_product_image_path_recs
 
     existing_product_image_paths = existing_product_image_paths_arg.split("!!!")
-    print(existing_product_image_paths)
     all_product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
     product_image_path_recs = []
     for product_image_path_rec in all_product_image_path_recs:
-        print(product_image_path_rec.file_path)
         for existing_product_image_path in existing_product_image_paths:
-            print(existing_product_image_path)
             if existing_product_image_path == product_image_path_rec.file_path:
-                print("FOUND")
                 product_image_path_recs.append(product_image_path_rec)
 
     return product_image_path_recs

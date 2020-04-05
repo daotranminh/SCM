@@ -8,18 +8,18 @@
   <div class="col-md-6 col-md-offset-3">
 	<h1>Update product</h1>	
 	<form method="POST" action="" enctype="multipart/form-data" id="update_product_form">
-		<input type=text id="product_id" value="{{product_rec.id}}" display="none" disabled/>
+		<input type="hidden" id="product_id" value="{{product_rec.id}}" display="none" disabled/>		
 
         <div class="form-group">
             <label for="product_name">Name</label>
-            <input type="text" id="product_name" name="product_name" value="{{product_rec.name}}"/>
+            <input type="text" id="product_name" name="product_name" value="{{current_product_name}}"/>
         </div>
 
         <div class="form-group">
 	        <label for="taste_id">Taste</label>
 	        <select id="taste_id" name="taste_id">
 	        {% for taste_rec in taste_recs %}
-	            {% if taste_rec.id == product_rec.taste_id %}
+	            {% if taste_rec.id == selected_taste_id %}
 	            <option value="{{taste_rec.id}}" selected>{{taste_rec.name}}</option>
 	            {% else %}
 	            <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
@@ -32,8 +32,8 @@
 	        <label for="decoration_form_id">Decoration form</label>
 	        <select id="decoration_form_id" name="decoration_form_id">
 	        {% for decoration_form_rec in decoration_form_recs %}
-	            {% if decoration_form_rec.id == product_rec.decoration_id %}
-	            <option value="{{decoration_rec.id}}" selected>{{decoration_form_rec.name}}</option>
+	            {% if decoration_form_rec.id == selected_decoration_form_id %}
+	            <option value="{{decoration_form_rec.id}}" selected>{{decoration_form_rec.name}}</option>
 	            {% else %}
 	            <option value="{{decoration_form_rec.id}}">{{decoration_form_rec.name}}</option>
 	            {% endif %}
@@ -45,7 +45,7 @@
 	        <label for="decoration_technique_id">Decoration technique</label>
 	        <select id="decoration_technique_id" name="decoration_technique_id">
 	        {% for decoration_technique_rec in decoration_technique_recs %}
-	            {% if decoration_technique_rec.id == product_rec.decoration_technique_id %}
+	            {% if decoration_technique_rec.id == selected_decoration_technique_id %}
 	            <option value="{{decoration_technique_rec.id}}" selected>{{decoration_technique_rec.name}}</option>
 	            {% else %}
 	            <option value="{{decoration_technique_rec.id}}">{{decoration_technique_rec.name}}</option>
@@ -58,7 +58,7 @@
 	        <label for="formula_id">Formula</label>
 	        <select id="formula_id" name="formula_id">
 	        {% for formula_rec in formula_recs %}
-	            {% if formula_rec.id == product_rec.formula_id %}
+	            {% if formula_rec.id == selected_formula_id %}
 	            <option value="{{formula_rec.id}}" selected>{{formula_rec.name}}</option>
 	            {% else %}
 	            <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
@@ -71,7 +71,7 @@
             <label for="box_status">Box status</label>
             <select id="box_status" name="box_status">
               {% for box_status in box_status_names %}
-                {% if box_status[0] == product_rec.box_status %}
+                {% if box_status[0] == selected_box_status %}
                 <option value="{{box_status[0]}}" selected>{{box_status[1]}}</option>
                 {% else %}
                 <option value="{{box_status[0]}}">{{box_status[1]}}</option>
@@ -82,14 +82,14 @@
 
 		<div class="form-group">
             <label for="box_returned_on">Box returned on</label>
-            <input type="text" id="box_returned_on" name="box_returned_on" value="{{product_rec.box_returned_on}}">
+            <input type="text" id="box_returned_on" name="box_returned_on" value="{{chosen_box_returned_on}}">
       	</div>		
 
 		<div class="form-group">
 	        <label for="sample_images_group_id">Sample images</label>
 		<select id="sample_images_group_id" name="sample_images_group_id" onchange="change_sample_images_group(this)">
 	        {% for sample_images_group_rec in sample_images_group_recs %}
-	            {% if sample_images_group_rec.id == product_rec.sample_images_group_id %}
+	            {% if sample_images_group_rec.id == selected_sample_images_group_id %}
 	            <option value="{{sample_images_group_rec.id}}" selected>{{sample_images_group_rec.name}}</option>
 	            {% else %}
 	            <option value="{{sample_images_group_rec.id}}">{{sample_images_group_rec.name}}</option>

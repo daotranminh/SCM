@@ -102,6 +102,9 @@ class ProductManager:
                        decoration_form_id,
                        decoration_technique_id,
                        formula_id,
+                       box_status,
+                       box_returned_on,
+                       sample_images_group_id,
                        product_image_path_recs,
                        remaining_product_image_path_ids,
                        uploaded_files):
@@ -110,7 +113,10 @@ class ProductManager:
                                          taste_id,
                                          decoration_form_id,
                                          decoration_technique_id,
-                                         formula_id)
+                                         formula_id,
+                                         box_status,
+                                         box_returned_on,
+                                         sample_images_group_id,)
 
         self.product_image_path_repo.update_product_image_paths(product_id,
                                                                 product_image_path_recs,

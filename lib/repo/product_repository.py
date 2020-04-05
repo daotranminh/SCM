@@ -56,13 +56,19 @@ class ProductRepository:
                        taste_id,
                        decoration_form_id,
                        decoration_technique_id,
-                       formula_id):
+                       formula_id,
+                       box_status,
+                       box_returned_on,
+                       sample_images_group_id):
         product_rec = self.get_product(product_id)
         product_rec.name = product_name
         product_rec.taste_id = taste_id
         product_rec.decoration_form_id = decoration_form_id
         product_rec.decoration_technique_id = decoration_technique_id
         product_rec.formula_id = formula_id
+        product_rec.box_status = box_status
+        product_rec.box_returned_on = box_returned_on
+        product_rec.sample_images_group_id = sample_images_group_id
             
     def delete_product(self, product_id):
         try:
