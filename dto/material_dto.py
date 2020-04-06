@@ -15,6 +15,7 @@ class MaterialDto:
                  name,
                  description,
                  is_organic,
+                 unit_amount,
                  unit,
                  material_version_id,
                  unit_price):
@@ -22,6 +23,7 @@ class MaterialDto:
         self.name = name
         self.description = description
         self.is_organic = is_organic
+        self.unit_amount = unit_amount
         self.unit = unit
         self.material_version_id = material_version_id
         self.unit_price = unit_price
@@ -32,6 +34,7 @@ class MaterialFormulaDto(MaterialDto):
                  name,
                  description,
                  is_organic,
+                 unit_amount,
                  unit,
                  material_version_id,
                  unit_price,
@@ -40,6 +43,7 @@ class MaterialFormulaDto(MaterialDto):
                                                  name,
                                                  description,
                                                  is_organic,
+                                                 unit_amount,
                                                  unit,
                                                  material_version_id,
                                                  unit_price)

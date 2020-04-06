@@ -67,6 +67,7 @@ class MaterialManager:
                                        material.name,
                                        material.description,
                                        material.is_organic,
+                                       material.unit_amount,
                                        material.unit,
                                        material_version.id,
                                        material_version.unit_price)

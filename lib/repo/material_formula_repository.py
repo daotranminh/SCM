@@ -40,6 +40,7 @@ class MaterialFormulaRepository:
                                                sub_query_material.c.name, \
                                                sub_query_material.c.description, \
                                                sub_query_material.c.is_organic, \
+                                               sub_query_material.c.unit_amount, \
                                                sub_query_material.c.unit, \
                                                sub_query_material_version.c.id, \
                                                sub_query_material_version.c.unit_price). \

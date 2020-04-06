@@ -49,9 +49,10 @@ class FormulaManager:
                                               material_formula_dto[4],
                                               material_formula_dto[5],
                                               material_formula_dto[6],
+                                              material_formula_dto[7],
                                               material_formula_dto[0].amount)
             material_dtos.append(material_dto)
-            total_cost += material_formula_dto[0].amount * material_formula_dto[6]
+            total_cost += material_formula_dto[0].amount * material_formula_dto[7]
             
         return formula_rec, taste_rec, material_dtos, total_cost
         

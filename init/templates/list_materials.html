@@ -21,7 +21,7 @@
     {% for material_dto in material_dtos %}
     <tr>
       <td><span data-toggle="tooltip" title="{{material_dto.description}}">{{material_dto.name}}</span></td>
-      <td>{{material_dto.unit}}</td>
+      <td>{{material_dto.unit_amount}} {{material_dto.unit}}</td>
       <td>{{material_dto.is_organic}}</td>
       <td>{{material_dto.unit_price}}</td>
       <td><a href="{{ url_for('update_material', 
