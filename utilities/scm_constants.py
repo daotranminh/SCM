@@ -1,10 +1,6 @@
 from .scm_enums import OrderStatus, PaymentStatus, BoxStatus
 
-UNIT_CHOICES = [('g', 'g'),
-                ('ml', 'ml'),
-                ('kg', 'kg'),
-                ('l', 'l'),
-                ('piece', 'piece')]
+UNIT_CHOICES = ['g', 'ml', 'kg', 'l', 'piece']
 
 MENU_CONFIGURATION = 'menu_configuration'
 MENU_CUSTOMER = 'customer_funcs'

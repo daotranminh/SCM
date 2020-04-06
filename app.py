@@ -408,27 +408,29 @@ def list_decoration_techniques():
 ####################################################################################
 @app.route('/add_material', methods=['GET', 'POST'])
 def add_material():
-    form = AddMaterialForm(request.form)
-    if request.method == 'POST' and form.validate():
+    
+    if request.method == 'POST':
         try:
-            name = form.name.data.strip()
-            description = form.description.data.strip()
-            unit = form.unit.data
-            unit_price = form.unit_price.data.strip()
-            is_organic = False
-            if form.is_organic.data == [0]:
-                is_organic = True
-
-            material_manager.add_material(name=name,
-                                          description=description,
-                                          is_organic=is_organic,
-                                          unit=unit,
-                                          unit_price=unit_price)
+            print(request.form)
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
+            unit_amount = request.form['unit_amount']
+            unit = request.form['unit']
+            unit_price = request.form['unit_price'].strip()
+            
+            is_organic = 'is_organic' in request.form
+            
+            #material_manager.add_material(name=name,
+            #                              description=description,
+            #                              is_organic=is_organic,
+            #                              unit=unit,
+            #                              unit_price=unit_price)
             db.session.commit()
 
-            message = 'Successfully added material (%s, %s/%s)' % \
+            message = 'Successfully added material (%s, %s/%s %s)' % \
                       (name,
                        unit_price,
+                       unit_amount,
                        unit)
             return redirect_with_message(url_for('list_materials'), message, 'info')
         except ScmException as ex:
@@ -437,9 +439,9 @@ def add_material():
                        unit_price,
                        unit)
             flash(message, 'danger')            
-            return render_scm_template('add_material.html', form=form)
+            return render_scm_template('add_material.html', unit_choices=scm_constants.UNIT_CHOICES)
     else:
-        return render_scm_template('add_material.html', form=form)
+        return render_scm_template('add_material.html', unit_choices=scm_constants.UNIT_CHOICES)
 
 @app.route('/update_material/<int:material_id>', methods=['GET', 'POST'])
 def update_material(material_id):
@@ -1279,4 +1281,3 @@ def sample_images_group_details(sample_images_group_id):
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
-    
