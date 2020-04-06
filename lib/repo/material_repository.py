@@ -27,11 +27,13 @@ class MaterialRepository:
                      name,
                      description,
                      is_organic,
+                     unit_amount,
                      unit):
         try:
             material_rec = Material(name=name,
                                     description=description,
                                     is_organic=is_organic,
+                                    unit_amount=unit_amount,
                                     unit=unit)
             self.db.session.add(material_rec)
             self.db.session.flush()

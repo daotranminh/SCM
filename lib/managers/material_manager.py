@@ -21,6 +21,7 @@ class MaterialManager:
                      name,
                      description,
                      is_organic,
+                     unit_amount,
                      unit,
                      unit_price):
         message = 'name=%s, unit=%s, unit_price=%s' % (name,
@@ -30,6 +31,7 @@ class MaterialManager:
         new_material_id = self.material_repo.add_material(name,
                                                           description,
                                                           is_organic,
+                                                          unit_amount,
                                                           unit)
 
         message = 'new_material_id=%s' % new_material_id

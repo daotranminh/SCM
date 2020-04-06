@@ -416,15 +416,15 @@ def add_material():
             description = request.form['description'].strip()
             unit_amount = request.form['unit_amount']
             unit = request.form['unit']
-            unit_price = request.form['unit_price'].strip()
-            
+            unit_price = request.form['unit_price'].strip()            
             is_organic = 'is_organic' in request.form
             
-            #material_manager.add_material(name=name,
-            #                              description=description,
-            #                              is_organic=is_organic,
-            #                              unit=unit,
-            #                              unit_price=unit_price)
+            material_manager.add_material(name=name,
+                                          description=description,
+                                          is_organic=is_organic,
+                                          unit_amount=unit_amount,
+                                          unit=unit,
+                                          unit_price=unit_price)
             db.session.commit()
 
             message = 'Successfully added material (%s, %s/%s %s)' % \
@@ -434,9 +434,10 @@ def add_material():
                        unit)
             return redirect_with_message(url_for('list_materials'), message, 'info')
         except ScmException as ex:
-            message = 'Failed to add material (%s, %s/%s)' % \
+            message = 'Failed to add material (%s, %s/%s %s)' % \
                       (name,
                        unit_price,
+                       unit_amount,
                        unit)
             flash(message, 'danger')            
             return render_scm_template('add_material.html', unit_choices=scm_constants.UNIT_CHOICES)
