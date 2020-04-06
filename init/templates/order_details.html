@@ -36,14 +36,13 @@
       <th>Decoration Technique</th>
       <th>Formula</th>
       <th>Sample Images</th>
-      <th>Product Images</th>
     </tr>
   </thead>
   <tbody>
     {% for product_dto in product_dtos %}
     <tr>
       <td>{{product_dto.product_id}}</td>
-      <td>{{product_dto.product_name}}</td>
+      <td><a href="{{ url_for('product_details', product_id=product_dto.product_id) }}">{{product_dto.product_name}}</a></td>
       <td>{{product_dto.taste_name}}</td>
       <td>{{product_dto.decoration_form_name}}</td>
       <td>{{product_dto.decoration_technique_name}}</td>

@@ -90,7 +90,6 @@
                 <th>Decoration Technique</th>
                 <th>Formula</th>
                 <th>Sample Images</th>
-                <th>Product Images</th>
                 <th></th>
                 <th></th>
               </tr>
@@ -99,7 +98,7 @@
               {% for product_dto in product_dtos %}
               <tr>
                 <td>{{product_dto.product_id}}</td>
-                <td>{{product_dto.product_name}}</td>
+                <td><a href="{{ url_for('product_details', product_id=product_dto.product_id) }}">{{product_dto.product_name}}</a></td>
                 <td>{{product_dto.taste_name}}</td>
                 <td>{{product_dto.decoration_form_name}}</td>
                 <td>{{product_dto.decoration_technique_name}}</td>
@@ -115,7 +114,7 @@
                 {% else %}
                   <td>{{product_dto.sample_images_group_name}}</td>
                 {% endif %}
-                
+
                 <td><a href="{{ url_for('update_product', product_id=product_dto.product_id) }}"
                        class="btn btn-default pullright">Update</a></td></td>
                 <td><a href="{{ url_for('delete_product', product_id=product_dto.product_id) }}"
