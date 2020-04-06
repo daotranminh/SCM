@@ -118,8 +118,7 @@ def menu_setup():
 
     exhibition_funcs = [
         ['list_topics', 'List of topics'],
-        ['list_sample_images', 'List of sample images'],
-        ['list_cakes', 'List of cakes']
+        ['list_sample_images', 'List of sample images']
     ]
     
     statistics_funcs = [
@@ -1281,4 +1280,3 @@ def sample_images_group_details(sample_images_group_id):
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0');
     
-
