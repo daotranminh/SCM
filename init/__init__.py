@@ -30,6 +30,7 @@ class Material(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(50))
     description = Column(String(400))
+    unit_amount = Column(Numeric(10, 2))
     unit = Column(String(50))
     is_organic = Column(Boolean)
 
@@ -38,6 +39,7 @@ class MaterialVersion(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     material_id = Column(Integer, ForeignKey(Material.id))
     unit_price = Column(Numeric(10, 2))
+    version = Column(Integer)
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
     is_current = Column(Boolean, default=True)
 
@@ -55,6 +57,7 @@ class Formula(db.Model):
     name = Column(String(50))
     description = Column(String(400))
     note = Column(String(5000))
+    has_up_to_date_cost_estimation = Column(Boolean, default=False)
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
 
 class MaterialFormula(db.Model):
@@ -63,6 +66,21 @@ class MaterialFormula(db.Model):
     material_id = Column(Integer, ForeignKey(Material.id))
     formula_id = Column(Integer, ForeignKey(Formula.id))
     amount = Column(Numeric(10, 2))
+
+class CostEstimation(db.Model):
+    __tablename__ = 'cost_estimation'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    formula_id = Column(Integer, ForeignKey(Formula.id))
+    generated_on = Column(DateTime(), default=datetime.datetime.utcnow)
+    total_cost = Column(Numeric(10, 2))    
+
+class MaterialVersionCostEstimation(db.Model):
+    __tablename__ = 'material_version_cost_estimation'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    material_verion_id = Column(Integer, ForeignKey(MaterialVersion.id))
+    cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
+    ammount = Column(Numeric(10, 2))
+    cost = Column(Numeric(10, 2))    
     
 class Topic(db.Model):
     __tablename__ = 'topic'
@@ -128,7 +146,7 @@ class Order(db.Model):
     order_status = Column(Integer, default=0)
     delivered_on = Column(DateTime())
     payment_status = Column(Integer, default=0)    
-    paid_on = Column(DateTime())    
+    paid_on = Column(DateTime())
 
 class Product(db.Model):
     __tablename__ = 'product'
@@ -149,17 +167,3 @@ class ProductImagePath(db.Model):
     product_id = Column(Integer, ForeignKey(Product.id))
     file_path = Column(String(500))
     uploaded_on = Column(DateTime(), default=datetime.datetime.utcnow)
-    
-class CostEstimation(db.Model):
-    __tablename__ = 'cost_estimation'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    formula_id = Column(Integer, ForeignKey(Formula.id))
-    total_cost = Column(Numeric(10, 2))    
-
-class MaterialVersionCostEstimation(db.Model):
-    __tablename__ = 'material_version_cost_estimation'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    material_verion_id = Column(Integer, ForeignKey(MaterialVersion.id))
-    cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
-    ammount = Column(Numeric(10, 2))
-    cost = Column(Numeric(10, 2))
