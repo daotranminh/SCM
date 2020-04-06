@@ -30,25 +30,17 @@ class MaterialFormulaRepository:
         sub_query_material = self.db.session. \
                              query(Material). \
                              subquery()
-        
-        sub_query_material_version = self.db.session. \
-                                     query(MaterialVersion.id, MaterialVersion.material_id, MaterialVersion.unit_price). \
-                                     filter(MaterialVersion.is_current == True). \
-                                     subquery()
-        material_formula_dtos_w_uprice = self.db.session. \
-                                         query(MaterialFormula, \
-                                               sub_query_material.c.name, \
-                                               sub_query_material.c.description, \
-                                               sub_query_material.c.is_organic, \
-                                               sub_query_material.c.unit_amount, \
-                                               sub_query_material.c.unit, \
-                                               sub_query_material_version.c.id, \
-                                               sub_query_material_version.c.unit_price). \
-                                         filter(MaterialFormula.formula_id == formula_id). \
-                                         join(sub_query_material_version, sub_query_material_version.c.material_id == MaterialFormula.material_id). \
-                                         join(sub_query_material, sub_query_material.c.id == MaterialFormula.material_id). \
-                                         all()
-        return material_formula_dtos_w_uprice
+
+        material_formula_dtos = self.db.session. \
+                                    query(MaterialFormula, \
+                                          sub_query_material.c.name, \
+                                          sub_query_material.c.description, \
+                                          sub_query_material.c.is_organic, \
+                                          sub_query_material.c.unit). \
+                                    filter(MaterialFormula.formula_id == formula_id). \
+                                    join(sub_query_material, sub_query_material.c.id == MaterialFormula.material_id). \
+                                    all()
+        return material_formula_dtos
     
     def delete_materials_of_formula(self, formula_id):
         materials_of_formula = MaterialFormula.query. \

@@ -38,7 +38,6 @@ class FormulaManager:
         formula_rec, taste_rec = self.formula_repo.get_formula_dto(formula_id)
         material_formula_dtos = self.material_formula_repo.get_material_dtos_of_formula(formula_id)
 
-        total_cost = 0
         material_dtos = []
 
         for material_formula_dto in material_formula_dtos:
@@ -47,14 +46,10 @@ class FormulaManager:
                                               material_formula_dto[2],
                                               material_formula_dto[3],
                                               material_formula_dto[4],
-                                              material_formula_dto[5],
-                                              material_formula_dto[6],
-                                              material_formula_dto[7],
                                               material_formula_dto[0].amount)
             material_dtos.append(material_dto)
-            total_cost += material_formula_dto[0].amount * material_formula_dto[7]
             
-        return formula_rec, taste_rec, material_dtos, total_cost
+        return formula_rec, taste_rec, material_dtos
         
     def add_formula(self,
                     formula_name,

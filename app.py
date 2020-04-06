@@ -679,13 +679,12 @@ def add_formula():
 
 @app.route('/formula_details/<int:formula_id>', methods=['GET', 'POST'])
 def formula_details(formula_id):
-    formula_rec, taste_rec, material_dtos, total_cost = formula_manager.get_formula_details(formula_id)
+    formula_rec, taste_rec, material_dtos = formula_manager.get_formula_details(formula_id)
 
     return render_scm_template('formula_details.html',
                                formula_rec=formula_rec,
                                taste_rec=taste_rec,
-                               material_dtos=material_dtos,
-                               total_cost=total_cost)
+                               material_dtos=material_dtos)
 
 @app.route('/update_formula/<int:formula_id>', methods=['GET', 'POST'])
 def update_formula(formula_id):

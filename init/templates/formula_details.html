@@ -26,25 +26,15 @@
     <tr>
       <th>Material name</th>
       <th>Amount</th>
-      <th>Unit Price</th>
-      <th>Cost</th>      
     </tr>
   </thead>
   <tbody>
     {% for material_dto in material_dtos %}
     <tr>
       <td>{{material_dto.name}}</td>
-      <td>{{material_dto.amount}}</td>      
-      <td>{{material_dto.unit_price}} / {{material_dto.unit_amount}} {{material_dto.unit}}</td>
-      <td>{{material_dto.amount * material_dto.unit_price}}</td>      
+      <td>{{material_dto.amount}} {{material_dto.unit}}</td>   
     </tr>
     {% endfor %}
-    <tr>
-      <td>Total cost</td>
-      <td></td>
-      <td></td>
-      <td>{{total_cost}}</td>      
-    </tr>
   </tbody>
 </table>
 

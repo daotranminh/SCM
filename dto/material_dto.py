@@ -28,23 +28,17 @@ class MaterialDto:
         self.material_version_id = material_version_id
         self.unit_price = unit_price
 
-class MaterialFormulaDto(MaterialDto):
+class MaterialFormulaDto:
     def __init__(self,
                  material_id,
                  name,
                  description,
                  is_organic,
-                 unit_amount,
-                 unit,
-                 material_version_id,
-                 unit_price,
+                 unit,         
                  amount):
-        super(MaterialFormulaDto, self).__init__(material_id,
-                                                 name,
-                                                 description,
-                                                 is_organic,
-                                                 unit_amount,
-                                                 unit,
-                                                 material_version_id,
-                                                 unit_price)
+        self.material_id = material_id
+        self.name = name
+        self.description = description
+        self.is_organic = is_organic        
+        self.unit = unit
         self.amount = amount
