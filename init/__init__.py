@@ -81,6 +81,8 @@ class MaterialVersionCostEstimation(db.Model):
     material_verion_id = Column(Integer, ForeignKey(MaterialVersion.id))
     cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
     unit_amount = Column(Numeric(10, 2))
+    unit = Column(String(50))
+    unit_price = Column(Numeric(10, 2))
     amount = Column(Numeric(10, 2))
     cost = Column(Numeric(10, 2))    
     

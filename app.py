@@ -30,6 +30,8 @@ from lib.repo.decoration_technique_repository import DecorationTechniqueReposito
 from lib.repo.material_repository import MaterialRepository
 from lib.repo.material_version_repository import MaterialVersionRepository
 from lib.repo.material_formula_repository import MaterialFormulaRepository
+from lib.repo.material_version_cost_estimation_repository import MaterialVersionCostEstimationRepository
+from lib.repo.cost_estimation_repository import CostEstimationRepository
 from lib.repo.customer_repository import CustomerRepository
 from lib.repo.taste_repository import TasteRepository
 from lib.repo.topic_repository import TopicRepository
@@ -69,6 +71,8 @@ decoration_technique_repo = DecorationTechniqueRepository(db)
 material_repo = MaterialRepository(db)
 material_formula_repo = MaterialFormulaRepository(db)
 material_version_repo = MaterialVersionRepository(db)
+material_version_cost_estimation_repo = MaterialVersionCostEstimationRepository(db)
+cost_estimation_repo = CostEstimationRepository(db)
 customer_repo = CustomerRepository(db)
 taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
@@ -87,7 +91,9 @@ customer_manager = CustomerManager(customer_repo)
 topic_manager = TopicManager(topic_repo)
 formula_manager = FormulaManager(formula_repo,
                                  material_formula_repo,
-                                 taste_repo)
+                                 taste_repo,
+                                 material_version_cost_estimation_repo,
+                                 cost_estimation_repo)
 order_manager = OrderManager(order_repo,
                             product_repo)
 sample_images_group_manager = SampleImagesGroupManager(sample_images_group_repo,
@@ -723,6 +729,10 @@ def update_formula(formula_id):
                                taste_recs=taste_recs,
                                material_dtos=material_dtos,
                                total_cost=total_cost)
+
+@app.route('/estimate_formula_cost/<int:formula_id>', methods=['GET', 'POST'])
+def estimate_formula_cost(formula_id):    
+    pass
 
 ####################################################################################
 # ORDER
