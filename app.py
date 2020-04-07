@@ -1,6 +1,7 @@
 import logging
 import os
 import datetime
+from decimal import Decimal
 
 from flask import Flask, Response, render_template, request, flash, redirect, make_response, session, url_for
 from werkzeug.utils import secure_filename
@@ -446,34 +447,30 @@ def add_material():
 
 @app.route('/update_material/<int:material_id>', methods=['GET', 'POST'])
 def update_material(material_id):
-    if request.method == 'GET':
-        material_rec = material_repo.get_material(material_id)
-        material_version_rec = material_version_repo.get_latest_version_of_material(material_id)
-        form = UpdateMaterialForm(request.form,
-                                  material_rec,
-                                  material_version_rec)
-        return render_scm_template('update_material.html', form=form)
+    material_rec = material_repo.get_material(material_id)
+    material_version_rec = material_version_repo.get_latest_version_of_material(material_id)
+
+    if request.method == 'GET':        
+        return render_scm_template('update_material.html',
+                                    material_rec=material_rec,
+                                    material_version_rec=material_version_rec,
+                                    unit_choices=scm_constants.UNIT_CHOICES)
     elif request.method == 'POST':
         try:
-            form = UpdateMaterialForm(request.form, None, None)
-            name = form.name.data.strip()
-            description = form.name.data.strip()
-            unit = form.unit.data
-            unit_price = form.unit_price.data
-            is_organic = False
-            if form.is_organic.data == [0]:
-                is_organic = True
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()            
+            unit_price = Decimal(request.form['unit_price'])
 
             material_manager.update_material(material_id,
                                              name,
                                              description,
-                                             unit_price,
-                                             is_organic)
+                                             unit_price)
             db.session.commit()
-            message = 'Successfully updated material (%s, %s/%s)' % \
+            message = 'Successfully updated material (%s, %s/ %s %s)' % \
                       (name,
                        unit_price,
-                       unit)
+                       material_rec.unit_amount,
+                       material_rec.unit)
             return redirect_with_message(url_for('list_materials'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -481,7 +478,9 @@ def update_material(material_id):
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    form=form)
+                                                    material_rec=material_rec,
+                                                    material_version_rec=material_version_rec,
+                                                    unit_choices=scm_constants.UNIT_CHOICES)
 
 @app.route('/show_material_unit_price_history/<int:material_id>', methods=['GET', 'POST'])
 def show_material_unit_price_history(material_id):
@@ -636,7 +635,7 @@ def __extract_formula_props(props_dict):
             break
 
         material_id = int(props_dict[material_choice_i])
-        amount = float(props_dict[material_amount_i])
+        amount = Decimal(props_dict[material_amount_i])
             
         material_ids.append(material_id)
         amounts.append(amount)
