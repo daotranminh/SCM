@@ -166,47 +166,51 @@ function delete_material(control)
     }
 }
 
-function sync_unit_price(control)
+function __update_cost(strIndex)
 {
-    var strIndex = get_index(control)
-    
     var my_material_amount_id = "material_amount_" + strIndex  
     var my_material_unit_price_id = "material_unit_price_" + strIndex
     var my_material_cost_id = "material_cost_" + strIndex
 
+    var my_material_amount = document.getElementById(my_material_amount_id)
     var my_material_unit_price = document.getElementById(my_material_unit_price_id)
+    var my_material_cost = document.getElementById(my_material_cost_id)
+
+    var amount = parseFloat(my_material_amount.value)
+    var unit_price = parseFloat(my_material_unit_price.value)
+    my_material_cost.value = amount * unit_price
+
+    var materials_list = document.getElementsByName("material[]")
+    var len = materials_list.length
+    var total_cost = 0
+    
+    for (var i = 0; i < len; i++) 
+    {
+	    var material_cost_id = "material_cost_" + i.toString()
+	    var material_cost = document.getElementById(material_cost_id)
+	    var cost = parseFloat(material_cost.value)
+	    total_cost += cost
+    }
+
+    var txt_total_cost = document.getElementById("total_cost")
+    txt_total_cost.value = total_cost
+}
+
+function sync_unit_price(control)
+{
+    var strIndex = get_index(control)
+    var my_material_unit_price = document.getElementById("material_unit_price_" + strIndex)
     my_material_unit_price.selectedIndex = control.selectedIndex
+    
+    __update_cost(strIndex)
 }
 
 function update_cost(control)
 {
     var strIndex = get_index(control)
     
-    var my_material_unit_price_id = "material_unit_price_" + strIndex
-    var my_material_cost_id = "material_cost_" + strIndex
+    __update_cost(strIndex)
 
-    var my_material_unit_price = document.getElementById(my_material_unit_price_id)
-    var my_material_cost = document.getElementById(my_material_cost_id)
-    
-    var unit_price = parseFloat(my_material_unit_price.value)
-    var amount = parseFloat(control.value)
-    var cost = amount * unit_price
-    my_material_cost.value = cost
-    
-    var materials_list = document.getElementsByName("material[]")
-    var len = materials_list.length
-    var total_cost = 0
-    
-    for (var i = 0; i < len; i++) {
-	var material_cost_id = "material_cost_" + i.toString()
-	var material_cost = document.getElementById(material_cost_id)
-	var cost = parseFloat(material_cost.value)
-	total_cost += cost
-    }
-
-    var txt_total_cost = document.getElementById("total_cost")
-    txt_total_cost.value = total_cost
-    
     return false;
 }
 

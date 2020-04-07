@@ -59,9 +59,9 @@
 		disabled>
 	  {% for material_dto in material_dtos %}
 	    {% if material_dto.material_id == material_formulas[i].material_id %}	  
-	      <option selected>{{material_dto.unit_price}}</option>
+	      <option value="{{material_dto.unit_price / material_dto.unit_amount}}" selected>{{material_dto.unit_price}} / {{material_dto.unit_amount}} {{material_dto.unit}}</option>
 	    {% else %}
-	      <option>{{material_dto.unit_price}}</option>	      
+	      <option value="{{material_dto.unit_price / material_dto.unit_amount}}">{{material_dto.unit_price}} / {{material_dto.unit_amount}} {{material_dto.unit}}</option>	      
 	    {% endif %}  
 	  {% endfor %}
 	</select>
@@ -71,7 +71,7 @@
   	  <input type="text"
 	         id="material_cost_{{i}}"
 	         name="material_cost_{{i}}"
-		 value="{{ material_dto.unit_price * material_formulas[i].amount }}"
+		 value="{{ material_dto.unit_price * material_formulas[i].amount / material_dto.unit_amount }}"
 	         disabled>
 	  {% endif %}
 	{% endfor %}
