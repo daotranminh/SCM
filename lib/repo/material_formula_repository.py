@@ -29,6 +29,7 @@ class MaterialFormulaRepository:
     def get_material_dtos_of_formula(self, formula_id):
         sub_query_material = self.db.session. \
                              query(Material). \
+                             order_by(Material.name). \
                              subquery()
 
         material_formula_dtos = self.db.session. \

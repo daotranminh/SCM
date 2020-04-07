@@ -18,7 +18,9 @@ class MaterialRepository:
         self.db = db
 
     def get_all_materials(self):
-        return Material.query.all()
+        return Material.query. \
+            order_by(Material.name). \
+            all()
 
     def get_material(self, id):
         return Material.query.filter(Material.id == id).first()
