@@ -16,10 +16,14 @@ class FormulaManager:
     def __init__(self,
                  formula_repo,
                  material_formula_repo,
-                 taste_repo):
+                 taste_repo,
+                 material_version_cost_estimation_repo,
+                 cost_estimation_repo):
         self.formula_repo = formula_repo
         self.material_formula_repo = material_formula_repo
         self.taste_repo = taste_repo
+        self.material_version_cost_estimation_repo = material_version_cost_estimation_repo
+        self.cost_estimation_repo = cost_estimation_repo
 
     def get_formula_info(self, formula_id):
         formula_rec = self.formula_repo.get_formula(formula_id)
@@ -28,9 +32,9 @@ class FormulaManager:
         total_cost = 0
         material_formulas = []
 
-        for material_formula_w_uprice in material_formulas_w_uprice:
-            material_formulas.append(material_formula_w_uprice[0])
-            total_cost += material_formula_w_uprice[0].amount * material_formula_w_uprice[1]
+        for material_formula_rec, unit_amount, _, unit_price in material_formulas_w_uprice:
+            material_formulas.append(material_formula_rec)
+            total_cost += material_formula_rec.amount * unit_price / unit_amount
 
         return formula_rec, material_formulas, total_cost
 
@@ -128,3 +132,6 @@ class FormulaManager:
                                               paginated_formula_recs.page,
                                               paginated_formula_recs.pages)
         return paginated_formula_dtos
+
+    def estimate_formula_cost(self, formula_id):
+        material_recs = material_formula_repo.get_materials_of_formula(formula_id)
