@@ -33,10 +33,12 @@ class MaterialVersionRepository:
     
     def add_material_version(self,
                              material_id,
-                             unit_price):
+                             unit_price,
+                             version):
         try:
             material_version_rec = MaterialVersion(material_id=material_id,
-                                                   unit_price=unit_price)
+                                                   unit_price=unit_price,
+                                                   version=version)
             self.db.session.add(material_version_rec)
         
         except sqlalchemy.exc.SQLAlchemyError as e:

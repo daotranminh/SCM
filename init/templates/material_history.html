@@ -11,18 +11,20 @@
     <table class="table table-striped">
       <thead>
 	<tr>
-	  <th>Price</th>
-	  <th>Updated on</th>
+		<th>Version</th>
+	  	<th>Price</th>
+	  	<th>Updated on</th>
 	</tr>
-      </thead>
-      <tbody>
-	{% for material_version in material_versions %}
-	<tr>
-	  <td>{{material_version.unit_price}}/{{material_rec.unit}}</td>
-	  <td>{{material_version.registered_on}}</td>
-	</tr>
-	{% endfor %}
-      </tbody>
+      	</thead>
+      	<tbody>
+		{% for material_version in material_versions %}
+		<tr>
+			<td>{{material_version.version}}</td>
+	  		<td>{{material_version.unit_price}}/{{material_rec.unit_amount}} {{material_rec.unit}}</td>
+	  		<td>{{material_version.registered_on}}</td>
+		</tr>
+		{% endfor %}
+      	</tbody>
     </table>
   </div>
 </div>

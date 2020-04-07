@@ -33,6 +33,7 @@ class Material(db.Model):
     unit_amount = Column(Numeric(10, 2))
     unit = Column(String(50))
     is_organic = Column(Boolean)
+    latest_version = Column(Integer, default=0)
 
 class MaterialVersion(db.Model):
     __tablename__ = 'material_version'
@@ -79,7 +80,8 @@ class MaterialVersionCostEstimation(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     material_verion_id = Column(Integer, ForeignKey(MaterialVersion.id))
     cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
-    ammount = Column(Numeric(10, 2))
+    unit_amount = Column(Numeric(10, 2))
+    amount = Column(Numeric(10, 2))
     cost = Column(Numeric(10, 2))    
     
 class Topic(db.Model):

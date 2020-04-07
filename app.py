@@ -467,7 +467,6 @@ def update_material(material_id):
             material_manager.update_material(material_id,
                                              name,
                                              description,
-                                             unit,
                                              unit_price,
                                              is_organic)
             db.session.commit()
