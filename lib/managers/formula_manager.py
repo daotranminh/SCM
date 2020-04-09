@@ -3,6 +3,7 @@ import logging
 from init import config
 from dto.formula_dto import FormulaDto
 from dto.material_dto import MaterialFormulaDto
+from dto.material_cost_estimation_dto import MaterialCostEstimationDto
 from dto.paginated_scm import PaginatedScm
 
 logger = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ class FormulaManager:
         total_cost = 0
         material_formulas = []
 
-        for material_formula_rec, unit_amount, _, unit_price in material_formulas_w_uprice:
+        for material_formula_rec, unit_amount, _, _, unit_price in material_formulas_w_uprice:
             material_formulas.append(material_formula_rec)
             total_cost += material_formula_rec.amount * unit_price / unit_amount
 
@@ -134,4 +135,48 @@ class FormulaManager:
         return paginated_formula_dtos
 
     def estimate_formula_cost(self, formula_id):
-        material_recs = material_formula_repo.get_materials_of_formula(formula_id)
+        current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
+        if current_cost_estimation is not None:
+            current_cost_estimation.is_current = False
+
+        new_cost_estimation_id = self.cost_estimation_repo.add_cost_estimation(formula_id)
+
+        material_formulas_w_uprice = self.material_formula_repo.get_materials_of_formula(formula_id)
+        total_cost = 0
+        
+        for material_formula_rec, unit_amount, unit, material_version_id, unit_price in material_formulas_w_uprice:
+            single_cost = material_formula_rec.amount * unit_price / unit_amount
+            self.material_version_cost_estimation_repo.add_material_version_cost_estimation(
+                material_formula_rec.material_id,
+                material_version_id,
+                new_cost_estimation_id,
+                unit_amount,
+                unit,
+                unit_price,
+                material_formula_rec.amount,
+                single_cost)
+            
+            total_cost += single_cost
+        self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
+        self.formula_repo.set_flag_has_up_to_date_cost_estimation(formula_id, True)
+
+
+    def get_cost_estimation(self, formula_id):        
+        current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
+        material_version_cost_estimations = self.material_version_cost_estimation_repo.get_material_version_cost_estimation_of_cost_estimation(current_cost_estimation.id)
+
+        material_cost_estimation_dtos = []
+        for material_version_cost_estimation, material_name in material_version_cost_estimations:
+            material_cost_estimation_dto = MaterialCostEstimationDto(material_version_cost_estimation.id,
+                                                                     material_version_cost_estimation.material_id,
+                                                                     material_version_cost_estimation.material_verion_id,
+                                                                     material_version_cost_estimation.cost_estimation_id,
+                                                                     material_version_cost_estimation.unit_amount,
+                                                                     material_version_cost_estimation.unit,
+                                                                     material_version_cost_estimation.unit_price,
+                                                                     material_version_cost_estimation.amount,
+                                                                     material_version_cost_estimation.cost,
+                                                                     material_name)
+            material_cost_estimation_dtos.append(material_cost_estimation_dto)
+
+        return current_cost_estimation, material_cost_estimation_dtos

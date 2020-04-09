@@ -22,11 +22,16 @@ class CostEstimationRepository:
             filter(CostEstimation.id == cost_esitimation_id). \
             first()
 
-    def add_cost_estimation(self, formula_id,):
+    def get_current_cost_estimation_of_formula(self, formula_id):
+        return CostEstimation.query. \
+            filter(CostEstimation.formula_id == formula_id, CostEstimation.is_current == True). \
+            first()
+
+    def add_cost_estimation(self, formula_id):
         try:
             cost_estimation_rec = CostEstimation(formula_id=formula_id)
             self.db.session.add(cost_estimation_rec)
-            self.db.flush()
+            self.db.session.flush()
             return cost_estimation_rec.id
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add cost_estimation_rec. Details: %s' % (str(ex))
@@ -36,5 +41,5 @@ class CostEstimationRepository:
     def update_total_cost(self, 
                           cost_estimation_id, 
                           total_cost):
-        cost_estimation_rec = self.get_cost_estimation(cost_esitimation_id)
+        cost_estimation_rec = self.get_cost_estimation(cost_estimation_id)
         cost_estimation_rec.total_cost = total_cost

@@ -20,12 +20,16 @@ class MaterialFormulaRepository:
                              subquery()
 
         sub_query_material_version = self.db.session. \
-                                     query(MaterialVersion.material_id, MaterialVersion.unit_price). \
+                                     query(MaterialVersion.id, MaterialVersion.material_id, MaterialVersion.unit_price). \
                                      filter(MaterialVersion.is_current == True). \
                                      subquery()
 
         material_formulas_w_uprice = self.db.session. \
-                                     query(MaterialFormula, sub_query_material.c.unit_amount, sub_query_material.c.unit, sub_query_material_version.c.unit_price). \
+                                     query(MaterialFormula, \
+                                        sub_query_material.c.unit_amount, \
+                                        sub_query_material.c.unit, \
+                                        sub_query_material_version.c.id, \
+                                        sub_query_material_version.c.unit_price). \
                                      filter(MaterialFormula.formula_id == formula_id). \
                                      join(sub_query_material_version, sub_query_material_version.c.material_id == MaterialFormula.material_id). \
                                      join(sub_query_material, sub_query_material.c.id == MaterialFormula.material_id). \

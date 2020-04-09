@@ -731,8 +731,22 @@ def update_formula(formula_id):
                                total_cost=total_cost)
 
 @app.route('/estimate_formula_cost/<int:formula_id>', methods=['GET', 'POST'])
-def estimate_formula_cost(formula_id):    
-    pass
+def estimate_formula_cost(formula_id):
+    try:
+        formula_rec = formula_repo.get_formula(formula_id)
+        if formula_rec.has_up_to_date_cost_estimation == False:
+            formula_manager.estimate_formula_cost(formula_id)        
+        db.session.commit()
+    except ScmException as ex:
+            db.session.rollback()
+            message = 'Failed to estimate cost of formula %s (%s). Details: %s' % (formula_rec.name, formula_rec.id, str(ex))
+            return render_error(message)
+
+    cost_estimation, material_cost_estimation_dtos = formula_manager.get_cost_estimation(formula_id)
+    return render_scm_template('cost_estimation.html',
+                               formula_rec=formula_rec,
+                               cost_estimation=cost_estimation,
+                               material_cost_estimation_dtos=material_cost_estimation_dtos)
 
 ####################################################################################
 # ORDER

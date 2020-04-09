@@ -60,3 +60,7 @@ class FormulaRepository:
             message = 'Error: failed to add formula record. Details: %s' % (str(ex))
             logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_FORMULA_FAILED, message)
+
+    def set_flag_has_up_to_date_cost_estimation(self, formula_id, flag):
+        formula_rec = self.get_formula(formula_id)
+        formula_rec.has_up_to_date_cost_estimation = flag

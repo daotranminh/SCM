@@ -73,11 +73,13 @@ class CostEstimation(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     formula_id = Column(Integer, ForeignKey(Formula.id))
     generated_on = Column(DateTime(), default=datetime.datetime.utcnow)
-    total_cost = Column(Numeric(10, 2))    
+    total_cost = Column(Numeric(10, 2))
+    is_current = Column(Boolean, default=True)
 
 class MaterialVersionCostEstimation(db.Model):
     __tablename__ = 'material_version_cost_estimation'
     id = Column(Integer, autoincrement=True, primary_key=True)
+    material_id = Column(Integer, ForeignKey(Material.id))
     material_verion_id = Column(Integer, ForeignKey(MaterialVersion.id))
     cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
     unit_amount = Column(Numeric(10, 2))
