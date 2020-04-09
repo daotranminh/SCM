@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Cost estimation for formula "{{ formula_rec.name }}"</h1>
+<br/>
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Material</th>
+      <th>Amount</th>
+      <th>Unit price</th>
+      <th>Cost</th>
+    </tr>
+  </thead>
+  <tbody>    
+    {% for material_cost_estimation_dto in material_cost_estimation_dtos %}
+    <tr>
+      <td>{{ material_cost_estimation_dto.material_name }}</td>
+      <td>{{ material_cost_estimation_dto.amount }}</td>
+      <td>{{ material_cost_estimation_dto.unit_price }} / {{ material_cost_estimation_dto.unit_amount }} {{ material_cost_estimation_dto.unit }}</td>
+      <td>{{ material_cost_estimation_dto.cost }}</td>
+    </tr>
+    {% endfor %}    
+    <tr>
+        <td>Total</td>
+        <td></td>
+        <td></td>
+        <td>{{ cost_estimation.total_cost }}</td>
+    </tr>
+  </tbody>
+</table>
+
+{% endblock %}
