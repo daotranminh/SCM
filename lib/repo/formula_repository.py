@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import Formula, Taste, config
+from init import Formula, Taste, CostEstimation, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
 
@@ -36,12 +36,19 @@ class FormulaRepository:
                                page,
                                per_page,
                                search_text):
-        formula_recs = Formula.query
+        cost_estimation_query = self.db.session.query(CostEstimation.formula_id, CostEstimation.total_cost). \
+            filter(CostEstimation.is_current == True). \
+            subquery()
+
+        formula_query = self.db.session.query(Formula, \
+                                              cost_estimation_query.c.total_cost). \
+            outerjoin(cost_estimation_query, Formula.id == cost_estimation_query.c.formula_id)
+
         if search_text is not None and search_text != '':
             search_pattern = '%' + search_text + '%'
-            formula_recs = formula_recs.filter((Formula.name.ilike(search_pattern)) |
+            formula_query = formula_query.filter((Formula.name.ilike(search_pattern)) |
                                                 (Formula.description.ilike(search_pattern)))
-        return formula_recs.paginate(page, per_page, error_out=False)
+        return formula_query.paginate(page, per_page, error_out=False)
 
     def add_formula(self,
                   name,

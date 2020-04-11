@@ -13,8 +13,8 @@
     <tr>
       <th>Name</th>
       <th>Taste</th>      
-      <th>Description</th>
       <th>Registered on<i class="fa fa-sort-asc"></i></th>
+      <th>Cost estimation</th>
       <th></th>
       <th></th>
     </tr>
@@ -25,14 +25,20 @@
       <td><a href="{{ url_for('formula_details', 
 	   formula_id=formula_dto.formula_id) }}">{{formula_dto.name}}</a></td>
       <td>{{formula_dto.taste}}</td>      
-      <td>{{formula_dto.description}}</td>
       <td>{{formula_dto.registered_on}}</td>
+      <td>{{formula_dto.total_cost}}</td>
       <td><a href="{{ url_for('update_formula', 
 		                  formula_id=formula_dto.formula_id) }}"
                       class="btn btn-default pullright">Update</a></td>
+      {% if formula_dto.has_up_to_date_cost_estimation %}
+        <td><a href="{{ url_for('estimate_formula_cost', 
+                          formula_id=formula_dto.formula_id) }}"
+                          class="btn btn-default pullright" disabled>Estimate cost</a></td>
+      {% else %}
       <td><a href="{{ url_for('estimate_formula_cost', 
-                        formula_id=formula_dto.formula_id) }}"
-                        class="btn btn-default pullright">Estimate cost</a></td>                      
+        formula_id=formula_dto.formula_id) }}"
+        class="btn btn-primary pullright">Estimate cost</a></td>
+      {% endif %}
     </tr>
     {% endfor %}
   </tbody>

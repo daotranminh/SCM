@@ -109,12 +109,14 @@ class FormulaManager:
                                  tastes_dict,
                                  formula_recs):
         formula_dtos = []
-        for formula_rec in formula_recs:
+        for formula_rec, total_cost in formula_recs:
             formula_dto = FormulaDto(formula_rec.id,
                                      formula_rec.name,
                                      tastes_dict[formula_rec.taste_id].name,
                                      formula_rec.description,
                                      formula_rec.note,
+                                     total_cost,
+                                     formula_rec.has_up_to_date_cost_estimation,
                                      formula_rec.registered_on)
             formula_dtos.append(formula_dto)
 
