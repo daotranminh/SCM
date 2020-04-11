@@ -21,8 +21,10 @@ class ProductDto:
                  decoration_technique_name,
                  formula_id,
                  formula_name,
+                 formula_has_up_to_date_cost_estimation,
                  sample_images_group_id,
                  sample_images_group_name,
+                 product_cost_estimation,
                  latest_3_sample_image_paths,
                  latest_3_product_image_paths):
         self.product_id = product_id
@@ -35,8 +37,10 @@ class ProductDto:
         self.decoration_technique_name = decoration_technique_name
         self.formula_id = formula_id
         self.formula_name = formula_name
+        self.formula_has_up_to_date_cost_estimation = formula_has_up_to_date_cost_estimation
         self.sample_images_group_id = sample_images_group_id
         self.sample_images_group_name = sample_images_group_name
+        self.product_cost_estimation = product_cost_estimation
         self.sample_image_0 = latest_3_sample_image_paths[0]
         self.sample_image_1 = latest_3_sample_image_paths[1]
         self.sample_image_2 = latest_3_sample_image_paths[2]

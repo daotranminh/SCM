@@ -36,6 +36,8 @@
       <th>Decoration Technique</th>
       <th>Formula</th>
       <th>Sample Images</th>
+      <th>Cost Estimation</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -58,7 +60,14 @@
       {% else %}
       <td>{{product_dto.sample_images_group_name}}</td>
       {% endif %}
-      <td></td>
+
+      {% if product_dto.formula_has_up_to_date_cost_estimation %}      
+        <td>{{product_dto.product_cost_estimation}}</td>
+        <td><a href="{{ url_for('estimate_product_cost', product_id=product_dto.product_id) }}" class="btn btn-default pullright" disabled>Estimate cost</a></td>
+      {% else %}
+        <td><font color="#A0A0A0">{{product_dto.product_cost_estimation}}</font></td>  
+        <td><a href="{{ url_for('estimate_product_cost', product_id=product_dto.product_id) }}" class="btn btn-primary pullright">Estimate cost</a></td>
+      {% endif %}
     </tr>
     {% endfor %}
   </tbody>

@@ -59,8 +59,12 @@ class ProductManager:
         decoration_technique_name, \
         formula_id, \
         formula_name, \
+        formula_has_up_to_date_cost_estimation, \
         sample_images_group_id, \
-        sample_images_group_name = self.product_repo.get_product_dto(product_id)
+        sample_images_group_name, \
+        product_cost_estimation = self.product_repo.get_product_dto(product_id)
+
+        print(formula_has_up_to_date_cost_estimation)
 
         sample_images_group_id = product_rec.sample_images_group_id
         latest_3_sample_image_paths = ['', '', '']
@@ -79,8 +83,10 @@ class ProductManager:
                                  decoration_technique_name,
                                  formula_id,
                                  formula_name,
+                                 formula_has_up_to_date_cost_estimation,
                                  sample_images_group_id,
                                  sample_images_group_name, 
+                                 product_cost_estimation,
                                  latest_3_sample_image_paths,
                                  latest_3_product_image_paths)
         return product_dto

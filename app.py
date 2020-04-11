@@ -934,8 +934,6 @@ def product_details(product_id):
     product_dto = product_manager.get_product_dto(product_id)
     product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
 
-    print(product_dto.sample_image_0)
-
     return render_scm_template('product_details.html',
                                 product_dto=product_dto,
                                 product_image_path_recs=product_image_path_recs)
@@ -1115,6 +1113,21 @@ def __infer_product_image_path_recs(product_id,
                 product_image_path_recs.append(product_image_path_rec)
 
     return product_image_path_recs
+
+@app.route('/estimate_product_cost/<int:product_id>', methods=['GET', 'POST'])
+def estimate_product_cost(product_id):
+    try:
+        product_rec = product_repo.get_product(product_id)
+        if product_rec.is_fixed == False:
+            cost_estimation = cost_estimation_repo.get_current_cost_estimation_of_formula(product_rec.formula_id)
+            if cost_estimation is not None:
+                product_rec.cost_estimation_id = cost_estimation.id
+                db.session.commit()
+    except ScmException as ex:
+        message = 'Error estimating cost of product %s. Details: %s' % (product_id, str(s))
+        return render_error(message)
+    
+    return redirect(url_for('order_details', order_id=product_rec.order_id))
 
 ####################################################################################
 # DELIVERY METHOD

@@ -86,7 +86,7 @@ class MaterialVersionCostEstimation(db.Model):
     unit = Column(String(50))
     unit_price = Column(Numeric(10, 2))
     amount = Column(Numeric(10, 2))
-    cost = Column(Numeric(10, 2))    
+    cost = Column(Numeric(10, 2))
     
 class Topic(db.Model):
     __tablename__ = 'topic'
@@ -163,9 +163,11 @@ class Product(db.Model):
     decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
     decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
     formula_id = Column(Integer, ForeignKey(Formula.id))
+    cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
     sample_images_group_id = Column(Integer, ForeignKey(SampleImagesGroup.id))
     box_status = Column(Integer, default=0)
     box_returned_on = Column(DateTime())
+    is_fixed = Column(Boolean, default=False)
 
 class ProductImagePath(db.Model):
     __tablename__ = 'product_image_path'
