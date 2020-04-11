@@ -160,7 +160,6 @@ class FormulaManager:
         self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
         self.formula_repo.set_flag_has_up_to_date_cost_estimation(formula_id, True)
 
-
     def get_cost_estimation(self, formula_id):        
         current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
         material_version_cost_estimations = self.material_version_cost_estimation_repo.get_material_version_cost_estimation_of_cost_estimation(current_cost_estimation.id)

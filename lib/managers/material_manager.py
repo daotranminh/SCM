@@ -13,9 +13,11 @@ logger.setLevel(logging.DEBUG)
 class MaterialManager:
     def __init__(self,
                  material_repo,
-                 material_version_repo):
+                 material_version_repo,
+                 material_formula_repo):
         self.material_repo = material_repo
         self.material_version_repo = material_version_repo
+        self.material_formula_repo = material_formula_repo
 
     def add_material(self,
                      name,
@@ -57,6 +59,10 @@ class MaterialManager:
             self.material_version_repo.add_material_version(material_id, 
                                                             unit_price,
                                                             material_rec.latest_version)
+            
+            formula_recs = self.material_formula_repo.get_formulas_having_material(material_rec.id)
+            for formula_rec in formula_recs:
+                formula_rec.has_up_to_date_cost_estimation = False
         
     def get_material_dtos(self):
         materials = self.material_repo.get_all_materials()

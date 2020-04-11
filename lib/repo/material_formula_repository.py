@@ -1,7 +1,7 @@
 import logging
 
 from flask_sqlalchemy import sqlalchemy
-from init import Material, MaterialVersion, MaterialFormula, config
+from init import Material, MaterialVersion, MaterialFormula, Formula, config
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler(config['DEFAULT']['log_file'])
@@ -13,6 +13,18 @@ logger.setLevel(logging.INFO)
 class MaterialFormulaRepository:
     def __init__(self, db):
         self.db = db
+
+    def get_formulas_having_material(self, material_id):
+        material_formula_query = self.db.session.query(MaterialFormula.formula_id). \
+            filter(MaterialFormula.material_id == material_id). \
+            subquery()
+
+        formula_recs = self.db.session. \
+            query(Formula). \
+            join(material_formula_query, Formula.id == material_formula_query.c.formula_id). \
+            all()
+        
+        return formula_recs
 
     def get_materials_of_formula(self, formula_id):
         sub_query_material = self.db.session. \

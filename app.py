@@ -86,7 +86,8 @@ product_image_path_repo = ProductImagePathRepository(db)
 taste_manager = TasteManager(taste_repo)
 delivery_method_manager = DeliveryMethodManager(delivery_method_repo)
 material_manager = MaterialManager(material_repo,
-                                   material_version_repo)
+                                   material_version_repo,
+                                   material_formula_repo)
 customer_manager = CustomerManager(customer_repo)
 topic_manager = TopicManager(topic_repo)
 formula_manager = FormulaManager(formula_repo,
