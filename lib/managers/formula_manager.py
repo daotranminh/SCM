@@ -187,7 +187,7 @@ class FormulaManager:
             for product_rec in product_recs:
                 if product_rec.total_cost is not None:
                     order_cost += product_rec.total_cost
-        order_rec.total_cost = order_cost
+            order_rec.total_cost = order_cost
 
     def get_cost_estimation(self, formula_id):        
         current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
