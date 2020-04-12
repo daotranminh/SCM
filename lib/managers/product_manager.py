@@ -50,6 +50,17 @@ class ProductManager:
         
     def delete_product(self,
                        product_id):
+        product_rec = self.product_repo.get_product(product_id)
+        
+        order_rec = self.order_repo.get_order(product_rec.order_id)
+        
+        order_cost = 0
+        sibling_products = self.product_repo.get_products_of_order(product_rec.order_id)
+        for sibling_product in sibling_products:
+            if sibling_product.id != product_id and sibling_product.total_cost is not None:
+                order_cost += sibling_product.total_cost
+        order_rec.total_cost = order_cost
+
         self.product_image_path_repo.delete_product_image_paths(product_id)
         self.product_repo.delete_product(product_id)
 
