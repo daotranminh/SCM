@@ -21,7 +21,8 @@ class OrderDto:
                  order_status_name,
                  delivered_on,
                  payment_status_name,
-                 paid_on):
+                 paid_on,
+                 total_cost):
         self.order_id = order_id
         self.customer_id = customer_id
         self.customer_name = customer_name
@@ -33,3 +34,4 @@ class OrderDto:
         self.delivered_on = delivered_on
         self.payment_status_name = payment_status_name
         self.paid_on = paid_on
+        self.total_cost = total_cost

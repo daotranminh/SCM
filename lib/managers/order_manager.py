@@ -65,7 +65,8 @@ class OrderManager:
                              order_status_name,
                              order_rec.delivered_on,
                              payment_status_name,
-                             order_rec.paid_on)
+                             order_rec.paid_on,
+                             order_rec.total_cost)
 
         return order_dto
 
@@ -89,7 +90,8 @@ class OrderManager:
                                  order_status_name,
                                  order_rec.delivered_on,
                                  payment_status_name,
-                                 order_rec.paid_on)
+                                 order_rec.paid_on,
+                                 order_rec.total_cost)
             order_dtos.append(order_dto)
 
         paginated_order_dtos1 = PaginatedScm(order_dtos,

@@ -58,6 +58,7 @@ class Formula(db.Model):
     name = Column(String(50))
     description = Column(String(400))
     note = Column(String(5000))
+    total_cost = Column(Numeric(10, 2))
     has_up_to_date_cost_estimation = Column(Boolean, default=False)
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
 
@@ -153,6 +154,8 @@ class Order(db.Model):
     delivered_on = Column(DateTime())
     payment_status = Column(Integer, default=0)    
     paid_on = Column(DateTime())
+    is_fixed = Column(Boolean, default=False)
+    total_cost = Column(Numeric(10, 2))
 
 class Product(db.Model):
     __tablename__ = 'product'
@@ -168,6 +171,7 @@ class Product(db.Model):
     box_status = Column(Integer, default=0)
     box_returned_on = Column(DateTime())
     is_fixed = Column(Boolean, default=False)
+    total_cost = Column(Numeric(10, 2))
 
 class ProductImagePath(db.Model):
     __tablename__ = 'product_image_path'

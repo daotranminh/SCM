@@ -19,12 +19,16 @@ class FormulaManager:
                  material_formula_repo,
                  taste_repo,
                  material_version_cost_estimation_repo,
-                 cost_estimation_repo):
+                 cost_estimation_repo,
+                 product_repo,
+                 order_repo):
         self.formula_repo = formula_repo
         self.material_formula_repo = material_formula_repo
         self.taste_repo = taste_repo
         self.material_version_cost_estimation_repo = material_version_cost_estimation_repo
         self.cost_estimation_repo = cost_estimation_repo
+        self.product_repo = product_repo
+        self.order_repo = order_repo
 
     def get_formula_info(self, formula_id):
         formula_rec = self.formula_repo.get_formula(formula_id)
@@ -161,6 +165,29 @@ class FormulaManager:
             total_cost += single_cost
         self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
         self.formula_repo.set_flag_has_up_to_date_cost_estimation(formula_id, True)
+        self.__update_product_cost_estimation(formula_id, new_cost_estimation_id, total_cost)
+
+    def __update_product_cost_estimation(self, 
+                                         formula_id,
+                                         new_cost_estimation_id,
+                                         total_cost):
+        product_recs = self.product_repo.get_products_having_formula(formula_id)
+        order_ids_set = set()
+
+        for product_rec in product_recs:
+            if product_rec.is_fixed == False:
+                product_rec.cost_estimation_id = new_cost_estimation_id
+                product_rec.total_cost = total_cost
+                order_ids_set.add(product_rec.order_id)
+        
+        for order_id in order_ids_set:
+            order_rec = self.order_repo.get_order(order_id)
+            order_cost = 0
+            product_recs = self.product_repo.get_products_of_order(order_id)
+            for product_rec in product_recs:
+                if product_rec.total_cost is not None:
+                    order_cost += product_rec.total_cost
+        order_rec.total_cost = order_cost
 
     def get_cost_estimation(self, formula_id):        
         current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)

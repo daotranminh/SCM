@@ -94,7 +94,9 @@ formula_manager = FormulaManager(formula_repo,
                                  material_formula_repo,
                                  taste_repo,
                                  material_version_cost_estimation_repo,
-                                 cost_estimation_repo)
+                                 cost_estimation_repo,
+                                 product_repo,
+                                 order_repo)
 order_manager = OrderManager(order_repo,
                             product_repo)
 sample_images_group_manager = SampleImagesGroupManager(sample_images_group_repo,
