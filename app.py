@@ -1092,12 +1092,12 @@ def delete_product(product_id):
     except ScmException as ex:
         db.session.rollback()
         message = 'Failed to delete product "%s" (%s)' % (product_name, product_id)
-        return redirect_with_message(url_for('order_details', order_id=order_id),
+        return redirect_with_message(url_for('update_order', order_id=order_id),
                                      message,
                                      'danger')
     
     message = 'Successfully deleted product "%s" (%s)' % (product_name, product_id)
-    return redirect_with_message(url_for('order_details', order_id=order_id),
+    return redirect_with_message(url_for('update_order', order_id=order_id),
                                  message,
                                  'info')
 
