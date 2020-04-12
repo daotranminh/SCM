@@ -30,15 +30,9 @@
       <td><a href="{{ url_for('update_formula', 
 		                  formula_id=formula_dto.formula_id) }}"
                       class="btn btn-default pullright">Update</a></td>
-      {% if formula_dto.has_up_to_date_cost_estimation %}
-        <td><a href="{{ url_for('estimate_formula_cost', 
-                          formula_id=formula_dto.formula_id) }}"
-                          class="btn btn-default pullright" disabled>Estimate cost</a></td>
-      {% else %}
-      <td><a href="{{ url_for('estimate_formula_cost', 
-        formula_id=formula_dto.formula_id) }}"
-        class="btn btn-primary pullright">Estimate cost</a></td>
-      {% endif %}
+      <td><a href="{{ url_for('cost_estimation_details', 
+                        formula_id=formula_dto.formula_id) }}"
+                        class="btn btn-default pullright">Cost estimation details</a></td>
     </tr>
     {% endfor %}
   </tbody>
