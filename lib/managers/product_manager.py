@@ -15,10 +15,14 @@ class ProductManager:
     def __init__(self,
                  product_repo,
                  product_image_path_repo,
-                 sample_image_path_repo):
+                 sample_image_path_repo,
+                 cost_estimation_repo,
+                 order_repo):
         self.product_repo = product_repo
         self.product_image_path_repo = product_image_path_repo
         self.sample_image_path_repo = sample_image_path_repo
+        self.cost_estimation_repo = cost_estimation_repo
+        self.order_repo = order_repo
 
     def get_latest_groups_3_image_paths(self,
                                         product_recs):
@@ -63,8 +67,6 @@ class ProductManager:
         sample_images_group_id, \
         sample_images_group_name, \
         product_cost_estimation = self.product_repo.get_product_dto(product_id)
-
-        print(formula_has_up_to_date_cost_estimation)
 
         sample_images_group_id = product_rec.sample_images_group_id
         latest_3_sample_image_paths = ['', '', '']
@@ -114,16 +116,30 @@ class ProductManager:
                        product_image_path_recs,
                        remaining_product_image_path_ids,
                        uploaded_files):
-        self.product_repo.update_product(product_id,
-                                         product_name,
-                                         taste_id,
-                                         decoration_form_id,
-                                         decoration_technique_id,
-                                         formula_id,
-                                         box_status,
-                                         box_returned_on,
-                                         sample_images_group_id,)
+        product_rec = self.product_repo.get_product(product_id)
+        if product_rec.formula_id != formula_id:
+            new_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
+            product_rec.cost_estimation_id = new_cost_estimation.id
+            product_rec.total_cost = new_cost_estimation.total_cost
 
+            sibling_products = self.product_repo.get_products_of_order(product_rec.order_id)
+
+            order_cost = 0
+            for sibling_product in sibling_products:
+                if sibling_product.total_cost is not None:
+                    order_cost += sibling_product.total_cost
+            order_rec = self.order_repo.get_order(product_rec.order_id)
+            order_rec.total_cost = order_cost
+
+        product_rec.name = product_name
+        product_rec.taste_id = taste_id
+        product_rec.decoration_form_id = decoration_form_id
+        product_rec.decoration_technique_id = decoration_technique_id
+        product_rec.formula_id = formula_id
+        product_rec.box_status = box_status
+        product_rec.box_returned_on = box_returned_on
+        product_rec.sample_images_group_id = sample_images_group_id
+        
         self.product_image_path_repo.update_product_image_paths(product_id,
                                                                 product_image_path_recs,
                                                                 remaining_product_image_path_ids,

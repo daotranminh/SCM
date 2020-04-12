@@ -105,7 +105,9 @@ decoration_form_manager = DecorationFormManager(decoration_form_repo)
 decoration_technique_manager = DecorationTechniqueManager(decoration_technique_repo)
 product_manager = ProductManager(product_repo, 
                                  product_image_path_repo,
-                                 sample_image_path_repo)
+                                 sample_image_path_repo,
+                                 cost_estimation_repo,
+                                 order_repo)
 
 ####################################################################################
 # MENU
@@ -421,7 +423,6 @@ def add_material():
     
     if request.method == 'POST':
         try:
-            print(request.form)
             name = request.form['name'].strip()
             description = request.form['description'].strip()
             unit_amount = request.form['unit_amount']
