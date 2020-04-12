@@ -658,16 +658,21 @@ def add_formula():
     taste_recs = taste_repo.get_all_tastes()
 
     if request.method == 'POST':
+        message = ''
+
         try:
             formula_name, taste_id, description, note, material_ids, amounts = __extract_formula_props(request.form)
 
-            formula_manager.add_formula(formula_name,
+            new_formula_id = formula_manager.add_formula(formula_name,
                                         taste_id,
                                         description,
                                         note,
                                         material_ids,
                                         amounts)
+            db.session.flush()
 
+            formula_manager.estimate_formula_cost(new_formula_id)
+            
             db.session.commit()
             message = 'Successfully added formula %s' % formula_name
             return redirect_with_message(url_for('list_formulas'), message, 'info')
@@ -679,6 +684,8 @@ def add_formula():
                                                     ex,
                                                     tast_recs=taste_recs,
                                                     material_dtos=material_dtos)
+
+        
     else:
         return render_scm_template('add_formula.html',
                                    taste_recs=taste_recs,
@@ -710,6 +717,9 @@ def update_formula(formula_id):
                                            note,
                                            material_ids,
                                            amounts)
+            db.session.flush()
+            
+            formula_manager.estimate_formula_cost(formula_id)
 
             db.session.commit()
             message = 'Successfully updated formula %s' % formula_id

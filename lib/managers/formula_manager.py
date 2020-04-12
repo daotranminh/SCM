@@ -32,7 +32,7 @@ class FormulaManager:
 
     def get_formula_info(self, formula_id):
         formula_rec = self.formula_repo.get_formula(formula_id)
-        material_formulas_w_uprice = self.material_formula_repo.get_materials_of_formula(formula_id)
+        material_formulas_w_uprice = self.material_formula_repo.get_materials_of_formula_w_uprice(formula_id)
 
         total_cost = 0
         material_formulas = []
@@ -75,6 +75,7 @@ class FormulaManager:
             self.material_formula_repo.add_material_formula(new_formula_id,
                                                             material_ids[i],
                                                             amounts[i])
+        return new_formula_id
 
     def update_formula(self,
                        formula_id,
@@ -90,11 +91,40 @@ class FormulaManager:
         formula_rec.description = description
         formula_rec.note = note
 
+        existing_material_formula_recs = self.material_formula_repo.get_materials_of_formula(formula_id)
+        if self.__materials_of_formula_changed(existing_material_formula_recs,
+                                               material_ids,
+                                               amounts):
+            formula_rec.has_up_to_date_cost_estimation = False
+
         self.material_formula_repo.delete_materials_of_formula(formula_id)
         for i in range(len(material_ids)):
             self.material_formula_repo.add_material_formula(formula_id,
                                                             material_ids[i],
                                                             amounts[i])
+
+    def __materials_of_formula_changed(self,
+                                       existing_material_formula_recs,
+                                       material_ids,
+                                       amounts):
+        if len(existing_material_formula_recs) != len(material_ids):
+            return True
+        
+        checked = []
+        for i in range(len(material_ids)):
+            checked.append(False)
+       
+        for existing_material_formula_rec in existing_material_formula_recs:
+            material_changed = True
+            for i in range(len(material_ids)):                
+                if checked[i] == False and existing_material_formula_rec.material_id == material_ids[i] and existing_material_formula_rec.amount == amounts[i]:
+                    material_changed = False
+                    checked[i] = True
+                    break
+            if material_changed:
+                return True
+
+        return False
 
     def get_paginated_formula_dtos(self,
                                    page,
@@ -141,31 +171,33 @@ class FormulaManager:
         return paginated_formula_dtos
 
     def estimate_formula_cost(self, formula_id):
-        current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
-        if current_cost_estimation is not None:
-            current_cost_estimation.is_current = False
+        formula_rec = self.formula_repo.get_formula(formula_id)
+        if formula_rec.has_up_to_date_cost_estimation == False:
+            current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
+            if current_cost_estimation is not None:
+                current_cost_estimation.is_current = False
 
-        new_cost_estimation_id = self.cost_estimation_repo.add_cost_estimation(formula_id)
+            new_cost_estimation_id = self.cost_estimation_repo.add_cost_estimation(formula_id)
 
-        material_formulas_w_uprice = self.material_formula_repo.get_materials_of_formula(formula_id)
-        total_cost = 0
+            material_formulas_w_uprice = self.material_formula_repo.get_materials_of_formula_w_uprice(formula_id)
+            total_cost = 0
         
-        for material_formula_rec, unit_amount, unit, material_version_id, unit_price in material_formulas_w_uprice:
-            single_cost = material_formula_rec.amount * unit_price / unit_amount
-            self.material_version_cost_estimation_repo.add_material_version_cost_estimation(
-                material_formula_rec.material_id,
-                material_version_id,
-                new_cost_estimation_id,
-                unit_amount,
-                unit,
-                unit_price,
-                material_formula_rec.amount,
-                single_cost)
+            for material_formula_rec, unit_amount, unit, material_version_id, unit_price in material_formulas_w_uprice:
+                single_cost = material_formula_rec.amount * unit_price / unit_amount
+                self.material_version_cost_estimation_repo.add_material_version_cost_estimation(
+                    material_formula_rec.material_id,
+                    material_version_id,
+                    new_cost_estimation_id,
+                    unit_amount,
+                    unit,
+                    unit_price,
+                    material_formula_rec.amount,
+                    single_cost)
             
-            total_cost += single_cost
-        self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
-        self.formula_repo.set_flag_has_up_to_date_cost_estimation(formula_id, True)
-        self.__update_product_cost_estimation(formula_id, new_cost_estimation_id, total_cost)
+                total_cost += single_cost
+            self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
+            self.formula_repo.set_flag_has_up_to_date_cost_estimation(formula_id, True)
+            self.__update_product_cost_estimation(formula_id, new_cost_estimation_id, total_cost)
 
     def __update_product_cost_estimation(self, 
                                          formula_id,

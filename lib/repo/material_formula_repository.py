@@ -27,6 +27,11 @@ class MaterialFormulaRepository:
         return formula_recs
 
     def get_materials_of_formula(self, formula_id):
+        return MaterialFormula.query. \
+            filter(MaterialFormula.formula_id == formula_id). \
+            all()
+
+    def get_materials_of_formula_w_uprice(self, formula_id):
         sub_query_material = self.db.session. \
                              query(Material.id, Material.unit_amount, Material.unit). \
                              subquery()
