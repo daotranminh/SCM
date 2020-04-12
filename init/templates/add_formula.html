@@ -46,9 +46,9 @@
 	<select id="material_unit_price_0"
 		name="material_unit_price_0"
 		disabled>
-	  {% for material_dto in material_dtos %}
-	  <option>{{material_dto.unit_price}}</option>
-	  {% endfor %}
+	  	{% for material_dto in material_dtos %}
+	      <option value="{{material_dto.unit_price / material_dto.unit_amount}}">{{material_dto.unit_price}} / {{material_dto.unit_amount}} {{material_dto.unit}}</option>
+	  	{% endfor %}
 	</select>
 
 	<input type="text"
