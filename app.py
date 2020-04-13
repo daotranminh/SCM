@@ -869,21 +869,103 @@ def order_details(order_id):
                                order_dto=order_dto,
                                product_dtos=product_dtos)
 
+def __extract_update_order_args(order_rec, args):
+    customer_id_arg = args.get('customer_id_arg')
+    if customer_id_arg is None:
+        customer_id_arg = order_rec.customer_id
+    else:
+        customer_id_arg = int(customer_id_arg)
+
+    ordered_on_arg = args.get('ordered_on_arg')
+    if ordered_on_arg is None:
+        ordered_on_arg = order_rec.ordered_on
+
+    delivery_appointment_arg = args.get('delivery_appointment_arg')
+    if delivery_appointment_arg is None:
+        delivery_appointment_arg = order_rec.delivery_appointment
+
+    delivery_method_id_arg = args.get('delivery_method_id_arg')
+    if delivery_method_id_arg is None:
+        delivery_method_id_arg = order_rec.delivery_method_id
+    else:
+        delivery_method_id_arg = int(delivery_method_id_arg)
+
+    order_status_arg = args.get('order_status_arg')
+    if order_status_arg is None:
+        order_status_arg = order_rec.order_status
+    else:
+        order_status_arg = int(order_status_arg)
+
+    delivered_on_arg = args.get('delivered_on_arg')
+    if delivered_on_arg is None:
+        delivered_on_arg = order_rec.delivered_on
+
+    payment_status_arg = args.get('payment_status_arg')
+    if payment_status_arg is None:
+        payment_status_arg = order_rec.payment_status
+    else:
+        payment_status_arg = int(payment_status_arg)
+
+    paid_on_arg = args.get('paid_on_arg')
+    if paid_on_arg is None:
+        paid_on_arg = order_rec.paid_on
+
+    message_arg = args.get('message_arg')
+    if message_arg is None:
+        message_arg = order_rec.message
+
+    return customer_id_arg, \
+        ordered_on_arg, \
+        delivery_appointment_arg, \
+        delivery_method_id_arg, \
+        order_status_arg, \
+        delivered_on_arg, \
+        payment_status_arg, \
+        paid_on_arg, \
+        message_arg
+
 @app.route('/update_order/<int:order_id>', methods=['GET', 'POST'])
 def update_order(order_id):
+    order_rec = order_repo.get_order(order_id)
+
+    customer_id_arg, \
+        ordered_on_arg, \
+        delivery_appointment_arg, \
+        delivery_method_id_arg, \
+        order_status_arg, \
+        delivered_on_arg, \
+        payment_status_arg, \
+        paid_on_arg, \
+        message_arg = __extract_update_order_args(order_rec, request.args)
+
     customer_choices = customer_manager.get_customer_choices()
     delivery_method_choices = delivery_method_manager.get_delivery_method_choices()
     product_dtos = product_manager.get_product_dtos(order_id)
+
+    delivery_method_recs = delivery_method_repo.get_all_delivery_methods()
+    taste_recs = taste_repo.get_all_tastes()
+    decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
+    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
     
-    if request.method == 'GET':
-        order_rec = order_repo.get_order(order_id)
+    if request.method == 'GET':        
         return render_scm_template('update_order.html',
-                                    order_rec=order_rec,
+                                    order_id=order_id,
+                                    customer_id=customer_id_arg,
+                                    ordered_on=ordered_on_arg,
+                                    delivery_appointment=delivery_appointment_arg,
+                                    delivery_method_id=delivery_method_id_arg,
+                                    order_status=order_status_arg,
+                                    delivered_on=delivered_on_arg,
+                                    payment_status=payment_status_arg,
+                                    paid_on=paid_on_arg,
                                     customer_choices=customer_choices,
                                     delivery_method_choices=delivery_method_choices,
                                     product_dtos=product_dtos,
                                     order_status_names=scm_constants.ORDER_STATUS_NAMES,
-                                    payment_status_names=scm_constants.PAYMENT_STATUS_NAMES)
+                                    payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,
+                                    taste_recs=taste_recs,
+                                    decoration_form_recs=decoration_form_recs,
+                                    decoration_technique_recs=decoration_technique_recs)
     elif request.method == 'POST':        
         try:
             customer_id = request.form['customer_id']
@@ -928,6 +1010,47 @@ def update_order(order_id):
                                                     product_dtos=product_dtos,
                                                     order_status_names=scm_constants.ORDER_STATUS_NAMES,
                                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES)
+
+@app.route('/add_new_product_to_order/<int:order_id>', methods=['GET', 'POST'])
+def add_new_product_to_order(order_id):
+    new_product_name = request.args.get('new_product_name_arg')
+    taste_id = int(request.args.get('taste_id_arg'))
+    decoration_form_id = int(request.args.get('decoration_form_id_arg'))
+    decoration_technique_id = int(request.args.get('decoration_technique_id_arg'))
+    
+    with_box_arg = request.args.get('with_box_arg')
+    with_box = with_box_arg.upper() == 'TRUE'
+
+    try:
+        product_repo.add_product(new_product_name,
+                                 order_id,
+                                 taste_id,
+                                 decoration_form_id,
+                                 decoration_technique_id,
+                                 with_box)
+        db.session.commit()
+    except ScmException as ex:
+        db.session.rollback()
+        message = 'Failed to add a new product "%s" to order %s' % (product_name, order_id)
+        return redirect_with_message(url_for('update_order', order_id=order_id),
+                                     message,
+                                     'danger')
+    
+    message = 'Successfully add a new product %s to order %s' % (new_product_name, order_id)
+
+    return redirect_with_message(url_for('update_order', 
+                                 order_id=order_id, 
+                                 customer_id_arg=[request.args.get('customer_id_arg')],
+                                 delivery_appointment_arg=[request.args.get('delivery_appointment_arg')],
+                                 delivery_method_id_arg=[request.args.get('delivery_method_id_arg')],
+                                 order_status_arg=[request.args.get('order_status_arg')],
+                                 delivered_on_arg=[request.args.get('delivered_on_arg')],
+                                 payment_status_arg=[request.args.get('payment_status_arg')],
+                                 paid_on_arg=[request.args.get('paid_on_arg')],
+                                 message_arg=[request.args.get('message_arg')],
+                                 ), 
+                                 message, 
+                                 'info')
 
 ####################################################################################
 # PRODUCT

@@ -1,3 +1,45 @@
+function add_new_product_to_order()
+{
+    var orderId = document.getElementById("order_id").value
+    var customerId = document.getElementById("customer_id").value
+    var orderedOn = document.getElementById("ordered_on").value
+    var deliveryAppointment = document.getElementById("delivery_appointment").value
+    var deliveryMethodId = document.getElementById("delivery_method_id").value
+    var orderStatus = document.getElementById("order_status").value
+    var deliveredOn = document.getElementById("delivered_on").value
+    var paymentStatus = document.getElementById("payment_status").value
+    var paidOn = document.getElementById("paid_on").value
+    var message = document.getElementById("message").value
+
+    var newProductName = document.getElementById("new_product_name").value
+    var tasteId = document.getElementById("taste_id").value
+    var decorationFormId = document.getElementById("decoration_form_id").value
+    var decorationTechniqueId = document.getElementById("decoration_technique_id").value
+    var withBox = document.getElementById("with_box").checked
+
+    currentHref = location.href
+	currentHrefComponents = currentHref.split("/")
+    baseHref = currentHrefComponents.slice(0,3).join("/")
+    newHref = baseHref + "/add_new_product_to_order/" + orderId + 
+        "?customer_id_arg=" + customerId +
+        "&ordered_on_arg=" + orderedOn +
+        "&delivery_appointment_arg=" + deliveryAppointment +
+        "&delivery_method_id_arg=" + deliveryMethodId +
+        "&order_status_arg=" + orderStatus +
+        "&delivered_on_arg=" + deliveredOn +
+        "&payment_status_arg=" + paymentStatus +
+        "&paid_on_arg=" + paidOn +
+        "&message_arg=" + message +
+        "&new_product_name_arg=" + newProductName +
+        "&taste_id_arg=" + tasteId +
+        "&decoration_form_id_arg=" + decorationFormId +
+        "&decoration_technique_id_arg=" + decorationTechniqueId +
+        "&with_box_arg=" + withBox
+    
+    location.href = newHref
+}
+
+
 function add_product_to_order()
 {
     var products_list = document.getElementsByName("product[]")

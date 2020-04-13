@@ -7,12 +7,13 @@
 <h1>Update order</h1>
 
     <form method="POST" action="">
+      <input type="hidden" id="order_id" value="{{order_id}}" display="none" disabled/>
 
       <div class="form-group">
             <label for="customer_id">Customer</label>
             <select id="customer_id" name="customer_id">
               {% for customer_choice in customer_choices %}
-                {% if customer_choice[0] == order_rec.customer_id %}
+                {% if customer_choice[0] == customer_id %}
                   <option value="{{customer_choice[0]}}" selected>{{customer_choice[1]}}</option>
                 {% else %}
                   <option value="{{customer_choice[0]}}">{{customer_choice[1]}}</option>
@@ -23,19 +24,19 @@
 
       <div class="form-group">
             <label for="ordered_on">Ordered on</label>
-            <input type="text" name="ordered_on" value="{{order_rec.ordered_on}}">
+            <input type="text" name="ordered_on" id="ordered_on" value="{{ordered_on}}">
       </div>
 
       <div class="form-group">
             <label for="delivery_appointment">Delivery appointment</label>
-            <input type="text" name="delivery_appointment" value="{{order_rec.delivery_appointment}}">
+            <input type="text" name="delivery_appointment" id="delivery_appointment" value="{{delivery_appointment}}">
       </div>
 
       <div class="form-group">
             <label for="delivery_method_id">Delivery method</label>
             <select id="delivery_method_id" name="delivery_method_id">
               {% for delivery_method_choice in delivery_method_choices %}
-                {% if delivery_method_choice[0] == order_rec.delivery_method_id %}
+                {% if delivery_method_choice[0] == delivery_method_id %}
                 <option value="{{delivery_method_choice[0]}}" selected>{{delivery_method_choice[1]}}</option>
                 {% else %}
                 <option value="{{delivery_method_choice[0]}}">{{delivery_method_choice[1]}}</option>
@@ -47,11 +48,11 @@
       <div class="form-group">
             <label for="order_status">Order status</label>
             <select id="order_status" name="order_status">
-              {% for order_status in order_status_names %}
-                {% if order_status[0] == order_rec.order_status %}
-                <option value="{{order_status[0]}}" selected>{{order_status[1]}}</option>
+              {% for order_status_name in order_status_names %}
+                {% if order_status_name[0] == order_status %}
+                <option value="{{order_status_name[0]}}" selected>{{order_status_name[1]}}</option>
                 {% else %}
-                <option value="{{order_status[0]}}">{{order_status[1]}}</option>
+                <option value="{{order_status_name[0]}}">{{order_status_name[1]}}</option>
                 {% endif %}
               {% endfor %}
             </select>
@@ -59,17 +60,17 @@
 
       <div class="form-group">
             <label for="delivered_on">Delivered on</label>
-            <input type="text" name="delivered_on" value="{{order_rec.delivered_on}}">
+            <input type="text" name="delivered_on" id="delivered_on" value="{{delivered_on}}">
       </div>
 
       <div class="form-group">
             <label for="payment_status">Payment status</label>
             <select id="payment_status" name="payment_status">
-              {% for payment_status in payment_status_names %}
-                {% if payment_status[0] == order_rec.payment_status %}
-                <option value="{{payment_status[0]}}" selected>{{payment_status[1]}}</option>
+              {% for payment_status_name in payment_status_names %}
+                {% if payment_status_name[0] == payment_status %}
+                <option value="{{payment_status_name[0]}}" selected>{{payment_status_name[1]}}</option>
                 {% else %}
-                <option value="{{payment_status[0]}}">{{payment_status[1]}}</option>
+                <option value="{{payment_status_name[0]}}">{{payment_status_name[1]}}</option>
                 {% endif %}
               {% endfor %}
             </select>
@@ -77,7 +78,7 @@
 
       <div class="form-group">
             <label for="paid_on">Paid on</label>
-            <input type="text" name="paid_on" value="{{order_rec.paid_on}}">
+            <input type="text" name="paid_on" id="paid_on" value="{{paid_on}}">
       </div>
 
       <table class="table table-striped">
@@ -125,8 +126,53 @@
           </table>
 
       <div class="form-group">
+        <p><label>Additional product:</label></p>
+        <p>
+          <label for="new_product_name">Name</label>
+          <input type="text" id="new_product_name" name="new_product_name"/>
+        </p>
+
+        <p>
+          <label for="taste_id">Taste</label>
+          <select id="taste_id" name="taste_id">
+	        {% for taste_rec in taste_recs %}
+	          <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
+	        {% endfor %}
+          </select>
+        </p>
+            
+        <p>
+          <label for="decoration_form_id">Decoration form</label>
+          <select id="decoration_form_id" name="decoration_form_id">
+	        {% for decoration_form_rec in decoration_form_recs %}
+	          <option value="{{decoration_form_rec.id}}">{{decoration_form_rec.name}}</option>
+	        {% endfor %}
+          </select>
+        </p>
+    
+        <p>
+          <label for="decoration_technique_id">Decoration technique</label>
+          <select id="decoration_technique_id" name="decoration_technique_id">
+	        {% for decoration_technique_rec in decoration_technique_recs %}
+	          <option value="{{decoration_technique_rec.id}}">{{decoration_technique_rec.name}}</option>
+	        {% endfor %}
+          </select>
+        </p>
+
+        <p>
+          <label for="with_box">With box</label><br>
+          <input type="checkbox" id="with_box" name="with_box">
+        </p>
+      </div>
+
+      <br/>
+      <p><button type="button" 
+            class="btn btn-default pullright" 
+            onclick="add_new_product_to_order();">Add product to order</button></p>
+
+      <div class="form-group">
 	      <label for="message">Message</label>
-            <textarea class="form-control" cols="80" id="message" name="message" rows="10">{{order_rec.message}}</textarea>
+            <textarea class="form-control" cols="80" id="message" name="message" rows="10">{{message}}</textarea>
       </div>
       
       <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
