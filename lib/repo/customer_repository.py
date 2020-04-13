@@ -5,15 +5,11 @@ from flask_sqlalchemy import sqlalchemy
 from init import Customer, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+from utilities.scm_logger import ScmLogger
 
 class CustomerRepository:
+    logger = ScmLogger(__name__)
+
     def __init__(self, db):
         self.db = db
 
@@ -57,7 +53,7 @@ class CustomerRepository:
         
         except sqlalchemy.exc.SQLAlchemyError as e:
             message = 'Error: failed to add customer. Details: %s' % (str(e))
-            logger.error(message)
+            CustomerRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_CUSTOMER_FAILED, message)
 
     def update_customer(self,

@@ -5,15 +5,11 @@ from flask_sqlalchemy import sqlalchemy
 from init import CostEstimation, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class CostEstimationRepository:
+    logger = ScmLogger(__name__)
+
     def __init__(self, db):
         self.db = db
 
@@ -35,7 +31,7 @@ class CostEstimationRepository:
             return cost_estimation_rec.id
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add cost_estimation_rec. Details: %s' % (str(ex))
-            logger.error(message)
+            CostEstimationRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_COST_ESTIMATION_FAILED, message)
 
     def update_total_cost(self, 
@@ -43,3 +39,6 @@ class CostEstimationRepository:
                           total_cost):
         cost_estimation_rec = self.get_cost_estimation(cost_estimation_id)
         cost_estimation_rec.total_cost = total_cost
+
+        message = 'Set total_cost of cost_estimation_rec %s to %s' % (cost_estimation_id, total_cost)
+        CostEstimationRepository.logger.info(message)
