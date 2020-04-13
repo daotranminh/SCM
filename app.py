@@ -938,8 +938,7 @@ def update_order(order_id):
         paid_on_arg, \
         message_arg = __extract_update_order_args(order_rec, request.args)
 
-    customer_choices = customer_manager.get_customer_choices()
-    delivery_method_choices = delivery_method_manager.get_delivery_method_choices()
+    customer_recs = customer_repo.get_all_customers()    
     product_dtos = product_manager.get_product_dtos(order_id)
 
     delivery_method_recs = delivery_method_repo.get_all_delivery_methods()
@@ -958,8 +957,8 @@ def update_order(order_id):
                                     delivered_on=delivered_on_arg,
                                     payment_status=payment_status_arg,
                                     paid_on=paid_on_arg,
-                                    customer_choices=customer_choices,
-                                    delivery_method_choices=delivery_method_choices,
+                                    customer_recs=customer_recs,
+                                    delivery_method_recs=delivery_method_recs,
                                     product_dtos=product_dtos,
                                     order_status_names=scm_constants.ORDER_STATUS_NAMES,
                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,

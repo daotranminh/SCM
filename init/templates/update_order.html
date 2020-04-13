@@ -12,11 +12,11 @@
       <div class="form-group">
             <label for="customer_id">Customer</label>
             <select id="customer_id" name="customer_id">
-              {% for customer_choice in customer_choices %}
-                {% if customer_choice[0] == customer_id %}
-                  <option value="{{customer_choice[0]}}" selected>{{customer_choice[1]}}</option>
+              {% for customer_rec in customer_recs %}
+                {% if customer_rec.id == customer_id %}
+                  <option value="{{customer_rec.id}}" selected>{{customer_rec.name}}</option>
                 {% else %}
-                  <option value="{{customer_choice[0]}}">{{customer_choice[1]}}</option>
+                  <option value="{{customer_rec.id}}">{{customer_rec.name}}</option>
                 {% endif %}
               {% endfor %}
             </select>
@@ -35,11 +35,11 @@
       <div class="form-group">
             <label for="delivery_method_id">Delivery method</label>
             <select id="delivery_method_id" name="delivery_method_id">
-              {% for delivery_method_choice in delivery_method_choices %}
-                {% if delivery_method_choice[0] == delivery_method_id %}
-                <option value="{{delivery_method_choice[0]}}" selected>{{delivery_method_choice[1]}}</option>
+              {% for delivery_method_rec in delivery_method_recs %}
+                {% if delivery_method_rec.id == delivery_method_id %}
+                <option value="{{delivery_method_rec.id}}" selected>{{delivery_method_rec.name}}</option>
                 {% else %}
-                <option value="{{delivery_method_choice[0]}}">{{delivery_method_choice[1]}}</option>
+                <option value="{{delivery_method_rec.id}}">{{delivery_method_rec.name}}</option>
                 {% endif %}
               {% endfor %}
             </select>
@@ -181,6 +181,9 @@
 <script>
   $('#delivery_method_id').select2();
   $('#customer_id').select2();
+  $('#taste_id').select2();
+  $('#decoration_form_id').select2();
+  $('#decoration_technique_id').select2();
   $('*[name=ordered_on]').appendDtpicker();
   $('*[name=delivery_appointment]').appendDtpicker();
   $('*[name=delivered_on]').appendDtpicker();
