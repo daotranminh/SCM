@@ -849,6 +849,45 @@ def add_order():
                                 decoration_form_recs=decoration_form_recs,
                                 decoration_technique_recs=decoration_technique_recs)    
 
+def __lazy_get_order_dtos(page, per_page, search_text):
+    paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
+                                                                  per_page,
+                                                                  search_text)
+    db_changed = False
+    checked_formula_ids_set = set()
+    formula_ids_set = set()
+    order_dtos_need_cost_update = []
+    for i in range(len(paginated_order_dtos.items)):
+        product_recs = product_repo.get_products_of_order(paginated_order_dtos.items[i].order_id)
+        product_cost_changed = False
+        
+        for product_rec in product_recs:
+            if product_rec.is_fixed == False:
+                if product_rec.formula_id not in checked_formula_ids_set:
+                    checked_formula_ids_set.add(product_rec.formula_id)
+                    formula_rec = formula_repo.get_formula(product_rec.formula_id)
+                    if formula_rec.has_up_to_date_cost_estimation == False:
+                        formula_ids_set.add(product_rec.formula_id)
+                        product_cost_changed = True
+                        db_changed = True
+                else:
+                    if product_rec.formula_id in formula_ids_set:
+                        product_cost_changed = True
+        
+        if product_cost_changed == True:
+            order_dtos_need_cost_update.append(i)
+    
+    for formula_id in formula_ids_set:
+        new_cost = formula_manager.estimate_formula_cost(formula_id)
+
+    db.session.flush()
+
+    for i in order_dtos_need_cost_update:
+        order_rec = order_repo.get_order(paginated_order_dtos.items[i].order_id)
+        paginated_order_dtos.items[i].total_cost = order_rec.total_cost
+
+    return paginated_order_dtos, db_changed
+
 @app.route('/list_orders', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_orders/', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_orders<int:page>', methods=['GET', 'POST'])
@@ -857,16 +896,32 @@ def list_orders(page):
     per_page = int(config['PAGING']['orders_per_page'])
     search_text = request.args.get('search_text')
 
-    paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
-                                                                  per_page,
-                                                                  search_text)
+    paginated_order_dtos, db_changed = __lazy_get_order_dtos(page, per_page, search_text)
+
+    if db_changed == True:
+        db.session.commit()
 
     return render_scm_template('list_orders.html', order_dtos=paginated_order_dtos)
+
+def __lazy_get_product_dtos(order_id):
+    db_changed = False
+    product_dtos = product_manager.get_product_dtos(order_id)
+
+    for product_dto in product_dtos:
+        if product_dto.formula_has_up_to_date_cost_estimation == False:
+            new_product_cost_estimation = formula_manager.estimate_formula_cost(product_dto.formula_id)
+            product_dto.product_cost_estimation = new_product_cost_estimation
+            db_changed = True
+    
+    if db_changed == True:
+        db.session.commit()
+
+    return product_dtos
 
 @app.route('/order_details/<int:order_id>', methods=['GET', 'POST'])
 def order_details(order_id):
     order_dto = order_manager.get_order_dto(order_id)
-    product_dtos = product_manager.get_product_dtos(order_id)
+    product_dtos = __lazy_get_product_dtos(order_id)
 
     return render_scm_template('order_details.html',
                                order_dto=order_dto,
@@ -942,7 +997,7 @@ def update_order(order_id):
         message_arg = __extract_update_order_args(order_rec, request.args)
 
     customer_recs = customer_repo.get_all_customers()    
-    product_dtos = product_manager.get_product_dtos(order_id)
+    product_dtos = __lazy_get_product_dtos(order_id)
 
     delivery_method_recs = delivery_method_repo.get_all_delivery_methods()
     taste_recs = taste_repo.get_all_tastes()
