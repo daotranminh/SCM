@@ -11,8 +11,8 @@
       <div class="form-group">
             <label for="customer_id">Customer</label>
             <select id="customer_id" name="customer_id">
-              {% for customer_choice in customer_choices %}
-              <option value="{{customer_choice[0]}}">{{customer_choice[1]}}</option>
+              {% for customer_rec in customer_recs %}
+              <option value="{{customer_rec.id}}">{{customer_rec.name}}</option>
               {% endfor %}
             </select>
       </div>
@@ -30,8 +30,8 @@
       <div class="form-group">
             <label for="delivery_method_id">Delivery method</label>
             <select id="delivery_method_id" name="delivery_method_id">
-              {% for delivery_method_choice in delivery_method_choices %}
-              <option value="{{delivery_method_choice[0]}}">{{delivery_method_choice[1]}}</option>
+              {% for delivery_method_rec in delivery_method_recs %}
+              <option value="{{delivery_method_rec.id}}">{{delivery_method_rec.name}}</option>
               {% endfor %}
             </select>
       </div>
@@ -48,8 +48,8 @@
             <p>
             <label for="taste_choices_0">Taste</label>
             <select id="taste_choices_0" name="taste_choices_0">
-	      {% for taste_choice in taste_choices %}
-	            <option value="{{taste_choice[0]}}">{{taste_choice[1]}}</option>
+	      {% for taste_rec in taste_recs %}
+	            <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
 	      {% endfor %}
             </select>
             </p>
@@ -57,8 +57,8 @@
             <p>
             <label for="decoration_form_choices_0">Decoration form</label>
             <select id="decoration_form_choices_0" name="decoration_form_choices_0">
-	      {% for decoration_form_choice in decoration_form_choices %}
-	            <option value="{{decoration_form_choice[0]}}">{{decoration_form_choice[1]}}</option>
+	      {% for decoration_form_rec in decoration_form_recs %}
+	            <option value="{{decoration_form_rec.id}}">{{decoration_form_rec.name}}</option>
 	      {% endfor %}
             </select>
             </p>
@@ -66,8 +66,8 @@
             <p>
             <label for="decoration_technique_choices_0">Decoration technique</label>
             <select id="decoration_technique_choices_0" name="decoration_technique_choices_0">
-	      {% for decoration_technique_choice in decoration_technique_choices %}
-	            <option value="{{decoration_technique_choice[0]}}">{{decoration_technique_choice[1]}}</option>
+	      {% for decoration_technique_rec in decoration_technique_recs %}
+	            <option value="{{decoration_technique_rec.id}}">{{decoration_technique_rec.name}}</option>
 	      {% endfor %}
             </select>
             </p>

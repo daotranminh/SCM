@@ -804,11 +804,11 @@ def __extract_order_props(props_dict):
 
 @app.route('/add_order', methods=['GET', 'POST'])
 def add_order():
-    customer_choices = customer_manager.get_customer_choices()
-    delivery_method_choices = delivery_method_manager.get_delivery_method_choices()
-    taste_choices = taste_manager.get_taste_choices()
-    decoration_form_choices = decoration_form_manager.get_decoration_form_choices()
-    decoration_technique_choices = decoration_technique_manager.get_decoration_technique_choices()
+    customer_recs = customer_repo.get_all_customers()
+    delivery_method_recs = delivery_method_repo.get_all_delivery_methods()
+    taste_recs = taste_repo.get_all_tastes()
+    decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
+    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
 
     if request.method == 'POST':
         try:
@@ -840,11 +840,11 @@ def add_order():
             db.session.rollback()
 
     return render_scm_template('add_order.html', 
-                                customer_choices=customer_choices,
-                                delivery_method_choices=delivery_method_choices,
-                                taste_choices=taste_choices,
-                                decoration_form_choices=decoration_form_choices,
-                                decoration_technique_choices=decoration_technique_choices)    
+                                customer_recs=customer_recs,
+                                delivery_method_recs=delivery_method_recs,
+                                taste_recs=taste_recs,
+                                decoration_form_recs=decoration_form_recs,
+                                decoration_technique_recs=decoration_technique_recs)    
 
 @app.route('/list_orders', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_orders/', methods=['GET', 'POST'], defaults={'page':1})
