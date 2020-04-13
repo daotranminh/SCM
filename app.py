@@ -970,33 +970,33 @@ def update_order(order_id):
                                     decoration_technique_recs=decoration_technique_recs)
     elif request.method == 'POST':        
         try:
-            customer_id = request.form['customer_id']
+            customer_id = int(request.form['customer_id'])
             ordered_on = request.form['ordered_on']
             delivery_appointment = request.form['delivery_appointment']
-            delivery_method_id = request.form['delivery_method_id']
+            delivery_method_id = int(request.form['delivery_method_id'])
             
-            order_status = request.form['order_status']
+            order_status = int(request.form['order_status'])
             delivered_on = None
-            if order_status == OrderStatus.DELIVERED:
+            if order_status == int(OrderStatus.DELIVERED):
                 delivered_on = request.form['delivered_on']
 
             paid_on = None
             payment_status = request.form['payment_status']
-            if payment_status != PaymentStatus.NOT_PAID:
+            if payment_status != int(PaymentStatus.NOT_PAID):
                 paid_on = request.form['paid_on']
 
             message = request.form['message']
 
-            order_repo.update_order(order_id,
-                                    customer_id,
-                                    delivery_appointment,
-                                    delivery_method_id,
-                                    ordered_on,
-                                    order_status,
-                                    delivered_on,
-                                    payment_status,
-                                    paid_on,
-                                    message)
+            order_manager.update_order(order_id,
+                                       customer_id,
+                                       delivery_appointment,
+                                       delivery_method_id,
+                                       ordered_on,
+                                       order_status,
+                                       delivered_on,
+                                       payment_status,
+                                       paid_on,
+                                       message)
             db.session.commit()
             message = 'Successfully updated order %s' % order_id
             return redirect_with_message(url_for('list_orders'), message, 'info')
