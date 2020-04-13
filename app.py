@@ -1015,6 +1015,7 @@ def update_order(order_id):
                                     delivered_on=delivered_on_arg,
                                     payment_status=payment_status_arg,
                                     paid_on=paid_on_arg,
+                                    order_cost_estimation=order_rec.total_cost,
                                     customer_recs=customer_recs,
                                     delivery_method_recs=delivery_method_recs,
                                     product_dtos=product_dtos,
