@@ -1062,12 +1062,24 @@ def update_order(order_id):
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    order_rec=order_rec,
-                                                    customer_choices=customer_choices,
-                                                    delivery_method_choices=delivery_method_choices,
+                                                    order_id=order_id,
+                                                    customer_id=customer_id_arg,
+                                                    ordered_on=ordered_on_arg,
+                                                    delivery_appointment=delivery_appointment_arg,
+                                                    delivery_method_id=delivery_method_id_arg,
+                                                    order_status=order_status_arg,
+                                                    delivered_on=delivered_on_arg,
+                                                    payment_status=payment_status_arg,
+                                                    paid_on=paid_on_arg,
+                                                    order_cost_estimation=order_rec.total_cost,
+                                                    customer_recs=customer_recs,
+                                                    delivery_method_recs=delivery_method_recs,
                                                     product_dtos=product_dtos,
                                                     order_status_names=scm_constants.ORDER_STATUS_NAMES,
-                                                    payment_status_names=scm_constants.PAYMENT_STATUS_NAMES)
+                                                    payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,
+                                                    taste_recs=taste_recs,
+                                                    decoration_form_recs=decoration_form_recs,
+                                                    decoration_technique_recs=decoration_technique_recs)
 
 @app.route('/add_new_product_to_order/<int:order_id>', methods=['GET', 'POST'])
 def add_new_product_to_order(order_id):
