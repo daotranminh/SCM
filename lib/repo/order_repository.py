@@ -3,7 +3,7 @@ import logging
 from flask_sqlalchemy import sqlalchemy
 
 from init import Order, Customer, DeliveryMethod, config
-from utilities.scm_enums import ErrorCodes
+from utilities.scm_enums import ErrorCodes, PaymentStatus
 from utilities.scm_exceptions import ScmException
 
 logger = logging.getLogger(__name__)
@@ -96,3 +96,6 @@ class OrderRepository:
         order_rec.payment_status = payment_status
         order_rec.paid_on = paid_on  
         order_rec.message = message
+
+        if payment_status == int(PaymentStatus.FULLY_PAID):
+            order_rec.is_fixed = True

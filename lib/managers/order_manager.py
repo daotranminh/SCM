@@ -5,7 +5,7 @@ from dto.order_dto import OrderDto
 from dto.paginated_scm import PaginatedScm
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
-from utilities.scm_enums import ErrorCodes
+from utilities.scm_enums import ErrorCodes, OrderStatus
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler(config['DEFAULT']['log_file'])
@@ -69,6 +69,32 @@ class OrderManager:
                              order_rec.total_cost)
 
         return order_dto
+
+    def update_order(self,
+                     order_id,
+                     customer_id,
+                     delivery_appointment,
+                     delivery_method_id,
+                     ordered_on,
+                     order_status,
+                     delivered_on,
+                     payment_status,
+                     paid_on,
+                     message):
+        self.order_repo.update_order(order_id,
+                                     customer_id,
+                                     delivery_appointment,
+                                     delivery_method_id,
+                                     ordered_on,
+                                     order_status,
+                                     delivered_on,
+                                     payment_status,
+                                     paid_on,
+                                     message)
+        if order_status == int(OrderStatus.DELIVERED):
+            product_recs = self.product_repo.get_products_of_order(order_id)
+            for product_rec in product_recs:
+                product_rec.is_fixed = True
 
     def get_paginated_order_dtos(self,
                                  page,
