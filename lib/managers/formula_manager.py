@@ -166,7 +166,8 @@ class FormulaManager:
         if formula_rec.has_up_to_date_cost_estimation == True:
             return current_cost_estimation.total_cost
         else:
-            current_cost_estimation.is_current = False
+            if current_cost_estimation is not None:
+                current_cost_estimation.is_current = False
 
             new_cost_estimation_id = self.cost_estimation_repo.add_cost_estimation(formula_id)
 
