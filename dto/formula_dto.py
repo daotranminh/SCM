@@ -17,7 +17,6 @@ class FormulaDto:
                  description,
                  note,
                  total_cost,
-                 has_up_to_date_cost_estimation,
                  registered_on):
         self.formula_id = formula_id
         self.name = name
@@ -25,6 +24,5 @@ class FormulaDto:
         self.description = description
         self.note = note
         self.total_cost = total_cost
-        self.has_up_to_date_cost_estimation = has_up_to_date_cost_estimation
         self.registered_on = registered_on
         

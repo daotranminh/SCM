@@ -36,12 +36,17 @@ class FormulaRepository:
                                page,
                                per_page,
                                search_text):
+        taste_query = self.db.session.query(Taste.id, Taste.name). \
+            subquery()
+
         cost_estimation_query = self.db.session.query(CostEstimation.formula_id, CostEstimation.total_cost). \
             filter(CostEstimation.is_current == True). \
             subquery()
 
         formula_query = self.db.session.query(Formula, \
+                                              taste_query.c.name, \
                                               cost_estimation_query.c.total_cost). \
+            join(taste_query, Formula.taste_id == taste_query.c.id). \
             outerjoin(cost_estimation_query, Formula.id == cost_estimation_query.c.formula_id)
 
         if search_text is not None and search_text != '':

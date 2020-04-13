@@ -130,52 +130,43 @@ class FormulaManager:
                                    page,
                                    per_page,
                                    search_text):
-        tastes_dict = self.taste_repo.get_tastes_dict()
-
-        paginated_formula_recs = self.formula_repo.get_paginated_formulas(page,
-                                                                          per_page,
-                                                                          search_text)
-
-        return self.__convert_to_paginated_formula_dtos(tastes_dict,
-                                                        paginated_formula_recs)
-
-    def __convert_to_formula_dtos(self,
-                                 tastes_dict,
-                                 formula_recs):
+        paginated_formula_infos = self.formula_repo.get_paginated_formulas(page,
+                                                                           per_page,
+                                                                           search_text)
         formula_dtos = []
-        for formula_rec, total_cost in formula_recs:
+        db_changed = False
+        for formula_rec, taste_name, formula_cost in paginated_formula_infos.items:
+            up_to_date_formula_cost = formula_cost
+            if formula_rec.has_up_to_date_cost_estimation == False:
+                up_to_date_formula_cost = self.estimate_formula_cost(formula_rec.id)
+                db_changed = True
+
             formula_dto = FormulaDto(formula_rec.id,
                                      formula_rec.name,
-                                     tastes_dict[formula_rec.taste_id].name,
+                                     taste_name,
                                      formula_rec.description,
                                      formula_rec.note,
-                                     total_cost,
-                                     formula_rec.has_up_to_date_cost_estimation,
+                                     up_to_date_formula_cost,
                                      formula_rec.registered_on)
             formula_dtos.append(formula_dto)
 
-        return formula_dtos
-
-    def __convert_to_paginated_formula_dtos(self,
-                                            tastes_dict,
-                                            paginated_formula_recs):
-        formula_dtos = self.__convert_to_formula_dtos(tastes_dict,
-                                                      paginated_formula_recs.items)
         paginated_formula_dtos = PaginatedScm(formula_dtos,
-                                              paginated_formula_recs.has_prev,
-                                              paginated_formula_recs.has_next,
-                                              paginated_formula_recs.prev_num,
-                                              paginated_formula_recs.next_num,
-                                              paginated_formula_recs.page,
-                                              paginated_formula_recs.pages)
-        return paginated_formula_dtos
+                                              paginated_formula_infos.has_prev,
+                                              paginated_formula_infos.has_next,
+                                              paginated_formula_infos.prev_num,
+                                              paginated_formula_infos.next_num,
+                                              paginated_formula_infos.page,
+                                              paginated_formula_infos.pages)
+        return paginated_formula_dtos, db_changed
 
     def estimate_formula_cost(self, formula_id):
         formula_rec = self.formula_repo.get_formula(formula_id)
-        if formula_rec.has_up_to_date_cost_estimation == False:
-            current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
-            if current_cost_estimation is not None:
-                current_cost_estimation.is_current = False
+        current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
+
+        if formula_rec.has_up_to_date_cost_estimation == True:
+            return current_cost_estimation.total_cost
+        else:
+            current_cost_estimation.is_current = False
 
             new_cost_estimation_id = self.cost_estimation_repo.add_cost_estimation(formula_id)
 
@@ -198,6 +189,8 @@ class FormulaManager:
             self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
             self.formula_repo.set_flag_has_up_to_date_cost_estimation(formula_id, True)
             self.__update_product_cost_estimation(formula_id, new_cost_estimation_id, total_cost)
+            
+            return total_cost
 
     def __update_product_cost_estimation(self, 
                                          formula_id,

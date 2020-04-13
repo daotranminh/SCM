@@ -622,11 +622,14 @@ def list_formulas(page):
     per_page = int(config['PAGING']['formulas_per_page'])
     search_text = request.args.get('search_text')
     
-    formula_dtos = formula_manager.get_paginated_formula_dtos(page,
+    formula_dtos, db_changed = formula_manager.get_paginated_formula_dtos(page,
                                                               per_page,
                                                               search_text)
+    if db_changed == True:
+        db.session.commit()
+                                                                  
     return render_scm_template('list_formulas.html',
-                        formula_dtos=formula_dtos)
+                                formula_dtos=formula_dtos)
 
 def __extract_formula_props(props_dict):
     formula_name = props_dict['formula_name']
