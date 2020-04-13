@@ -91,6 +91,7 @@
                 <th>Decoration Technique</th>
                 <th>Formula</th>
                 <th>Sample Images</th>
+                <th>Cost estimation</th>
                 <th></th>
                 <th></th>
               </tr>
@@ -115,6 +116,8 @@
                 {% else %}
                   <td>{{product_dto.sample_images_group_name}}</td>
                 {% endif %}
+
+                <td>{{product_dto.product_cost_estimation}}</td>
 
                 <td><a href="{{ url_for('update_product', product_id=product_dto.product_id) }}"
                        class="btn btn-default pullright">Update</a></td></td>
