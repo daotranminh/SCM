@@ -3,15 +3,10 @@ import logging
 from sqlalchemy import and_, desc
 
 from init import MaterialVersion, config
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+from utilities.scm_logger import ScmLogger
 
 class MaterialVersionRepository:
+    logger = ScmLogger(__name__)
     def __init__(self, db):
         self.db = db
 
@@ -43,5 +38,5 @@ class MaterialVersionRepository:
         
         except sqlalchemy.exc.SQLAlchemyError as e:
             message = 'Error: failed to add material version. Details: %s' % (str(e))
-            logger.error(message)
+            MaterialVersionRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_MATERIAL_VERSION_FAILED, message)

@@ -2,15 +2,11 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 from init import Material, MaterialVersion, MaterialFormula, Formula, config
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+from utilities.scm_logger import ScmLogger
 
 class MaterialFormulaRepository:
+    logger = ScmLogger(__name__)
+
     def __init__(self, db):
         self.db = db
 
@@ -87,5 +83,5 @@ class MaterialFormulaRepository:
         
         except sqlalchemy.exc.SQLAlchemyError as e:
             message = 'Error: failed to add material_formula record. Details: %s' % (str(e))
-            logger.error(message)
+            MaterialFormulaRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_MATERIAL_FORMULA_FAILED, message)

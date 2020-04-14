@@ -5,15 +5,11 @@ from flask_sqlalchemy import sqlalchemy
 from init import Formula, Taste, CostEstimation, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class FormulaRepository:
+    logger = ScmLogger(__name__)
+
     def __init__(self, db):
         self.db = db
 
@@ -70,7 +66,7 @@ class FormulaRepository:
             return formula_rec.id
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add formula record. Details: %s' % (str(ex))
-            logger.error(message)
+            FormulaRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_FORMULA_FAILED, message)
 
     def set_flag_has_up_to_date_cost_estimation(self, formula_id, flag):

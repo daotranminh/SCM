@@ -5,15 +5,11 @@ from flask_sqlalchemy import sqlalchemy
 from init import Product, Formula, Taste, DecorationForm, DecorationTechnique, SampleImagesGroup, CostEstimation, config
 from utilities.scm_enums import ErrorCodes, BoxStatus
 from utilities.scm_exceptions import ScmException
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class ProductRepository:
+    logger = ScmLogger(__name__)
+
     def __init__(self, db):
         self.db = db
 
@@ -50,7 +46,7 @@ class ProductRepository:
             self.db.session.add(product_rec)
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add product. Details: %s' % (str(ex))
-            logger.error(message)
+            ProductRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_PRODUCT_FAILED, message)
             
     def delete_product(self, product_id):
@@ -60,7 +56,7 @@ class ProductRepository:
                 self.db.session.delete(product_rec)
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to delete product_rec %s. Detail: %s' % (str(product_id), str(ex))
-            logger.error(message)
+            ProductRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_DELETE_PRODUCT_FAILED, message)
 
     def get_product_dto(self, product_id):        

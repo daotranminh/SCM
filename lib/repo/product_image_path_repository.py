@@ -10,15 +10,11 @@ from sqlalchemy import desc
 from init import ProductImagePath, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class ProductImagePathRepository:
+    logger = ScmLogger(__name__)
+
     def __init__(self, db):
         self.db = db
 
@@ -60,7 +56,7 @@ class ProductImagePathRepository:
             self.db.session.add(product_image_path_rec)
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add product_image_path record. Detail: %s' % (str(ex))
-            logger.error(message)
+            ProductImagePathRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_PRODUCT_IMAGE_PATH_FAILED, message)
 
     def delete_product_image_paths(self,
@@ -77,7 +73,7 @@ class ProductImagePathRepository:
                 os.remove(filepath_for_deleting)
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to delete product_image_path %s. Detail: %s' % (str(product_image_path_id), str(ex))
-            logger.error(message)
+            ProductImagePathRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_DELETE_PRODUCT_IMAGE_PATH_FAILED, message)
                 
     def update_product_image_paths(self,

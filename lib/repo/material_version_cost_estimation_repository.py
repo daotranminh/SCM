@@ -5,15 +5,11 @@ from flask_sqlalchemy import sqlalchemy
 from init import MaterialVersionCostEstimation, Material, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class MaterialVersionCostEstimationRepository:
+    logger = ScmException(__name__)
+
     def __init__(self, db):
         self.db = db
 
@@ -51,5 +47,5 @@ class MaterialVersionCostEstimationRepository:
             self.db.session.add(material_version_cost_estimation_rec)        
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add material_version_cost_estimation_rec. Details: %s' % (str(ex))
-            logger.error(message)
+            MaterialVersionCostEstimationRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_MATERIAL_VERSION_COST_ESTIMATION_FAILED, message)

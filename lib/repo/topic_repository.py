@@ -5,15 +5,11 @@ from flask_sqlalchemy import sqlalchemy
 from init import Topic, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class TopicRepository:
+    logger = ScmLogger(__name__)
+
     def __init__(self, db):
         self.db = db
 
@@ -38,7 +34,7 @@ class TopicRepository:
             return topic_rec.id
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add topic %s. Details: %s' % (name, str(ex))
-            logger.error(message)
+            TopicRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_TOPIC_FAILED, message)
 
     def update_topic(self,
@@ -48,6 +44,7 @@ class TopicRepository:
                      parent_id):
         if parent_id == topic_id:
             message = 'Topic %s cannot be its own parent' % topic_id
+            TopicRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_UPDATE_TOPIC_FAILED, message)
         
         topic_rec = self.get_topic(topic_id)

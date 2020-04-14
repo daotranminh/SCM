@@ -5,15 +5,11 @@ from flask_sqlalchemy import sqlalchemy
 from init import DecorationTechnique, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class DecorationTechniqueRepository:
+    logger = ScmLogger(__name__)
+    
     def __init__(self, db):
         self.db = db
 
@@ -33,7 +29,7 @@ class DecorationTechniqueRepository:
             return decoration_technique_rec.id
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add decoration form. Details: %s' % (str(ex))
-            logger.error(message)
+            DecorationTechniqueRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_DECORATION_TECHNIQUE_FAILED, message)
 
     def update_decoration_technique(self,
