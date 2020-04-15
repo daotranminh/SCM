@@ -7,22 +7,6 @@ from flask import Flask, Response, render_template, request, flash, redirect, ma
 from werkzeug.utils import secure_filename
 
 from init import app, db, config
-from lib.forms.customer_forms import AddCustomerForm
-from lib.forms.customer_forms import UpdateCustomerForm
-from lib.forms.decoration_form_forms import AddDecorationFormForm
-from lib.forms.decoration_form_forms import UpdateDecorationFormForm
-from lib.forms.decoration_technique_forms import AddDecorationTechniqueForm
-from lib.forms.decoration_technique_forms import UpdateDecorationTechniqueForm
-from lib.forms.delivery_method_forms import AddDeliveryMethodForm
-from lib.forms.delivery_method_forms import UpdateDeliveryMethodForm
-from lib.forms.material_forms import AddMaterialForm
-from lib.forms.material_forms import UpdateMaterialForm
-from lib.forms.taste_forms import AddTasteForm
-from lib.forms.taste_forms import UpdateTasteForm
-from lib.forms.topic_forms import AddTopicForm
-from lib.forms.topic_forms import UpdateTopicForm
-from lib.forms.order_forms import AddOrderForm
-from lib.forms.order_forms import UpdateOrderForm
 
 from lib.repo.delivery_method_repository import DeliveryMethodRepository
 from lib.repo.decoration_form_repository import DecorationFormRepository
