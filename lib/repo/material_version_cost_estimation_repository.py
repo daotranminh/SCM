@@ -8,7 +8,7 @@ from utilities.scm_exceptions import ScmException
 from utilities.scm_logger import ScmLogger
 
 class MaterialVersionCostEstimationRepository:
-    logger = ScmException(__name__)
+    logger = ScmLogger(__name__)
 
     def __init__(self, db):
         self.db = db
