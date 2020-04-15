@@ -253,7 +253,7 @@ class FormulaManager:
                     order_cost += product_rec.total_cost
             order_rec.total_cost = order_cost
 
-            message = 'New cost of order %s is %s' % (order_rec.order_id, order_cost)
+            message = 'New cost of order %s is %s' % (order_id, order_cost)
             FormulaManager.logger.info(message)
 
     def get_cost_estimation(self, formula_id):        
