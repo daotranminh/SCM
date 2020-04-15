@@ -1169,34 +1169,51 @@ def __extract_update_product_args(product_rec, args):
     if current_product_name is None:
         current_product_name = product_rec.name
         
-    taste_id_arg = args.get('taste_id_arg')
-    if taste_id_arg is not None: 
-        selected_taste_id = int(taste_id_arg)
-        formula_recs = formula_repo.get_formulas_of_taste(selected_taste_id)
+    selected_taste_id = args.get('taste_id_arg')
+    if selected_taste_id is not None: 
+        selected_taste_id = int(selected_taste_id)
+    else:
+        selected_taste_id = product_rec.taste_id
 
-    decoration_form_id_arg = args.get('decoration_form_id_arg')
-    if decoration_form_id_arg is not None:
-        selected_decoration_form_id = int(decoration_form_id_arg)
+    selected_decoration_form_id = args.get('selected_decoration_form_id_arg')
+    if selected_decoration_form_id is not None:
+        selected_decoration_form_id = int(selected_decoration_form_id)
+    else:
+        selected_decoration_form_id = product_rec.decoration_form_id
 
-    decoration_technique_id_arg = args.get('decoration_technique_id_arg')
-    if decoration_technique_id_arg is not None:
-        selected_decoration_technique_id = int(decoration_technique_id_arg)
+    selected_decoration_technique_id = args.get('selected_decoration_technique_id_arg')
+    if selected_decoration_technique_id is not None:
+        selected_decoration_technique_id = int(selected_decoration_technique_id)
+    else:
+        selected_decoration_technique_id = product_rec.decoration_technique_id
 
-    formula_id_arg = args.get('formula_id_arg')
-    if formula_id_arg is not None:
-        selected_formula_id = int(formula_id_arg)
+    selected_formula_id = args.get('formula_id_arg')
+    if selected_formula_id is not None:
+        selected_formula_id = int(selected_formula_id)
+    else:
+        selected_formula_id = product_rec.formula_id
 
-    box_status_arg = args.get('box_status_arg')
-    if box_status_arg is not None:
-        selected_box_status = int(box_status_arg)
-        chosen_box_returned_on = args.get('box_returned_on_arg')
+    selected_box_status = args.get('box_status_arg')
+    if selected_box_status is not None:
+        selected_box_status = int(selected_box_status)
+    else:
+        selected_box_status = product_rec.box_status
+    chosen_box_returned_on = args.get('box_returned_on_arg')
+
+    selected_sample_images_group_id = request.args.get('sample_images_group_id_arg')
+    if selected_sample_images_group_id is not None:
+        selected_sample_images_group_id = int(selected_sample_images_group_id)
+    else:
+        selected_sample_images_group_id = product_rec.sample_images_group_id
         
     return current_product_name, \
-           taste_id_arg, \
-           decoration_form_id_arg, \
-           decoration_technique_id_arg, \
-           formula_id_arg, \
-           box_status_arg
+           selected_taste_id, \
+           selected_decoration_form_id, \
+           selected_decoration_technique_id, \
+           selected_formula_id, \
+           selected_box_status, \
+           chosen_box_returned_on, \
+           selected_sample_images_group_id
 
 @app.route('/update_product/<int:product_id>', methods=['GET', 'POST'])
 def update_product(product_id):
@@ -1207,29 +1224,23 @@ def update_product(product_id):
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()    
     sample_images_group_recs = sample_images_group_repo.get_all_sample_images_groups()
     
-    selected_taste_id = product_rec.taste_id
-    current_product_name = product_rec.name
-    selected_decoration_form_id = product_rec.decoration_form_id
-    selected_decoration_technique_id = product_rec.decoration_technique_id
-    selected_formula_id = product_rec.formula_id
-    selected_box_status = product_rec.box_status
-    chosen_box_returned_on = product_rec.box_returned_on
-    selected_sample_images_group_id = product_rec.sample_images_group_id
-
     latest_3_sample_image_paths = []
     if product_rec.sample_images_group_id is not None:
         latest_3_sample_image_paths = sample_image_path_repo.get_latest_3_sample_image_paths(product_rec.sample_images_group_id)
 
-    formula_recs = formula_repo.get_formulas_of_taste(selected_taste_id)
+    formula_recs = formula_repo.get_formulas_of_taste(product_rec.taste_id)
 
     if request.method == 'GET':
         current_product_name, \
-           taste_id_arg, \
-           decoration_form_id_arg, \
-           decoration_technique_id_arg, \
-           formula_id_arg, \
-           box_status_arg = __extract_update_product_args(product_rec, request.args)
+           selected_taste_id, \
+           selected_decoration_form_id, \
+           selected_decoration_technique_id, \
+           selected_formula_id, \
+           selected_box_status, \
+           chosen_box_returned_on, \
+           selected_sample_images_group_id = __extract_update_product_args(product_rec, request.args)
 
+        formula_recs = formula_repo.get_formulas_of_taste(selected_taste_id)
         existing_product_image_paths_arg = request.args.get('existing_product_image_paths_arg')
         product_image_path_recs = __infer_product_image_path_recs(product_id, existing_product_image_paths_arg)
 
