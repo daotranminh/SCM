@@ -53,13 +53,9 @@ from lib.managers.sample_images_group_manager import SampleImagesGroupManager
 from utilities import scm_constants
 from utilities.scm_enums import OrderStatus, PaymentStatus
 from utilities.scm_exceptions import ScmException
+from utilities.scm_logger import ScmLogger
 
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+logger = ScmLogger(__name__)
 
 delivery_method_repo = DeliveryMethodRepository(db)
 decoration_form_repo = DecorationFormRepository(db)
@@ -183,11 +179,17 @@ def add_taste():
             description = request.form['description'].strip()
             taste_repo.add_taste(name=name, description=description)
             db.session.commit()
+            
             message = 'Successfully added taste %s' % name
+            logger.info(message)
+            
             return redirect_with_message(url_for('list_tastes'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
+            
             message = 'Failed to add taste %s' % name
+            logger.error(message)
+
             flash(message, 'danger')
             return render_scm_template('name_description.html',
                                         site_title='Add a new taste')
@@ -211,7 +213,10 @@ def update_taste(taste_id):
                                     name,
                                     description)
             db.session.commit()
+            
             message = 'Successfully updated taste %s (%s)' % (name, taste_id)
+            logger.info(message)
+            
             return redirect_with_message(url_for('list_tastes'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -245,11 +250,17 @@ def add_topic():
                                  description=description,
                                  parent_id=parent_id)
             db.session.commit()
+            
             message = 'Successfully added topic %s' % name
+            logger.info(message)
+            
             return redirect_with_message(url_for('list_topics'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
+            
             message = 'Failed to add topic %s' % name
+            logger.error(message)
+            
             flash(message, 'danger')
             return render_scm_template('add_topic.html', form=form)
     else:
@@ -274,7 +285,10 @@ def update_topic(topic_id):
                                     description,
                                     parent_id)
             db.session.commit()
+
             message = 'Successfully updated topic %s (%s)' % (name, topic_id)
+            logger.info(message)
+
             return redirect_with_message(url_for('list_topics'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -302,7 +316,10 @@ def add_decoration_form():
             decoration_form_repo.add_decoration_form(name=name,
                                                      description=description)
             db.session.commit()
+
             message = 'Successfully added decoration form %s' % name
+            logger.info(message)
+            
             return redirect_with_message(url_for('list_decoration_forms'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -331,7 +348,10 @@ def update_decoration_form(decoration_form_id):
                                                         name,
                                                         description)
             db.session.commit()
+            
             message = 'Successfully updated decoration form %s (%s)' % (name, decoration_form_id)
+            logger.info(message)
+
             return redirect_with_message(url_for('list_decoration_forms'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -361,7 +381,10 @@ def add_decoration_technique():
             decoration_technique_repo.add_decoration_technique(name=name,
                                                                description=description)
             db.session.commit()
+
             message = 'Successfully added decoration technique %s' % name
+            logger.info(message)
+
             return redirect_with_message(url_for('list_decoration_techniques'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -390,7 +413,10 @@ def update_decoration_technique(decoration_technique_id):
                                                                   name,
                                                                   description)
             db.session.commit()
+
             message = 'Successfully updated decoration technique %s (%s)' % (name, decoration_technique_id)
+            logger.info(message)
+
             return redirect_with_message(url_for('list_decoration_techniques'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -435,6 +461,8 @@ def add_material():
                        unit_price,
                        unit_amount,
                        unit)
+            logger.info(message)
+
             return redirect_with_message(url_for('list_materials'), message, 'info')
         except ScmException as ex:
             message = 'Failed to add material (%s, %s/%s %s)' % \
@@ -473,6 +501,8 @@ def update_material(material_id):
                        unit_price,
                        material_rec.unit_amount,
                        material_rec.unit)
+            logger.info(message)
+
             return redirect_with_message(url_for('list_materials'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -525,7 +555,10 @@ def add_customer():
                                        recommended_by,
                                        note)
             db.session.commit()
+            
             message = 'Successfully added customer %s' % name
+            logger.info(message)
+
             return redirect_with_message(url_for('list_customers'), message, 'info')
         except ScmException as ex:
             message = ex.message
@@ -568,7 +601,10 @@ def update_customer(customer_id):
                                           recommended_by,
                                           note)
             db.session.commit()
+
             message = 'Successfully updated customer %s' % name
+            logger.info(message)
+
             return redirect_with_message(url_for('list_customers'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -654,8 +690,6 @@ def add_formula():
     taste_recs = taste_repo.get_all_tastes()
 
     if request.method == 'POST':
-        message = ''
-
         try:
             formula_name, taste_id, description, note, material_ids, amounts = __extract_formula_props(request.form)
 
@@ -666,11 +700,12 @@ def add_formula():
                                         material_ids,
                                         amounts)
             db.session.flush()
-
-            formula_manager.estimate_formula_cost(new_formula_id)
-            
+            formula_manager.estimate_formula_cost(new_formula_id)            
             db.session.commit()
+
             message = 'Successfully added formula %s' % formula_name
+            logger.info(message)
+
             return redirect_with_message(url_for('list_formulas'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -680,8 +715,6 @@ def add_formula():
                                                     ex,
                                                     tast_recs=taste_recs,
                                                     material_dtos=material_dtos)
-
-        
     else:
         return render_scm_template('add_formula.html',
                                    taste_recs=taste_recs,
@@ -714,11 +747,12 @@ def update_formula(formula_id):
                                            material_ids,
                                            amounts)
             db.session.flush()
-
             formula_manager.estimate_formula_cost(formula_id)
-
             db.session.commit()
+
             message = 'Successfully updated formula %s' % formula_id
+            logger.info(message)
+
             return redirect_with_message(url_for('list_formulas'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -829,7 +863,10 @@ def add_order():
                                                    decoration_technique_ids,
                                                    with_boxes)
             db.session.commit()
+
             message = 'Successfully added order %s' % str(new_order_id)
+            logger.info(message)
+
             return redirect_with_message(url_for('list_orders'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -1046,7 +1083,10 @@ def update_order(order_id):
                                        paid_on,
                                        message)
             db.session.commit()
+            
             message = 'Successfully updated order %s' % order_id
+            logger.info(message)
+            
             return redirect_with_message(url_for('list_orders'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -1099,6 +1139,7 @@ def add_new_product_to_order(order_id):
                                      'danger')
     
     message = 'Successfully add a new product %s to order %s' % (new_product_name, order_id)
+    logger.info(message)
 
     return redirect_with_message(url_for('update_order', 
                                  order_id=order_id, 
@@ -1220,7 +1261,10 @@ def update_product(product_id):
                                            uploaded_files)
             db.session.commit()
             product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
+            
             message = 'Successfully updated product %s (%s)' % (current_product_name, product_id)
+            logger.info(message)
+            
             flash(message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -1282,6 +1326,8 @@ def delete_product(product_id):
                                      'danger')
     
     message = 'Successfully deleted product "%s" (%s)' % (product_name, product_id)
+    logger.info(message)
+
     return redirect_with_message(url_for('update_order', order_id=order_id),
                                  message,
                                  'info')
@@ -1314,7 +1360,10 @@ def add_delivery_method():
             description = request.form['description'].strip()
             delivery_method_repo.add_delivery_method(name=name, description=description)
             db.session.commit()
+
             message = 'Successfully added delivery method %s' % name
+            logger.info(message)
+
             return redirect_with_message(url_for('list_delivery_methods'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -1342,7 +1391,10 @@ def update_delivery_method(delivery_method_id):
                                                         name,
                                                         description)
             db.session.commit()
+            
             message = 'Successfully updated delivery method %s (%s)' % (name, delivery_method_id)
+            logger.info(message)
+
             return redirect_with_message(url_for('list_delivery_methods'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -1402,7 +1454,9 @@ def add_sample_images_group(topic_id):
                                                     ex.message,
                                                     'danger',
                                                     ex)
-        message = 'Successfully added a new sample images group.'
+        message = 'Successfully added a new sample images group for topic %s' % topic_rec.name
+        logger.info(message)
+
         return redirect_with_message(url_for('list_sample_images', topic_id=topic_id), message, 'info')
     return render_scm_template('add_sample_images_group.html',
                                topic_rec=topic_rec)
@@ -1428,7 +1482,10 @@ def update_sample_images_group(sample_images_group_id):
                                                                    uploaded_files)
             db.session.commit()
             sample_image_path_recs = sample_image_path_repo.get_sample_image_paths(sample_images_group_id)
+            
             message = 'Successfully updated sample images'
+            logger.info(message)
+
             flash(message, 'info')
         except ScmException as ex:
             db.session.rollback()
@@ -1476,6 +1533,8 @@ def delete_sample_images_group(sample_images_group_id):
                                     'danger')
     
     message = 'Successfully deleted sample_images_group "%s" (%s)' % (sample_images_group_name, sample_images_group_id)
+    logger.info(message)
+
     return redirect_with_message(url_for('list_sample_images', topic_id=topic_id),
                                 message,
                                 'info')
