@@ -44,15 +44,11 @@ from lib.repo.sample_images_group_repository import SampleImagesGroupRepository
 
 from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
-from lib.managers.taste_manager import TasteManager
 from lib.managers.topic_manager import TopicManager
 from lib.managers.formula_manager import FormulaManager
-from lib.managers.delivery_method_manager import DeliveryMethodManager
 from lib.managers.order_manager import OrderManager
 from lib.managers.product_manager import ProductManager
 from lib.managers.sample_images_group_manager import SampleImagesGroupManager
-from lib.managers.decoration_form_manager import DecorationFormManager
-from lib.managers.decoration_technique_manager import DecorationTechniqueManager
 
 from utilities import scm_constants
 from utilities.scm_enums import OrderStatus, PaymentStatus
@@ -83,8 +79,6 @@ sample_images_group_repo = SampleImagesGroupRepository(db)
 product_repo = ProductRepository(db)
 product_image_path_repo = ProductImagePathRepository(db)
 
-taste_manager = TasteManager(taste_repo)
-delivery_method_manager = DeliveryMethodManager(delivery_method_repo)
 material_manager = MaterialManager(material_repo,
                                    material_version_repo,
                                    material_formula_repo)
@@ -101,8 +95,6 @@ order_manager = OrderManager(order_repo,
                             product_repo)
 sample_images_group_manager = SampleImagesGroupManager(sample_images_group_repo,
                                                        sample_image_path_repo)
-decoration_form_manager = DecorationFormManager(decoration_form_repo)
-decoration_technique_manager = DecorationTechniqueManager(decoration_technique_repo)
 product_manager = ProductManager(product_repo, 
                                  product_image_path_repo,
                                  sample_image_path_repo,
