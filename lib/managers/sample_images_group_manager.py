@@ -3,15 +3,11 @@ import logging
 from flask import url_for
 
 from init import config
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class SampleImagesGroupManager:
+    logger = ScmLogger(__name__)
+
     def __init__(self,
                  sample_images_group_repo,
                  sample_image_path_repo):
@@ -51,7 +47,6 @@ class SampleImagesGroupManager:
         self.sample_images_group_repo.update_sample_images_group(sample_images_group_id,
                                                                  topic_id,
                                                                  sample_images_group_name)
-            
             
         self.sample_image_path_repo.update_sample_image_paths(sample_images_group_id,
                                                               sample_image_path_recs,

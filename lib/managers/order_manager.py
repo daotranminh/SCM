@@ -6,15 +6,11 @@ from dto.paginated_scm import PaginatedScm
 from utilities import scm_constants
 from utilities.scm_exceptions import ScmException
 from utilities.scm_enums import ErrorCodes, OrderStatus
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class OrderManager:
+    logger = ScmLogger(__name__)
+
     def __init__(self, 
                 order_repo,
                 product_repo):
@@ -135,6 +131,7 @@ class OrderManager:
                 return order_status_name[1]
 
         message = 'Order status key %s does not exist' % (str(order_status))
+        OrderManager.logger.error(message)
         raise ScmException(ErrorCodes.ERROR_ORDER_STATUS_KEY_NOT_EXIST, message)
 
     def __get_payment_status_name(self, payment_status):
@@ -143,4 +140,5 @@ class OrderManager:
                 return payment_status_name[1]
 
         message = 'Payment status key %s does not exist' % (str(payment_status))
+        OrderManager.logger.error(message)
         raise ScmException(ErrorCodes.ERROR_PAYMENT_STATUS_KEY_NOT_EXIST, message)

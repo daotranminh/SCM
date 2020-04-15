@@ -5,15 +5,11 @@ from dto.formula_dto import FormulaDto
 from dto.material_dto import MaterialFormulaDto
 from dto.material_cost_estimation_dto import MaterialCostEstimationDto
 from dto.paginated_scm import PaginatedScm
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class FormulaManager:
+    logger = ScmLogger(__name__)
+
     def __init__(self,
                  formula_repo,
                  material_formula_repo,
@@ -71,10 +67,18 @@ class FormulaManager:
                                                        taste_id,
                                                        description,
                                                        note)
+        message = 'Added new formula "%s" with new_formula_id=%s' % (formula_name, new_formula_id)
+        FormulaManager.logger.info(message)
+
         for i in range(len(material_ids)):
             self.material_formula_repo.add_material_formula(new_formula_id,
                                                             material_ids[i],
                                                             amounts[i])
+            message = 'Added material (%s, %s) to formula %s' % (material_ids[i],
+                                                                 amounts[i],
+                                                                 new_formula_id)
+            FormulaManager.logger.info(message)
+
         return new_formula_id
 
     def update_formula(self,
@@ -91,17 +95,28 @@ class FormulaManager:
         formula_rec.description = description
         formula_rec.note = note
 
-        existing_material_formula_recs = self.material_formula_repo.get_materials_of_formula(formula_id)
+        existing_material_formula_recs = self.material_formula_repo.get_materials_of_formula(formula_id)        
         if self.__materials_of_formula_changed(existing_material_formula_recs,
                                                material_ids,
                                                amounts):
+            message = 'Detected materials changed for formula %s' % formula_id
+            FormulaManager.logger.info(message)
             formula_rec.has_up_to_date_cost_estimation = False
 
-        self.material_formula_repo.delete_materials_of_formula(formula_id)
-        for i in range(len(material_ids)):
-            self.material_formula_repo.add_material_formula(formula_id,
-                                                            material_ids[i],
-                                                            amounts[i])
+            message = 'Going to delete all existing material_formula of formula %s' % formula_id
+            FormulaManager.logger.info(message)
+            self.material_formula_repo.delete_materials_of_formula(formula_id)
+
+            message = 'Going to add new material_formula of formula %s' % formula_id
+            FormulaManager.logger.info(message)
+            for i in range(len(material_ids)):                
+                self.material_formula_repo.add_material_formula(formula_id,
+                                                                material_ids[i],
+                                                                amounts[i])
+                message = 'Added (%s, %s) to formula %s' % (material_ids[i],
+                                                            amounts[i],
+                                                            formula_id)
+                FormulaManager.logger.info(message)
 
     def __materials_of_formula_changed(self,
                                        existing_material_formula_recs,
@@ -164,6 +179,10 @@ class FormulaManager:
         current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
 
         if formula_rec.has_up_to_date_cost_estimation == True:
+            message = 'Formula %s has up-to-date cost estimation (%s). Return %s' % (formula_id, 
+                                                                                     current_cost_estimation.id,
+                                                                                     current_cost_estimation.total_cost)
+            FormulaManager.logger.info(message)
             return current_cost_estimation.total_cost
         else:
             if current_cost_estimation is not None:
@@ -174,6 +193,9 @@ class FormulaManager:
             material_formulas_w_uprice = self.material_formula_repo.get_materials_of_formula_w_uprice(formula_id)
             total_cost = 0
         
+            message = 'Formula %s does not has up-to-date cost estimation. Going to calculate new cost estimation' % formula_id
+            FormulaManager.logger.info(message)
+
             for material_formula_rec, unit_amount, unit, material_version_id, unit_price in material_formulas_w_uprice:
                 single_cost = material_formula_rec.amount * unit_price / unit_amount
                 self.material_version_cost_estimation_repo.add_material_version_cost_estimation(
@@ -184,9 +206,14 @@ class FormulaManager:
                     unit,
                     unit_price,
                     material_formula_rec.amount,
-                    single_cost)
-            
+                    single_cost)            
                 total_cost += single_cost
+                message = 'Added current cost %s of material %s to formula_cost' % (single_cost, material_formula_rec.material_id)
+                FormulaManager.logger.info(message)
+
+            message = 'Total formula cost = %s' % total_cost
+            FormulaManager.logger.info(message)
+
             self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
             self.formula_repo.set_flag_has_up_to_date_cost_estimation(formula_id, True)
             self.__update_product_cost_estimation(formula_id, new_cost_estimation_id, total_cost)
@@ -197,15 +224,26 @@ class FormulaManager:
                                          formula_id,
                                          new_cost_estimation_id,
                                          total_cost):
+        message = 'Update product cost of (non-fixed) products having formula %s with cost estimation %s and total_cost %s' % (formula_id,
+                                                                                                                               new_cost_estimation_id,
+                                                                                                                               total_cost)
+        FormulaManager.logger.info(message)
+
         product_recs = self.product_repo.get_products_having_formula(formula_id)
         order_ids_set = set()
 
         for product_rec in product_recs:
-            if product_rec.is_fixed == False:
+            if product_rec.is_fixed == False:                
                 product_rec.cost_estimation_id = new_cost_estimation_id
                 product_rec.total_cost = total_cost
                 order_ids_set.add(product_rec.order_id)
+
+                message = 'Updated product %s' % product_rec.id
         
+        if len(order_ids_set) > 0:
+            message = 'Update total cost of affected orders'
+            FormulaManager.logger.info(message)
+
         for order_id in order_ids_set:
             order_rec = self.order_repo.get_order(order_id)
             order_cost = 0
@@ -214,6 +252,9 @@ class FormulaManager:
                 if product_rec.total_cost is not None:
                     order_cost += product_rec.total_cost
             order_rec.total_cost = order_cost
+
+            message = 'New cost of order %s is %s' % (order_rec.order_id, order_cost)
+            FormulaManager.logger.info(message)
 
     def get_cost_estimation(self, formula_id):        
         current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)

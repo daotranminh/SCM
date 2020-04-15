@@ -2,15 +2,11 @@ import logging
 
 from init import config
 from dto.topic_dto import TopicDto
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class TopicManager:
+    logger = ScmLogger(__name__)
+
     def __init__(self, topic_repo):
         self.topic_repo = topic_repo
 

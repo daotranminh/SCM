@@ -3,15 +3,11 @@ import logging
 from flask import url_for
 from init import config
 from dto.product_dto import ProductDto
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class ProductManager:
+    logger = ScmLogger(__name__)
+
     def __init__(self,
                  product_repo,
                  product_image_path_repo,
@@ -126,12 +122,16 @@ class ProductManager:
                        sample_images_group_id,
                        product_image_path_recs,
                        remaining_product_image_path_ids,
-                       uploaded_files):
+                       uploaded_files):        
         product_rec = self.product_repo.get_product(product_id)
         if product_rec.formula_id != formula_id:
             new_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
             product_rec.cost_estimation_id = new_cost_estimation.id
             product_rec.total_cost = new_cost_estimation.total_cost
+
+            message = 'Formula of product %s changed. Refer to cost_estimation %s with total_cost=%s' % (new_cost_estimation.id,
+                                                                                                         new_cost_estimation.total_cost)
+            ProductManager.logger.info(message)
 
             sibling_products = self.product_repo.get_products_of_order(product_rec.order_id)
 
@@ -141,6 +141,8 @@ class ProductManager:
                     order_cost += sibling_product.total_cost
             order_rec = self.order_repo.get_order(product_rec.order_id)
             order_rec.total_cost = order_cost
+            message = 'Cost of order %s updated to %s' % (order_rec.order_id, order_cost)
+            FormulaManager.logger.info(message)
 
         product_rec.name = product_name
         product_rec.taste_id = taste_id

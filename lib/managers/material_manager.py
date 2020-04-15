@@ -2,15 +2,11 @@ import logging
 
 from init import config
 from dto.material_dto import MaterialDto
-
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler(config['DEFAULT']['log_file'])
-formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+from utilities.scm_logger import ScmLogger
 
 class MaterialManager:
+    logger = ScmLogger(__name__)
+
     def __init__(self,
                  material_repo,
                  material_version_repo,
@@ -26,18 +22,11 @@ class MaterialManager:
                      unit_amount,
                      unit,
                      unit_price):
-        message = 'name=%s, unit=%s, unit_price=%s' % (name,
-                                                       unit,
-                                                       unit_price)
-        logger.debug(message)
         new_material_id = self.material_repo.add_material(name,
                                                           description,
                                                           is_organic,
                                                           unit_amount,
                                                           unit)
-
-        message = 'new_material_id=%s' % new_material_id
-        logger.debug(message)
         self.material_version_repo.add_material_version(new_material_id,
                                                         unit_price,
                                                         0)
