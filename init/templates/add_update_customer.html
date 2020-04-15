@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <h1>Add a new customer</h1>
+    <form method="POST" action="">
+      <div class="form-group">
+            <label for="name">Name</label>
+            {% if customer_rec is not none %}
+                  <input type="text" name="name" value="{{customer_rec.name}}">  
+            {% else %}
+                  <input type="text" name="name" value="">
+            {% endif %}
+      </div>
+
+      <div class="form-group">
+            <label for="recommended_by">Recommended by</label>
+            <select id="recommended_by" name="recommended_by">
+              {% for customer_rec1 in customer_recs %}
+                {% if customer_rec1 is none %}
+                  <option value="-1"></option>
+                {% else %}
+                  {% if customer_rec is not none and customer_rec1.id == customer_rec.recommended_by %}
+                    <option value="{{customer_rec1.id}}" selected>{{customer_rec1.name}}</option>
+                  {% else %}
+                    <option value="{{customer_rec1.id}}">{{customer_rec1.name}}</option>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            </select>
+      </div>
+
+      <div class="form-group">
+            <label for="birthday">Birthday</label>
+            {% if customer_rec is not none %}
+                  <input type="text" name="birthday" id="birthday" value="{{customer_rec.birthday}}">
+            {% else %}
+                  <input type="text" name="birthday" id="birthday" value="">
+            {% endif %}
+      </div>
+
+      <div class="form-group">
+            <label for="address">Address</label>
+            {% if customer_rec is not none %}
+                  <input type="text" name="address" id="address" value="{{customer_rec.address}}">
+            {% else %}
+                  <input type="text" name="address" id="address" value="">
+            {% endif %}
+      </div>
+
+      <div class="form-group">
+            <label for="phone">Phone</label>
+            {% if customer_rec is not none %}
+                  <input type="text" name="phone" id="phone" value="{{customer_rec.phone}}">
+            {% else %}
+                  <input type="text" name="phone" id="phone" value="">
+            {% endif %}
+      </div>
+
+      <div class="form-group">
+            <label for="email_address">Email address</label>
+            {% if customer_rec is not none %}
+                  <input type="text" name="email_address" id="email_address" value="{{customer_rec.email_address}}">
+            {% else %}
+                  <input type="text" name="email_address" id="email_address" value="">
+            {% endif %}
+      </div>
+
+      <div class="form-group">
+            <label for="facebook">Facebook</label>
+            {% if customer_rec is not none %}
+                  <input type="text" name="facebook" id="facebook" value="{{customer_rec.facebook}}">
+            {% else %}
+                  <input type="text" name="facebook" id="facebook" value="">
+            {% endif %}
+      </div>
+
+      <div class="form-group">
+            <label for="note">Note</label>
+              {% if customer_rec is not none %}
+                <textarea class="form-control" cols="80" id="note" name="note" rows="10">{{customer_rec.note}}</textarea>
+              {% else %}
+                <textarea class="form-control" cols="80" id="note" name="note" rows="10"></textarea>
+              {% endif %}
+      </div>
+
+      <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
+    </form>
+  </div>
+</div>
+
+<script>
+  $('#recommended_by').select2();
+  $('*[name=birthday]').appendDtpicker();
+</script>
+
+{% endblock %}

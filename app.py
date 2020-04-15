@@ -540,19 +540,19 @@ def list_materials():
 ####################################################################################
 @app.route('/add_customer', methods=['GET', 'POST'])
 def add_customer():
-    customer_choices = customer_manager.get_customer_choices1()
-    form = AddCustomerForm(request.form, customer_choices)
+    customer_recs = customer_repo.get_all_customers()
+    customer_recs.insert(0, None)
 
-    if request.method == 'POST' and form.validate():
+    if request.method == 'POST':
         try:
-            name = form.name.data.strip()
-            birthday = form.birthday.data
-            address = form.address.data.strip()
-            phone = form.phone.data.strip()
-            email_address = form.email_address.data.strip()
-            facebook = form.facebook.data.strip()
-            recommended_by = form.recommended_by.data
-            note = form.note.data
+            name = request.form['name'].strip()
+            birthday = request.form['birthday']
+            address = request.form['address'].strip()
+            phone = request.form['phone'].strip()
+            email_address = request.form['email_address'].strip()
+            facebook = request.form['facebook'].strip()
+            recommended_by = int(request.form['recommended_by'])
+            note = request.form['note'].strip()
             
             customer_repo.add_customer(name,
                                        birthday,
@@ -571,33 +571,36 @@ def add_customer():
         except ScmException as ex:
             message = ex.message
             db.session.rollback()
-            return render_scm_template_with_message('add_customer.html',
+            return render_scm_template_with_message('add_update_customer.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    form=form)
+                                                    customer_rec=None,
+                                                    customer_recs=customer_recs)
     else:
-        return render_scm_template('add_customer.html', form=form)
+        return render_scm_template('add_update_customer.html', 
+                                   customer_rec=None,
+                                   customer_recs=customer_recs)
 
 @app.route('/update_customer/<int:customer_id>', methods=['GET', 'POST'])
 def update_customer(customer_id):
-    customer_choices = customer_manager.get_customer_choices1()
+    customer_recs = customer_repo.get_all_customers()
+    customer_recs.insert(0, None)
+    customer_rec = customer_repo.get_customer(customer_id)
     if request.method == 'GET':
-        customer_rec = customer_repo.get_customer(customer_id)
-        form = UpdateCustomerForm(request.form, customer_choices, customer_rec)
-    
-        return render_scm_template('update_customer.html', form=form)
+        return render_scm_template('add_update_customer.html',
+                                   customer_rec=customer_rec,
+                                   customer_recs=customer_recs)
     elif request.method == 'POST':
         try:
-            form = UpdateCustomerForm(request.form, customer_choices, None)
-            name = form.name.data
-            birthday = form.birthday.data
-            address = form.address.data
-            phone = form.phone.data
-            email_address = form.email_address.data
-            facebook = form.facebook.data
-            recommended_by = form.recommended_by.data
-            note = form.note.data
+            name = request.form['name'].strip()
+            birthday = request.form['birthday']
+            address = request.form['address'].strip()
+            phone = request.form['phone'].strip()
+            email_address = request.form['email_address'].strip()
+            facebook = request.form['facebook'].strip()
+            recommended_by = int(request.form['recommended_by'])
+            note = request.form['note'].strip()
 
             customer_repo.update_customer(customer_id,
                                           name,
@@ -616,11 +619,12 @@ def update_customer(customer_id):
             return redirect_with_message(url_for('list_customers'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('material.html',
+            return render_scm_template_with_message('add_update_customer.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    form=form)            
+                                                    customer_rec=customer_rec,
+                                                    customer_recs=customer_recs)            
 
 @app.route('/show_customer_order_history/<int:customer_id>', methods=['GET', 'POST'])
 def show_customer_order_history(customer_id):
