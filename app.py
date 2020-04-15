@@ -150,7 +150,7 @@ def render_scm_template_with_message(site_html,
                                      **kwargs):
     if exception is not None:
         logger.error(message)
-        logger.error(exception)
+        logger.exception(exception)
     else:
         logger.info(message)
 
@@ -238,13 +238,14 @@ def list_tastes():
 ####################################################################################
 @app.route('/add_topic', methods=['GET', 'POST'])
 def add_topic():
-    topic_choices = topic_manager.get_topic_choices()
-    form = AddTopicForm(request.form, topic_choices)
-    if request.method == 'POST' and form.validate():
+    topic_recs = topic_repo.get_all_topics()
+    topic_recs.insert(0, None)
+
+    if request.method == 'POST':
         try:
-            name = form.name.data.strip()
-            description = form.description.data.strip()
-            parent_id = form.parent_topic.data
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
+            parent_id = int(request.form['parent_topic_id'])
             
             topic_repo.add_topic(name=name,
                                  description=description,
@@ -262,23 +263,29 @@ def add_topic():
             logger.error(message)
             
             flash(message, 'danger')
-            return render_scm_template('add_topic.html', form=form)
+            return render_scm_template('add_update_topic.html', 
+                                        topic_rec=None,
+                                        topic_recs=topic_recs)
     else:
-        return render_scm_template('add_topic.html', form=form)
+        return render_scm_template('add_update_topic.html', 
+                                   topic_rec=None,
+                                   topic_recs=topic_recs)
 
 @app.route('/update_topic/<int:topic_id>', methods=['GET', 'POST'])
 def update_topic(topic_id):
-    topic_choices = topic_manager.get_topic_choices()
-    if request.method == 'GET':
-        topic_rec = topic_repo.get_topic(topic_id)
-        form = UpdateTopicForm(request.form, topic_rec, topic_choices)
-        return render_scm_template('update_topic.html', form=form)
+    topic_recs = topic_repo.get_all_topics()
+    topic_recs.insert(0, None)
+    topic_rec = topic_repo.get_topic(topic_id)
+
+    if request.method == 'GET':        
+        return render_scm_template('add_update_topic.html', 
+                                   topic_rec=topic_rec,
+                                   topic_recs=topic_recs)
     elif request.method == 'POST':
         try:
-            form = UpdateTopicForm(request.form, None, topic_choices)
-            name = form.name.data.strip()
-            description = form.description.data.strip()
-            parent_id = form.parent_topic.data            
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
+            parent_id = int(request.form['parent_topic_id'])
             
             topic_repo.update_topic(topic_id,
                                     name,
@@ -292,11 +299,12 @@ def update_topic(topic_id):
             return redirect_with_message(url_for('list_topics'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('update_topic.html',
+            return render_scm_template_with_message('add_update_topic.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    form=form)            
+                                                    topic_rec=topic_rec,
+                                                    topic_recs=topic_recs)            
 
 @app.route('/list_topics', methods=['GET', 'POST'])
 def list_topics():
