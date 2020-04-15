@@ -156,6 +156,8 @@ class Order(db.Model):
     paid_on = Column(DateTime())
     is_fixed = Column(Boolean, default=False)
     total_cost = Column(Numeric(10, 2))
+    price_to_customer = Column(Numeric(10, 2))
+    payment_from_customer = Column(Numeric(10, 2))
 
 class Product(db.Model):
     __tablename__ = 'product'
@@ -172,6 +174,8 @@ class Product(db.Model):
     box_returned_on = Column(DateTime())
     is_fixed = Column(Boolean, default=False)
     total_cost = Column(Numeric(10, 2))
+    price_to_customer = Column(Numeric(10, 2))
+    amount = Column(Integer, default=1)
 
 class ProductImagePath(db.Model):
     __tablename__ = 'product_image_path'
