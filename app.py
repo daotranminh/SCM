@@ -792,6 +792,7 @@ def __extract_order_props(props_dict):
     product_names = []
     product_amounts = []
     taste_ids = []
+    formula_ids = []
     decoration_form_ids = []
     decoration_technique_ids = []
     with_boxes = []
@@ -801,6 +802,7 @@ def __extract_order_props(props_dict):
         product_name_id = 'product_name_' + str(i)
         product_amount_id = 'product_amount_' + str(i)
         taste_choices_id = 'taste_choices_' + str(i)
+        formula_choices_id = 'formula_choices_' + str(i)
         decoration_form_choices_id = 'decoration_form_choices_' + str(i)
         decoration_technique_choices_id = 'decoration_technique_choices_' + str(i)
         with_box_id = 'with_box_' + str(i)
@@ -809,6 +811,7 @@ def __extract_order_props(props_dict):
             product_names.append(props_dict[product_name_id])
             product_amounts.append(props_dict[product_amount_id])
             taste_ids.append(int(props_dict[taste_choices_id]))
+            formula_ids.append(int(props_dict[formula_choices_id]))
             decoration_form_ids.append(int(props_dict[decoration_form_choices_id]))
             decoration_technique_ids.append(int(props_dict[decoration_technique_choices_id]))
             if with_box_id in props_dict:
@@ -827,6 +830,7 @@ def __extract_order_props(props_dict):
            product_names, \
            product_amounts, \
            taste_ids, \
+           formula_ids, \
            decoration_form_ids, \
            decoration_technique_ids, \
            with_boxes
@@ -841,8 +845,7 @@ def add_order():
     taste_recs = taste_repo.get_all_tastes()
     taste_recs.insert(0, None)
 
-    taste_formula_dict, \
-        formula_dict = formula_manager.get_taste_formula_dict()
+    taste_formula_dict, formula_dict = formula_manager.get_taste_formula_dict()
 
     if request.method == 'POST':
         try:
@@ -854,6 +857,7 @@ def add_order():
             product_names, \
             product_amounts, \
             taste_ids, \
+            formula_ids, \
             decoration_form_ids, \
             decoration_technique_ids, \
             with_boxes = __extract_order_props(request.form)
@@ -866,6 +870,7 @@ def add_order():
                                                    product_names,
                                                    product_amounts,
                                                    taste_ids,
+                                                   formula_ids,
                                                    decoration_form_ids,
                                                    decoration_technique_ids,
                                                    with_boxes)
@@ -1037,10 +1042,14 @@ def update_order(order_id):
     customer_recs = customer_repo.get_all_customers()    
     product_dtos = __lazy_get_product_dtos(order_id)
 
-    delivery_method_recs = delivery_method_repo.get_all_delivery_methods()
-    taste_recs = taste_repo.get_all_tastes()
+    delivery_method_recs = delivery_method_repo.get_all_delivery_methods()    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
+
+    taste_recs = taste_repo.get_all_tastes()
+    taste_recs.insert(0, None)
+
+    taste_formula_dict, formula_dict = formula_manager.get_taste_formula_dict()
     
     if request.method == 'GET':        
         return render_scm_template('update_order.html',
@@ -1061,7 +1070,9 @@ def update_order(order_id):
                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,
                                     taste_recs=taste_recs,
                                     decoration_form_recs=decoration_form_recs,
-                                    decoration_technique_recs=decoration_technique_recs)
+                                    decoration_technique_recs=decoration_technique_recs,
+                                    taste_formula_dict=taste_formula_dict,
+                                    formula_dict=formula_dict)
     elif request.method == 'POST':        
         try:
             customer_id = int(request.form['customer_id'])
@@ -1120,12 +1131,16 @@ def update_order(order_id):
                                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,
                                                     taste_recs=taste_recs,
                                                     decoration_form_recs=decoration_form_recs,
-                                                    decoration_technique_recs=decoration_technique_recs)
+                                                    decoration_technique_recs=decoration_technique_recs,
+                                                    taste_formula_dict=taste_formula_dict,
+                                                    formula_dict=formula_dict)
 
 @app.route('/add_new_product_to_order/<int:order_id>', methods=['GET', 'POST'])
 def add_new_product_to_order(order_id):
     new_product_name = request.args.get('new_product_name_arg')
+    product_amount = int(request.args.get('product_amount_arg'))
     taste_id = int(request.args.get('taste_id_arg'))
+    formula_id = int(request.args.get('formula_id_arg'))
     decoration_form_id = int(request.args.get('decoration_form_id_arg'))
     decoration_technique_id = int(request.args.get('decoration_technique_id_arg'))
     
@@ -1134,8 +1149,10 @@ def add_new_product_to_order(order_id):
 
     try:
         product_repo.add_product(new_product_name,
+                                 product_amount,
                                  order_id,
                                  taste_id,
+                                 formula_id,
                                  decoration_form_id,
                                  decoration_technique_id,
                                  with_box)

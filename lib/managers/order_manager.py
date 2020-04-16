@@ -26,6 +26,7 @@ class OrderManager:
                   product_names,
                   product_amounts,
                   taste_ids,
+                  formula_ids,
                   decoration_form_ids,
                   decoration_technique_ids,
                   with_boxes):
@@ -39,6 +40,7 @@ class OrderManager:
                                           product_amounts[i],
                                           new_order_id,
                                           taste_ids[i],
+                                          formula_ids[i],
                                           decoration_form_ids[i],
                                           decoration_technique_ids[i],
                                           with_boxes[i])

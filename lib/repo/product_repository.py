@@ -30,6 +30,7 @@ class ProductRepository:
                     amount,
                     order_id,
                     taste_id,
+                    formula_id,
                     decoration_form_id,
                     decoration_technique_id,
                     with_box):
@@ -42,6 +43,7 @@ class ProductRepository:
                                   amount=amount,
                                   order_id=order_id,
                                   taste_id=taste_id,
+                                  formula_id=formula_id,
                                   decoration_form_id=decoration_form_id,
                                   decoration_technique_id=decoration_technique_id,
                                   box_status=box_status)

@@ -1,3 +1,26 @@
+function update_order_taste_change(taste_choices)
+{
+    var formula_choices = document.getElementById("formula_id")
+
+    while (formula_choices.options.length > 0)
+    {
+        formula_choices.remove(0)
+    }
+
+    var taste_choice_id = parseInt(taste_choices.value)
+    if (taste_choice_id != -1)
+    {
+        formula_ids = taste_formula_dict[taste_choice_id]
+        for (let i = 0; i < formula_ids.length; ++i)
+        {
+            var opt = document.createElement("option")
+            opt.value = formula_ids[i]
+            opt.innerHTML = formula_dict[formula_ids[i]]
+            formula_choices.appendChild(opt)
+        }
+    }
+}
+
 function taste_change(taste_choices)
 {
     var strIndex = get_index(taste_choices)
@@ -37,7 +60,9 @@ function add_new_product_to_order()
     var message = document.getElementById("message").value
 
     var newProductName = document.getElementById("new_product_name").value
+    var product_amount = document.getElementById("product_amount").value
     var tasteId = document.getElementById("taste_id").value
+    var formulaId = document.getElementById("formula_id").value
     var decorationFormId = document.getElementById("decoration_form_id").value
     var decorationTechniqueId = document.getElementById("decoration_technique_id").value
     var withBox = document.getElementById("with_box").checked
@@ -56,7 +81,9 @@ function add_new_product_to_order()
         "&paid_on_arg=" + paidOn +
         "&message_arg=" + message +
         "&new_product_name_arg=" + newProductName +
+        "&product_amount_arg=" + product_amount +
         "&taste_id_arg=" + tasteId +
+        "&formula_id_arg=" + formulaId +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
         "&with_box_arg=" + withBox
