@@ -36,6 +36,8 @@
       <th>Decoration Technique</th>
       <th>Formula</th>
       <th>Sample Images</th>
+      <th>Cost Estimation per Product</th>
+      <th>Amount</th>
       <th>Cost Estimation</th>
     </tr>
   </thead>
@@ -61,10 +63,19 @@
       {% endif %}
 
       <td>{{product_dto.product_cost_estimation}}</td>
+      <td>{{product_dto.product_amount}}</td>
+      
+      {% if product_dto.product_cost_estimation is not none %}
+        <td>{{product_dto.product_cost_estimation * product_dto.product_amount }}</td>
+      {% else %}
+        <td>{{product_dto.product_cost_estimation}}</td>
+      {% endif %}
     </tr>
     {% endfor %}
     <tr>
       <td>Total cost</td>
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>

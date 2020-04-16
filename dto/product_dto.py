@@ -13,6 +13,7 @@ class ProductDto:
     def __init__(self,
                  product_id,
                  product_name,
+                 product_amount,
                  taste_id,
                  taste_name,
                  decoration_form_id,
@@ -29,6 +30,7 @@ class ProductDto:
                  latest_3_product_image_paths):
         self.product_id = product_id
         self.product_name = product_name
+        self.product_amount = product_amount
         self.taste_id = taste_id
         self.taste_name = taste_name
         self.decoration_form_id = decoration_form_id

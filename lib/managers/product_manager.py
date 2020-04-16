@@ -54,7 +54,7 @@ class ProductManager:
         sibling_products = self.product_repo.get_products_of_order(product_rec.order_id)
         for sibling_product in sibling_products:
             if sibling_product.id != product_id and sibling_product.total_cost is not None:
-                order_cost += sibling_product.total_cost
+                order_cost += sibling_product.total_cost * sibling_product.amount
         order_rec.total_cost = order_cost
 
         self.product_image_path_repo.delete_product_image_paths(product_id)
@@ -84,6 +84,7 @@ class ProductManager:
 
         product_dto = ProductDto(product_id,
                                  product_rec.name,
+                                 product_rec.amount,
                                  taste_id,
                                  taste_name,
                                  decoration_form_id,
@@ -129,7 +130,8 @@ class ProductManager:
             product_rec.cost_estimation_id = new_cost_estimation.id
             product_rec.total_cost = new_cost_estimation.total_cost
 
-            message = 'Formula of product %s changed. Refer to cost_estimation %s with total_cost=%s' % (new_cost_estimation.id,
+            message = 'Formula of product %s changed. Refer to cost_estimation %s with total_cost=%s' % (product_id,
+                                                                                                         new_cost_estimation.id,
                                                                                                          new_cost_estimation.total_cost)
             ProductManager.logger.info(message)
 
@@ -138,11 +140,11 @@ class ProductManager:
             order_cost = 0
             for sibling_product in sibling_products:
                 if sibling_product.total_cost is not None:
-                    order_cost += sibling_product.total_cost
+                    order_cost += sibling_product.total_cost * sibling_product.amount
             order_rec = self.order_repo.get_order(product_rec.order_id)
             order_rec.total_cost = order_cost
-            message = 'Cost of order %s updated to %s' % (order_rec.order_id, order_cost)
-            FormulaManager.logger.info(message)
+            message = 'Cost of order %s updated to %s' % (order_rec.id, order_cost)
+            ProductManager.logger.info(message)
 
         product_rec.name = product_name
         product_rec.taste_id = taste_id

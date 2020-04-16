@@ -250,7 +250,7 @@ class FormulaManager:
             product_recs = self.product_repo.get_products_of_order(order_id)
             for product_rec in product_recs:
                 if product_rec.total_cost is not None:
-                    order_cost += product_rec.total_cost
+                    order_cost += product_rec.total_cost * product_rec.amount
             order_rec.total_cost = order_cost
 
             message = 'New cost of order %s is %s' % (order_id, order_cost)
