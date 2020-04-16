@@ -1198,6 +1198,12 @@ def __extract_update_product_args(product_rec, args):
     current_product_name = args.get('product_name_arg')
     if current_product_name is None:
         current_product_name = product_rec.name
+
+    product_amount = args.get('product_amount_arg')
+    if product_amount is not None:
+        product_amount = int(product_amount)
+    else:
+        product_amount = product_rec.amount        
         
     selected_taste_id = args.get('taste_id_arg')
     if selected_taste_id is not None: 
@@ -1237,13 +1243,14 @@ def __extract_update_product_args(product_rec, args):
         selected_sample_images_group_id = product_rec.sample_images_group_id
         
     return current_product_name, \
-           selected_taste_id, \
-           selected_decoration_form_id, \
-           selected_decoration_technique_id, \
-           selected_formula_id, \
-           selected_box_status, \
-           chosen_box_returned_on, \
-           selected_sample_images_group_id
+            product_amount, \
+            selected_taste_id, \
+            selected_decoration_form_id, \
+            selected_decoration_technique_id, \
+            selected_formula_id, \
+            selected_box_status, \
+            chosen_box_returned_on, \
+            selected_sample_images_group_id
 
 @app.route('/update_product/<int:product_id>', methods=['GET', 'POST'])
 def update_product(product_id):
@@ -1262,13 +1269,14 @@ def update_product(product_id):
 
     if request.method == 'GET':
         current_product_name, \
-           selected_taste_id, \
-           selected_decoration_form_id, \
-           selected_decoration_technique_id, \
-           selected_formula_id, \
-           selected_box_status, \
-           chosen_box_returned_on, \
-           selected_sample_images_group_id = __extract_update_product_args(product_rec, request.args)
+            product_amount, \
+            selected_taste_id, \
+            selected_decoration_form_id, \
+            selected_decoration_technique_id, \
+            selected_formula_id, \
+            selected_box_status, \
+            chosen_box_returned_on, \
+            selected_sample_images_group_id = __extract_update_product_args(product_rec, request.args)
 
         formula_recs = formula_repo.get_formulas_of_taste(selected_taste_id)
         existing_product_image_paths_arg = request.args.get('existing_product_image_paths_arg')
@@ -1282,7 +1290,9 @@ def update_product(product_id):
         try:
             remaining_product_image_path_ids = __extract_remaining_image_path_ids(request.form, 'existing_product_image_')
             current_product_name = request.form['product_name']
+            product_amount = int(request.form['product_amount'])
             selected_taste_id = int(request.form['taste_id'])
+            selected_formula_id = int(request.form['formula_id'])
             selected_decoration_form_id = int(request.form['decoration_form_id'])
             selected_decoration_technique_id = int(request.form['decoration_technique_id'])            
             selected_box_status = int(request.form['box_status'])
@@ -1312,6 +1322,8 @@ def update_product(product_id):
                                            remaining_product_image_path_ids,
                                            uploaded_files)
             db.session.commit()
+
+            formula_recs = formula_repo.get_formulas_of_taste(selected_taste_id)
             product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
             
             message = 'Successfully updated product %s (%s)' % (current_product_name, product_id)
@@ -1335,9 +1347,9 @@ def update_product(product_id):
                                                     latest_3_sample_image_paths=latest_3_sample_image_paths,
                                                     current_product_name=current_product_name,
                                                     selected_taste_id=selected_taste_id,
-                                                    selected_decoration_form_id=selected_decoration_form_id,
-                                                    selected_decoration_technique_id=selected_decoration_technique_id,
                                                     selected_formula_id=selected_formula_id,
+                                                    selected_decoration_form_id=selected_decoration_form_id,
+                                                    selected_decoration_technique_id=selected_decoration_technique_id,                                                    
                                                     selected_box_status=selected_box_status,
                                                     chosen_box_returned_on=chosen_box_returned_on,
                                                     selected_sample_images_group_id=selected_sample_images_group_id)

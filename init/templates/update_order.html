@@ -160,13 +160,29 @@
         </p>
 
         <p>
+          <label for="product_amount">Amount</label>
+          <input type="number" style="text-align:right" id="product_amount" name="product_amount" min="1" value="1"/>
+        </p>
+
+        <p>
           <label for="taste_id">Taste</label>
-          <select id="taste_id" name="taste_id">
-	        {% for taste_rec in taste_recs %}
-	          <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
+          <select id="taste_id" name="taste_id" onchange="update_order_taste_change(this)">
+          {% for taste_rec in taste_recs %}
+            {% if taste_rec is none %}
+              <option value="-1"></option>
+            {% else %}
+              <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
+            {% endif %}
 	        {% endfor %}
           </select>
         </p>
+
+        <p>
+          <label for="formula_id">Formula</label>
+          <select id="formula_id" name="formula_id">                  
+          </select>
+          </p>
+        <p>
             
         <p>
           <label for="decoration_form_id">Decoration form</label>
@@ -215,6 +231,9 @@
   $('*[name=delivery_appointment]').appendDtpicker();
   $('*[name=delivered_on]').appendDtpicker();
   $('*[name=paid_on]').appendDtpicker();
+
+  var taste_formula_dict = {{taste_formula_dict | tojson}};
+  var formula_dict = {{formula_dict | tojson}}
 </script>
 
 {% endblock %}

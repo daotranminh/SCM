@@ -13,7 +13,12 @@
         <div class="form-group">
             <label for="product_name">Name</label>
             <input type="text" id="product_name" name="product_name" value="{{current_product_name}}"/>
-        </div>
+		</div>
+		
+		<p>
+			<label for="product_amount">Amount</label>
+			<input type="number" style="text-align:right" id="product_amount" name="product_amount" min="1" value="1"/>
+	  	</p>
 
         <div class="form-group">
 	        <label for="taste_id">Taste</label>
@@ -26,7 +31,20 @@
 	            {% endif %}
 	        {% endfor %}
 	        </select>
-        </div>
+		</div>
+		
+		<div class="form-group">
+	        <label for="formula_id">Formula</label>
+	        <select id="formula_id" name="formula_id">
+	        {% for formula_rec in formula_recs %}
+	            {% if formula_rec.id == selected_formula_id %}
+	            <option value="{{formula_rec.id}}" selected>{{formula_rec.name}}</option>
+	            {% else %}
+	            <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
+	            {% endif %}
+	        {% endfor %}
+	        </select>
+		</div>		
 
         <div class="form-group">
 	        <label for="decoration_form_id">Decoration form</label>
@@ -49,20 +67,6 @@
 	            <option value="{{decoration_technique_rec.id}}" selected>{{decoration_technique_rec.name}}</option>
 	            {% else %}
 	            <option value="{{decoration_technique_rec.id}}">{{decoration_technique_rec.name}}</option>
-	            {% endif %}
-	        {% endfor %}
-	        </select>
-		</div>
-		
-		<div class="form-group">
-	        <label for="formula_id">Formula</label>
-	        <select id="formula_id" name="formula_id">
-			<option value="-1" selected></option>
-	        {% for formula_rec in formula_recs %}
-	            {% if formula_rec.id == selected_formula_id %}
-	            <option value="{{formula_rec.id}}" selected>{{formula_rec.name}}</option>
-	            {% else %}
-	            <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
 	            {% endif %}
 	        {% endfor %}
 	        </select>
@@ -215,10 +219,10 @@ function reload_after_select_changed()
 {
 	var productId = document.getElementById("product_id").value
 	var productName = document.getElementById("product_name").value
-	var tasteId = document.getElementById("taste_id").value	
-	var decorationFormId = document.getElementById("decoration_form_id").value 
-	var decorationTechniqueId = document.getElementById("decoration_technique_id").value 
+	var tasteId = document.getElementById("taste_id").value
 	var formulaId = document.getElementById("formula_id").value
+	var decorationFormId = document.getElementById("decoration_form_id").value 
+	var decorationTechniqueId = document.getElementById("decoration_technique_id").value 	
 	var boxStatus = document.getElementById("box_status").value
 	var sampleImagesGroupId = document.getElementById("sample_images_group_id").value
 	var boxReturnedOn = document.getElementById("box_returned_on").value
