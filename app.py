@@ -834,10 +834,15 @@ def __extract_order_props(props_dict):
 @app.route('/add_order', methods=['GET', 'POST'])
 def add_order():
     customer_recs = customer_repo.get_all_customers()
-    delivery_method_recs = delivery_method_repo.get_all_delivery_methods()
-    taste_recs = taste_repo.get_all_tastes()
+    delivery_method_recs = delivery_method_repo.get_all_delivery_methods()    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
+
+    taste_recs = taste_repo.get_all_tastes()
+    taste_recs.insert(0, None)
+
+    taste_formula_dict, \
+        formula_dict = formula_manager.get_taste_formula_dict()
 
     if request.method == 'POST':
         try:
@@ -878,7 +883,9 @@ def add_order():
                                 delivery_method_recs=delivery_method_recs,
                                 taste_recs=taste_recs,
                                 decoration_form_recs=decoration_form_recs,
-                                decoration_technique_recs=decoration_technique_recs)    
+                                decoration_technique_recs=decoration_technique_recs,
+                                taste_formula_dict=taste_formula_dict,
+                                formula_dict=formula_dict)    
 
 def __lazy_get_order_dtos(page, per_page, search_text):
     paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
@@ -893,7 +900,7 @@ def __lazy_get_order_dtos(page, per_page, search_text):
         product_cost_changed = False
         
         for product_rec in product_recs:
-            if product_rec.is_fixed == False and product_rec.formula_id is not None:
+            if product_rec.is_fixed == False and product_rec.formula_id is not None and product_rec.formula_id != -1:
                 if product_rec.formula_id not in checked_formula_ids_set:
                     checked_formula_ids_set.add(product_rec.formula_id)
                     formula_rec = formula_repo.get_formula(product_rec.formula_id)

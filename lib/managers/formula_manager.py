@@ -275,3 +275,17 @@ class FormulaManager:
             material_cost_estimation_dtos.append(material_cost_estimation_dto)
 
         return current_cost_estimation, material_cost_estimation_dtos
+
+    def get_taste_formula_dict(self):
+        taste_formula_dict = {}
+        formula_dict = {}
+
+        formula_recs = self.formula_repo.get_all_formulas()
+        for formula_rec in formula_recs:
+            formula_dict[formula_rec.id] = formula_rec.name
+            if formula_rec.taste_id in taste_formula_dict:
+                taste_formula_dict[formula_rec.taste_id].append(formula_rec.id)
+            else:
+                taste_formula_dict[formula_rec.taste_id] = [formula_rec.id]
+
+        return taste_formula_dict, formula_dict

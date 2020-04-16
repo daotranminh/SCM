@@ -52,14 +52,24 @@
 
             <p>
             <label for="taste_choices_0">Taste</label>
-            <select id="taste_choices_0" name="taste_choices_0">
-	      {% for taste_rec in taste_recs %}
-	            <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
+            <select id="taste_choices_0" name="taste_choices_0" onchange="taste_change(this)">
+            {% for taste_rec in taste_recs %}
+                  {% if taste_rec is none %}
+                        <option value="-1"></option>
+                  {% else %}
+                        <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
+                  {% endif %}
 	      {% endfor %}
             </select>
             </p>
-            
+
             <p>
+                  <label for="formula_choices_0">Formula</label>
+                  <select id="formula_choices_0" name="formula_choices_0">                  
+                  </select>
+                  </p>            
+            <p>
+
             <label for="decoration_form_choices_0">Decoration form</label>
             <select id="decoration_form_choices_0" name="decoration_form_choices_0">
 	      {% for decoration_form_rec in decoration_form_recs %}
@@ -112,6 +122,9 @@
   $('#customer_id').select2();
   $('*[name=ordered_on]').appendDtpicker();
   $('*[name=delivery_appointment]').appendDtpicker();
+
+  var taste_formula_dict = {{taste_formula_dict | tojson}};
+  var formula_dict = {{formula_dict | tojson}}
 </script>
 
 {% endblock %}
