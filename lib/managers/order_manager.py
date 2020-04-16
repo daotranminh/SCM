@@ -24,6 +24,7 @@ class OrderManager:
                   delivery_method_id,
                   message,
                   product_names,
+                  product_amounts,
                   taste_ids,
                   decoration_form_ids,
                   decoration_technique_ids,
@@ -35,6 +36,7 @@ class OrderManager:
                                                 message)
         for i in range(len(product_names)):
             self.product_repo.add_product(product_names[i],
+                                          product_amounts[i],
                                           new_order_id,
                                           taste_ids[i],
                                           decoration_form_ids[i],

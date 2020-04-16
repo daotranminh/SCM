@@ -790,6 +790,7 @@ def __extract_order_props(props_dict):
     message = props_dict['message']
 
     product_names = []
+    product_amounts = []
     taste_ids = []
     decoration_form_ids = []
     decoration_technique_ids = []
@@ -798,6 +799,7 @@ def __extract_order_props(props_dict):
     i = 0
     while True:
         product_name_id = 'product_name_' + str(i)
+        product_amount_id = 'product_amount_' + str(i)
         taste_choices_id = 'taste_choices_' + str(i)
         decoration_form_choices_id = 'decoration_form_choices_' + str(i)
         decoration_technique_choices_id = 'decoration_technique_choices_' + str(i)
@@ -805,6 +807,7 @@ def __extract_order_props(props_dict):
         
         if product_name_id in props_dict:
             product_names.append(props_dict[product_name_id])
+            product_amounts.append(props_dict[product_amount_id])
             taste_ids.append(int(props_dict[taste_choices_id]))
             decoration_form_ids.append(int(props_dict[decoration_form_choices_id]))
             decoration_technique_ids.append(int(props_dict[decoration_technique_choices_id]))
@@ -822,6 +825,7 @@ def __extract_order_props(props_dict):
            delivery_method_id, \
            message, \
            product_names, \
+           product_amounts, \
            taste_ids, \
            decoration_form_ids, \
            decoration_technique_ids, \
@@ -843,6 +847,7 @@ def add_order():
             delivery_method_id, \
             message, \
             product_names, \
+            product_amounts, \
             taste_ids, \
             decoration_form_ids, \
             decoration_technique_ids, \
@@ -854,6 +859,7 @@ def add_order():
                                                    delivery_method_id,
                                                    message,
                                                    product_names,
+                                                   product_amounts,
                                                    taste_ids,
                                                    decoration_form_ids,
                                                    decoration_technique_ids,
@@ -887,7 +893,7 @@ def __lazy_get_order_dtos(page, per_page, search_text):
         product_cost_changed = False
         
         for product_rec in product_recs:
-            if product_rec.is_fixed == False:
+            if product_rec.is_fixed == False and product_rec.formula_id is not None:
                 if product_rec.formula_id not in checked_formula_ids_set:
                     checked_formula_ids_set.add(product_rec.formula_id)
                     formula_rec = formula_repo.get_formula(product_rec.formula_id)

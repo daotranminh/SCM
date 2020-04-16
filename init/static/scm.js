@@ -54,19 +54,23 @@ function add_product_to_order()
     product_label.innerHTML = `Details on product ${(len + 1).toString()}:`
 
     var product_name = next_product.children[2].children[1]
-    var taste_choices = next_product.children[3].children[1]
-    var decoration_form_choices = next_product.children[4].children[1]    
-    var decoration_technique_choices = next_product.children[5].children[1]
-    var delete_btn = next_product.children[6].children[0]
+    var product_amount = next_product.children[3].children[1]
+    var taste_choices = next_product.children[4].children[1]
+    var decoration_form_choices = next_product.children[5].children[1]    
+    var decoration_technique_choices = next_product.children[6].children[1]
+    var delete_btn = next_product.children[7].children[0]
 
     product_name.id = "product_name_" + len.toString()
     product_name.value = ""
+    product_amount.id = "product_amount_" + len.toString()
+    product_amount.value = "1"
     taste_choices.id = "taste_choices_" + len.toString()
     decoration_form_choices.id = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.id = "decoration_technique_choices_" + len.toString()
     delete_btn.id = "delete_product_" + len.toString()
 
     product_name.name = "product_name_" + len.toString()
+    product_amount.name = "product_amount_" + len.toString()
     taste_choices.name = "taste_choices_" + len.toString()
     decoration_form_choices.name = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.name = "decoration_technique_choices_" + len.toString()

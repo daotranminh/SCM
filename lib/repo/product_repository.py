@@ -27,6 +27,7 @@ class ProductRepository:
 
     def add_product(self,
                     name,
+                    amount,
                     order_id,
                     taste_id,
                     decoration_form_id,
@@ -38,6 +39,7 @@ class ProductRepository:
                 box_status = int(BoxStatus.BOX_WITH_PRODUCT_IN_PRODUCTION)
                 
             product_rec = Product(name=name, 
+                                  amount=amount,
                                   order_id=order_id,
                                   taste_id=taste_id,
                                   decoration_form_id=decoration_form_id,
