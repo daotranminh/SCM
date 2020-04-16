@@ -1148,7 +1148,7 @@ def add_new_product_to_order(order_id):
     with_box = with_box_arg.upper() == 'TRUE'
 
     try:
-        product_repo.add_product(new_product_name,
+        product_manager.add_product(new_product_name,
                                  product_amount,
                                  order_id,
                                  taste_id,

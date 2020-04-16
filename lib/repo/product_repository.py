@@ -29,7 +29,7 @@ class ProductRepository:
                     name,
                     amount,
                     order_id,
-                    taste_id,
+                    taste_id,                    
                     formula_id,
                     decoration_form_id,
                     decoration_technique_id,
@@ -38,16 +38,22 @@ class ProductRepository:
             box_status = int(BoxStatus.BOX_NOT_NEEDED)
             if with_box:
                 box_status = int(BoxStatus.BOX_WITH_PRODUCT_IN_PRODUCTION)
+
+            cost_estimation_rec = CostEstimation.query.filter(CostEstimation.formula_id == formula_id, CostEstimation.is_current == True).first()
                 
             product_rec = Product(name=name, 
                                   amount=amount,
                                   order_id=order_id,
                                   taste_id=taste_id,
                                   formula_id=formula_id,
+                                  cost_estimation_id=cost_estimation_rec.id,
+                                  total_cost=cost_estimation_rec.total_cost,
                                   decoration_form_id=decoration_form_id,
                                   decoration_technique_id=decoration_technique_id,
                                   box_status=box_status)
             self.db.session.add(product_rec)
+            self.db.session.flush()
+            return product_rec.id
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add product. Details: %s' % (str(ex))
             ProductRepository.logger.error(message)

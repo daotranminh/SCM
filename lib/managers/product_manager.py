@@ -31,19 +31,29 @@ class ProductManager:
         
     def add_product(self,
                     name,
+                    amount,
                     order_id,
                     taste_id,
+                    formula_id,
                     decoration_form_id,
                     decoration_technique_id,
-                    uploaded_files):
+                    with_box):
         new_product_id = self.product_repo.add_product(name,
+                                                      amount,
                                                       order_id,
                                                       taste_id,
+                                                      formula_id,
                                                       decoration_form_id,
-                                                      decoration_technique_id)
-        self.product_image_path_repo.add_product_image_paths(new_product_id,
-                                                            uploaded_files)
+                                                      decoration_technique_id,
+                                                      with_box)
+        product_rec = self.product_repo.get_product(new_product_id)
+        order_rec = self.order_repo.get_order(order_id)
         
+        if order_rec.total_cost is None:
+            order_rec.total_cost = product_rec.total_cost
+        else:
+            order_rec.total_cost += product_rec.total_cost
+
     def delete_product(self,
                        product_id):
         product_rec = self.product_repo.get_product(product_id)

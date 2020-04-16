@@ -35,15 +35,22 @@ class OrderManager:
                                                 ordered_on,
                                                 delivery_appointment,
                                                 message)
+
+        order_cost = 0                                                
         for i in range(len(product_names)):
-            self.product_repo.add_product(product_names[i],
-                                          product_amounts[i],
-                                          new_order_id,
-                                          taste_ids[i],
-                                          formula_ids[i],
-                                          decoration_form_ids[i],
-                                          decoration_technique_ids[i],
-                                          with_boxes[i])
+            new_product_id = self.product_repo.add_product(product_names[i],
+                                                           product_amounts[i],
+                                                           new_order_id,
+                                                           taste_ids[i],
+                                                           formula_ids[i],
+                                                           decoration_form_ids[i],
+                                                           decoration_technique_ids[i],
+                                                           with_boxes[i])
+            product_rec = self.product_repo.get_product(new_product_id)
+            order_cost += product_rec.total_cost
+        
+        order_rec = self.order_repo.get_order(new_order_id)
+        order_rec.total_cost = order_cost
         
         return new_order_id
 
