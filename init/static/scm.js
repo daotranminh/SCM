@@ -67,6 +67,16 @@ function add_new_product_to_order()
     var decorationTechniqueId = document.getElementById("decoration_technique_id").value
     var withBox = document.getElementById("with_box").checked
 
+    var existingProductIds = document.querySelectorAll('*[id^="product_id_"]');
+    var existingProductPriceIds = document.querySelectorAll('*[id^="price_to_customer_"]');
+	var priceToCustomersStr = ""
+	for (var i=0; i < existingProductIds.length; i++)
+	{
+		var productId = existingProductIds[i].innerText
+		var productPrice = existingProductPriceIds[i].value
+		priceToCustomersStr = priceToCustomersStr + productId + "--" + productPrice + "!!!!"
+	}
+
     currentHref = location.href
 	currentHrefComponents = currentHref.split("/")
     baseHref = currentHrefComponents.slice(0,3).join("/")
@@ -86,7 +96,8 @@ function add_new_product_to_order()
         "&formula_id_arg=" + formulaId +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
-        "&with_box_arg=" + withBox
+        "&with_box_arg=" + withBox +
+        "&price_to_customers_arg=" + priceToCustomersStr
     
     location.href = newHref
 }

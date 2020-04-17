@@ -81,7 +81,7 @@
             <input type="text" name="paid_on" id="paid_on" value="{{paid_on}}">
       </div>
 
-      <table class="table table-striped">
+      <table class="table table-striped" id="existing_products_table">
             <thead>
               <tr>
                 <th>Product Id</th>
@@ -94,45 +94,49 @@
                 <th>Cost Estimation per Product</th>
                 <th>Amount</th>
                 <th>Cost estimation</th>
+                <th>Price to customer</th>
                 <th></th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {% for product_dto in product_dtos %}
+              {% for i in range(product_dtos|length) %}
               <tr>
-                <td>{{product_dto.product_id}}</td>
-                <td><a href="{{ url_for('product_details', product_id=product_dto.product_id) }}">{{product_dto.product_name}}</a></td>
-                <td>{{product_dto.taste_name}}</td>
-                <td>{{product_dto.decoration_form_name}}</td>
-                <td>{{product_dto.decoration_technique_name}}</td>
-                
-                {% if product_dto.formula_id is not none %}
-                  <td><a href="{{ url_for('formula_details', formula_id=product_dto.formula_id) }}">{{product_dto.formula_name}}</a></td>
+                <td><label id="product_id_{{i}}">{{product_dtos[i].product_id}}</label></td>
+                <td><a href="{{ url_for('product_details', product_id=product_dtos[i].product_id) }}">{{product_dtos[i].product_name}}</a></td>
+                <td>{{product_dtos[i].taste_name}}</td>
+                <td>{{product_dtos[i].decoration_form_name}}</td>
+                <td>{{product_dtos[i].decoration_technique_name}}</td>
+                {% if product_dtos[i].formula_id is not none %}
+                  <td><a href="{{ url_for('formula_details', formula_id=product_dtos[i].formula_id) }}">{{product_dtos[i].formula_name}}</a></td>
                 {% else %}
-                  <td>{{product_dto.formula_name}}</td>
+                  <td>{{product_dtos[i].formula_name}}</td>
                 {% endif %}
-      
-                {% if product_dto.sample_images_group_id is not none %}
-                  <td><a href="{{ url_for('sample_images_group_details', sample_images_group_id=product_dto.sample_images_group_id) }}">{{product_dto.sample_images_group_name}}</a></td>
+                {% if product_dtos[i].sample_images_group_id is not none %}
+                  <td><a href="{{ url_for('sample_images_group_details', sample_images_group_id=product_dtos[i].sample_images_group_id) }}">{{product_dto.sample_images_group_name}}</a></td>
                 {% else %}
-                  <td>{{product_dto.sample_images_group_name}}</td>
+                  <td>{{product_dtos[i].sample_images_group_name}}</td>
                 {% endif %}
 
-                <td>{{product_dto.product_cost_estimation}}</td>
+                <td>{{product_dtos[i].product_cost_estimation}}</td>
 
-                <td>{{product_dto.product_amount}}</td>
-      
-                {% if product_dto.product_cost_estimation is not none %}
-                  <td>{{product_dto.product_cost_estimation * product_dto.product_amount }}</td>
+                <td>{{product_dtos[i].product_amount}}</td>
+                {% if product_dtos[i].product_cost_estimation is not none %}
+                <td>{{product_dtos[i].product_cost_estimation * product_dtos[i].product_amount }}</td>
                 {% else %}
-                  <td>{{product_dto.product_cost_estimation}}</td>
+                <td>{{product_dtos[i].product_cost_estimation}}</td>
                 {% endif %}
 
-                <td><a href="{{ url_for('update_product', product_id=product_dto.product_id) }}"
-                       class="btn btn-default pullright">Update</a></td></td>
-                <td><a href="{{ url_for('delete_product', product_id=product_dto.product_id) }}"
-                       class="btn btn-default pullright">Delete</a></td></td>
+                <td><input type="text" 
+                  id="price_to_customer_{{i}}" 
+                  style="text-align: right"
+                  value="{{price_to_customers[product_dtos[i].product_id]}}"/></td>
+
+                <td><a href="{{ url_for('update_product', product_id=product_dtos[i].product_id) }}"
+                class="btn btn-default pullright">Update</a></td></td>
+                <td><a href="{{ url_for('delete_product', product_id=product_dtos[i].product_id) }}"
+                class="btn btn-default pullright">Delete</a></td></td>
+
               </tr>
               {% endfor %}
               <tr>

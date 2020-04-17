@@ -23,6 +23,7 @@ class ProductDto:
                  formula_id,
                  formula_name,
                  formula_has_up_to_date_cost_estimation,
+                 price_to_customer,
                  sample_images_group_id,
                  sample_images_group_name,
                  product_cost_estimation,
@@ -40,6 +41,7 @@ class ProductDto:
         self.formula_id = formula_id
         self.formula_name = formula_name
         self.formula_has_up_to_date_cost_estimation = formula_has_up_to_date_cost_estimation
+        self.price_to_customer = price_to_customer
         self.sample_images_group_id = sample_images_group_id
         self.sample_images_group_name = sample_images_group_name
         self.product_cost_estimation = product_cost_estimation

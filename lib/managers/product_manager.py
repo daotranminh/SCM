@@ -104,6 +104,7 @@ class ProductManager:
                                  formula_id,
                                  formula_name,
                                  formula_has_up_to_date_cost_estimation,
+                                 product_rec.price_to_customer,
                                  sample_images_group_id,
                                  sample_images_group_name, 
                                  product_cost_estimation,

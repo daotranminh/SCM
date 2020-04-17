@@ -1015,6 +1015,17 @@ def __extract_update_order_args(order_rec, args):
     if message_arg is None:
         message_arg = order_rec.message
 
+    price_to_customers = {}
+    price_to_customers_arg = args.get('price_to_customers_arg')
+
+    if price_to_customers_arg is not None:
+        product_ids_prices = price_to_customers_arg.split('!!!!')
+
+        for product_id_price in product_ids_prices:
+            if product_id_price != '':
+                pair = product_id_price.split('--')
+                price_to_customers[int(pair[0])] = pair[1]
+
     return customer_id_arg, \
         ordered_on_arg, \
         delivery_appointment_arg, \
@@ -1023,7 +1034,8 @@ def __extract_update_order_args(order_rec, args):
         delivered_on_arg, \
         payment_status_arg, \
         paid_on_arg, \
-        message_arg
+        message_arg, \
+        price_to_customers
 
 @app.route('/update_order/<int:order_id>', methods=['GET', 'POST'])
 def update_order(order_id):
@@ -1037,10 +1049,15 @@ def update_order(order_id):
         delivered_on_arg, \
         payment_status_arg, \
         paid_on_arg, \
-        message_arg = __extract_update_order_args(order_rec, request.args)
+        message_arg, \
+        price_to_customers = __extract_update_order_args(order_rec, request.args)
 
     customer_recs = customer_repo.get_all_customers()    
     product_dtos = __lazy_get_product_dtos(order_id)
+
+    if len(price_to_customers) == 0:
+        for product_dto in product_dtos:
+            price_to_customers[product_dto.product_id] = product_dto.price_to_customer
 
     delivery_method_recs = delivery_method_repo.get_all_delivery_methods()    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
@@ -1051,6 +1068,8 @@ def update_order(order_id):
 
     taste_formula_dict, formula_dict = formula_manager.get_taste_formula_dict()
     
+    print(price_to_customers)
+
     if request.method == 'GET':        
         return render_scm_template('update_order.html',
                                     order_id=order_id,
@@ -1072,7 +1091,8 @@ def update_order(order_id):
                                     decoration_form_recs=decoration_form_recs,
                                     decoration_technique_recs=decoration_technique_recs,
                                     taste_formula_dict=taste_formula_dict,
-                                    formula_dict=formula_dict)
+                                    formula_dict=formula_dict,
+                                    price_to_customers=price_to_customers)
     elif request.method == 'POST':        
         try:
             customer_id = int(request.form['customer_id'])
@@ -1133,7 +1153,8 @@ def update_order(order_id):
                                                     decoration_form_recs=decoration_form_recs,
                                                     decoration_technique_recs=decoration_technique_recs,
                                                     taste_formula_dict=taste_formula_dict,
-                                                    formula_dict=formula_dict)
+                                                    formula_dict=formula_dict,
+                                                    price_to_customers=price_to_customers)
 
 @app.route('/add_new_product_to_order/<int:order_id>', methods=['GET', 'POST'])
 def add_new_product_to_order(order_id):
@@ -1149,13 +1170,13 @@ def add_new_product_to_order(order_id):
 
     try:
         product_manager.add_product(new_product_name,
-                                 product_amount,
-                                 order_id,
-                                 taste_id,
-                                 formula_id,
-                                 decoration_form_id,
-                                 decoration_technique_id,
-                                 with_box)
+                                    product_amount,
+                                    order_id,
+                                    taste_id,
+                                    formula_id,
+                                    decoration_form_id,
+                                    decoration_technique_id,
+                                    with_box)
         db.session.commit()
     except ScmException as ex:
         db.session.rollback()
@@ -1170,6 +1191,7 @@ def add_new_product_to_order(order_id):
     return redirect_with_message(url_for('update_order', 
                                  order_id=order_id, 
                                  customer_id_arg=[request.args.get('customer_id_arg')],
+                                 ordered_on_arg=[request.args.get('ordered_on_arg')],
                                  delivery_appointment_arg=[request.args.get('delivery_appointment_arg')],
                                  delivery_method_id_arg=[request.args.get('delivery_method_id_arg')],
                                  order_status_arg=[request.args.get('order_status_arg')],
@@ -1177,6 +1199,7 @@ def add_new_product_to_order(order_id):
                                  payment_status_arg=[request.args.get('payment_status_arg')],
                                  paid_on_arg=[request.args.get('paid_on_arg')],
                                  message_arg=[request.args.get('message_arg')],
+                                 price_to_customers_arg=[request.args.get('price_to_customers_arg')]
                                  ), 
                                  message, 
                                  'info')
