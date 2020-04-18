@@ -49,50 +49,59 @@ function extract_update_order_args()
 
 function delete_product_in_update_order(delete_btn)
 {
-    var productId = get_index(delete_btn)
+    var count = $('#existing_products_table tr').length;
 
-    var args = extract_update_order_args()
-    var customerId = args[0]
-    var orderedOn = args[1]
-    var deliveryAppointment = args[2]
-    var deliveryMethodId = args[3]
-    var orderStatus = args[4]
-    var deliveredOn = args[5]
-    var paymentStatus = args[6]
-    var paidOn = args[7]
-    var message = args[8]
-    var newProductName = args[9]
-    var product_amount = args[10]
-    var tasteId = args[11]
-    var formulaId = args[12]
-    var decorationFormId = args[13]
-    var decorationTechniqueId = args[14]
-    var withBox = args[15]
-    var priceToCustomersStr = args[16]
+    if (count == 3)
+    {
+        window.alert('Cannot delete this only product!')
+    }
+    else
+    {
+        var productId = get_index(delete_btn)
 
-    currentHref = location.href
-	currentHrefComponents = currentHref.split("/")
-    baseHref = currentHrefComponents.slice(0,3).join("/")
-    newHref = baseHref + "/delete_product/" + productId + 
-        "?customer_id_arg=" + customerId +
-        "&ordered_on_arg=" + orderedOn +
-        "&delivery_appointment_arg=" + deliveryAppointment +
-        "&delivery_method_id_arg=" + deliveryMethodId +
-        "&order_status_arg=" + orderStatus +
-        "&delivered_on_arg=" + deliveredOn +
-        "&payment_status_arg=" + paymentStatus +
-        "&paid_on_arg=" + paidOn +
-        "&message_arg=" + message +
-        "&new_product_name_arg=" + newProductName +
-        "&product_amount_arg=" + product_amount +
-        "&taste_id_arg=" + tasteId +
-        "&formula_id_arg=" + formulaId +
-        "&decoration_form_id_arg=" + decorationFormId +
-        "&decoration_technique_id_arg=" + decorationTechniqueId +
-        "&with_box_arg=" + withBox +
-        "&price_to_customers_arg=" + priceToCustomersStr
-    
-    location.href = newHref
+        var args = extract_update_order_args()
+        var customerId = args[0]
+        var orderedOn = args[1]
+        var deliveryAppointment = args[2]
+        var deliveryMethodId = args[3]
+        var orderStatus = args[4]
+        var deliveredOn = args[5]
+        var paymentStatus = args[6]
+        var paidOn = args[7]
+        var message = args[8]
+        var newProductName = args[9]
+        var product_amount = args[10]
+        var tasteId = args[11]
+        var formulaId = args[12]
+        var decorationFormId = args[13]
+        var decorationTechniqueId = args[14]
+        var withBox = args[15]
+        var priceToCustomersStr = args[16]
+
+        currentHref = location.href
+        currentHrefComponents = currentHref.split("/")
+        baseHref = currentHrefComponents.slice(0,3).join("/")
+        newHref = baseHref + "/delete_product/" + productId + 
+            "?customer_id_arg=" + customerId +
+            "&ordered_on_arg=" + orderedOn +
+            "&delivery_appointment_arg=" + deliveryAppointment +
+            "&delivery_method_id_arg=" + deliveryMethodId +
+            "&order_status_arg=" + orderStatus +
+            "&delivered_on_arg=" + deliveredOn +
+            "&payment_status_arg=" + paymentStatus +
+            "&paid_on_arg=" + paidOn +
+            "&message_arg=" + message +
+            "&new_product_name_arg=" + newProductName +
+            "&product_amount_arg=" + product_amount +
+            "&taste_id_arg=" + tasteId +
+            "&formula_id_arg=" + formulaId +
+            "&decoration_form_id_arg=" + decorationFormId +
+            "&decoration_technique_id_arg=" + decorationTechniqueId +
+            "&with_box_arg=" + withBox +
+            "&price_to_customers_arg=" + priceToCustomersStr
+        
+        location.href = newHref
+    }
 }
 
 function update_order_taste_change(taste_choices)
