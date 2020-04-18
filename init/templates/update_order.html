@@ -133,9 +133,8 @@
                   value="{{price_to_customers[product_dtos[i].product_id]}}"/></td>
 
                 <td><a href="{{ url_for('update_product', product_id=product_dtos[i].product_id) }}"
-                class="btn btn-default pullright">Update</a></td></td>
-                <td><a href="{{ url_for('delete_product', product_id=product_dtos[i].product_id) }}"
-                class="btn btn-default pullright">Delete</a></td></td>
+                class="btn btn-default pullright">Update</a></td>
+                <td><button type="button" class="btn btn-default pullright" id="btn_delete_product_{{product_dtos[i].product_id}}" onclick="delete_product_in_update_order(this)">Delete</button></td>
 
               </tr>
               {% endfor %}
@@ -229,7 +228,11 @@
 
         <p>
           <label for="with_box">With box</label><br>
+          {% if with_box == 'true' %}
+            <input type="checkbox" id="with_box" name="with_box" checked>
+          {% else %}
           <input type="checkbox" id="with_box" name="with_box">
+          {% endif %}
         </p>
       </div>
 

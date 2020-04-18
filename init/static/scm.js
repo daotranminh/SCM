@@ -1,3 +1,100 @@
+function extract_update_order_args()
+{
+    var customerId = document.getElementById("customer_id").value
+    var orderedOn = document.getElementById("ordered_on").value
+    var deliveryAppointment = document.getElementById("delivery_appointment").value
+    var deliveryMethodId = document.getElementById("delivery_method_id").value
+    var orderStatus = document.getElementById("order_status").value
+    var deliveredOn = document.getElementById("delivered_on").value
+    var paymentStatus = document.getElementById("payment_status").value
+    var paidOn = document.getElementById("paid_on").value
+    var message = document.getElementById("message").value
+
+    var newProductName = document.getElementById("new_product_name").value
+    var product_amount = document.getElementById("product_amount").value
+    var tasteId = document.getElementById("taste_id").value
+    var formulaId = document.getElementById("formula_id").value
+    var decorationFormId = document.getElementById("decoration_form_id").value
+    var decorationTechniqueId = document.getElementById("decoration_technique_id").value
+    var withBox = document.getElementById("with_box").checked
+
+    var existingProductIds = document.querySelectorAll('*[id^="product_id_"]');
+    var existingProductPriceIds = document.querySelectorAll('*[id^="price_to_customer_"]');
+	var priceToCustomersStr = ""
+	for (var i=0; i < existingProductIds.length; i++)
+	{
+		var productId = existingProductIds[i].innerText
+		var productPrice = existingProductPriceIds[i].value
+		priceToCustomersStr = priceToCustomersStr + productId + "--" + productPrice + "!!!!"
+    }
+    
+    return [customerId,             // 0
+            orderedOn,              // 1
+            deliveryAppointment,    // 2
+            deliveryMethodId,       // 3
+            orderStatus,            // 4
+            deliveredOn,            // 5
+            paymentStatus,          // 6
+            paidOn,                 // 7
+            message,                // 8
+            newProductName,         // 9
+            product_amount,         // 10
+            tasteId,                // 11
+            formulaId,              // 12
+            decorationFormId,       // 13
+            decorationTechniqueId,  // 14
+            withBox,                // 15
+            priceToCustomersStr]    // 16
+}
+
+function delete_product_in_update_order(delete_btn)
+{
+    var productId = get_index(delete_btn)
+
+    var args = extract_update_order_args()
+    var customerId = args[0]
+    var orderedOn = args[1]
+    var deliveryAppointment = args[2]
+    var deliveryMethodId = args[3]
+    var orderStatus = args[4]
+    var deliveredOn = args[5]
+    var paymentStatus = args[6]
+    var paidOn = args[7]
+    var message = args[8]
+    var newProductName = args[9]
+    var product_amount = args[10]
+    var tasteId = args[11]
+    var formulaId = args[12]
+    var decorationFormId = args[13]
+    var decorationTechniqueId = args[14]
+    var withBox = args[15]
+    var priceToCustomersStr = args[16]
+
+    currentHref = location.href
+	currentHrefComponents = currentHref.split("/")
+    baseHref = currentHrefComponents.slice(0,3).join("/")
+    newHref = baseHref + "/delete_product/" + productId + 
+        "?customer_id_arg=" + customerId +
+        "&ordered_on_arg=" + orderedOn +
+        "&delivery_appointment_arg=" + deliveryAppointment +
+        "&delivery_method_id_arg=" + deliveryMethodId +
+        "&order_status_arg=" + orderStatus +
+        "&delivered_on_arg=" + deliveredOn +
+        "&payment_status_arg=" + paymentStatus +
+        "&paid_on_arg=" + paidOn +
+        "&message_arg=" + message +
+        "&new_product_name_arg=" + newProductName +
+        "&product_amount_arg=" + product_amount +
+        "&taste_id_arg=" + tasteId +
+        "&formula_id_arg=" + formulaId +
+        "&decoration_form_id_arg=" + decorationFormId +
+        "&decoration_technique_id_arg=" + decorationTechniqueId +
+        "&with_box_arg=" + withBox +
+        "&price_to_customers_arg=" + priceToCustomersStr
+    
+    location.href = newHref
+}
+
 function update_order_taste_change(taste_choices)
 {
     var formula_choices = document.getElementById("formula_id")
@@ -49,33 +146,25 @@ function taste_change(taste_choices)
 function add_new_product_to_order()
 {
     var orderId = document.getElementById("order_id").value
-    var customerId = document.getElementById("customer_id").value
-    var orderedOn = document.getElementById("ordered_on").value
-    var deliveryAppointment = document.getElementById("delivery_appointment").value
-    var deliveryMethodId = document.getElementById("delivery_method_id").value
-    var orderStatus = document.getElementById("order_status").value
-    var deliveredOn = document.getElementById("delivered_on").value
-    var paymentStatus = document.getElementById("payment_status").value
-    var paidOn = document.getElementById("paid_on").value
-    var message = document.getElementById("message").value
 
-    var newProductName = document.getElementById("new_product_name").value
-    var product_amount = document.getElementById("product_amount").value
-    var tasteId = document.getElementById("taste_id").value
-    var formulaId = document.getElementById("formula_id").value
-    var decorationFormId = document.getElementById("decoration_form_id").value
-    var decorationTechniqueId = document.getElementById("decoration_technique_id").value
-    var withBox = document.getElementById("with_box").checked
-
-    var existingProductIds = document.querySelectorAll('*[id^="product_id_"]');
-    var existingProductPriceIds = document.querySelectorAll('*[id^="price_to_customer_"]');
-	var priceToCustomersStr = ""
-	for (var i=0; i < existingProductIds.length; i++)
-	{
-		var productId = existingProductIds[i].innerText
-		var productPrice = existingProductPriceIds[i].value
-		priceToCustomersStr = priceToCustomersStr + productId + "--" + productPrice + "!!!!"
-	}
+    var args = extract_update_order_args()
+    var customerId = args[0]
+    var orderedOn = args[1]
+    var deliveryAppointment = args[2]
+    var deliveryMethodId = args[3]
+    var orderStatus = args[4]
+    var deliveredOn = args[5]
+    var paymentStatus = args[6]
+    var paidOn = args[7]
+    var message = args[8]
+    var newProductName = args[9]
+    var product_amount = args[10]
+    var tasteId = args[11]
+    var formulaId = args[12]
+    var decorationFormId = args[13]
+    var decorationTechniqueId = args[14]
+    var withBox = args[15]
+    var priceToCustomersStr = args[16]
 
     currentHref = location.href
 	currentHrefComponents = currentHref.split("/")

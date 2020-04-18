@@ -1037,28 +1037,32 @@ def __extract_update_order_args(order_rec, args):
         product_amount_arg = int(product_amount_arg)
 
     chosen_taste_id_arg = args.get('chosen_taste_id_arg')
-    if chosen_taste_id_arg is None:
+    if chosen_taste_id_arg is None or chosen_taste_id_arg == '':
         chosen_taste_id_arg = -1
     else:
         chosen_taste_id_arg = int(chosen_taste_id_arg)
 
     chosen_formula_id_arg = args.get('chosen_formula_id_arg')
-    if chosen_formula_id_arg is None:
+    if chosen_formula_id_arg is None or chosen_formula_id_arg == '':
         chosen_formula_id_arg = -1
     else:
         chosen_formula_id_arg = int(chosen_formula_id_arg)
 
     chosen_decoration_form_id_arg = args.get('chosen_decoration_form_id_arg')
-    if chosen_decoration_form_id_arg is None:
+    if chosen_decoration_form_id_arg is None or chosen_decoration_form_id_arg == '':
         chosen_decoration_form_id_arg = -1
     else:
         chosen_decoration_form_id_arg = int(chosen_decoration_form_id_arg)
 
     chosen_decoration_techinque_id_arg = args.get('chosen_decoration_techinque_id_arg')
-    if chosen_decoration_techinque_id_arg is None:
+    if chosen_decoration_techinque_id_arg is None or chosen_decoration_techinque_id_arg == '':
         chosen_decoration_techinque_id_arg = -1
     else:
         chosen_decoration_techinque_id_arg = int(chosen_decoration_techinque_id_arg)
+
+    with_box_arg = args.get('with_box_arg')
+    if with_box_arg is None or with_box_arg == '':
+        with_box_arg = 'false'
 
     return customer_id_arg, \
         ordered_on_arg, \
@@ -1075,6 +1079,7 @@ def __extract_update_order_args(order_rec, args):
         chosen_formula_id_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
+        with_box_arg, \
         price_to_customers
 
 @app.route('/update_order/<int:order_id>', methods=['GET', 'POST'])
@@ -1096,6 +1101,7 @@ def update_order(order_id):
         chosen_formula_id_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
+        with_box_arg, \
         price_to_customers = __extract_update_order_args(order_rec, request.args)
 
     customer_recs = customer_repo.get_all_customers()    
@@ -1133,6 +1139,7 @@ def update_order(order_id):
                                     chosen_formula_id=chosen_formula_id_arg,
                                     chosen_decoration_form_id=chosen_decoration_form_id_arg,
                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
+                                    with_box=with_box_arg,
                                     order_cost_estimation=order_rec.total_cost,
                                     customer_recs=customer_recs,
                                     delivery_method_recs=delivery_method_recs,
@@ -1195,6 +1202,13 @@ def update_order(order_id):
                                                     delivered_on=delivered_on_arg,
                                                     payment_status=payment_status_arg,
                                                     paid_on=paid_on_arg,
+                                                    new_product_name=new_product_name_arg,
+                                                    product_amount=product_amount_arg,
+                                                    chosen_taste_id=chosen_taste_id_arg,
+                                                    chosen_formula_id=chosen_formula_id_arg,
+                                                    chosen_decoration_form_id=chosen_decoration_form_id_arg,
+                                                    chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
+                                                    with_box=with_box_arg,
                                                     order_cost_estimation=order_rec.total_cost,
                                                     customer_recs=customer_recs,
                                                     delivery_method_recs=delivery_method_recs,
@@ -1233,9 +1247,28 @@ def add_new_product_to_order(order_id):
     except ScmException as ex:
         db.session.rollback()
         message = 'Failed to add a new product "%s" to order %s' % (product_name, order_id)
-        return redirect_with_message(url_for('update_order', order_id=order_id),
-                                     message,
-                                     'danger')
+        return redirect_with_message(url_for('update_order', 
+                                             order_id=order_id,
+                                             customer_id_arg=[request.args.get('customer_id_arg')],
+                                             ordered_on_arg=[request.args.get('ordered_on_arg')],
+                                             delivery_appointment_arg=[request.args.get('delivery_appointment_arg')],
+                                             delivery_method_id_arg=[request.args.get('delivery_method_id_arg')],
+                                             order_status_arg=[request.args.get('order_status_arg')],
+                                             delivered_on_arg=[request.args.get('delivered_on_arg')],
+                                             payment_status_arg=[request.args.get('payment_status_arg')],
+                                             paid_on_arg=[request.args.get('paid_on_arg')],
+                                             message_arg=[request.args.get('message_arg')],
+                                             price_to_customers_arg=[request.args.get('price_to_customers_arg')],
+                                             new_product_name_arg=[request.args.get('new_product_name_arg')],
+                                             product_amount_arg=[request.args.get('product_amount_arg')],
+                                             chosen_taste_id_arg=[request.args.get('taste_id_arg')],
+                                             chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                             chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
+                                             chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
+                                             with_box_arg=[request.args.get('with_box_arg')]
+                                             ),
+                                             message,
+                                             'danger')
     
     message = 'Successfully add a new product %s to order %s' % (new_product_name, order_id)
     logger.info(message)
@@ -1257,7 +1290,8 @@ def add_new_product_to_order(order_id):
                                  chosen_taste_id_arg=['-1'],
                                  chosen_formula_id_arg=['-1'],
                                  chosen_decoration_form_id_arg=['-1'],
-                                 chosen_decoration_technique_id_arg=['-1']
+                                 chosen_decoration_technique_id_arg=['-1'],
+                                 with_box_arg=['false']
                                  ), 
                                  message, 
                                  'info')
@@ -1456,6 +1490,7 @@ def update_product(product_id):
 
 @app.route('/delete_product/<int:product_id>', methods=['GET', 'POST'])
 def delete_product(product_id):
+    print('IN DELETE PRODUCT')
     product_rec = product_repo.get_product(product_id)
     order_id = product_rec.order_id
     product_name = product_rec.name
@@ -1466,14 +1501,52 @@ def delete_product(product_id):
     except ScmException as ex:
         db.session.rollback()
         message = 'Failed to delete product "%s" (%s)' % (product_name, product_id)
-        return redirect_with_message(url_for('update_order', order_id=order_id),
-                                     message,
-                                     'danger')
+        return redirect_with_message(url_for('update_order', 
+                                             order_id=order_id,
+                                             customer_id_arg=[request.args.get('customer_id_arg')],
+                                             ordered_on_arg=[request.args.get('ordered_on_arg')],
+                                             delivery_appointment_arg=[request.args.get('delivery_appointment_arg')],
+                                             delivery_method_id_arg=[request.args.get('delivery_method_id_arg')],
+                                             order_status_arg=[request.args.get('order_status_arg')],
+                                             delivered_on_arg=[request.args.get('delivered_on_arg')],
+                                             payment_status_arg=[request.args.get('payment_status_arg')],
+                                             paid_on_arg=[request.args.get('paid_on_arg')],
+                                             message_arg=[request.args.get('message_arg')],
+                                             price_to_customers_arg=[request.args.get('price_to_customers_arg')],
+                                             new_product_name_arg=[request.args.get('new_product_name_arg')],
+                                             product_amount_arg=[request.args.get('product_amount_arg')],
+                                             chosen_taste_id_arg=[request.args.get('taste_id_arg')],
+                                             chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                             chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
+                                             chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
+                                             with_box_arg=[request.args.get('with_box_arg')]
+                                             ),
+                                             message,
+                                             'danger')
     
     message = 'Successfully deleted product "%s" (%s)' % (product_name, product_id)
     logger.info(message)
 
-    return redirect_with_message(url_for('update_order', order_id=order_id),
+    return redirect_with_message(url_for('update_order', 
+                                 order_id=order_id,
+                                 customer_id_arg=[request.args.get('customer_id_arg')],
+                                 ordered_on_arg=[request.args.get('ordered_on_arg')],
+                                 delivery_appointment_arg=[request.args.get('delivery_appointment_arg')],
+                                 delivery_method_id_arg=[request.args.get('delivery_method_id_arg')],
+                                 order_status_arg=[request.args.get('order_status_arg')],
+                                 delivered_on_arg=[request.args.get('delivered_on_arg')],
+                                 payment_status_arg=[request.args.get('payment_status_arg')],
+                                 paid_on_arg=[request.args.get('paid_on_arg')],
+                                 message_arg=[request.args.get('message_arg')],
+                                 price_to_customers_arg=[request.args.get('price_to_customers_arg')],
+                                 new_product_name_arg=[request.args.get('new_product_name_arg')],
+                                 product_amount_arg=[request.args.get('product_amount_arg')],
+                                 chosen_taste_id_arg=[request.args.get('taste_id_arg')],
+                                 chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                 chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
+                                 chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
+                                 with_box_arg=[request.args.get('with_box_arg')]
+                                 ),
                                  message,
                                  'info')
 
