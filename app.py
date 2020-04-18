@@ -1026,6 +1026,40 @@ def __extract_update_order_args(order_rec, args):
                 pair = product_id_price.split('--')
                 price_to_customers[int(pair[0])] = pair[1]
 
+    new_product_name_arg = args.get('new_product_name_arg')
+    if new_product_name_arg is None:
+        new_product_name_arg = ''
+    
+    product_amount_arg = args.get('product_amount_arg')
+    if product_amount_arg is None:
+        product_amount_arg = 1
+    else:
+        product_amount_arg = int(product_amount_arg)
+
+    chosen_taste_id_arg = args.get('chosen_taste_id_arg')
+    if chosen_taste_id_arg is None:
+        chosen_taste_id_arg = -1
+    else:
+        chosen_taste_id_arg = int(chosen_taste_id_arg)
+
+    chosen_formula_id_arg = args.get('chosen_formula_id_arg')
+    if chosen_formula_id_arg is None:
+        chosen_formula_id_arg = -1
+    else:
+        chosen_formula_id_arg = int(chosen_formula_id_arg)
+
+    chosen_decoration_form_id_arg = args.get('chosen_decoration_form_id_arg')
+    if chosen_decoration_form_id_arg is None:
+        chosen_decoration_form_id_arg = -1
+    else:
+        chosen_decoration_form_id_arg = int(chosen_decoration_form_id_arg)
+
+    chosen_decoration_techinque_id_arg = args.get('chosen_decoration_techinque_id_arg')
+    if chosen_decoration_techinque_id_arg is None:
+        chosen_decoration_techinque_id_arg = -1
+    else:
+        chosen_decoration_techinque_id_arg = int(chosen_decoration_techinque_id_arg)
+
     return customer_id_arg, \
         ordered_on_arg, \
         delivery_appointment_arg, \
@@ -1035,6 +1069,12 @@ def __extract_update_order_args(order_rec, args):
         payment_status_arg, \
         paid_on_arg, \
         message_arg, \
+        new_product_name_arg, \
+        product_amount_arg, \
+        chosen_taste_id_arg, \
+        chosen_formula_id_arg, \
+        chosen_decoration_form_id_arg, \
+        chosen_decoration_techinque_id_arg, \
         price_to_customers
 
 @app.route('/update_order/<int:order_id>', methods=['GET', 'POST'])
@@ -1050,6 +1090,12 @@ def update_order(order_id):
         payment_status_arg, \
         paid_on_arg, \
         message_arg, \
+        new_product_name_arg, \
+        product_amount_arg, \
+        chosen_taste_id_arg, \
+        chosen_formula_id_arg, \
+        chosen_decoration_form_id_arg, \
+        chosen_decoration_techinque_id_arg, \
         price_to_customers = __extract_update_order_args(order_rec, request.args)
 
     customer_recs = customer_repo.get_all_customers()    
@@ -1081,6 +1127,12 @@ def update_order(order_id):
                                     delivered_on=delivered_on_arg,
                                     payment_status=payment_status_arg,
                                     paid_on=paid_on_arg,
+                                    new_product_name=new_product_name_arg,
+                                    product_amount=product_amount_arg,
+                                    chosen_taste_id=chosen_taste_id_arg,
+                                    chosen_formula_id=chosen_formula_id_arg,
+                                    chosen_decoration_form_id=chosen_decoration_form_id_arg,
+                                    chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
                                     order_cost_estimation=order_rec.total_cost,
                                     customer_recs=customer_recs,
                                     delivery_method_recs=delivery_method_recs,
@@ -1199,7 +1251,13 @@ def add_new_product_to_order(order_id):
                                  payment_status_arg=[request.args.get('payment_status_arg')],
                                  paid_on_arg=[request.args.get('paid_on_arg')],
                                  message_arg=[request.args.get('message_arg')],
-                                 price_to_customers_arg=[request.args.get('price_to_customers_arg')]
+                                 price_to_customers_arg=[request.args.get('price_to_customers_arg')],
+                                 new_product_name_arg=[''],
+                                 product_amount_arg=['1'],
+                                 chosen_taste_id_arg=['-1'],
+                                 chosen_formula_id_arg=['-1'],
+                                 chosen_decoration_form_id_arg=['-1'],
+                                 chosen_decoration_technique_id_arg=['-1']
                                  ), 
                                  message, 
                                  'info')

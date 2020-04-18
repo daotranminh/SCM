@@ -160,12 +160,12 @@
         <p><label>Additional product:</label></p>
         <p>
           <label for="new_product_name">Name</label>
-          <input type="text" id="new_product_name" name="new_product_name"/>
+          <input type="text" id="new_product_name" name="new_product_name" value="{{new_product_name}}"/>
         </p>
 
         <p>
           <label for="product_amount">Amount</label>
-          <input type="number" style="text-align:right" id="product_amount" name="product_amount" min="1" value="1"/>
+          <input type="number" style="text-align:right" id="product_amount" name="product_amount" min="1" value="{{product_amount}}"/>
         </p>
 
         <p>
@@ -175,7 +175,11 @@
             {% if taste_rec is none %}
               <option value="-1"></option>
             {% else %}
+              {% if taste_rec.id == chosen_taste_id %}
+                <option value="{{taste_rec.id}}" selected>{{taste_rec.name}}</option>
+              {% else %}
               <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
+              {% endif %}
             {% endif %}
 	        {% endfor %}
           </select>
@@ -183,7 +187,16 @@
 
         <p>
           <label for="formula_id">Formula</label>
-          <select id="formula_id" name="formula_id">                  
+          <select id="formula_id" name="formula_id">
+            {% if chosen_taste_id != -1 %}
+              {% for formula_id in taste_formula_dict[chosen_taste_id] %}
+                {% if formula_id == chosen_formula_id %}
+                  <option value="{{formula_id}}" selected>{{formula_dict[formula_id]}}</option>
+                {% else %}
+                  <option value="{{formula_id}}">{{formula_dict[formula_id]}}</option>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
           </select>
           </p>
         <p>
@@ -191,8 +204,12 @@
         <p>
           <label for="decoration_form_id">Decoration form</label>
           <select id="decoration_form_id" name="decoration_form_id">
-	        {% for decoration_form_rec in decoration_form_recs %}
-	          <option value="{{decoration_form_rec.id}}">{{decoration_form_rec.name}}</option>
+          {% for decoration_form_rec in decoration_form_recs %}
+            {% if decoration_form_rec.id == chosen_decoration_form_id %}
+              <option value="{{decoration_form_rec.id}}" selected>{{decoration_form_rec.name}}</option>
+            {% else %}
+              <option value="{{decoration_form_rec.id}}">{{decoration_form_rec.name}}</option>
+            {% endif %}
 	        {% endfor %}
           </select>
         </p>
@@ -200,8 +217,12 @@
         <p>
           <label for="decoration_technique_id">Decoration technique</label>
           <select id="decoration_technique_id" name="decoration_technique_id">
-	        {% for decoration_technique_rec in decoration_technique_recs %}
-	          <option value="{{decoration_technique_rec.id}}">{{decoration_technique_rec.name}}</option>
+          {% for decoration_technique_rec in decoration_technique_recs %}
+            {% if decoration_technique_rec.id == chosen_decoration_technique_id %}
+              <option value="{{decoration_technique_rec.id}}" selected>{{decoration_technique_rec.name}}</option>
+            {% else %}
+              <option value="{{decoration_technique_rec.id}}">{{decoration_technique_rec.name}}</option>
+            {% endif %}
 	        {% endfor %}
           </select>
         </p>
