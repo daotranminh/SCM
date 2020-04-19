@@ -66,6 +66,11 @@ function extract_update_order_args()
 
 function delete_product_in_update_order(delete_btn)
 {
+    if (confirm('Are you sure to delete this product?') == false)
+    {
+        return;
+    }
+
     var count = $('#existing_products_table tr').length;
 
     if (count == 3)
@@ -261,6 +266,11 @@ function add_product_to_order()
 
 function delete_product(control)
 {
+    if (confirm('Are you sure to delete this product?') == false)
+    {
+        return;
+    }
+
     var products_list = document.getElementsByName("product[]")
     var len = products_list.length
 
