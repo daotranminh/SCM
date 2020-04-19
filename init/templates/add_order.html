@@ -7,7 +7,7 @@
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
     <h1>Add a new order</h1>
-    <form method="POST" action="">
+    <form method="POST" action="" onsubmit="return validate_add_order();">
       <div class="form-group">
             <label for="customer_id">Customer</label>
             <select id="customer_id" name="customer_id">
@@ -110,7 +110,6 @@
 	      <label for="message">Message</label>
             <textarea class="form-control" cols="80" id="message" name="message" rows="10"></textarea>
       </div>
-
 
       <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
     </form>

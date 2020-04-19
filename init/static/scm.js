@@ -1,3 +1,36 @@
+function validate_add_order()
+{
+    var products_list = document.getElementsByName("product[]")
+
+    for (var i=0; i < products_list.length; ++i)
+    {
+        var product_name = products_list[i].children[2].children[1].value
+        var product_amount = products_list[i].children[3].children[1].value
+        var taste_choice = products_list[i].children[4].children[1].value
+        var formula_choice = products_list[i].children[5].children[1].value
+        var decoration_form_choices = products_list[i].children[6].children[1].value 
+        var decoration_technique_choices = products_list[i].children[7].children[1].value        
+
+        if (product_name == "")
+        {
+            alert("Please enter a product name for product " + (i+1).toString() + "!")
+            return false
+        }
+
+        if (taste_choice == "-1")
+        {
+            alert("Please choose a taste for product " + (i+1).toString() + "!")
+            return false
+        }
+
+        if (formula_choice == "-1" || formula_choice == "")
+        {
+            alert("Please choose a formula for product " + (i+1).toString() + "!")
+            return false
+        }
+    }
+}
+
 function update_total_price_to_customer(control)
 {
     var totalProductPriceToCustomer = 0
@@ -195,6 +228,18 @@ function add_new_product_to_order()
     var decorationTechniqueId = args[14]
     var withBox = args[15]
     var priceToCustomersStr = args[16]
+
+    if (newProductName == "")
+    {
+        alert("Please enter product's name!")
+        return false;
+    }
+
+    if (tasteId == "-1")
+    {
+        alert("Please choose a taste!")
+        return false;
+    }
 
     currentHref = location.href
 	currentHrefComponents = currentHref.split("/")
