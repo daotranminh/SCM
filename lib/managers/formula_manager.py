@@ -142,15 +142,19 @@ class FormulaManager:
         return False
 
     def get_paginated_formula_dtos(self,
+                                   taste_id,
                                    page,
                                    per_page,
                                    search_text):
-        paginated_formula_infos = self.formula_repo.get_paginated_formulas(page,
-                                                                           per_page,
-                                                                           search_text)
+        paginated_formula_infos = self.formula_repo.get_paginated_formulas(
+            taste_id,
+            page,
+            per_page,
+            search_text)
+
         formula_dtos = []
         db_changed = False
-        for formula_rec, taste_name, formula_cost in paginated_formula_infos.items:
+        for formula_rec, formula_cost in paginated_formula_infos.items:
             up_to_date_formula_cost = formula_cost
             if formula_rec.has_up_to_date_cost_estimation == False:
                 up_to_date_formula_cost = self.estimate_formula_cost(formula_rec.id)
@@ -158,7 +162,6 @@ class FormulaManager:
 
             formula_dto = FormulaDto(formula_rec.id,
                                      formula_rec.name,
-                                     taste_name,
                                      formula_rec.description,
                                      formula_rec.note,
                                      up_to_date_formula_cost,

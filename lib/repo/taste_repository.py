@@ -19,6 +19,9 @@ class TasteRepository:
     def get_taste(self, id):
         return Taste.query.filter(Taste.id == id).first()
 
+    def get_first_taste(self):
+        return Taste.query.first()
+
     def add_taste(self,
                   name,
                   description):

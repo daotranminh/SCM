@@ -511,3 +511,16 @@ sComboBoxChangeOneLevel = function(element) {
 	location.href = parentHref + "/" + chosen_item
     })
 };
+
+sComboBoxChangeFirstLevel = function(element) {
+    $(element).select2();
+    jQuery(element).change(function() {
+	let currentHref = location.href;
+
+    let currentHrefComponents = currentHref.split("/");
+    currentHrefComponents[4] = this.value
+    let newHref = currentHrefComponents.join("/");
+    
+	location.href = newHref
+    })
+};

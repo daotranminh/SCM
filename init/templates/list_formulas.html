@@ -2,17 +2,33 @@
 
 {% block body %}
 
-<h1>List of Formulas</h1>
-
 {% from "includes/_formhelpers.html" import render_field %}
 
-<input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+<br/>
+<label for="taste_choices">List of formulas for taste</label>
+	<select id="taste_choices" name="taste_choices">
+    {% for taste_rec1 in taste_recs %}
+      {% if taste_rec1.id == taste_rec.id %}
+        <option value="{{taste_rec1.id}}" selected>{{taste_rec1.name}}</option>
+      {% else %}
+        <option value="{{taste_rec1.id}}">{{taste_rec1.name}}</option>
+      {% endif %}
+	  {% endfor %}
+  </select>
+<br/>
+<br/>
+
+{% if search_text == '' %}
+  <input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+{% else %}
+  <input type="text" class="form-control" value="{{search_text}}" id="searchInput">  
+{% endif %}
+<br/>
 
 <table class="table table-striped">
   <thead>
     <tr>
       <th>Name</th>
-      <th>Taste</th>      
       <th>Registered on<i class="fa fa-sort-asc"></i></th>
       <th>Cost estimation</th>
       <th></th>
@@ -24,7 +40,6 @@
     <tr>
       <td><a href="{{ url_for('formula_details', 
 	   formula_id=formula_dto.formula_id) }}">{{formula_dto.name}}</a></td>
-      <td>{{formula_dto.taste}}</td>      
       <td>{{formula_dto.registered_on}}</td>
       <td>{{formula_dto.total_cost}}</td>
       <td><a href="{{ url_for('update_formula', 
@@ -43,7 +58,8 @@
 
   {% if formula_dtos.has_prev %}
   <li class="page-item"><a class="page-link"
-			   href="{{ url_for('list_formulas', 
+         href="{{ url_for('list_formulas', 
+         taste_id=taste_rec.id,
 				 page=formula_dtos.prev_num) }}">Previous</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
@@ -52,7 +68,8 @@
 
   {% if formula_dtos.has_next %}
   <li class="page-item"><a class="page-link"
-			   href="{{ url_for('list_formulas', 
+         href="{{ url_for('list_formulas', 
+         taste_id=taste_rec.id,
 				 page=formula_dtos.next_num) }}">Next</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
@@ -65,13 +82,20 @@
    class="btn btn-default pullright">Add a new formula</a>
 
 <script>
+  $('#taste_choices').select2();
+
   $("#searchInput").keyup(function(e) {
     if (e.keyCode == 13) {
+      var current_taste_choice = document.getElementById("taste_choices").value
       let search_text = this.value
-      location.href = "/list_formulas/1/?search_text=" + search_text
+
+      location.href = "/list_formulas/" + current_taste_choice + "/1/?search_text=" + search_text
     }
   })
 
+  jQuery(function() {
+    sComboBoxChangeFirstLevel("#taste_choices")
+  })
 </script>
 
 {% endblock %}

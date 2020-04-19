@@ -638,21 +638,38 @@ def customer_details(customer_id):
 # FORMULAS
 ####################################################################################
 
-@app.route('/list_formulas', methods=['GET', 'POST'], defaults={'page':1})
-@app.route('/list_formulas/', methods=['GET', 'POST'], defaults={'page':1})
-@app.route('/list_formulas/<int:page>', methods=['GET', 'POST'])
-@app.route('/list_formulas/<int:page>/', methods=['GET', 'POST'])
-def list_formulas(page):
+@app.route('/list_formulas', methods=['GET', 'POST'])
+@app.route('/list_formulas/', methods=['GET', 'POST'])
+def list_formulas_default():
+    first_taste_rec = taste_repo.get_first_taste()
+    if first_taste_rec is not None:
+        return redirect('/list_formulas/' + str(first_taste_rec.id))
+    return render_error('No taste found in the database. Please add a taste.')
+
+@app.route('/list_formulas/<int:taste_id>', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_formulas/<int:taste_id>/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_formulas/<int:taste_id>/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_formulas/<int:taste_id>/<int:page>/', methods=['GET', 'POST'])
+def list_formulas(taste_id, page):
     per_page = int(config['PAGING']['formulas_per_page'])
     search_text = request.args.get('search_text')
     
-    formula_dtos, db_changed = formula_manager.get_paginated_formula_dtos(page,
-                                                              per_page,
-                                                              search_text)
+    formula_dtos, db_changed = formula_manager.get_paginated_formula_dtos(
+        taste_id,
+        page,
+        per_page,
+        search_text)
+
     if db_changed == True:
         db.session.commit()
+
+    taste_rec = taste_repo.get_taste(taste_id)
+    taste_recs = taste_repo.get_all_tastes()
                                                                   
     return render_scm_template('list_formulas.html',
+                                search_text=search_text,
+                                taste_rec=taste_rec,
+                                taste_recs=taste_recs,
                                 formula_dtos=formula_dtos)
 
 def __extract_formula_props(props_dict):
