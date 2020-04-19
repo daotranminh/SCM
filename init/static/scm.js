@@ -71,54 +71,53 @@ function delete_product_in_update_order(delete_btn)
     if (count == 3)
     {
         window.alert('Cannot delete this only product!')
+        return;
     }
-    else
-    {
-        var productId = get_index(delete_btn)
 
-        var args = extract_update_order_args()
-        var customerId = args[0]
-        var orderedOn = args[1]
-        var deliveryAppointment = args[2]
-        var deliveryMethodId = args[3]
-        var orderStatus = args[4]
-        var deliveredOn = args[5]
-        var paymentStatus = args[6]
-        var paidOn = args[7]
-        var message = args[8]
-        var newProductName = args[9]
-        var product_amount = args[10]
-        var tasteId = args[11]
-        var formulaId = args[12]
-        var decorationFormId = args[13]
-        var decorationTechniqueId = args[14]
-        var withBox = args[15]
-        var priceToCustomersStr = args[16]
+    var productId = get_index(delete_btn)
 
-        currentHref = location.href
-        currentHrefComponents = currentHref.split("/")
-        baseHref = currentHrefComponents.slice(0,3).join("/")
-        newHref = baseHref + "/delete_product/" + productId + 
-            "?customer_id_arg=" + customerId +
-            "&ordered_on_arg=" + orderedOn +
-            "&delivery_appointment_arg=" + deliveryAppointment +
-            "&delivery_method_id_arg=" + deliveryMethodId +
-            "&order_status_arg=" + orderStatus +
-            "&delivered_on_arg=" + deliveredOn +
-            "&payment_status_arg=" + paymentStatus +
-            "&paid_on_arg=" + paidOn +
-            "&message_arg=" + message +
-            "&new_product_name_arg=" + newProductName +
-            "&product_amount_arg=" + product_amount +
-            "&taste_id_arg=" + tasteId +
-            "&formula_id_arg=" + formulaId +
-            "&decoration_form_id_arg=" + decorationFormId +
-            "&decoration_technique_id_arg=" + decorationTechniqueId +
-            "&with_box_arg=" + withBox +
-            "&price_to_customers_arg=" + priceToCustomersStr
+    var args = extract_update_order_args()
+    var customerId = args[0]
+    var orderedOn = args[1]
+    var deliveryAppointment = args[2]
+    var deliveryMethodId = args[3]
+    var orderStatus = args[4]
+    var deliveredOn = args[5]
+    var paymentStatus = args[6]
+    var paidOn = args[7]
+    var message = args[8]
+    var newProductName = args[9]
+    var product_amount = args[10]
+    var tasteId = args[11]
+    var formulaId = args[12]
+    var decorationFormId = args[13]
+    var decorationTechniqueId = args[14]
+    var withBox = args[15]
+    var priceToCustomersStr = args[16]
+
+    currentHref = location.href
+    currentHrefComponents = currentHref.split("/")
+    baseHref = currentHrefComponents.slice(0,3).join("/")
+    newHref = baseHref + "/delete_product/" + productId + 
+        "?customer_id_arg=" + customerId +
+        "&ordered_on_arg=" + orderedOn +
+        "&delivery_appointment_arg=" + deliveryAppointment +
+        "&delivery_method_id_arg=" + deliveryMethodId +
+        "&order_status_arg=" + orderStatus +
+        "&delivered_on_arg=" + deliveredOn +
+        "&payment_status_arg=" + paymentStatus +
+        "&paid_on_arg=" + paidOn +
+        "&message_arg=" + message +
+        "&new_product_name_arg=" + newProductName +
+        "&product_amount_arg=" + product_amount +
+        "&taste_id_arg=" + tasteId +
+        "&formula_id_arg=" + formulaId +
+        "&decoration_form_id_arg=" + decorationFormId +
+        "&decoration_technique_id_arg=" + decorationTechniqueId +
+        "&with_box_arg=" + withBox +
+        "&price_to_customers_arg=" + priceToCustomersStr
         
-        location.href = newHref
-    }
+    location.href = newHref
 }
 
 function update_order_taste_change(taste_choices)
@@ -264,47 +263,47 @@ function delete_product(control)
 {
     var products_list = document.getElementsByName("product[]")
     var len = products_list.length
-    if (len > 1)
-    {
-        var strIndex = get_index(control)
-        var intIndex = parseInt(strIndex)
-        document.getElementById("product_" + strIndex).remove()
-        products_list = document.getElementsByName("product[]")
 
-        for (var i = intIndex; i < products_list.length; i++)
-        {
-	        product = products_list[i]
-	        product.id = "product_" + i.toString()
-    
-            var product_label = product.children[1].children[0]
-            product_label.innerHTML = `Details on product ${(i+1).toString()}:`
-
-            var product_name = product.children[2].children[1]
-            var product_amount = product.children[3].children[1]
-            var taste_choices = product.children[4].children[1]
-            var formula_choices = product.children[5].children[1]
-            var decoration_form_choices = product.children[6].children[1]    
-            var decoration_technique_choices = product.children[7].children[1]
-            var delete_btn = product.children[8].children[0]
-
-            product_name.id = "product_name_" + i.toString()
-            product_amount.id = "product_amount_" + i.toString()
-            taste_choices.id = "taste_choices_" + i.toString()
-            formula_choices.id = "formula_choices_" + i.toString()
-	        decoration_form_choices.id = "decoration_form_choices_" + i.toString()
-	        decoration_technique_choices.id = "decoration_technique_choices_" + i.toString()
-	        delete_btn.id = "delete_product_" + i.toString()
-
-            product_name.name = "product_name_" + i.toString()
-	        taste_choices.name = "taste_choices_" + i.toString()
-	        decoration_form_choices.name = "decoration_form_choices_" + i.toString()
-            decoration_technique_choices.name = "decoration_technique_choices_" + i.toString()
-        }
-    }
-    else
+    if (len <= 1)
     {
         window.alert('Cannot delete this only product!')
+        return;
     }
+
+    var strIndex = get_index(control)
+    var intIndex = parseInt(strIndex)
+    document.getElementById("product_" + strIndex).remove()
+    products_list = document.getElementsByName("product[]")
+
+    for (var i = intIndex; i < products_list.length; i++)
+    {
+	    product = products_list[i]
+	    product.id = "product_" + i.toString()
+    
+        var product_label = product.children[1].children[0]
+        product_label.innerHTML = `Details on product ${(i+1).toString()}:`
+
+        var product_name = product.children[2].children[1]
+        var product_amount = product.children[3].children[1]
+        var taste_choices = product.children[4].children[1]
+        var formula_choices = product.children[5].children[1]
+        var decoration_form_choices = product.children[6].children[1]    
+        var decoration_technique_choices = product.children[7].children[1]
+        var delete_btn = product.children[8].children[0]
+
+        product_name.id = "product_name_" + i.toString()
+        product_amount.id = "product_amount_" + i.toString()
+        taste_choices.id = "taste_choices_" + i.toString()
+        formula_choices.id = "formula_choices_" + i.toString()
+	    decoration_form_choices.id = "decoration_form_choices_" + i.toString()
+	    decoration_technique_choices.id = "decoration_technique_choices_" + i.toString()
+	    delete_btn.id = "delete_product_" + i.toString()
+
+        product_name.name = "product_name_" + i.toString()
+	    taste_choices.name = "taste_choices_" + i.toString()
+	    decoration_form_choices.name = "decoration_form_choices_" + i.toString()
+        decoration_technique_choices.name = "decoration_technique_choices_" + i.toString()
+    }    
 }
 
 function add_another_material()
