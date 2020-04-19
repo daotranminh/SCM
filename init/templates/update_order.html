@@ -130,6 +130,7 @@
                 <td><input type="text" 
                   id="price_to_customer_{{i}}" 
                   style="text-align: right"
+                  onkeyup="update_total_price_to_customer(this)"
                   value="{{price_to_customers[product_dtos[i].product_id]}}"/></td>
 
                 <td><a href="{{ url_for('update_product', product_id=product_dtos[i].product_id) }}"
@@ -149,7 +150,7 @@
                 <td></td>
                 <td></td>
                 <td>{{ order_cost_estimation }}</td>
-                <td></td>
+                <td><input type="text" id="total_price_to_customer" style="text-align:right" disabled/></td>
                 <td></td>
               </tr>
             </tbody>

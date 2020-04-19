@@ -1,3 +1,20 @@
+function update_total_price_to_customer(control)
+{
+    var totalProductPriceToCustomer = 0
+    var productPrices = document.querySelectorAll('*[id^="price_to_customer_"]')
+    for (var i=0; i < productPrices.length; i++)
+    {
+        var productPrice = parseFloat(productPrices[i].value)
+        if (isNaN(productPrice) == false)
+        {
+            totalProductPriceToCustomer += productPrice
+        }
+    }
+
+    var totalProductPriceToCustomerTxt = document.getElementById("total_price_to_customer")
+    totalProductPriceToCustomerTxt.value = totalProductPriceToCustomer
+}
+
 function extract_update_order_args()
 {
     var customerId = document.getElementById("customer_id").value
