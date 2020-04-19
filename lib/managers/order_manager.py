@@ -87,7 +87,8 @@ class OrderManager:
                      delivered_on,
                      payment_status,
                      paid_on,
-                     message):
+                     message,
+                     price_to_customer):
         self.order_repo.update_order(order_id,
                                      customer_id,
                                      delivery_appointment,
@@ -97,7 +98,8 @@ class OrderManager:
                                      delivered_on,
                                      payment_status,
                                      paid_on,
-                                     message)
+                                     message,
+                                     price_to_customer)
         if order_status == int(OrderStatus.DELIVERED):
             product_recs = self.product_repo.get_products_of_order(order_id)
             for product_rec in product_recs:

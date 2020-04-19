@@ -1082,6 +1082,20 @@ def __extract_update_order_args(order_rec, args):
         with_box_arg, \
         price_to_customers
 
+def __extract_product_prices_to_customer(props):
+    product_prices_to_customer = {}
+    order_price_to_customer = 0
+
+    for key, value in props.items():
+        if key.startswith('price_to_customer_'):
+            product_id_str = key[len('price_to_customer_'):]
+            product_id = int(product_id_str)
+            product_price = float(value)
+            product_prices_to_customer[product_id] = product_price
+            order_price_to_customer += product_price
+
+    return order_price_to_customer, product_prices_to_customer
+
 @app.route('/update_order/<int:order_id>', methods=['GET', 'POST'])
 def update_order(order_id):
     order_rec = order_repo.get_order(order_id)
@@ -1120,19 +1134,19 @@ def update_order(order_id):
 
     taste_formula_dict, formula_dict = formula_manager.get_taste_formula_dict()
     
-    print(price_to_customers)
     total_price_to_customer = 0
     for product_dto in product_dtos:
         if product_dto.product_id in price_to_customers:
-            price_to_customer = price_to_customers[product_dto.product_id]
-            if type(price_to_customer) == str:
-                try:
-                    price_to_customer = float(price_to_customer)
+            price_to_customer = price_to_customers[product_dto.product_id]            
+            if price_to_customer is not None:
+                if type(price_to_customer) == str:
+                    try:
+                        price_to_customer = float(price_to_customer)                    
+                        total_price_to_customer += price_to_customer
+                    except ValueError:
+                        pass
+                else:
                     total_price_to_customer += price_to_customer
-                except ValueError:
-                    pass
-            else:
-                total_price_to_customer += price_to_customer
 
     if request.method == 'GET':        
         return render_scm_template('update_order.html',
@@ -1184,6 +1198,11 @@ def update_order(order_id):
 
             message = request.form['message']
 
+            order_price_to_customer, product_prices_to_customer = __extract_product_prices_to_customer(request.form)
+            print(order_price_to_customer)
+            print(product_prices_to_customer)
+            product_manager.update_prices_to_customer(product_prices_to_customer)
+
             order_manager.update_order(order_id,
                                        customer_id,
                                        delivery_appointment,
@@ -1193,7 +1212,8 @@ def update_order(order_id):
                                        delivered_on,
                                        payment_status,
                                        paid_on,
-                                       message)
+                                       message,
+                                       order_price_to_customer)
             db.session.commit()
             
             message = 'Successfully updated order %s' % order_id

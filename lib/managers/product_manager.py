@@ -170,3 +170,8 @@ class ProductManager:
                                                                 product_image_path_recs,
                                                                 remaining_product_image_path_ids,
                                                                 uploaded_files)
+
+    def update_prices_to_customer(self, product_prices_to_customer):
+        for key, value in product_prices_to_customer.items():
+            product_rec = self.product_repo.get_product(key)
+            product_rec.price_to_customer = value

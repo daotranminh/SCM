@@ -128,7 +128,8 @@
                 {% endif %}
 
                 <td><input type="text" 
-                  id="price_to_customer_{{i}}" 
+                  id="price_to_customer_{{product_dtos[i].product_id}}" 
+                  name="price_to_customer_{{product_dtos[i].product_id}}"
                   style="text-align: right"
                   onkeyup="update_total_price_to_customer(this)"
                   value="{{price_to_customers[product_dtos[i].product_id]}}"/></td>
@@ -150,7 +151,7 @@
                 <td></td>
                 <td></td>
                 <td>{{ order_cost_estimation }}</td>                
-                <td><input type="text" id="total_price_to_customer" style="text-align:right" value="{{total_price_to_customer}}" disabled/></td>
+                <td><input type="text" id="total_price_to_customer" name="total_price_to_customer" style="text-align:right" value="{{total_price_to_customer}}" disabled/></td>
                 <td></td>
               </tr>
             </tbody>
