@@ -39,6 +39,7 @@
       <th>Cost Estimation per Product</th>
       <th>Amount</th>
       <th>Cost Estimation</th>
+      <th>Price to customer</th>
     </tr>
   </thead>
   <tbody>
@@ -59,7 +60,7 @@
       {% if product_dto.sample_images_group_id is not none %}
         <td><a href="{{ url_for('sample_images_group_details', sample_images_group_id=product_dto.sample_images_group_id) }}">{{product_dto.sample_images_group_name}}</a></td>
       {% else %}
-      <td>{{product_dto.sample_images_group_name}}</td>
+        <td>{{product_dto.sample_images_group_name}}</td>
       {% endif %}
 
       <td>{{product_dto.product_cost_estimation}}</td>
@@ -70,6 +71,8 @@
       {% else %}
         <td>{{product_dto.product_cost_estimation}}</td>
       {% endif %}
+
+      <td>{{product_dto.price_to_customer}}</td>
     </tr>
     {% endfor %}
     <tr>
@@ -83,6 +86,7 @@
       <td></td>
       <td></td>
       <td>{{ order_dto.total_cost }}</td>
+      <td>{{ order_dto.price_to_customer }}</td>
     </tr>
   </tbody>
 </table>  
