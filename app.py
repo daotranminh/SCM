@@ -1121,6 +1121,18 @@ def update_order(order_id):
     taste_formula_dict, formula_dict = formula_manager.get_taste_formula_dict()
     
     print(price_to_customers)
+    total_price_to_customer = 0
+    for product_dto in product_dtos:
+        if product_dto.product_id in price_to_customers:
+            price_to_customer = price_to_customers[product_dto.product_id]
+            if type(price_to_customer) == str:
+                try:
+                    price_to_customer = float(price_to_customer)
+                    total_price_to_customer += price_to_customer
+                except ValueError:
+                    pass
+            else:
+                total_price_to_customer += price_to_customer
 
     if request.method == 'GET':        
         return render_scm_template('update_order.html',
@@ -1151,6 +1163,7 @@ def update_order(order_id):
                                     decoration_technique_recs=decoration_technique_recs,
                                     taste_formula_dict=taste_formula_dict,
                                     formula_dict=formula_dict,
+                                    total_price_to_customer=total_price_to_customer,
                                     price_to_customers=price_to_customers)
     elif request.method == 'POST':        
         try:
@@ -1220,6 +1233,7 @@ def update_order(order_id):
                                                     decoration_technique_recs=decoration_technique_recs,
                                                     taste_formula_dict=taste_formula_dict,
                                                     formula_dict=formula_dict,
+                                                    total_price_to_customer=total_price_to_customer,
                                                     price_to_customers=price_to_customers)
 
 @app.route('/add_new_product_to_order/<int:order_id>', methods=['GET', 'POST'])
