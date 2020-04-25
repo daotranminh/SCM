@@ -833,7 +833,6 @@ def __extract_order_props(props_dict):
 
     product_names = []
     product_amounts = []
-    taste_ids = []
     formula_ids = []
     decoration_form_ids = []
     decoration_technique_ids = []
@@ -843,7 +842,6 @@ def __extract_order_props(props_dict):
     while True:
         product_name_id = 'product_name_' + str(i)
         product_amount_id = 'product_amount_' + str(i)
-        taste_choices_id = 'taste_choices_' + str(i)
         formula_choices_id = 'formula_choices_' + str(i)
         decoration_form_choices_id = 'decoration_form_choices_' + str(i)
         decoration_technique_choices_id = 'decoration_technique_choices_' + str(i)
@@ -852,7 +850,6 @@ def __extract_order_props(props_dict):
         if product_name_id in props_dict:
             product_names.append(props_dict[product_name_id])
             product_amounts.append(props_dict[product_amount_id])
-            taste_ids.append(int(props_dict[taste_choices_id]))
             formula_ids.append(int(props_dict[formula_choices_id]))
             decoration_form_ids.append(int(props_dict[decoration_form_choices_id]))
             decoration_technique_ids.append(int(props_dict[decoration_technique_choices_id]))
@@ -871,7 +868,6 @@ def __extract_order_props(props_dict):
            message, \
            product_names, \
            product_amounts, \
-           taste_ids, \
            formula_ids, \
            decoration_form_ids, \
            decoration_technique_ids, \
@@ -883,13 +879,10 @@ def add_order():
     delivery_method_recs = delivery_method_repo.get_all_delivery_methods()    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
-
-    taste_recs = taste_repo.get_all_tastes()
-    taste_recs.insert(0, None)
-
-    taste_formula_dict, formula_dict = formula_manager.get_taste_formula_dict()
+    formula_recs = formula_repo.get_all_formulas()
 
     if request.method == 'POST':
+        print(request.form)
         try:
             customer_id, \
             ordered_on, \
@@ -898,7 +891,6 @@ def add_order():
             message, \
             product_names, \
             product_amounts, \
-            taste_ids, \
             formula_ids, \
             decoration_form_ids, \
             decoration_technique_ids, \
@@ -911,7 +903,6 @@ def add_order():
                                                    message,
                                                    product_names,
                                                    product_amounts,
-                                                   taste_ids,
                                                    formula_ids,
                                                    decoration_form_ids,
                                                    decoration_technique_ids,
@@ -928,11 +919,9 @@ def add_order():
     return render_scm_template('add_order.html', 
                                 customer_recs=customer_recs,
                                 delivery_method_recs=delivery_method_recs,
-                                taste_recs=taste_recs,
                                 decoration_form_recs=decoration_form_recs,
                                 decoration_technique_recs=decoration_technique_recs,
-                                taste_formula_dict=taste_formula_dict,
-                                formula_dict=formula_dict)    
+                                formula_recs=formula_recs)
 
 def __lazy_get_order_dtos(page, per_page, search_text):
     paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
@@ -1301,8 +1290,7 @@ def update_order(order_id):
 @app.route('/add_new_product_to_order/<int:order_id>', methods=['GET', 'POST'])
 def add_new_product_to_order(order_id):
     new_product_name = request.args.get('new_product_name_arg')
-    product_amount = int(request.args.get('product_amount_arg'))
-    taste_id = int(request.args.get('taste_id_arg'))
+    product_amount = int(request.args.get('product_amount_arg'))    
     formula_id = int(request.args.get('formula_id_arg'))
     decoration_form_id = int(request.args.get('decoration_form_id_arg'))
     decoration_technique_id = int(request.args.get('decoration_technique_id_arg'))
@@ -1314,7 +1302,6 @@ def add_new_product_to_order(order_id):
         product_manager.add_product(new_product_name,
                                     product_amount,
                                     order_id,
-                                    taste_id,
                                     formula_id,
                                     decoration_form_id,
                                     decoration_technique_id,
@@ -1336,8 +1323,7 @@ def add_new_product_to_order(order_id):
                                              message_arg=[request.args.get('message_arg')],
                                              price_to_customers_arg=[request.args.get('price_to_customers_arg')],
                                              new_product_name_arg=[request.args.get('new_product_name_arg')],
-                                             product_amount_arg=[request.args.get('product_amount_arg')],
-                                             chosen_taste_id_arg=[request.args.get('taste_id_arg')],
+                                             product_amount_arg=[request.args.get('product_amount_arg')],                                             
                                              chosen_formula_id_arg=[request.args.get('formula_id_arg')],
                                              chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
@@ -1362,8 +1348,7 @@ def add_new_product_to_order(order_id):
                                  message_arg=[request.args.get('message_arg')],
                                  price_to_customers_arg=[request.args.get('price_to_customers_arg')],
                                  new_product_name_arg=[''],
-                                 product_amount_arg=['1'],
-                                 chosen_taste_id_arg=['-1'],
+                                 product_amount_arg=['1'],                                 
                                  chosen_formula_id_arg=['-1'],
                                  chosen_decoration_form_id_arg=['-1'],
                                  chosen_decoration_technique_id_arg=['-1'],
@@ -1396,12 +1381,6 @@ def __extract_update_product_args(product_rec, args):
     else:
         product_amount = product_rec.amount        
         
-    selected_taste_id = args.get('taste_id_arg')
-    if selected_taste_id is not None: 
-        selected_taste_id = int(selected_taste_id)
-    else:
-        selected_taste_id = product_rec.taste_id
-
     selected_decoration_form_id = args.get('selected_decoration_form_id_arg')
     if selected_decoration_form_id is not None:
         selected_decoration_form_id = int(selected_decoration_form_id)
@@ -1435,7 +1414,6 @@ def __extract_update_product_args(product_rec, args):
         
     return current_product_name, \
             product_amount, \
-            selected_taste_id, \
             selected_decoration_form_id, \
             selected_decoration_technique_id, \
             selected_formula_id, \
@@ -1446,8 +1424,7 @@ def __extract_update_product_args(product_rec, args):
 @app.route('/update_product/<int:product_id>', methods=['GET', 'POST'])
 def update_product(product_id):
     product_rec = product_repo.get_product(product_id)    
-    product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
-    taste_recs = taste_repo.get_all_tastes()
+    product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()    
     sample_images_group_recs = sample_images_group_repo.get_all_sample_images_groups()
@@ -1456,12 +1433,11 @@ def update_product(product_id):
     if product_rec.sample_images_group_id is not None:
         latest_3_sample_image_paths = sample_image_path_repo.get_latest_3_sample_image_paths(product_rec.sample_images_group_id)
 
-    formula_recs = formula_repo.get_formulas_of_taste(product_rec.taste_id)
+    formula_recs = formula_repo.get_all_formulas()
 
     if request.method == 'GET':
         current_product_name, \
             product_amount, \
-            selected_taste_id, \
             selected_decoration_form_id, \
             selected_decoration_technique_id, \
             selected_formula_id, \
@@ -1469,7 +1445,7 @@ def update_product(product_id):
             chosen_box_returned_on, \
             selected_sample_images_group_id = __extract_update_product_args(product_rec, request.args)
 
-        formula_recs = formula_repo.get_formulas_of_taste(selected_taste_id)
+        formula_recs = formula_repo.get_all_formulas()
         existing_product_image_paths_arg = request.args.get('existing_product_image_paths_arg')
         product_image_path_recs = __infer_product_image_path_recs(product_id, existing_product_image_paths_arg)
 
@@ -1482,7 +1458,6 @@ def update_product(product_id):
             remaining_product_image_path_ids = __extract_remaining_image_path_ids(request.form, 'existing_product_image_')
             current_product_name = request.form['product_name']
             product_amount = int(request.form['product_amount'])
-            selected_taste_id = int(request.form['taste_id'])
             selected_formula_id = int(request.form['formula_id'])
             selected_decoration_form_id = int(request.form['decoration_form_id'])
             selected_decoration_technique_id = int(request.form['decoration_technique_id'])            
@@ -1502,7 +1477,6 @@ def update_product(product_id):
 
             product_manager.update_product(product_id,
                                            current_product_name,
-                                           selected_taste_id,
                                            selected_decoration_form_id,
                                            selected_decoration_technique_id,
                                            selected_formula_id,
@@ -1514,7 +1488,7 @@ def update_product(product_id):
                                            uploaded_files)
             db.session.commit()
 
-            formula_recs = formula_repo.get_formulas_of_taste(selected_taste_id)
+            formula_recs = formula_repo.get_all_formulas()
             product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
             
             message = 'Successfully updated product %s (%s)' % (current_product_name, product_id)
@@ -1527,7 +1501,6 @@ def update_product(product_id):
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    taste_recs=taste_recs,
                                                     decoration_form_recs=decoration_form_recs,
                                                     decoration_technique_recs=decoration_technique_recs,
                                                     product_rec=product_rec,
@@ -1537,7 +1510,6 @@ def update_product(product_id):
                                                     sample_images_group_recs=sample_images_group_recs,
                                                     latest_3_sample_image_paths=latest_3_sample_image_paths,
                                                     current_product_name=current_product_name,
-                                                    selected_taste_id=selected_taste_id,
                                                     selected_formula_id=selected_formula_id,
                                                     selected_decoration_form_id=selected_decoration_form_id,
                                                     selected_decoration_technique_id=selected_decoration_technique_id,                                                    
@@ -1546,7 +1518,6 @@ def update_product(product_id):
                                                     selected_sample_images_group_id=selected_sample_images_group_id)
     
     return render_scm_template('update_product.html',
-                               taste_recs=taste_recs,
                                decoration_form_recs=decoration_form_recs,
                                decoration_technique_recs=decoration_technique_recs,
                                product_rec=product_rec,
@@ -1556,7 +1527,6 @@ def update_product(product_id):
                                sample_images_group_recs=sample_images_group_recs,
                                latest_3_sample_image_paths=latest_3_sample_image_paths,
                                current_product_name=current_product_name,
-                               selected_taste_id=selected_taste_id,
                                selected_decoration_form_id=selected_decoration_form_id,
                                selected_decoration_technique_id=selected_decoration_technique_id,
                                selected_formula_id=selected_formula_id,
@@ -1591,7 +1561,6 @@ def delete_product(product_id):
                                              price_to_customers_arg=[request.args.get('price_to_customers_arg')],
                                              new_product_name_arg=[request.args.get('new_product_name_arg')],
                                              product_amount_arg=[request.args.get('product_amount_arg')],
-                                             chosen_taste_id_arg=[request.args.get('taste_id_arg')],
                                              chosen_formula_id_arg=[request.args.get('formula_id_arg')],
                                              chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
@@ -1617,7 +1586,6 @@ def delete_product(product_id):
                                  price_to_customers_arg=[request.args.get('price_to_customers_arg')],
                                  new_product_name_arg=[request.args.get('new_product_name_arg')],
                                  product_amount_arg=[request.args.get('product_amount_arg')],
-                                 chosen_taste_id_arg=[request.args.get('taste_id_arg')],
                                  chosen_formula_id_arg=[request.args.get('formula_id_arg')],
                                  chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                  chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],

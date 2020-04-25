@@ -33,7 +33,6 @@ class ProductManager:
                     name,
                     amount,
                     order_id,
-                    taste_id,
                     formula_id,
                     decoration_form_id,
                     decoration_technique_id,
@@ -41,7 +40,6 @@ class ProductManager:
         new_product_id = self.product_repo.add_product(name,
                                                       amount,
                                                       order_id,
-                                                      taste_id,
                                                       formula_id,
                                                       decoration_form_id,
                                                       decoration_technique_id,
@@ -72,8 +70,6 @@ class ProductManager:
 
     def get_product_dto(self, product_id):
         product_rec, \
-        taste_id, \
-        taste_name, \
         decoration_form_id, \
         decoration_form_name, \
         decoration_technique_id, \
@@ -95,8 +91,6 @@ class ProductManager:
         product_dto = ProductDto(product_id,
                                  product_rec.name,
                                  product_rec.amount,
-                                 taste_id,
-                                 taste_name,
                                  decoration_form_id,
                                  decoration_form_name,
                                  decoration_technique_id,
@@ -125,7 +119,6 @@ class ProductManager:
     def update_product(self,
                        product_id,
                        product_name,
-                       taste_id,
                        decoration_form_id,
                        decoration_technique_id,
                        formula_id,
@@ -158,7 +151,6 @@ class ProductManager:
             ProductManager.logger.info(message)
 
         product_rec.name = product_name
-        product_rec.taste_id = taste_id
         product_rec.decoration_form_id = decoration_form_id
         product_rec.decoration_technique_id = decoration_technique_id
         product_rec.formula_id = formula_id

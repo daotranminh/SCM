@@ -164,8 +164,7 @@ class Product(db.Model):
     __tablename__ = 'product'
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(100))
-    order_id = Column(Integer, ForeignKey(Order.id))
-    taste_id = Column(Integer, ForeignKey(Taste.id))
+    order_id = Column(Integer, ForeignKey(Order.id))    
     decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
     decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
     formula_id = Column(Integer, ForeignKey(Formula.id))

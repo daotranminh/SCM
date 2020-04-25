@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import Product, Formula, Taste, DecorationForm, DecorationTechnique, SampleImagesGroup, CostEstimation, config
+from init import Product, Formula, DecorationForm, DecorationTechnique, SampleImagesGroup, CostEstimation, config
 from utilities.scm_enums import ErrorCodes, BoxStatus
 from utilities.scm_exceptions import ScmException
 from utilities.scm_logger import ScmLogger
@@ -28,8 +28,7 @@ class ProductRepository:
     def add_product(self,
                     name,
                     amount,
-                    order_id,
-                    taste_id,                    
+                    order_id,                    
                     formula_id,
                     decoration_form_id,
                     decoration_technique_id,
@@ -44,7 +43,6 @@ class ProductRepository:
             product_rec = Product(name=name, 
                                   amount=amount,
                                   order_id=order_id,
-                                  taste_id=taste_id,
                                   formula_id=formula_id,
                                   cost_estimation_id=cost_estimation_rec.id,
                                   total_cost=cost_estimation_rec.total_cost,
@@ -69,8 +67,7 @@ class ProductRepository:
             ProductRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_DELETE_PRODUCT_FAILED, message)
 
-    def get_product_dto(self, product_id):        
-        taste_query = self.db.session.query(Taste.id, Taste.name).subquery()
+    def get_product_dto(self, product_id):
         decoration_form_query = self.db.session.query(DecorationForm.id, DecorationForm.name).subquery()
         decoration_technique_query = self.db.session.query(DecorationTechnique.id, DecorationTechnique.name).subquery()
         formula_query = self.db.session.query(Formula.id, Formula.name, Formula.has_up_to_date_cost_estimation).subquery()
@@ -81,8 +78,6 @@ class ProductRepository:
             subquery()
 
         product_dto_query = self.db.session.query(Product, \
-                                                  taste_query.c.id, \
-                                                  taste_query.c.name, \
                                                   decoration_form_query.c.id, \
                                                   decoration_form_query.c.name, \
                                                   decoration_technique_query.c.id, \
@@ -94,7 +89,6 @@ class ProductRepository:
                                                   sample_images_group_query.c.name, \
                                                   cost_estimation_query.c.total_cost). \
             filter(Product.id == product_id). \
-            join(taste_query, Product.taste_id == taste_query.c.id). \
             join(decoration_form_query, Product.decoration_form_id == decoration_form_query.c.id). \
             join(decoration_technique_query, Product.decoration_technique_id == decoration_technique_query.c.id). \
             outerjoin(formula_query, Product.formula_id == formula_query.c.id). \

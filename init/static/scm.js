@@ -5,11 +5,10 @@ function validate_add_order()
     for (var i=0; i < products_list.length; ++i)
     {
         var product_name = products_list[i].children[2].children[1].value
-        var product_amount = products_list[i].children[3].children[1].value
-        var taste_choice = products_list[i].children[4].children[1].value
-        var formula_choice = products_list[i].children[5].children[1].value
-        var decoration_form_choices = products_list[i].children[6].children[1].value 
-        var decoration_technique_choices = products_list[i].children[7].children[1].value        
+        var product_amount = products_list[i].children[3].children[1].value        
+        var formula_choice = products_list[i].children[4].children[1].value
+        var decoration_form_choices = products_list[i].children[5].children[1].value 
+        var decoration_technique_choices = products_list[i].children[6].children[1].value        
 
         if (product_name == "")
         {
@@ -282,17 +281,15 @@ function add_product_to_order()
 
     var product_name = next_product.children[2].children[1]
     var product_amount = next_product.children[3].children[1]
-    var taste_choices = next_product.children[4].children[1]
-    var formula_choices = next_product.children[5].children[1]
-    var decoration_form_choices = next_product.children[6].children[1]    
-    var decoration_technique_choices = next_product.children[7].children[1]
-    var delete_btn = next_product.children[8].children[0]
+    var formula_choices = next_product.children[4].children[1]
+    var decoration_form_choices = next_product.children[5].children[1]    
+    var decoration_technique_choices = next_product.children[6].children[1]
+    var delete_btn = next_product.children[7].children[0]
 
     product_name.id = "product_name_" + len.toString()
     product_name.value = ""
     product_amount.id = "product_amount_" + len.toString()
     product_amount.value = "1"
-    taste_choices.id = "taste_choices_" + len.toString()
     formula_choices.id = "formula_choices_" + len.toString()
     decoration_form_choices.id = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.id = "decoration_technique_choices_" + len.toString()
@@ -300,7 +297,6 @@ function add_product_to_order()
 
     product_name.name = "product_name_" + len.toString()
     product_amount.name = "product_amount_" + len.toString()
-    taste_choices.name = "taste_choices_" + len.toString()
     formula_choices.name = "formula_choices_" + len.toString()
     decoration_form_choices.name = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.name = "decoration_technique_choices_" + len.toString()
@@ -340,22 +336,21 @@ function delete_product(control)
 
         var product_name = product.children[2].children[1]
         var product_amount = product.children[3].children[1]
-        var taste_choices = product.children[4].children[1]
-        var formula_choices = product.children[5].children[1]
-        var decoration_form_choices = product.children[6].children[1]    
-        var decoration_technique_choices = product.children[7].children[1]
-        var delete_btn = product.children[8].children[0]
+        var formula_choices = product.children[4].children[1]
+        var decoration_form_choices = product.children[5].children[1]    
+        var decoration_technique_choices = product.children[6].children[1]
+        var delete_btn = product.children[7].children[0]
 
         product_name.id = "product_name_" + i.toString()
         product_amount.id = "product_amount_" + i.toString()
-        taste_choices.id = "taste_choices_" + i.toString()
         formula_choices.id = "formula_choices_" + i.toString()
 	    decoration_form_choices.id = "decoration_form_choices_" + i.toString()
 	    decoration_technique_choices.id = "decoration_technique_choices_" + i.toString()
 	    delete_btn.id = "delete_product_" + i.toString()
 
         product_name.name = "product_name_" + i.toString()
-	    taste_choices.name = "taste_choices_" + i.toString()
+        product_amount.name = "product_amount_" + i.toString()
+        formula_choices.name = "formula_choices_" + i.toString()
 	    decoration_form_choices.name = "decoration_form_choices_" + i.toString()
         decoration_technique_choices.name = "decoration_technique_choices_" + i.toString()
     }    
