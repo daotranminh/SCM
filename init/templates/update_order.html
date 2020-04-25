@@ -86,7 +86,6 @@
               <tr>
                 <th>Product Id</th>
                 <th>Product Name</th>
-                <th>Taste</th>
                 <th>Decoration Form</th>
                 <th>Decoration Technique</th>
                 <th>Formula</th>
@@ -104,7 +103,6 @@
               <tr>
                 <td><label id="product_id_{{i}}">{{product_dtos[i].product_id}}</label></td>
                 <td><a href="{{ url_for('product_details', product_id=product_dtos[i].product_id) }}">{{product_dtos[i].product_name}}</a></td>
-                <td>{{product_dtos[i].taste_name}}</td>
                 <td>{{product_dtos[i].decoration_form_name}}</td>
                 <td>{{product_dtos[i].decoration_technique_name}}</td>
                 {% if product_dtos[i].formula_id is not none %}
@@ -127,12 +125,21 @@
                 <td>{{product_dtos[i].product_cost_estimation}}</td>
                 {% endif %}
 
-                <td><input type="text" 
-                  id="price_to_customer_{{product_dtos[i].product_id}}" 
-                  name="price_to_customer_{{product_dtos[i].product_id}}"
-                  style="text-align: right"
-                  onkeyup="update_total_price_to_customer(this)"
-                  value="{{price_to_customers[product_dtos[i].product_id]}}"/></td>
+                {% if price_to_customers[product_dtos[i].product_id] is not none %}
+                  <td><input type="text" 
+                    id="price_to_customer_{{product_dtos[i].product_id}}" 
+                    name="price_to_customer_{{product_dtos[i].product_id}}"
+                    style="text-align: right"
+                    onkeyup="update_total_price_to_customer(this)"
+                    value="{{price_to_customers[product_dtos[i].product_id]}}"/></td>
+                {% else %}
+                  <td><input type="text" 
+                    id="price_to_customer_{{product_dtos[i].product_id}}" 
+                    name="price_to_customer_{{product_dtos[i].product_id}}"
+                    style="text-align: right"
+                    onkeyup="update_total_price_to_customer(this)"
+                    value="0"/></td>
+                {% endif %}
 
                 <td><a href="{{ url_for('update_product', product_id=product_dtos[i].product_id) }}"
                 class="btn btn-default pullright">Update</a></td>
@@ -142,7 +149,6 @@
               {% endfor %}
               <tr>
                 <td>Total cost</td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -170,34 +176,15 @@
         </p>
 
         <p>
-          <label for="taste_id">Taste</label>
-          <select id="taste_id" name="taste_id" onchange="update_order_taste_change(this)">
-          {% for taste_rec in taste_recs %}
-            {% if taste_rec is none %}
-              <option value="-1"></option>
-            {% else %}
-              {% if taste_rec.id == chosen_taste_id %}
-                <option value="{{taste_rec.id}}" selected>{{taste_rec.name}}</option>
-              {% else %}
-              <option value="{{taste_rec.id}}">{{taste_rec.name}}</option>
-              {% endif %}
-            {% endif %}
-	        {% endfor %}
-          </select>
-        </p>
-
-        <p>
           <label for="formula_id">Formula</label>
           <select id="formula_id" name="formula_id">
-            {% if chosen_taste_id != -1 %}
-              {% for formula_id in taste_formula_dict[chosen_taste_id] %}
-                {% if formula_id == chosen_formula_id %}
-                  <option value="{{formula_id}}" selected>{{formula_dict[formula_id]}}</option>
-                {% else %}
-                  <option value="{{formula_id}}">{{formula_dict[formula_id]}}</option>
-                {% endif %}
-              {% endfor %}
-            {% endif %}
+            {% for formula_rec in formula_recs %}
+              {% if formula_rec.id == chosen_formula_id %}
+                <option value="{{formula_rec.id}}" selected>{{formula_rec.name}}</option>
+              {% else %}
+                <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
+              {% endif %}
+            {% endfor %}
           </select>
           </p>
         <p>
@@ -261,9 +248,6 @@
   $('*[name=delivery_appointment]').appendDtpicker();
   $('*[name=delivered_on]').appendDtpicker();
   $('*[name=paid_on]').appendDtpicker();
-
-  var taste_formula_dict = {{taste_formula_dict | tojson}};
-  var formula_dict = {{formula_dict | tojson}}
 </script>
 
 {% endblock %}

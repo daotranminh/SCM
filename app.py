@@ -883,6 +883,7 @@ def add_order():
 
     if request.method == 'POST':
         print(request.form)
+
         try:
             customer_id, \
             ordered_on, \
@@ -1067,12 +1068,6 @@ def __extract_update_order_args(order_rec, args):
     else:
         product_amount_arg = int(product_amount_arg)
 
-    chosen_taste_id_arg = args.get('chosen_taste_id_arg')
-    if chosen_taste_id_arg is None or chosen_taste_id_arg == '':
-        chosen_taste_id_arg = -1
-    else:
-        chosen_taste_id_arg = int(chosen_taste_id_arg)
-
     chosen_formula_id_arg = args.get('chosen_formula_id_arg')
     if chosen_formula_id_arg is None or chosen_formula_id_arg == '':
         chosen_formula_id_arg = -1
@@ -1106,7 +1101,6 @@ def __extract_update_order_args(order_rec, args):
         message_arg, \
         new_product_name_arg, \
         product_amount_arg, \
-        chosen_taste_id_arg, \
         chosen_formula_id_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
@@ -1121,7 +1115,13 @@ def __extract_product_prices_to_customer(props):
         if key.startswith('price_to_customer_'):
             product_id_str = key[len('price_to_customer_'):]
             product_id = int(product_id_str)
-            product_price = float(value)
+
+            product_price = 0
+            try:
+                product_price = float(value)
+            except ValueError:
+                pass
+
             product_prices_to_customer[product_id] = product_price
             order_price_to_customer += product_price
 
@@ -1142,7 +1142,6 @@ def update_order(order_id):
         message_arg, \
         new_product_name_arg, \
         product_amount_arg, \
-        chosen_taste_id_arg, \
         chosen_formula_id_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
@@ -1159,11 +1158,7 @@ def update_order(order_id):
     delivery_method_recs = delivery_method_repo.get_all_delivery_methods()    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
-
-    taste_recs = taste_repo.get_all_tastes()
-    taste_recs.insert(0, None)
-
-    taste_formula_dict, formula_dict = formula_manager.get_taste_formula_dict()
+    formula_recs = formula_repo.get_all_formulas()
     
     total_price_to_customer = 0
     for product_dto in product_dtos:
@@ -1192,7 +1187,6 @@ def update_order(order_id):
                                     paid_on=paid_on_arg,
                                     new_product_name=new_product_name_arg,
                                     product_amount=product_amount_arg,
-                                    chosen_taste_id=chosen_taste_id_arg,
                                     chosen_formula_id=chosen_formula_id_arg,
                                     chosen_decoration_form_id=chosen_decoration_form_id_arg,
                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
@@ -1203,11 +1197,9 @@ def update_order(order_id):
                                     product_dtos=product_dtos,
                                     order_status_names=scm_constants.ORDER_STATUS_NAMES,
                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,
-                                    taste_recs=taste_recs,
                                     decoration_form_recs=decoration_form_recs,
                                     decoration_technique_recs=decoration_technique_recs,
-                                    taste_formula_dict=taste_formula_dict,
-                                    formula_dict=formula_dict,
+                                    formula_recs=formula_recs,
                                     total_price_to_customer=total_price_to_customer,
                                     price_to_customers=price_to_customers)
     elif request.method == 'POST':        
@@ -1230,8 +1222,6 @@ def update_order(order_id):
             message = request.form['message']
 
             order_price_to_customer, product_prices_to_customer = __extract_product_prices_to_customer(request.form)
-            print(order_price_to_customer)
-            print(product_prices_to_customer)
             product_manager.update_prices_to_customer(product_prices_to_customer)
 
             order_manager.update_order(order_id,
@@ -1279,11 +1269,9 @@ def update_order(order_id):
                                                     product_dtos=product_dtos,
                                                     order_status_names=scm_constants.ORDER_STATUS_NAMES,
                                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,
-                                                    taste_recs=taste_recs,
                                                     decoration_form_recs=decoration_form_recs,
                                                     decoration_technique_recs=decoration_technique_recs,
-                                                    taste_formula_dict=taste_formula_dict,
-                                                    formula_dict=formula_dict,
+                                                    formula_recs=formula_recs,
                                                     total_price_to_customer=total_price_to_customer,
                                                     price_to_customers=price_to_customers)
 

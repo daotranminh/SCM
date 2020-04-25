@@ -61,7 +61,6 @@ function extract_update_order_args()
 
     var newProductName = document.getElementById("new_product_name").value
     var product_amount = document.getElementById("product_amount").value
-    var tasteId = document.getElementById("taste_id").value
     var formulaId = document.getElementById("formula_id").value
     var decorationFormId = document.getElementById("decoration_form_id").value
     var decorationTechniqueId = document.getElementById("decoration_technique_id").value
@@ -88,12 +87,11 @@ function extract_update_order_args()
             message,                // 8
             newProductName,         // 9
             product_amount,         // 10
-            tasteId,                // 11
-            formulaId,              // 12
-            decorationFormId,       // 13
-            decorationTechniqueId,  // 14
-            withBox,                // 15
-            priceToCustomersStr]    // 16
+            formulaId,              // 11
+            decorationFormId,       // 12
+            decorationTechniqueId,  // 13
+            withBox,                // 14
+            priceToCustomersStr]    // 15
 }
 
 function delete_product_in_update_order(delete_btn)
@@ -125,12 +123,11 @@ function delete_product_in_update_order(delete_btn)
     var message = args[8]
     var newProductName = args[9]
     var product_amount = args[10]
-    var tasteId = args[11]
-    var formulaId = args[12]
-    var decorationFormId = args[13]
-    var decorationTechniqueId = args[14]
-    var withBox = args[15]
-    var priceToCustomersStr = args[16]
+    var formulaId = args[11]
+    var decorationFormId = args[12]
+    var decorationTechniqueId = args[13]
+    var withBox = args[14]
+    var priceToCustomersStr = args[15]
 
     currentHref = location.href
     currentHrefComponents = currentHref.split("/")
@@ -147,7 +144,6 @@ function delete_product_in_update_order(delete_btn)
         "&message_arg=" + message +
         "&new_product_name_arg=" + newProductName +
         "&product_amount_arg=" + product_amount +
-        "&taste_id_arg=" + tasteId +
         "&formula_id_arg=" + formulaId +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
@@ -221,22 +217,15 @@ function add_new_product_to_order()
     var message = args[8]
     var newProductName = args[9]
     var product_amount = args[10]
-    var tasteId = args[11]
-    var formulaId = args[12]
-    var decorationFormId = args[13]
-    var decorationTechniqueId = args[14]
-    var withBox = args[15]
-    var priceToCustomersStr = args[16]
+    var formulaId = args[11]
+    var decorationFormId = args[12]
+    var decorationTechniqueId = args[13]
+    var withBox = args[14]
+    var priceToCustomersStr = args[15]
 
     if (newProductName == "")
     {
         alert("Please enter product's name!")
-        return false;
-    }
-
-    if (tasteId == "-1")
-    {
-        alert("Please choose a taste!")
         return false;
     }
 
@@ -255,7 +244,6 @@ function add_new_product_to_order()
         "&message_arg=" + message +
         "&new_product_name_arg=" + newProductName +
         "&product_amount_arg=" + product_amount +
-        "&taste_id_arg=" + tasteId +
         "&formula_id_arg=" + formulaId +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
