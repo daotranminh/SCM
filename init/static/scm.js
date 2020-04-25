@@ -16,12 +16,6 @@ function validate_add_order()
             return false
         }
 
-        if (taste_choice == "-1")
-        {
-            alert("Please choose a taste for product " + (i+1).toString() + "!")
-            return false
-        }
-
         if (formula_choice == "-1" || formula_choice == "")
         {
             alert("Please choose a formula for product " + (i+1).toString() + "!")
