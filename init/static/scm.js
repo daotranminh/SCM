@@ -6,7 +6,7 @@ function validate_add_order()
     {
         var product_name = products_list[i].children[2].children[1].value
         var product_amount = products_list[i].children[3].children[1].value        
-        var formula_choice = products_list[i].children[4].children[1].value
+        var subformula_choice = products_list[i].children[4].children[1].value
         var decoration_form_choices = products_list[i].children[5].children[1].value 
         var decoration_technique_choices = products_list[i].children[6].children[1].value        
 
@@ -16,9 +16,9 @@ function validate_add_order()
             return false
         }
 
-        if (formula_choice == "-1" || formula_choice == "")
+        if (subformula_choice == "-1" || subformula_choice == "")
         {
-            alert("Please choose a formula for product " + (i+1).toString() + "!")
+            alert("Please choose a subformula for product " + (i+1).toString() + "!")
             return false
         }
     }
@@ -55,7 +55,7 @@ function extract_update_order_args()
 
     var newProductName = document.getElementById("new_product_name").value
     var product_amount = document.getElementById("product_amount").value
-    var formulaId = document.getElementById("formula_id").value
+    var subformulaId = document.getElementById("subformula_id").value
     var decorationFormId = document.getElementById("decoration_form_id").value
     var decorationTechniqueId = document.getElementById("decoration_technique_id").value
     var withBox = document.getElementById("with_box").checked
@@ -81,7 +81,7 @@ function extract_update_order_args()
             message,                // 8
             newProductName,         // 9
             product_amount,         // 10
-            formulaId,              // 11
+            subformulaId,              // 11
             decorationFormId,       // 12
             decorationTechniqueId,  // 13
             withBox,                // 14
@@ -117,7 +117,7 @@ function delete_product_in_update_order(delete_btn)
     var message = args[8]
     var newProductName = args[9]
     var product_amount = args[10]
-    var formulaId = args[11]
+    var subformulaId = args[11]
     var decorationFormId = args[12]
     var decorationTechniqueId = args[13]
     var withBox = args[14]
@@ -138,7 +138,7 @@ function delete_product_in_update_order(delete_btn)
         "&message_arg=" + message +
         "&new_product_name_arg=" + newProductName +
         "&product_amount_arg=" + product_amount +
-        "&formula_id_arg=" + formulaId +
+        "&subformula_id_arg=" + subformulaId +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
         "&with_box_arg=" + withBox +
@@ -149,23 +149,23 @@ function delete_product_in_update_order(delete_btn)
 
 function update_order_taste_change(taste_choices)
 {
-    var formula_choices = document.getElementById("formula_id")
+    var subformula_choices = document.getElementById("subformula_id")
 
-    while (formula_choices.options.length > 0)
+    while (subformula_choices.options.length > 0)
     {
-        formula_choices.remove(0)
+        subformula_choices.remove(0)
     }
 
     var taste_choice_id = parseInt(taste_choices.value)
     if (taste_choice_id != -1)
     {
-        formula_ids = taste_formula_dict[taste_choice_id]
-        for (let i = 0; i < formula_ids.length; ++i)
+        subformula_ids = taste_subformula_dict[taste_choice_id]
+        for (let i = 0; i < subformula_ids.length; ++i)
         {
             var opt = document.createElement("option")
-            opt.value = formula_ids[i]
-            opt.innerHTML = formula_dict[formula_ids[i]]
-            formula_choices.appendChild(opt)
+            opt.value = subformula_ids[i]
+            opt.innerHTML = subformula_dict[subformula_ids[i]]
+            subformula_choices.appendChild(opt)
         }
     }
 }
@@ -173,24 +173,24 @@ function update_order_taste_change(taste_choices)
 function taste_change(taste_choices)
 {
     var strIndex = get_index(taste_choices)
-    var formula_choices_id = "formula_choices_" + strIndex
-    var formula_choices = document.getElementById(formula_choices_id)
+    var subformula_choices_id = "subformula_choices_" + strIndex
+    var subformula_choices = document.getElementById(subformula_choices_id)
 
-    while (formula_choices.options.length > 0)
+    while (subformula_choices.options.length > 0)
     {
-        formula_choices.remove(0)
+        subformula_choices.remove(0)
     }
 
     var taste_choice_id = parseInt(taste_choices.value)
     if (taste_choice_id != -1)
     {
-        formula_ids = taste_formula_dict[taste_choice_id]
-        for (let i = 0; i < formula_ids.length; ++i)
+        subformula_ids = taste_subformula_dict[taste_choice_id]
+        for (let i = 0; i < subformula_ids.length; ++i)
         {
             var opt = document.createElement("option")
-            opt.value = formula_ids[i]
-            opt.innerHTML = formula_dict[formula_ids[i]]
-            formula_choices.appendChild(opt)
+            opt.value = subformula_ids[i]
+            opt.innerHTML = subformula_dict[subformula_ids[i]]
+            subformula_choices.appendChild(opt)
         }
     }
 }
@@ -211,7 +211,7 @@ function add_new_product_to_order()
     var message = args[8]
     var newProductName = args[9]
     var product_amount = args[10]
-    var formulaId = args[11]
+    var subformulaId = args[11]
     var decorationFormId = args[12]
     var decorationTechniqueId = args[13]
     var withBox = args[14]
@@ -238,7 +238,7 @@ function add_new_product_to_order()
         "&message_arg=" + message +
         "&new_product_name_arg=" + newProductName +
         "&product_amount_arg=" + product_amount +
-        "&formula_id_arg=" + formulaId +
+        "&subformula_id_arg=" + subformulaId +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
         "&with_box_arg=" + withBox +
@@ -263,7 +263,7 @@ function add_product_to_order()
 
     var product_name = next_product.children[2].children[1]
     var product_amount = next_product.children[3].children[1]
-    var formula_choices = next_product.children[4].children[1]
+    var subformula_choices = next_product.children[4].children[1]
     var decoration_form_choices = next_product.children[5].children[1]    
     var decoration_technique_choices = next_product.children[6].children[1]
     var delete_btn = next_product.children[7].children[0]
@@ -272,14 +272,14 @@ function add_product_to_order()
     product_name.value = ""
     product_amount.id = "product_amount_" + len.toString()
     product_amount.value = "1"
-    formula_choices.id = "formula_choices_" + len.toString()
+    subformula_choices.id = "subformula_choices_" + len.toString()
     decoration_form_choices.id = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.id = "decoration_technique_choices_" + len.toString()
     delete_btn.id = "delete_product_" + len.toString()
 
     product_name.name = "product_name_" + len.toString()
     product_amount.name = "product_amount_" + len.toString()
-    formula_choices.name = "formula_choices_" + len.toString()
+    subformula_choices.name = "subformula_choices_" + len.toString()
     decoration_form_choices.name = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.name = "decoration_technique_choices_" + len.toString()
 
@@ -318,21 +318,21 @@ function delete_product(control)
 
         var product_name = product.children[2].children[1]
         var product_amount = product.children[3].children[1]
-        var formula_choices = product.children[4].children[1]
+        var subformula_choices = product.children[4].children[1]
         var decoration_form_choices = product.children[5].children[1]    
         var decoration_technique_choices = product.children[6].children[1]
         var delete_btn = product.children[7].children[0]
 
         product_name.id = "product_name_" + i.toString()
         product_amount.id = "product_amount_" + i.toString()
-        formula_choices.id = "formula_choices_" + i.toString()
+        subformula_choices.id = "subformula_choices_" + i.toString()
 	    decoration_form_choices.id = "decoration_form_choices_" + i.toString()
 	    decoration_technique_choices.id = "decoration_technique_choices_" + i.toString()
 	    delete_btn.id = "delete_product_" + i.toString()
 
         product_name.name = "product_name_" + i.toString()
         product_amount.name = "product_amount_" + i.toString()
-        formula_choices.name = "formula_choices_" + i.toString()
+        subformula_choices.name = "subformula_choices_" + i.toString()
 	    decoration_form_choices.name = "decoration_form_choices_" + i.toString()
         decoration_technique_choices.name = "decoration_technique_choices_" + i.toString()
     }    

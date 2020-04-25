@@ -18,14 +18,14 @@ class CostEstimationRepository:
             filter(CostEstimation.id == cost_esitimation_id). \
             first()
 
-    def get_current_cost_estimation_of_formula(self, formula_id):
+    def get_current_cost_estimation_of_subformula(self, subformula_id):
         return CostEstimation.query. \
-            filter(CostEstimation.formula_id == formula_id, CostEstimation.is_current == True). \
+            filter(CostEstimation.subformula_id == subformula_id, CostEstimation.is_current == True). \
             first()
 
-    def add_cost_estimation(self, formula_id):
+    def add_cost_estimation(self, subformula_id):
         try:
-            cost_estimation_rec = CostEstimation(formula_id=formula_id)
+            cost_estimation_rec = CostEstimation(subformula_id=subformula_id)
             self.db.session.add(cost_estimation_rec)
             self.db.session.flush()
             return cost_estimation_rec.id

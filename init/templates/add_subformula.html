@@ -6,11 +6,11 @@
 
 <div class="row">
   <div class="col-md-9 col-md-offset-3">
-    <h1>Add a new formula</h1>
+    <h1>Add a new subformula</h1>
     <form method="POST" action="">
       <div class="form-group">
-	<label for="formula_name">Formula name</label>
-	<input type="text" name="formula_name"><br>
+	<label for="subformula_name">SubFormula name</label>
+	<input type="text" name="subformula_name"><br>
       </div>
 
     <div class="form-group">
@@ -23,19 +23,19 @@
 	</div>
 	
 	<div class="form-group">
-		<label for="formula_type">Formula type</label>
-		<select id="formula_type" name="formula_type">
-		  {% for formula_type_name in formula_type_names %}
-		  <option value="{{formula_type_name[0]}}">{{formula_type_name[1]}}</option>
+		<label for="subformula_type">SubFormula type</label>
+		<select id="subformula_type" name="subformula_type">
+		  {% for subformula_type_name in subformula_type_names %}
+		  <option value="{{subformula_type_name[0]}}">{{subformula_type_name[1]}}</option>
 		  {% endfor %}
 		</select>
 	</div>
 
       <div class="form-group">
-	<label for="formula_description">Description</label>
+	<label for="subformula_description">Description</label>
 	<input type="text"
-	       id="formula_description"
-	       name="formula_description"><br>
+	       id="subformula_description"
+	       name="subformula_description"><br>
       </div>
       	
       <div class="form-group" name="material[]">
@@ -78,11 +78,11 @@
       <p><button type="button" class="btn btn-default pullright" onclick="add_another_material();">Add another material</button></p>
 
       <div class="form-group">
-	<label for="formula_note">Note</label>
+	<label for="subformula_note">Note</label>
 	<textarea rows="10"
 		  cols="80"
-		  id="formula_note"
-		  name="formula_note"></textarea>
+		  id="subformula_note"
+		  name="subformula_note"></textarea>
       </div>
       
       <p><input type="submit" class="btn btn-primary" value="Submit"/></p>

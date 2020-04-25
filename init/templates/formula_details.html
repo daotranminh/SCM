@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<h1>Formula Details</h1>
+<h1>SubFormula Details</h1>
 
 {% from "includes/_formhelpers.html" import render_field %}
 
@@ -14,10 +14,10 @@
     </tr>
   </thead>
   <tbody>
-    <tr><td>Name</td><td>{{ formula_rec.name }}</td></tr>
+    <tr><td>Name</td><td>{{ subformula_rec.name }}</td></tr>
     <tr><td>Taste</td><td>{{ taste_rec.name }}</td></tr>
-    <tr><td>Description</td><td>{{ formula_rec.description }}</td></tr>
-    <tr><td>Registered on</td><td>{{ formula_rec.registered_on }}</td></tr>
+    <tr><td>Description</td><td>{{ subformula_rec.description }}</td></tr>
+    <tr><td>Registered on</td><td>{{ subformula_rec.registered_on }}</td></tr>
   </tbody>
 </table>
 
@@ -42,8 +42,8 @@
 <div class="form-group">
   <textarea rows="10"
 	    cols="80"	    
-	    id="formula_note"
-	    name="formula_note">{{formula_rec.note}}</textarea>
+	    id="subformula_note"
+	    name="subformula_note">{{subformula_rec.note}}</textarea>
 </div>
 
 {% endblock %}

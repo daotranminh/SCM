@@ -28,7 +28,7 @@ class MaterialDto:
         self.material_version_id = material_version_id
         self.unit_price = unit_price
 
-class MaterialFormulaDto:
+class MaterialSubFormulaDto:
     def __init__(self,
                  material_id,
                  name,

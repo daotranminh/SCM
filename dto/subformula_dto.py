@@ -9,18 +9,18 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
-class FormulaDto:
+class SubFormulaDto:
     def __init__(self,
-                 formula_id,
+                 subformula_id,
                  name,
-                 formula_type,
+                 subformula_type,
                  description,
                  note,
                  total_cost,
                  registered_on):
-        self.formula_id = formula_id
+        self.subformula_id = subformula_id
         self.name = name
-        self.formula_type = formula_type
+        self.subformula_type = subformula_type
         self.description = description
         self.note = note
         self.total_cost = total_cost

@@ -33,7 +33,7 @@
       <th>Product Name</th>
       <th>Decoration Form</th>
       <th>Decoration Technique</th>
-      <th>Formula</th>
+      <th>SubFormula</th>
       <th>Sample Images</th>
       <th>Cost Estimation per Product</th>
       <th>Amount</th>
@@ -49,10 +49,10 @@
       <td>{{product_dto.decoration_form_name}}</td>
       <td>{{product_dto.decoration_technique_name}}</td>
 
-      {% if product_dto.formula_id is not none %}
-        <td><a href="{{ url_for('formula_details', formula_id=product_dto.formula_id) }}">{{product_dto.formula_name}}</a></td>
+      {% if product_dto.subformula_id is not none %}
+        <td><a href="{{ url_for('subformula_details', subformula_id=product_dto.subformula_id) }}">{{product_dto.subformula_name}}</a></td>
       {% else %}
-        <td>{{product_dto.formula_name}}</td>
+        <td>{{product_dto.subformula_name}}</td>
       {% endif %}
       
       {% if product_dto.sample_images_group_id is not none %}

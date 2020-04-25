@@ -9,7 +9,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
-class PaginatedFormulaDto:
+class PaginatedSubFormulaDto:
     def __init__(self,
                  items,
                  has_prev,

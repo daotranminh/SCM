@@ -88,7 +88,7 @@
                 <th>Product Name</th>
                 <th>Decoration Form</th>
                 <th>Decoration Technique</th>
-                <th>Formula</th>
+                <th>SubFormula</th>
                 <th>Sample Images</th>
                 <th>Cost Estimation per Product</th>
                 <th>Amount</th>
@@ -105,10 +105,10 @@
                 <td><a href="{{ url_for('product_details', product_id=product_dtos[i].product_id) }}">{{product_dtos[i].product_name}}</a></td>
                 <td>{{product_dtos[i].decoration_form_name}}</td>
                 <td>{{product_dtos[i].decoration_technique_name}}</td>
-                {% if product_dtos[i].formula_id is not none %}
-                  <td><a href="{{ url_for('formula_details', formula_id=product_dtos[i].formula_id) }}">{{product_dtos[i].formula_name}}</a></td>
+                {% if product_dtos[i].subformula_id is not none %}
+                  <td><a href="{{ url_for('subformula_details', subformula_id=product_dtos[i].subformula_id) }}">{{product_dtos[i].subformula_name}}</a></td>
                 {% else %}
-                  <td>{{product_dtos[i].formula_name}}</td>
+                  <td>{{product_dtos[i].subformula_name}}</td>
                 {% endif %}
                 {% if product_dtos[i].sample_images_group_id is not none %}
                   <td><a href="{{ url_for('sample_images_group_details', sample_images_group_id=product_dtos[i].sample_images_group_id) }}">{{product_dto.sample_images_group_name}}</a></td>
@@ -176,13 +176,13 @@
         </p>
 
         <p>
-          <label for="formula_id">Formula</label>
-          <select id="formula_id" name="formula_id">
-            {% for formula_rec in formula_recs %}
-              {% if formula_rec.id == chosen_formula_id %}
-                <option value="{{formula_rec.id}}" selected>{{formula_rec.name}}</option>
+          <label for="subformula_id">SubFormula</label>
+          <select id="subformula_id" name="subformula_id">
+            {% for subformula_rec in subformula_recs %}
+              {% if subformula_rec.id == chosen_subformula_id %}
+                <option value="{{subformula_rec.id}}" selected>{{subformula_rec.name}}</option>
               {% else %}
-                <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
+                <option value="{{subformula_rec.id}}">{{subformula_rec.name}}</option>
               {% endif %}
             {% endfor %}
           </select>

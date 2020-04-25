@@ -5,7 +5,7 @@
 {% from "includes/_formhelpers.html" import render_field %}
 
 <br/>
-<label for="taste_choices">List of formulas for taste</label>
+<label for="taste_choices">List of subformulas for taste</label>
 	<select id="taste_choices" name="taste_choices">
     {% for taste_rec1 in taste_recs %}
       {% if taste_rec1.id == taste_rec.id %}
@@ -36,17 +36,17 @@
     </tr>
   </thead>
   <tbody>
-    {% for formula_dto in formula_dtos.items %}
+    {% for subformula_dto in subformula_dtos.items %}
     <tr>
-      <td><a href="{{ url_for('formula_details', 
-	   formula_id=formula_dto.formula_id) }}">{{formula_dto.name}}</a></td>
-      <td>{{formula_dto.registered_on}}</td>
-      <td>{{formula_dto.total_cost}}</td>
-      <td><a href="{{ url_for('update_formula', 
-		                  formula_id=formula_dto.formula_id) }}"
+      <td><a href="{{ url_for('subformula_details', 
+	   subformula_id=subformula_dto.subformula_id) }}">{{subformula_dto.name}}</a></td>
+      <td>{{subformula_dto.registered_on}}</td>
+      <td>{{subformula_dto.total_cost}}</td>
+      <td><a href="{{ url_for('update_subformula', 
+		                  subformula_id=subformula_dto.subformula_id) }}"
                       class="btn btn-default pullright">Update</a></td>
       <td><a href="{{ url_for('cost_estimation_details', 
-                        formula_id=formula_dto.formula_id) }}"
+                        subformula_id=subformula_dto.subformula_id) }}"
                         class="btn btn-default pullright">Cost estimation details</a></td>
     </tr>
     {% endfor %}
@@ -54,23 +54,23 @@
 </table>
 
 <ul class="pagination pull-right">
-  <li class="page-item pagenumber">{{formula_dtos.page}}/{{formula_dtos.pages}}</li>
+  <li class="page-item pagenumber">{{subformula_dtos.page}}/{{subformula_dtos.pages}}</li>
 
-  {% if formula_dtos.has_prev %}
+  {% if subformula_dtos.has_prev %}
   <li class="page-item"><a class="page-link"
-         href="{{ url_for('list_formulas', 
+         href="{{ url_for('list_subformulas', 
          taste_id=taste_rec.id,
-				 page=formula_dtos.prev_num) }}">Previous</a></li>
+				 page=subformula_dtos.prev_num) }}">Previous</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
 			   href="#">Previous</a></li>
   {% endif %}
 
-  {% if formula_dtos.has_next %}
+  {% if subformula_dtos.has_next %}
   <li class="page-item"><a class="page-link"
-         href="{{ url_for('list_formulas', 
+         href="{{ url_for('list_subformulas', 
          taste_id=taste_rec.id,
-				 page=formula_dtos.next_num) }}">Next</a></li>
+				 page=subformula_dtos.next_num) }}">Next</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
 			   href="#">Next</a></li>
@@ -78,8 +78,8 @@
 </ul>
 <br/>
 
-<a href="{{ url_for('add_formula') }}"
-   class="btn btn-default pullright">Add a new formula</a>
+<a href="{{ url_for('add_subformula') }}"
+   class="btn btn-default pullright">Add a new subformula</a>
 
 <script>
   $('#taste_choices').select2();
@@ -89,7 +89,7 @@
       var current_taste_choice = document.getElementById("taste_choices").value
       let search_text = this.value
 
-      location.href = "/list_formulas/" + current_taste_choice + "/1/?search_text=" + search_text
+      location.href = "/list_subformulas/" + current_taste_choice + "/1/?search_text=" + search_text
     }
   })
 

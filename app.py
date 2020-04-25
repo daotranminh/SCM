@@ -13,13 +13,13 @@ from lib.repo.decoration_form_repository import DecorationFormRepository
 from lib.repo.decoration_technique_repository import DecorationTechniqueRepository
 from lib.repo.material_repository import MaterialRepository
 from lib.repo.material_version_repository import MaterialVersionRepository
-from lib.repo.material_formula_repository import MaterialFormulaRepository
+from lib.repo.material_subformula_repository import MaterialSubFormulaRepository
 from lib.repo.material_version_cost_estimation_repository import MaterialVersionCostEstimationRepository
 from lib.repo.cost_estimation_repository import CostEstimationRepository
 from lib.repo.customer_repository import CustomerRepository
 from lib.repo.taste_repository import TasteRepository
 from lib.repo.topic_repository import TopicRepository
-from lib.repo.formula_repository import FormulaRepository
+from lib.repo.subformula_repository import SubFormulaRepository
 from lib.repo.order_repository import OrderRepository
 from lib.repo.product_repository import ProductRepository
 from lib.repo.product_image_path_repository import ProductImagePathRepository
@@ -29,7 +29,7 @@ from lib.repo.sample_images_group_repository import SampleImagesGroupRepository
 from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
 from lib.managers.topic_manager import TopicManager
-from lib.managers.formula_manager import FormulaManager
+from lib.managers.subformula_manager import SubFormulaManager
 from lib.managers.order_manager import OrderManager
 from lib.managers.product_manager import ProductManager
 from lib.managers.sample_images_group_manager import SampleImagesGroupManager
@@ -45,14 +45,14 @@ delivery_method_repo = DeliveryMethodRepository(db)
 decoration_form_repo = DecorationFormRepository(db)
 decoration_technique_repo = DecorationTechniqueRepository(db)
 material_repo = MaterialRepository(db)
-material_formula_repo = MaterialFormulaRepository(db)
+material_subformula_repo = MaterialSubFormulaRepository(db)
 material_version_repo = MaterialVersionRepository(db)
 material_version_cost_estimation_repo = MaterialVersionCostEstimationRepository(db)
 cost_estimation_repo = CostEstimationRepository(db)
 customer_repo = CustomerRepository(db)
 taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
-formula_repo = FormulaRepository(db)
+subformula_repo = SubFormulaRepository(db)
 order_repo = OrderRepository(db)
 sample_image_path_repo = SampleImagePathRepository(db)
 sample_images_group_repo = SampleImagesGroupRepository(db)
@@ -61,11 +61,11 @@ product_image_path_repo = ProductImagePathRepository(db)
 
 material_manager = MaterialManager(material_repo,
                                    material_version_repo,
-                                   material_formula_repo)
+                                   material_subformula_repo)
 customer_manager = CustomerManager(customer_repo)
 topic_manager = TopicManager(topic_repo)
-formula_manager = FormulaManager(formula_repo,
-                                 material_formula_repo,
+subformula_manager = SubFormulaManager(subformula_repo,
+                                 material_subformula_repo,
                                  taste_repo,
                                  material_version_cost_estimation_repo,
                                  cost_estimation_repo,
@@ -88,7 +88,7 @@ product_manager = ProductManager(product_repo,
 def menu_setup():
     production_funcs = [
         ['list_materials', 'List of materials'],
-        ['list_formulas', 'List of formulas'],        
+        ['list_subformulas', 'List of subformulas'],        
         ['list_decoration_forms', 'List of decoration forms'],
         ['list_decoration_techniques', 'List of decoration techniques'],        
         ['list_tastes', 'List of tastes']
@@ -638,23 +638,23 @@ def customer_details(customer_id):
 # FORMULAS
 ####################################################################################
 
-@app.route('/list_formulas', methods=['GET', 'POST'])
-@app.route('/list_formulas/', methods=['GET', 'POST'])
-def list_formulas_default():
+@app.route('/list_subformulas', methods=['GET', 'POST'])
+@app.route('/list_subformulas/', methods=['GET', 'POST'])
+def list_subformulas_default():
     first_taste_rec = taste_repo.get_first_taste()
     if first_taste_rec is not None:
-        return redirect('/list_formulas/' + str(first_taste_rec.id))
+        return redirect('/list_subformulas/' + str(first_taste_rec.id))
     return render_error('No taste found in the database. Please add a taste.')
 
-@app.route('/list_formulas/<int:taste_id>', methods=['GET', 'POST'], defaults={'page':1})
-@app.route('/list_formulas/<int:taste_id>/', methods=['GET', 'POST'], defaults={'page':1})
-@app.route('/list_formulas/<int:taste_id>/<int:page>', methods=['GET', 'POST'])
-@app.route('/list_formulas/<int:taste_id>/<int:page>/', methods=['GET', 'POST'])
-def list_formulas(taste_id, page):
-    per_page = int(config['PAGING']['formulas_per_page'])
+@app.route('/list_subformulas/<int:taste_id>', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_subformulas/<int:taste_id>/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_subformulas/<int:taste_id>/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_subformulas/<int:taste_id>/<int:page>/', methods=['GET', 'POST'])
+def list_subformulas(taste_id, page):
+    per_page = int(config['PAGING']['subformulas_per_page'])
     search_text = request.args.get('search_text')
     
-    formula_dtos, db_changed = formula_manager.get_paginated_formula_dtos(
+    subformula_dtos, db_changed = subformula_manager.get_paginated_subformula_dtos(
         taste_id,
         page,
         per_page,
@@ -666,18 +666,18 @@ def list_formulas(taste_id, page):
     taste_rec = taste_repo.get_taste(taste_id)
     taste_recs = taste_repo.get_all_tastes()
                                                                   
-    return render_scm_template('list_formulas.html',
+    return render_scm_template('list_subformulas.html',
                                 search_text=search_text,
                                 taste_rec=taste_rec,
                                 taste_recs=taste_recs,
-                                formula_dtos=formula_dtos)
+                                subformula_dtos=subformula_dtos)
 
-def __extract_formula_props(props_dict):
-    formula_name = props_dict['formula_name']
+def __extract_subformula_props(props_dict):
+    subformula_name = props_dict['subformula_name']
     taste_id = int(props_dict['taste_id'])
-    formula_type = int(props_dict['formula_type'])
-    description = props_dict['formula_description']
-    note = props_dict['formula_note']
+    subformula_type = int(props_dict['subformula_type'])
+    description = props_dict['subformula_description']
+    note = props_dict['subformula_note']
     material_ids = []
     amounts = []
         
@@ -696,127 +696,127 @@ def __extract_formula_props(props_dict):
         amounts.append(amount)
         i += 1
 
-    return formula_name, \
+    return subformula_name, \
         taste_id, \
-        formula_type, \
+        subformula_type, \
         description, \
         note, \
         material_ids, \
         amounts
 
-@app.route('/add_formula', methods=['GET', 'POST'])
-def add_formula():
+@app.route('/add_subformula', methods=['GET', 'POST'])
+def add_subformula():
     material_dtos = material_manager.get_material_dtos()
     taste_recs = taste_repo.get_all_tastes()
 
     if request.method == 'POST':
         try:
-            formula_name, \
+            subformula_name, \
             taste_id, \
-            formula_type, \
+            subformula_type, \
             description, \
             note, \
             material_ids, \
-            amounts = __extract_formula_props(request.form)
+            amounts = __extract_subformula_props(request.form)
 
-            new_formula_id = formula_manager.add_formula(formula_name,
+            new_subformula_id = subformula_manager.add_subformula(subformula_name,
                                         taste_id,
-                                        formula_type,
+                                        subformula_type,
                                         description,
                                         note,
                                         material_ids,
                                         amounts)
             db.session.flush()
-            formula_manager.estimate_formula_cost(new_formula_id)            
+            subformula_manager.estimate_subformula_cost(new_subformula_id)            
             db.session.commit()
 
-            message = 'Successfully added formula %s' % formula_name
+            message = 'Successfully added subformula %s' % subformula_name
             logger.info(message)
 
-            return redirect_with_message(url_for('list_formulas', taste_id=taste_id), message, 'info')
+            return redirect_with_message(url_for('list_subformulas', taste_id=taste_id), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('add_formula.html',
+            return render_scm_template_with_message('add_subformula.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
                                                     tast_recs=taste_recs,
                                                     material_dtos=material_dtos,
-                                                    formula_type_names=scm_constants.FORMULA_TYPE_NAMES)
+                                                    subformula_type_names=scm_constants.FORMULA_TYPE_NAMES)
     else:
-        return render_scm_template('add_formula.html',
+        return render_scm_template('add_subformula.html',
                                    taste_recs=taste_recs,
                                    material_dtos=material_dtos,
-                                   formula_type_names=scm_constants.FORMULA_TYPE_NAMES)
+                                   subformula_type_names=scm_constants.FORMULA_TYPE_NAMES)
 
-@app.route('/formula_details/<int:formula_id>', methods=['GET', 'POST'])
-def formula_details(formula_id):
-    formula_rec, taste_rec, material_dtos = formula_manager.get_formula_details(formula_id)
+@app.route('/subformula_details/<int:subformula_id>', methods=['GET', 'POST'])
+def subformula_details(subformula_id):
+    subformula_rec, taste_rec, material_dtos = subformula_manager.get_subformula_details(subformula_id)
 
-    return render_scm_template('formula_details.html',
-                               formula_rec=formula_rec,
+    return render_scm_template('subformula_details.html',
+                               subformula_rec=subformula_rec,
                                taste_rec=taste_rec,
                                material_dtos=material_dtos)
 
-@app.route('/update_formula/<int:formula_id>', methods=['GET', 'POST'])
-def update_formula(formula_id):
-    formula_rec, material_formulas, total_cost = formula_manager.get_formula_info(formula_id)
+@app.route('/update_subformula/<int:subformula_id>', methods=['GET', 'POST'])
+def update_subformula(subformula_id):
+    subformula_rec, material_subformulas, total_cost = subformula_manager.get_subformula_info(subformula_id)
     taste_recs = taste_repo.get_all_tastes()
     material_dtos = material_manager.get_material_dtos()
 
     if request.method == 'POST':
         try:
-            formula_name, \
+            subformula_name, \
             taste_id, \
-            formula_type, \
+            subformula_type, \
             description, \
             note, \
             material_ids, \
-            amounts = __extract_formula_props(request.form)
+            amounts = __extract_subformula_props(request.form)
 
-            formula_manager.update_formula(formula_id,
-                                           formula_name,
+            subformula_manager.update_subformula(subformula_id,
+                                           subformula_name,
                                            taste_id,
-                                           formula_type,
+                                           subformula_type,
                                            description,
                                            note,
                                            material_ids,
                                            amounts)
             db.session.flush()
-            formula_manager.estimate_formula_cost(formula_id)
+            subformula_manager.estimate_subformula_cost(subformula_id)
             db.session.commit()
 
-            message = 'Successfully updated formula %s' % formula_id
+            message = 'Successfully updated subformula %s' % subformula_id
             logger.info(message)
 
-            return redirect_with_message(url_for('list_formulas', taste_id=taste_id), message, 'info')
+            return redirect_with_message(url_for('list_subformulas', taste_id=taste_id), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('update_formula.html',
+            return render_scm_template_with_message('update_subformula.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    formula_rec=formula_rec,
-                                                    material_formulas=material_formulas,
+                                                    subformula_rec=subformula_rec,
+                                                    material_subformulas=material_subformulas,
                                                     taste_recs=taste_recs,
                                                     material_dtos=material_dtos,
-                                                    formula_type_names=scm_constants.FORMULA_TYPE_NAMES,
+                                                    subformula_type_names=scm_constants.FORMULA_TYPE_NAMES,
                                                     total_cost=total_cost)
 
-    return render_scm_template('update_formula.html',
-                               formula_rec=formula_rec,
-                               material_formulas=material_formulas,
+    return render_scm_template('update_subformula.html',
+                               subformula_rec=subformula_rec,
+                               material_subformulas=material_subformulas,
                                taste_recs=taste_recs,
-                               formula_type_names=scm_constants.FORMULA_TYPE_NAMES,
+                               subformula_type_names=scm_constants.FORMULA_TYPE_NAMES,
                                material_dtos=material_dtos,
                                total_cost=total_cost)
 
-@app.route('/cost_estimation_details/<int:formula_id>', methods=['GET', 'POST'])
-def cost_estimation_details(formula_id):
-    formula_rec = formula_repo.get_formula(formula_id)
-    cost_estimation, material_cost_estimation_dtos = formula_manager.get_cost_estimation(formula_id)
+@app.route('/cost_estimation_details/<int:subformula_id>', methods=['GET', 'POST'])
+def cost_estimation_details(subformula_id):
+    subformula_rec = subformula_repo.get_subformula(subformula_id)
+    cost_estimation, material_cost_estimation_dtos = subformula_manager.get_cost_estimation(subformula_id)
     return render_scm_template('cost_estimation.html',
-                               formula_rec=formula_rec,
+                               subformula_rec=subformula_rec,
                                cost_estimation=cost_estimation,
                                material_cost_estimation_dtos=material_cost_estimation_dtos)
 
@@ -833,7 +833,7 @@ def __extract_order_props(props_dict):
 
     product_names = []
     product_amounts = []
-    formula_ids = []
+    subformula_ids = []
     decoration_form_ids = []
     decoration_technique_ids = []
     with_boxes = []
@@ -842,7 +842,7 @@ def __extract_order_props(props_dict):
     while True:
         product_name_id = 'product_name_' + str(i)
         product_amount_id = 'product_amount_' + str(i)
-        formula_choices_id = 'formula_choices_' + str(i)
+        subformula_choices_id = 'subformula_choices_' + str(i)
         decoration_form_choices_id = 'decoration_form_choices_' + str(i)
         decoration_technique_choices_id = 'decoration_technique_choices_' + str(i)
         with_box_id = 'with_box_' + str(i)
@@ -850,7 +850,7 @@ def __extract_order_props(props_dict):
         if product_name_id in props_dict:
             product_names.append(props_dict[product_name_id])
             product_amounts.append(props_dict[product_amount_id])
-            formula_ids.append(int(props_dict[formula_choices_id]))
+            subformula_ids.append(int(props_dict[subformula_choices_id]))
             decoration_form_ids.append(int(props_dict[decoration_form_choices_id]))
             decoration_technique_ids.append(int(props_dict[decoration_technique_choices_id]))
             if with_box_id in props_dict:
@@ -868,7 +868,7 @@ def __extract_order_props(props_dict):
            message, \
            product_names, \
            product_amounts, \
-           formula_ids, \
+           subformula_ids, \
            decoration_form_ids, \
            decoration_technique_ids, \
            with_boxes
@@ -879,7 +879,7 @@ def add_order():
     delivery_method_recs = delivery_method_repo.get_all_delivery_methods()    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
-    formula_recs = formula_repo.get_all_formulas()
+    subformula_recs = subformula_repo.get_all_subformulas()
 
     if request.method == 'POST':
         print(request.form)
@@ -892,7 +892,7 @@ def add_order():
             message, \
             product_names, \
             product_amounts, \
-            formula_ids, \
+            subformula_ids, \
             decoration_form_ids, \
             decoration_technique_ids, \
             with_boxes = __extract_order_props(request.form)
@@ -904,7 +904,7 @@ def add_order():
                                                    message,
                                                    product_names,
                                                    product_amounts,
-                                                   formula_ids,
+                                                   subformula_ids,
                                                    decoration_form_ids,
                                                    decoration_technique_ids,
                                                    with_boxes)
@@ -922,38 +922,38 @@ def add_order():
                                 delivery_method_recs=delivery_method_recs,
                                 decoration_form_recs=decoration_form_recs,
                                 decoration_technique_recs=decoration_technique_recs,
-                                formula_recs=formula_recs)
+                                subformula_recs=subformula_recs)
 
 def __lazy_get_order_dtos(page, per_page, search_text):
     paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
                                                                   per_page,
                                                                   search_text)
     db_changed = False
-    checked_formula_ids_set = set()
-    formula_ids_set = set()
+    checked_subformula_ids_set = set()
+    subformula_ids_set = set()
     order_dtos_need_cost_update = []
     for i in range(len(paginated_order_dtos.items)):
         product_recs = product_repo.get_products_of_order(paginated_order_dtos.items[i].order_id)
         product_cost_changed = False
         
         for product_rec in product_recs:
-            if product_rec.is_fixed == False and product_rec.formula_id is not None and product_rec.formula_id != -1:
-                if product_rec.formula_id not in checked_formula_ids_set:
-                    checked_formula_ids_set.add(product_rec.formula_id)
-                    formula_rec = formula_repo.get_formula(product_rec.formula_id)
-                    if formula_rec.has_up_to_date_cost_estimation == False:
-                        formula_ids_set.add(product_rec.formula_id)
+            if product_rec.is_fixed == False and product_rec.subformula_id is not None and product_rec.subformula_id != -1:
+                if product_rec.subformula_id not in checked_subformula_ids_set:
+                    checked_subformula_ids_set.add(product_rec.subformula_id)
+                    subformula_rec = subformula_repo.get_subformula(product_rec.subformula_id)
+                    if subformula_rec.has_up_to_date_cost_estimation == False:
+                        subformula_ids_set.add(product_rec.subformula_id)
                         product_cost_changed = True
                         db_changed = True
                 else:
-                    if product_rec.formula_id in formula_ids_set:
+                    if product_rec.subformula_id in subformula_ids_set:
                         product_cost_changed = True
         
         if product_cost_changed == True:
             order_dtos_need_cost_update.append(i)
     
-    for formula_id in formula_ids_set:
-        new_cost = formula_manager.estimate_formula_cost(formula_id)
+    for subformula_id in subformula_ids_set:
+        new_cost = subformula_manager.estimate_subformula_cost(subformula_id)
 
     db.session.flush()
 
@@ -983,8 +983,8 @@ def __lazy_get_product_dtos(order_id):
     product_dtos = product_manager.get_product_dtos(order_id)
 
     for product_dto in product_dtos:
-        if product_dto.formula_has_up_to_date_cost_estimation == False:
-            new_product_cost_estimation = formula_manager.estimate_formula_cost(product_dto.formula_id)
+        if product_dto.subformula_has_up_to_date_cost_estimation == False:
+            new_product_cost_estimation = subformula_manager.estimate_subformula_cost(product_dto.subformula_id)
             product_dto.product_cost_estimation = new_product_cost_estimation
             db_changed = True
     
@@ -1068,11 +1068,11 @@ def __extract_update_order_args(order_rec, args):
     else:
         product_amount_arg = int(product_amount_arg)
 
-    chosen_formula_id_arg = args.get('chosen_formula_id_arg')
-    if chosen_formula_id_arg is None or chosen_formula_id_arg == '':
-        chosen_formula_id_arg = -1
+    chosen_subformula_id_arg = args.get('chosen_subformula_id_arg')
+    if chosen_subformula_id_arg is None or chosen_subformula_id_arg == '':
+        chosen_subformula_id_arg = -1
     else:
-        chosen_formula_id_arg = int(chosen_formula_id_arg)
+        chosen_subformula_id_arg = int(chosen_subformula_id_arg)
 
     chosen_decoration_form_id_arg = args.get('chosen_decoration_form_id_arg')
     if chosen_decoration_form_id_arg is None or chosen_decoration_form_id_arg == '':
@@ -1101,7 +1101,7 @@ def __extract_update_order_args(order_rec, args):
         message_arg, \
         new_product_name_arg, \
         product_amount_arg, \
-        chosen_formula_id_arg, \
+        chosen_subformula_id_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
         with_box_arg, \
@@ -1142,7 +1142,7 @@ def update_order(order_id):
         message_arg, \
         new_product_name_arg, \
         product_amount_arg, \
-        chosen_formula_id_arg, \
+        chosen_subformula_id_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
         with_box_arg, \
@@ -1158,7 +1158,7 @@ def update_order(order_id):
     delivery_method_recs = delivery_method_repo.get_all_delivery_methods()    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
-    formula_recs = formula_repo.get_all_formulas()
+    subformula_recs = subformula_repo.get_all_subformulas()
     
     total_price_to_customer = 0
     for product_dto in product_dtos:
@@ -1187,7 +1187,7 @@ def update_order(order_id):
                                     paid_on=paid_on_arg,
                                     new_product_name=new_product_name_arg,
                                     product_amount=product_amount_arg,
-                                    chosen_formula_id=chosen_formula_id_arg,
+                                    chosen_subformula_id=chosen_subformula_id_arg,
                                     chosen_decoration_form_id=chosen_decoration_form_id_arg,
                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
                                     with_box=with_box_arg,
@@ -1199,7 +1199,7 @@ def update_order(order_id):
                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,
                                     decoration_form_recs=decoration_form_recs,
                                     decoration_technique_recs=decoration_technique_recs,
-                                    formula_recs=formula_recs,
+                                    subformula_recs=subformula_recs,
                                     total_price_to_customer=total_price_to_customer,
                                     price_to_customers=price_to_customers)
     elif request.method == 'POST':        
@@ -1259,7 +1259,7 @@ def update_order(order_id):
                                                     new_product_name=new_product_name_arg,
                                                     product_amount=product_amount_arg,
                                                     chosen_taste_id=chosen_taste_id_arg,
-                                                    chosen_formula_id=chosen_formula_id_arg,
+                                                    chosen_subformula_id=chosen_subformula_id_arg,
                                                     chosen_decoration_form_id=chosen_decoration_form_id_arg,
                                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
                                                     with_box=with_box_arg,
@@ -1271,7 +1271,7 @@ def update_order(order_id):
                                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,
                                                     decoration_form_recs=decoration_form_recs,
                                                     decoration_technique_recs=decoration_technique_recs,
-                                                    formula_recs=formula_recs,
+                                                    subformula_recs=subformula_recs,
                                                     total_price_to_customer=total_price_to_customer,
                                                     price_to_customers=price_to_customers)
 
@@ -1279,7 +1279,7 @@ def update_order(order_id):
 def add_new_product_to_order(order_id):
     new_product_name = request.args.get('new_product_name_arg')
     product_amount = int(request.args.get('product_amount_arg'))    
-    formula_id = int(request.args.get('formula_id_arg'))
+    subformula_id = int(request.args.get('subformula_id_arg'))
     decoration_form_id = int(request.args.get('decoration_form_id_arg'))
     decoration_technique_id = int(request.args.get('decoration_technique_id_arg'))
     
@@ -1290,7 +1290,7 @@ def add_new_product_to_order(order_id):
         product_manager.add_product(new_product_name,
                                     product_amount,
                                     order_id,
-                                    formula_id,
+                                    subformula_id,
                                     decoration_form_id,
                                     decoration_technique_id,
                                     with_box)
@@ -1312,7 +1312,7 @@ def add_new_product_to_order(order_id):
                                              price_to_customers_arg=[request.args.get('price_to_customers_arg')],
                                              new_product_name_arg=[request.args.get('new_product_name_arg')],
                                              product_amount_arg=[request.args.get('product_amount_arg')],                                             
-                                             chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                             chosen_subformula_id_arg=[request.args.get('subformula_id_arg')],
                                              chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                              with_box_arg=[request.args.get('with_box_arg')]
@@ -1337,7 +1337,7 @@ def add_new_product_to_order(order_id):
                                  price_to_customers_arg=[request.args.get('price_to_customers_arg')],
                                  new_product_name_arg=[''],
                                  product_amount_arg=['1'],                                 
-                                 chosen_formula_id_arg=['-1'],
+                                 chosen_subformula_id_arg=['-1'],
                                  chosen_decoration_form_id_arg=['-1'],
                                  chosen_decoration_technique_id_arg=['-1'],
                                  with_box_arg=['false']
@@ -1381,11 +1381,11 @@ def __extract_update_product_args(product_rec, args):
     else:
         selected_decoration_technique_id = product_rec.decoration_technique_id
 
-    selected_formula_id = args.get('formula_id_arg')
-    if selected_formula_id is not None:
-        selected_formula_id = int(selected_formula_id)
+    selected_subformula_id = args.get('subformula_id_arg')
+    if selected_subformula_id is not None:
+        selected_subformula_id = int(selected_subformula_id)
     else:
-        selected_formula_id = product_rec.formula_id
+        selected_subformula_id = product_rec.subformula_id
 
     selected_box_status = args.get('box_status_arg')
     if selected_box_status is not None:
@@ -1404,7 +1404,7 @@ def __extract_update_product_args(product_rec, args):
             product_amount, \
             selected_decoration_form_id, \
             selected_decoration_technique_id, \
-            selected_formula_id, \
+            selected_subformula_id, \
             selected_box_status, \
             chosen_box_returned_on, \
             selected_sample_images_group_id
@@ -1421,19 +1421,19 @@ def update_product(product_id):
     if product_rec.sample_images_group_id is not None:
         latest_3_sample_image_paths = sample_image_path_repo.get_latest_3_sample_image_paths(product_rec.sample_images_group_id)
 
-    formula_recs = formula_repo.get_all_formulas()
+    subformula_recs = subformula_repo.get_all_subformulas()
 
     if request.method == 'GET':
         current_product_name, \
             product_amount, \
             selected_decoration_form_id, \
             selected_decoration_technique_id, \
-            selected_formula_id, \
+            selected_subformula_id, \
             selected_box_status, \
             chosen_box_returned_on, \
             selected_sample_images_group_id = __extract_update_product_args(product_rec, request.args)
 
-        formula_recs = formula_repo.get_all_formulas()
+        subformula_recs = subformula_repo.get_all_subformulas()
         existing_product_image_paths_arg = request.args.get('existing_product_image_paths_arg')
         product_image_path_recs = __infer_product_image_path_recs(product_id, existing_product_image_paths_arg)
 
@@ -1446,15 +1446,15 @@ def update_product(product_id):
             remaining_product_image_path_ids = __extract_remaining_image_path_ids(request.form, 'existing_product_image_')
             current_product_name = request.form['product_name']
             product_amount = int(request.form['product_amount'])
-            selected_formula_id = int(request.form['formula_id'])
+            selected_subformula_id = int(request.form['subformula_id'])
             selected_decoration_form_id = int(request.form['decoration_form_id'])
             selected_decoration_technique_id = int(request.form['decoration_technique_id'])            
             selected_box_status = int(request.form['box_status'])
             chosen_box_returned_on = request.form['box_returned_on']
             
-            selected_formula_id = int(request.form['formula_id'])
-            if selected_formula_id == -1:
-                selected_formula_id = None
+            selected_subformula_id = int(request.form['subformula_id'])
+            if selected_subformula_id == -1:
+                selected_subformula_id = None
 
             selected_sample_images_group_id = int(request.form['sample_images_group_id'])
             if selected_sample_images_group_id == -1:
@@ -1467,7 +1467,7 @@ def update_product(product_id):
                                            current_product_name,
                                            selected_decoration_form_id,
                                            selected_decoration_technique_id,
-                                           selected_formula_id,
+                                           selected_subformula_id,
                                            selected_box_status,
                                            chosen_box_returned_on,
                                            selected_sample_images_group_id,
@@ -1476,7 +1476,7 @@ def update_product(product_id):
                                            uploaded_files)
             db.session.commit()
 
-            formula_recs = formula_repo.get_all_formulas()
+            subformula_recs = subformula_repo.get_all_subformulas()
             product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
             
             message = 'Successfully updated product %s (%s)' % (current_product_name, product_id)
@@ -1493,12 +1493,12 @@ def update_product(product_id):
                                                     decoration_technique_recs=decoration_technique_recs,
                                                     product_rec=product_rec,
                                                     product_image_path_recs=product_image_path_recs,
-                                                    formula_recs=formula_recs,
+                                                    subformula_recs=subformula_recs,
                                                     box_status_names=scm_constants.BOX_STATUS_NAMES,
                                                     sample_images_group_recs=sample_images_group_recs,
                                                     latest_3_sample_image_paths=latest_3_sample_image_paths,
                                                     current_product_name=current_product_name,
-                                                    selected_formula_id=selected_formula_id,
+                                                    selected_subformula_id=selected_subformula_id,
                                                     selected_decoration_form_id=selected_decoration_form_id,
                                                     selected_decoration_technique_id=selected_decoration_technique_id,                                                    
                                                     selected_box_status=selected_box_status,
@@ -1510,14 +1510,14 @@ def update_product(product_id):
                                decoration_technique_recs=decoration_technique_recs,
                                product_rec=product_rec,
                                product_image_path_recs=product_image_path_recs,
-                               formula_recs=formula_recs,
+                               subformula_recs=subformula_recs,
                                box_status_names=scm_constants.BOX_STATUS_NAMES,
                                sample_images_group_recs=sample_images_group_recs,
                                latest_3_sample_image_paths=latest_3_sample_image_paths,
                                current_product_name=current_product_name,
                                selected_decoration_form_id=selected_decoration_form_id,
                                selected_decoration_technique_id=selected_decoration_technique_id,
-                               selected_formula_id=selected_formula_id,
+                               selected_subformula_id=selected_subformula_id,
                                selected_box_status=selected_box_status,
                                chosen_box_returned_on=chosen_box_returned_on,
                                selected_sample_images_group_id=selected_sample_images_group_id)
@@ -1549,7 +1549,7 @@ def delete_product(product_id):
                                              price_to_customers_arg=[request.args.get('price_to_customers_arg')],
                                              new_product_name_arg=[request.args.get('new_product_name_arg')],
                                              product_amount_arg=[request.args.get('product_amount_arg')],
-                                             chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                             chosen_subformula_id_arg=[request.args.get('subformula_id_arg')],
                                              chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                              with_box_arg=[request.args.get('with_box_arg')]
@@ -1574,7 +1574,7 @@ def delete_product(product_id):
                                  price_to_customers_arg=[request.args.get('price_to_customers_arg')],
                                  new_product_name_arg=[request.args.get('new_product_name_arg')],
                                  product_amount_arg=[request.args.get('product_amount_arg')],
-                                 chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                 chosen_subformula_id_arg=[request.args.get('subformula_id_arg')],
                                  chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                  chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                  with_box_arg=[request.args.get('with_box_arg')]

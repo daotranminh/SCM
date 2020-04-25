@@ -21,13 +21,13 @@
 	  	</p>
 
 		<div class="form-group">
-	        <label for="formula_id">Formula</label>
-	        <select id="formula_id" name="formula_id">
-	        {% for formula_rec in formula_recs %}
-	            {% if formula_rec.id == selected_formula_id %}
-	            <option value="{{formula_rec.id}}" selected>{{formula_rec.name}}</option>
+	        <label for="subformula_id">SubFormula</label>
+	        <select id="subformula_id" name="subformula_id">
+	        {% for subformula_rec in subformula_recs %}
+	            {% if subformula_rec.id == selected_subformula_id %}
+	            <option value="{{subformula_rec.id}}" selected>{{subformula_rec.name}}</option>
 	            {% else %}
-	            <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
+	            <option value="{{subformula_rec.id}}">{{subformula_rec.name}}</option>
 	            {% endif %}
 	        {% endfor %}
 	        </select>
@@ -206,7 +206,7 @@ function reload_after_select_changed()
 {
 	var productId = document.getElementById("product_id").value
 	var productName = document.getElementById("product_name").value	
-	var formulaId = document.getElementById("formula_id").value
+	var subformulaId = document.getElementById("subformula_id").value
 	var decorationFormId = document.getElementById("decoration_form_id").value 
 	var decorationTechniqueId = document.getElementById("decoration_technique_id").value 	
 	var boxStatus = document.getElementById("box_status").value
@@ -230,7 +230,7 @@ function reload_after_select_changed()
 		"?product_name_arg=" + productName +		
 		"&decoration_form_id_arg=" + decorationFormId +
 		"&decoration_technique_id_arg=" + decorationTechniqueId + 
-		"&formula_id_arg=" + formulaId +
+		"&subformula_id_arg=" + subformulaId +
 		"&box_status_arg=" + boxStatus + 
 		"&sample_images_group_id_arg=" + sampleImagesGroupId +
 		"&box_returned_on_arg=" + boxReturnedOn +

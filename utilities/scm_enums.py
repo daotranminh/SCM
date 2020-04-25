@@ -43,7 +43,7 @@ class OrderStatus(IntEnum):
     IN_PRODUCTION = 1
     DELIVERED = 2
 
-class FormulaTypes(IntEnum):
+class SubFormulaTypes(IntEnum):
     BASE = 0
     FILLING = 1
     CREAM = 2

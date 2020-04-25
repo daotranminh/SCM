@@ -33,14 +33,14 @@ class ProductManager:
                     name,
                     amount,
                     order_id,
-                    formula_id,
+                    subformula_id,
                     decoration_form_id,
                     decoration_technique_id,
                     with_box):
         new_product_id = self.product_repo.add_product(name,
                                                       amount,
                                                       order_id,
-                                                      formula_id,
+                                                      subformula_id,
                                                       decoration_form_id,
                                                       decoration_technique_id,
                                                       with_box)
@@ -74,9 +74,9 @@ class ProductManager:
         decoration_form_name, \
         decoration_technique_id, \
         decoration_technique_name, \
-        formula_id, \
-        formula_name, \
-        formula_has_up_to_date_cost_estimation, \
+        subformula_id, \
+        subformula_name, \
+        subformula_has_up_to_date_cost_estimation, \
         sample_images_group_id, \
         sample_images_group_name, \
         product_cost_estimation = self.product_repo.get_product_dto(product_id)
@@ -95,9 +95,9 @@ class ProductManager:
                                  decoration_form_name,
                                  decoration_technique_id,
                                  decoration_technique_name,
-                                 formula_id,
-                                 formula_name,
-                                 formula_has_up_to_date_cost_estimation,
+                                 subformula_id,
+                                 subformula_name,
+                                 subformula_has_up_to_date_cost_estimation,
                                  product_rec.price_to_customer,
                                  sample_images_group_id,
                                  sample_images_group_name, 
@@ -121,7 +121,7 @@ class ProductManager:
                        product_name,
                        decoration_form_id,
                        decoration_technique_id,
-                       formula_id,
+                       subformula_id,
                        box_status,
                        box_returned_on,
                        sample_images_group_id,
@@ -129,12 +129,12 @@ class ProductManager:
                        remaining_product_image_path_ids,
                        uploaded_files):        
         product_rec = self.product_repo.get_product(product_id)
-        if product_rec.formula_id != formula_id:
-            new_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_formula(formula_id)
+        if product_rec.subformula_id != subformula_id:
+            new_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)
             product_rec.cost_estimation_id = new_cost_estimation.id
             product_rec.total_cost = new_cost_estimation.total_cost
 
-            message = 'Formula of product %s changed. Refer to cost_estimation %s with total_cost=%s' % (product_id,
+            message = 'SubFormula of product %s changed. Refer to cost_estimation %s with total_cost=%s' % (product_id,
                                                                                                          new_cost_estimation.id,
                                                                                                          new_cost_estimation.total_cost)
             ProductManager.logger.info(message)
@@ -153,7 +153,7 @@ class ProductManager:
         product_rec.name = product_name
         product_rec.decoration_form_id = decoration_form_id
         product_rec.decoration_technique_id = decoration_technique_id
-        product_rec.formula_id = formula_id
+        product_rec.subformula_id = subformula_id
         product_rec.box_status = box_status
         product_rec.box_returned_on = box_returned_on
         product_rec.sample_images_group_id = sample_images_group_id

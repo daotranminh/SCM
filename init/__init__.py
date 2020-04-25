@@ -51,11 +51,11 @@ class Taste(db.Model):
     description = Column(String(400))
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)    
     
-class Formula(db.Model):
-    __tablename__ = 'formula'
+class SubFormula(db.Model):
+    __tablename__ = 'subformula'
     id = Column(Integer, autoincrement=True, primary_key=True)
     taste_id = Column(Integer, ForeignKey(Taste.id))
-    formula_type = Column(Integer)
+    subformula_type = Column(Integer)
     name = Column(String(50))
     description = Column(String(400))
     note = Column(String(5000))
@@ -63,17 +63,17 @@ class Formula(db.Model):
     has_up_to_date_cost_estimation = Column(Boolean, default=False)    
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
 
-class MaterialFormula(db.Model):
-    __tablename__ = 'material_formula'
+class MaterialSubFormula(db.Model):
+    __tablename__ = 'material_subformula'
     id = Column(Integer, autoincrement=True, primary_key=True)
     material_id = Column(Integer, ForeignKey(Material.id))
-    formula_id = Column(Integer, ForeignKey(Formula.id))
+    subformula_id = Column(Integer, ForeignKey(SubFormula.id))
     amount = Column(Numeric(10, 2))
 
 class CostEstimation(db.Model):
     __tablename__ = 'cost_estimation'
     id = Column(Integer, autoincrement=True, primary_key=True)
-    formula_id = Column(Integer, ForeignKey(Formula.id))
+    subformula_id = Column(Integer, ForeignKey(SubFormula.id))
     generated_on = Column(DateTime(), default=datetime.datetime.utcnow)
     total_cost = Column(Numeric(10, 2))
     is_current = Column(Boolean, default=True)
@@ -167,7 +167,7 @@ class Product(db.Model):
     order_id = Column(Integer, ForeignKey(Order.id))    
     decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
     decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
-    formula_id = Column(Integer, ForeignKey(Formula.id))
+    subformula_id = Column(Integer, ForeignKey(SubFormula.id))
     cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
     sample_images_group_id = Column(Integer, ForeignKey(SampleImagesGroup.id))
     box_status = Column(Integer, default=0)

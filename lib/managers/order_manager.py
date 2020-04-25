@@ -25,7 +25,7 @@ class OrderManager:
                   message,
                   product_names,
                   product_amounts,
-                  formula_ids,
+                  subformula_ids,
                   decoration_form_ids,
                   decoration_technique_ids,
                   with_boxes):
@@ -40,7 +40,7 @@ class OrderManager:
             new_product_id = self.product_repo.add_product(product_names[i],
                                                            product_amounts[i],
                                                            new_order_id,
-                                                           formula_ids[i],
+                                                           subformula_ids[i],
                                                            decoration_form_ids[i],
                                                            decoration_technique_ids[i],
                                                            with_boxes[i])
