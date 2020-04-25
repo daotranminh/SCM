@@ -48,11 +48,11 @@ class SubFormulaRepository:
         return subformula_query.paginate(page, per_page, error_out=False)
 
     def add_subformula(self,
-                  name,
-                  taste_id,
-                  subformula_type,
-                  description,
-                  note):
+                       name,
+                       taste_id,
+                       subformula_type,
+                       description,
+                       note):
         try:
             subformula_rec = SubFormula(name=name,
                                   taste_id=taste_id,
@@ -65,7 +65,7 @@ class SubFormulaRepository:
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add subformula record. Details: %s' % (str(ex))
             SubFormulaRepository.logger.error(message)
-            raise ScmException(ErrorCodes.ERROR_ADD_FORMULA_FAILED, message)
+            raise ScmException(ErrorCodes.ERROR_ADD_SUBFORMULA_FAILED, message)
 
     def set_flag_has_up_to_date_cost_estimation(self, subformula_id, flag):
         subformula_rec = self.get_subformula(subformula_id)

@@ -20,6 +20,8 @@ from lib.repo.customer_repository import CustomerRepository
 from lib.repo.taste_repository import TasteRepository
 from lib.repo.topic_repository import TopicRepository
 from lib.repo.subformula_repository import SubFormulaRepository
+from lib.repo.formula_repository import FormulaRepository
+from lib.repo.formula_subformula_repository import FormulaSubFormulaRepository
 from lib.repo.order_repository import OrderRepository
 from lib.repo.product_repository import ProductRepository
 from lib.repo.product_image_path_repository import ProductImagePathRepository
@@ -30,6 +32,7 @@ from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
 from lib.managers.topic_manager import TopicManager
 from lib.managers.subformula_manager import SubFormulaManager
+from lib.managers.formula_subformula_manager import FormulaSubFormulaManager
 from lib.managers.order_manager import OrderManager
 from lib.managers.product_manager import ProductManager
 from lib.managers.sample_images_group_manager import SampleImagesGroupManager
@@ -53,6 +56,8 @@ customer_repo = CustomerRepository(db)
 taste_repo = TasteRepository(db)
 topic_repo = TopicRepository(db)
 subformula_repo = SubFormulaRepository(db)
+formula_repo = FormulaRepository(db)
+formula_subformula_repo = FormulaSubFormulaRepository(db)
 order_repo = OrderRepository(db)
 sample_image_path_repo = SampleImagePathRepository(db)
 sample_images_group_repo = SampleImagesGroupRepository(db)
@@ -71,8 +76,10 @@ subformula_manager = SubFormulaManager(subformula_repo,
                                  cost_estimation_repo,
                                  product_repo,
                                  order_repo)
+formula_manager = FormulaSubFormulaManager(formula_repo,
+                                           subformula_repo)                                 
 order_manager = OrderManager(order_repo,
-                            product_repo)
+                             product_repo)
 sample_images_group_manager = SampleImagesGroupManager(sample_images_group_repo,
                                                        sample_image_path_repo)
 product_manager = ProductManager(product_repo, 
@@ -88,7 +95,8 @@ product_manager = ProductManager(product_repo,
 def menu_setup():
     production_funcs = [
         ['list_materials', 'List of materials'],
-        ['list_subformulas', 'List of subformulas'],        
+        ['list_subformulas', 'List of subformulas'],
+        ['list_formulas', 'List of formulas'],
         ['list_decoration_forms', 'List of decoration forms'],
         ['list_decoration_techniques', 'List of decoration techniques'],        
         ['list_tastes', 'List of tastes']

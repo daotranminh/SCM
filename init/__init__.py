@@ -28,7 +28,7 @@ db = SQLAlchemy(app)
 class Material(db.Model):
     __tablename__ = 'material'
     id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(50))
+    name = Column(String(200))
     description = Column(String(400))
     unit_amount = Column(Numeric(10, 2))
     unit = Column(String(50))
@@ -47,7 +47,7 @@ class MaterialVersion(db.Model):
 class Taste(db.Model):
     __tablename__ = 'taste'
     id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(50))
+    name = Column(String(200))
     description = Column(String(400))
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)    
     
@@ -56,12 +56,28 @@ class SubFormula(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     taste_id = Column(Integer, ForeignKey(Taste.id))
     subformula_type = Column(Integer)
-    name = Column(String(50))
+    name = Column(String(200))
     description = Column(String(400))
-    note = Column(String(5000))
+    note = Column(String(10000))
     total_cost = Column(Numeric(10, 2))
-    has_up_to_date_cost_estimation = Column(Boolean, default=False)    
+    has_up_to_date_cost_estimation = Column(Boolean, default=False)
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
+
+class Formula(db.Model):
+    __tablename__ = 'formula'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(200))    
+    description = Column(String(400))
+    note = Column(String(10000))
+    total_cost = Column(Numeric(10, 2), default=0)
+    has_up_to_date_cost_estimation = Column(Boolean, default=False)
+    registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
+
+class FormulaSubFormula(db.Model):
+    __tablename__ = 'formula_subformula'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    formula_id = Column(Integer, ForeignKey(Formula.id))
+    subformula_id = Column(Integer, ForeignKey(SubFormula.id))
 
 class MaterialSubFormula(db.Model):
     __tablename__ = 'material_subformula'
@@ -93,26 +109,26 @@ class MaterialVersionCostEstimation(db.Model):
 class Topic(db.Model):
     __tablename__ = 'topic'
     id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(50))
+    name = Column(String(200))
     description = Column(String(400))
     parent_id = Column(Integer, default=-1)
 
 class DecorationForm(db.Model):
     __tablename__ = 'decoration_form'
     id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(50))
+    name = Column(String(200))
     description = Column(String(400))
 
 class DecorationTechnique(db.Model):
     __tablename__ = 'decoration_technique'
     id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(50))
+    name = Column(String(200))
     description = Column(String(400))
   
 class Customer(db.Model):
     __tablename__ = 'customer'
     id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(50))
+    name = Column(String(200))
     birthday = Column(DateTime())
     address = Column(String(200))
     phone = Column(String(50))
@@ -125,7 +141,7 @@ class Customer(db.Model):
 class DeliveryMethod(db.Model):
     __tablename__ = 'delivery_method'
     id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(50))
+    name = Column(String(200))
     description = Column(String(400))
 
 class SampleImagesGroup(db.Model):
