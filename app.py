@@ -675,6 +675,7 @@ def list_formulas(taste_id, page):
 def __extract_formula_props(props_dict):
     formula_name = props_dict['formula_name']
     taste_id = int(props_dict['taste_id'])
+    formula_type = int(props_dict['formula_type'])
     description = props_dict['formula_description']
     note = props_dict['formula_note']
     material_ids = []
@@ -695,7 +696,13 @@ def __extract_formula_props(props_dict):
         amounts.append(amount)
         i += 1
 
-    return formula_name, taste_id, description, note, material_ids, amounts
+    return formula_name, \
+        taste_id, \
+        formula_type, \
+        description, \
+        note, \
+        material_ids, \
+        amounts
 
 @app.route('/add_formula', methods=['GET', 'POST'])
 def add_formula():
@@ -704,10 +711,17 @@ def add_formula():
 
     if request.method == 'POST':
         try:
-            formula_name, taste_id, description, note, material_ids, amounts = __extract_formula_props(request.form)
+            formula_name, \
+            taste_id, \
+            formula_type, \
+            description, \
+            note, \
+            material_ids, \
+            amounts = __extract_formula_props(request.form)
 
             new_formula_id = formula_manager.add_formula(formula_name,
                                         taste_id,
+                                        formula_type,
                                         description,
                                         note,
                                         material_ids,
@@ -719,7 +733,7 @@ def add_formula():
             message = 'Successfully added formula %s' % formula_name
             logger.info(message)
 
-            return redirect_with_message(url_for('list_formulas'), message, 'info')
+            return redirect_with_message(url_for('list_formulas', taste_id=taste_id), message, 'info')
         except ScmException as ex:
             db.session.rollback()
             return render_scm_template_with_message('add_formula.html',
@@ -727,11 +741,13 @@ def add_formula():
                                                     'danger',
                                                     ex,
                                                     tast_recs=taste_recs,
-                                                    material_dtos=material_dtos)
+                                                    material_dtos=material_dtos,
+                                                    formula_type_names=scm_constants.FORMULA_TYPE_NAMES)
     else:
         return render_scm_template('add_formula.html',
                                    taste_recs=taste_recs,
-                                   material_dtos=material_dtos)
+                                   material_dtos=material_dtos,
+                                   formula_type_names=scm_constants.FORMULA_TYPE_NAMES)
 
 @app.route('/formula_details/<int:formula_id>', methods=['GET', 'POST'])
 def formula_details(formula_id):
@@ -750,11 +766,18 @@ def update_formula(formula_id):
 
     if request.method == 'POST':
         try:
-            formula_name, taste_id, description, note, material_ids, amounts = __extract_formula_props(request.form)
+            formula_name, \
+            taste_id, \
+            formula_type, \
+            description, \
+            note, \
+            material_ids, \
+            amounts = __extract_formula_props(request.form)
 
             formula_manager.update_formula(formula_id,
                                            formula_name,
                                            taste_id,
+                                           formula_type,
                                            description,
                                            note,
                                            material_ids,
@@ -766,7 +789,7 @@ def update_formula(formula_id):
             message = 'Successfully updated formula %s' % formula_id
             logger.info(message)
 
-            return redirect_with_message(url_for('list_formulas'), message, 'info')
+            return redirect_with_message(url_for('list_formulas', taste_id=taste_id), message, 'info')
         except ScmException as ex:
             db.session.rollback()
             return render_scm_template_with_message('update_formula.html',
@@ -777,12 +800,14 @@ def update_formula(formula_id):
                                                     material_formulas=material_formulas,
                                                     taste_recs=taste_recs,
                                                     material_dtos=material_dtos,
+                                                    formula_type_names=scm_constants.FORMULA_TYPE_NAMES,
                                                     total_cost=total_cost)
 
     return render_scm_template('update_formula.html',
                                formula_rec=formula_rec,
                                material_formulas=material_formulas,
                                taste_recs=taste_recs,
+                               formula_type_names=scm_constants.FORMULA_TYPE_NAMES,
                                material_dtos=material_dtos,
                                total_cost=total_cost)
 

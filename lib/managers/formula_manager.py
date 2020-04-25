@@ -59,12 +59,14 @@ class FormulaManager:
     def add_formula(self,
                     formula_name,
                     taste_id,
+                    formula_type,
                     description,
                     note,
                     material_ids,
                     amounts):
         new_formula_id = self.formula_repo.add_formula(formula_name,
                                                        taste_id,
+                                                       formula_type,
                                                        description,
                                                        note)
         message = 'Added new formula "%s" with new_formula_id=%s' % (formula_name, new_formula_id)
@@ -85,6 +87,7 @@ class FormulaManager:
                        formula_id,
                        formula_name,
                        taste_id,
+                       formula_type,
                        description,
                        note,
                        material_ids,
@@ -92,6 +95,7 @@ class FormulaManager:
         formula_rec = self.formula_repo.get_formula(formula_id)
         formula_rec.name = formula_name
         formula_rec.taste_id = taste_id
+        formula_rec.formula_type = formula_type
         formula_rec.description = description
         formula_rec.note = note
 
@@ -162,6 +166,7 @@ class FormulaManager:
 
             formula_dto = FormulaDto(formula_rec.id,
                                      formula_rec.name,
+                                     formula_rec.formula_type,
                                      formula_rec.description,
                                      formula_rec.note,
                                      up_to_date_formula_cost,

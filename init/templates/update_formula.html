@@ -24,7 +24,20 @@
 	    {% endif %}
           {% endfor %}
 	</select>
-      </div>
+	  </div>
+	  
+	<div class="form-group">
+		<label for="formula_type">Formula type</label>
+		<select id="formula_type" name="formula_type">
+		  {% for formula_type_name in formula_type_names %}
+			{% if formula_type_name[0] == formula_rec.formula_type %}
+			<option value="{{formula_type_name[0]}}" selected>{{formula_type_name[1]}}</option>
+			{% else %}
+			<option value="{{formula_type_name[0]}}">{{formula_type_name[1]}}</option>
+			{% endif %}
+		  {% endfor %}
+		</select>
+	</div>
 
       <div class="form-group">
 	<label for="formula_description">Description</label>

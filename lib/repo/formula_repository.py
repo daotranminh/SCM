@@ -50,11 +50,13 @@ class FormulaRepository:
     def add_formula(self,
                   name,
                   taste_id,
+                  formula_type,
                   description,
                   note):
         try:
-            formula_rec = Formula(taste_id=taste_id,
-                                  name=name,
+            formula_rec = Formula(name=name,
+                                  taste_id=taste_id,
+                                  formula_type=formula_type,
                                   description=description,
                                   note=note)
             self.db.session.add(formula_rec)

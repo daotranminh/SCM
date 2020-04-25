@@ -1,4 +1,4 @@
-from .scm_enums import OrderStatus, PaymentStatus, BoxStatus
+from .scm_enums import OrderStatus, PaymentStatus, BoxStatus, FormulaTypes
 
 UNIT_CHOICES = ['g', 'ml', 'kg', 'l', 'piece']
 
@@ -18,3 +18,7 @@ BOX_STATUS_NAMES = [(int(BoxStatus.BOX_NOT_NEEDED), 'Box not needed'),
                     (int(BoxStatus.BOX_WITH_PRODUCT_IN_PRODUCTION), 'Box with product in production'),
                     (int(BoxStatus.BOX_AT_CUSTOMER_AFTER_DELIVERY), 'Box at customer after delivery'),
                     (int(BoxStatus.BOX_RETURNED), 'Box returned')]
+
+FORMULA_TYPE_NAMES = [(int(FormulaTypes.BASE), 'Base'),
+                      (int(FormulaTypes.FILLING), 'Filling'),
+                      (int(FormulaTypes.CREAM), 'Cream')]

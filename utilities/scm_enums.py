@@ -42,3 +42,9 @@ class OrderStatus(IntEnum):
     PENDING = 0
     IN_PRODUCTION = 1
     DELIVERED = 2
+
+class FormulaTypes(IntEnum):
+    BASE = 0
+    FILLING = 1
+    CREAM = 2
+

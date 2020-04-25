@@ -13,12 +13,14 @@ class FormulaDto:
     def __init__(self,
                  formula_id,
                  name,
+                 formula_type,
                  description,
                  note,
                  total_cost,
                  registered_on):
         self.formula_id = formula_id
         self.name = name
+        self.formula_type = formula_type
         self.description = description
         self.note = note
         self.total_cost = total_cost

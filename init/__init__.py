@@ -55,11 +55,12 @@ class Formula(db.Model):
     __tablename__ = 'formula'
     id = Column(Integer, autoincrement=True, primary_key=True)
     taste_id = Column(Integer, ForeignKey(Taste.id))
+    formula_type = Column(Integer)
     name = Column(String(50))
     description = Column(String(400))
     note = Column(String(5000))
     total_cost = Column(Numeric(10, 2))
-    has_up_to_date_cost_estimation = Column(Boolean, default=False)
+    has_up_to_date_cost_estimation = Column(Boolean, default=False)    
     registered_on = Column(DateTime(), default=datetime.datetime.utcnow)
 
 class MaterialFormula(db.Model):
