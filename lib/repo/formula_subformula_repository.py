@@ -14,6 +14,12 @@ class FormulaSubFormulaRepository:
         return FormulaSubFormula.query. \
             filter(FormulaSubFormula.formula_id == formula_id). \
             all()
+
+    def get_formulas_of_subformula(self, subformula_id):
+        return FormulaSubFormula.query. \
+            filter(FormulaSubFormula.subformula_id == subformula_id). \
+            all()
+
     def delete_subformulas_of_formula(self, formula_id):
         subformulas_of_formula = FormulaSubFormula.query. \
                                     filter(FormulaSubFormula.formula_id == formula_id). \

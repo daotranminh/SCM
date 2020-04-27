@@ -17,7 +17,8 @@ class SubFormulaManager:
                  material_version_cost_estimation_repo,
                  cost_estimation_repo,
                  product_repo,
-                 order_repo):
+                 order_repo,
+                 formula_subformula_repo):
         self.subformula_repo = subformula_repo
         self.material_subformula_repo = material_subformula_repo
         self.taste_repo = taste_repo
@@ -25,6 +26,7 @@ class SubFormulaManager:
         self.cost_estimation_repo = cost_estimation_repo
         self.product_repo = product_repo
         self.order_repo = order_repo
+        self.formula_subformula_repo = formula_subformula_repo
 
     def get_subformula_info(self, subformula_id):
         subformula_rec = self.subformula_repo.get_subformula(subformula_id)
@@ -225,6 +227,7 @@ class SubFormulaManager:
             self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
             self.subformula_repo.set_flag_has_up_to_date_cost_estimation(subformula_id, True)
             self.__update_product_cost_estimation(subformula_id, new_cost_estimation_id, total_cost)
+            self.__update_parent_formula_cost_estimation(subformula_id, total_cost)
             
             return total_cost
 
@@ -263,6 +266,20 @@ class SubFormulaManager:
 
             message = 'New cost of order %s is %s' % (order_id, order_cost)
             SubFormulaManager.logger.info(message)
+    
+    def __update_parent_formula_cost_estimation(self,
+                                                subformula_id,
+                                                subformula_cost):
+        parent_formula_recs = self.formula_subformula_repo.get_formulas_of_subformula(subformula_id)
+        for parent_formula_rec in parent_formula_recs:
+            total_cost = 0
+            sibling_subformula_recs = self.formula_subformula_repo.get_subformulas_of_formula(parent_formula_rec.id)
+            for sibling_subformula_rec in sibling_subformula_recs:
+                if sibling_subformula_rec.id == subformula_id:
+                    total_cost += subformula_cost
+                else:
+                    total_cost += sibling_subformula_rec.total_cost
+            parent_formula_rec.total_cost = total_cost
 
     def get_cost_estimation(self, subformula_id):        
         current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)

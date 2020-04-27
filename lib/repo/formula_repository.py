@@ -16,6 +16,9 @@ class FormulaRepository:
     def get_formula(self, formula_id):
         return Formula.query.filter(Formula.id == formula_id).first()
 
+    def delete_formula(self, formula_id):
+        Formula.query.filter(Formula.id == formula_id).delete()
+
     def get_all_formulas(self):
         return Formula.query.all()
 
@@ -50,3 +53,8 @@ class FormulaRepository:
     def set_flag_has_up_to_date_cost_estimation(self, formula_id, flag):
         formula_rec = self.get_formula(formula_id)
         formula_rec.has_up_to_date_cost_estimation = flag
+
+    def update_cost_estimation(self, formula_id, total_cost):
+        formula_rec = self.get_formula(formula_id)
+        formula_rec.total_cost = total_cost
+        formula_rec.has_up_to_date_cost_estimation = true

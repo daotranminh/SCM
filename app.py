@@ -32,10 +32,12 @@ from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
 from lib.managers.topic_manager import TopicManager
 from lib.managers.subformula_manager import SubFormulaManager
-from lib.managers.formula_subformula_manager import FormulaSubFormulaManager
+from lib.managers.formula_manager import FormulaManager
 from lib.managers.order_manager import OrderManager
 from lib.managers.product_manager import ProductManager
 from lib.managers.sample_images_group_manager import SampleImagesGroupManager
+
+from lib.directors.formula_director import FormulaDirector
 
 from utilities import scm_constants
 from utilities.scm_enums import OrderStatus, PaymentStatus
@@ -44,6 +46,9 @@ from utilities.scm_logger import ScmLogger
 
 logger = ScmLogger(__name__)
 
+###################################################################################
+# REPOSITORIES
+###################################################################################
 delivery_method_repo = DeliveryMethodRepository(db)
 decoration_form_repo = DecorationFormRepository(db)
 decoration_technique_repo = DecorationTechniqueRepository(db)
@@ -64,6 +69,9 @@ sample_images_group_repo = SampleImagesGroupRepository(db)
 product_repo = ProductRepository(db)
 product_image_path_repo = ProductImagePathRepository(db)
 
+###################################################################################
+# MANAGERS
+###################################################################################
 material_manager = MaterialManager(material_repo,
                                    material_version_repo,
                                    material_subformula_repo)
@@ -75,9 +83,10 @@ subformula_manager = SubFormulaManager(subformula_repo,
                                  material_version_cost_estimation_repo,
                                  cost_estimation_repo,
                                  product_repo,
-                                 order_repo)
-formula_manager = FormulaSubFormulaManager(formula_repo,
-                                           subformula_repo)                                 
+                                 order_repo,
+                                 formula_subformula_repo)
+formula_manager = FormulaManager(formula_repo,
+                                 formula_subformula_repo)                                 
 order_manager = OrderManager(order_repo,
                              product_repo)
 sample_images_group_manager = SampleImagesGroupManager(sample_images_group_repo,
@@ -87,6 +96,13 @@ product_manager = ProductManager(product_repo,
                                  sample_image_path_repo,
                                  cost_estimation_repo,
                                  order_repo)
+
+###################################################################################
+# DIRECTORS
+###################################################################################
+formula_director = FormulaDirector(formula_repo,
+                                   formula_manager,
+                                   subformula_manager)
 
 ####################################################################################
 # MENU
