@@ -659,7 +659,7 @@ def customer_details(customer_id):
                                customer_dto=customer_dto)
 
 ####################################################################################
-# FORMULAS
+# SUB FORMULAS
 ####################################################################################
 
 @app.route('/list_subformulas', methods=['GET', 'POST'])
@@ -764,7 +764,7 @@ def add_subformula():
                                                     ex.message,
                                                     'danger',
                                                     ex,
-                                                    tast_recs=taste_recs,
+                                                    taste_recs=taste_recs,
                                                     material_dtos=material_dtos,
                                                     subformula_type_names=scm_constants.FORMULA_TYPE_NAMES)
     else:
@@ -843,6 +843,72 @@ def cost_estimation_details(subformula_id):
                                subformula_rec=subformula_rec,
                                cost_estimation=cost_estimation,
                                material_cost_estimation_dtos=material_cost_estimation_dtos)
+
+####################################################################################
+# FORMULAS
+####################################################################################
+
+def __extract_formula_props(props_dict):
+    formula_name = props_dict['formula_name']
+    formula_description = props_dict['formula_description']
+    formula_note = props_dict['formula_note']
+
+    subformula_ids = []
+        
+    i = 0
+    while True:
+        subformula_choices_i = 'subformula_choices_' + str(i)        
+        if subformula_choices_i not in props_dict:
+            break
+
+        subformula_id = int(props_dict[subformula_choices_i])
+            
+        subformula_ids.append(subformula_id)
+        i += 1
+
+    return formula_name, \
+        formula_description, \
+        formula_note, \
+        subformula_ids
+
+@app.route('/add_formula', methods=['GET', 'POST'])
+def add_formula():
+    taste_recs = taste_repo.get_all_tastes()
+    taste_subformula_dict, subformula_dict = subformula_manager.get_taste_subformula_dict()
+
+    if request.method == 'POST':
+        try:
+            print(request.form)
+
+            formula_name, \
+            formula_description, \
+            formula_note, \
+            subformula_ids = __extract_formula_props(request.form)
+            
+            
+
+            db.session.flush()
+            
+            db.session.commit()
+
+            message = 'Successfully added formula %s' % formula_name
+            logger.info(message)
+
+            return redirect_with_message(url_for('list_formulas'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('add_formula.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    taste_recs=taste_recs,
+                                                    taste_subformula_dict=taste_subformula_dict,
+                                                    subformula_dict=subformula_dict)
+    else:
+        return render_scm_template('add_formula.html',
+                                   taste_recs=taste_recs,
+                                   taste_subformula_dict=taste_subformula_dict,
+                                   subformula_dict=subformula_dict)
 
 ####################################################################################
 # ORDER

@@ -1,7 +1,7 @@
 import logging
 
 from flask_sqlalchemy import sqlalchemy
-from init import Formula, SubFormula, config
+from init import FormulaSubFormula, config
 from utilities.scm_logger import ScmLogger
 
 class FormulaSubFormulaRepository:
