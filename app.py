@@ -101,6 +101,7 @@ product_manager = ProductManager(product_repo,
 # DIRECTORS
 ###################################################################################
 formula_director = FormulaDirector(formula_repo,
+                                   formula_subformula_repo,
                                    formula_manager,
                                    subformula_manager)
 
@@ -848,6 +849,26 @@ def cost_estimation_details(subformula_id):
 # FORMULAS
 ####################################################################################
 
+@app.route('/list_formulas', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_formulas/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_formulas/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_formulas/<int:page>/', methods=['GET', 'POST'])
+def list_formulas(page):
+    per_page = int(config['PAGING']['formulas_per_page'])
+    search_text = request.args.get('search_text')
+
+    formula_dtos, db_changed = formula_director.get_paginated_formula_dtos(
+        page,
+        per_page,
+        search_text)
+
+    if db_changed == True:
+        db.session.commit()
+                                                                  
+    return render_scm_template('list_formulas.html',
+                                search_text=search_text,
+                                formula_dtos=formula_dtos)
+
 def __extract_formula_props(props_dict):
     formula_name = props_dict['formula_name']
     formula_description = props_dict['formula_description']
@@ -885,7 +906,7 @@ def add_formula():
             formula_note, \
             subformula_ids = __extract_formula_props(request.form)
 
-            formula_manager.add_formula(formula_name,
+            formula_director.add_formula(formula_name,
                                         formula_description,
                                         formula_note,
                                         subformula_ids)
@@ -895,7 +916,7 @@ def add_formula():
             message = 'Successfully added formula %s' % formula_name
             logger.info(message)
 
-            return redirect_with_message(url_for('list_formulas'), message, 'info')
+            return redirect_with_message(url_for('add_formula'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
             return render_scm_template_with_message('add_formula.html',

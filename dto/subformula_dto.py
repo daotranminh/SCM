@@ -25,4 +25,3 @@ class SubFormulaDto:
         self.note = note
         self.total_cost = total_cost
         self.registered_on = registered_on
-        

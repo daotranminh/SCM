@@ -25,6 +25,8 @@ class FormulaManager:
         for subformula_id in subformula_ids:
             self.formula_subformula_repo.add_formula_subformula(new_formula_id,
                                                                 subformula_id)
+        
+        return new_formula_id
 
     def delete_formula(self, formula_id):
         self.formula_subformula_repo.delete_subformulas_of_formula(formula_id)

@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+{% if search_text == '' %}
+  <input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+{% else %}
+  <input type="text" class="form-control" value="{{search_text}}" id="searchInput">  
+{% endif %}
+<br/>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Registered on<i class="fa fa-sort-asc"></i></th>
+      <th>Cost estimation</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for formula_dto in formula_dtos.items %}
+    <tr>
+      <td>{{formula_dto.name}}</td>
+      <td>{{formula_dto.registered_on}}</td>
+      <td>{{formula_dto.total_cost}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{formula_dtos.page}}/{{formula_dtos.pages}}</li>
+
+  {% if formula_dtos.has_prev %}
+  <li class="page-item"><a class="page-link"
+         href="{{ url_for('list_formulas',
+				 page=subformula_dtos.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled" href="#">Previous</a></li>
+  {% endif %}
+
+  {% if formula_dtos.has_next %}
+  <li class="page-item"><a class="page-link"
+         href="{{ url_for('list_formulas', 
+				 page=formula_dtos.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled" href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
+
+<a href="{{ url_for('add_formula') }}"
+   class="btn btn-default pullright">Add a new formula</a>
+
+<script>
+
+  $("#searchInput").keyup(function(e) {
+    if (e.keyCode == 13) {
+      let search_text = this.value
+      location.href = "/list_formulas/1/?search_text=" + search_text
+    }
+  })
+</script>
+
+{% endblock %}

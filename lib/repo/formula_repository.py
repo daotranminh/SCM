@@ -57,4 +57,4 @@ class FormulaRepository:
     def update_cost_estimation(self, formula_id, total_cost):
         formula_rec = self.get_formula(formula_id)
         formula_rec.total_cost = total_cost
-        formula_rec.has_up_to_date_cost_estimation = true
+        formula_rec.has_up_to_date_cost_estimation = True

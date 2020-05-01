@@ -184,7 +184,8 @@ class SubFormulaManager:
                                               paginated_subformula_infos.pages)
         return paginated_subformula_dtos, db_changed
 
-    def estimate_subformula_cost(self, subformula_id):
+    def estimate_subformula_cost(self, subformula_id, update_parent_formula_cost=True):
+        print('subformula_id: ' + str(subformula_id))
         subformula_rec = self.subformula_repo.get_subformula(subformula_id)
         current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)
 
@@ -227,7 +228,9 @@ class SubFormulaManager:
             self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
             self.subformula_repo.set_flag_has_up_to_date_cost_estimation(subformula_id, True)
             self.__update_product_cost_estimation(subformula_id, new_cost_estimation_id, total_cost)
-            self.__update_parent_formula_cost_estimation(subformula_id, total_cost)
+
+            if update_parent_formula_cost:
+                self.__update_parent_formula_cost_estimation(subformula_id, total_cost)
             
             return total_cost
 
