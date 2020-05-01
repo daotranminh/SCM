@@ -884,10 +884,11 @@ def add_formula():
             formula_description, \
             formula_note, \
             subformula_ids = __extract_formula_props(request.form)
-            
-            
 
-            db.session.flush()
+            formula_manager.add_formula(formula_name,
+                                        formula_description,
+                                        formula_note,
+                                        subformula_ids)
             
             db.session.commit()
 
