@@ -857,7 +857,22 @@ def update_formula(formula_id):
 
 @app.route('/formula_cost_estimation_details/<int:formula_id>')
 def formula_cost_estimation_details(formula_id):
-    pass
+    formula_rec, \
+    subformula_recs, \
+    taste_names, \
+    subformula_cost_estimations, \
+    material_cost_estimation_dtos, \
+    begin_material_cost_estimation_dtos, \
+    end_material_cost_estimation_dtos = formula_director.formula_cost_estimation_details(formula_id)
+
+    return render_scm_template('formula_cost_estimation.html',
+                                formula_rec=formula_rec,
+                                subformula_recs=subformula_recs,
+                                taste_names=taste_names,
+                                subformula_cost_estimations=subformula_cost_estimations,
+                                material_cost_estimation_dtos=material_cost_estimation_dtos,
+                                begin_material_cost_estimation_dtos=begin_material_cost_estimation_dtos,
+                                end_material_cost_estimation_dtos=end_material_cost_estimation_dtos)
 
 @app.route('/formula_details/<int:formula_id>')
 def formula_details(formula_id):

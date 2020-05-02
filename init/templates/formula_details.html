@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<h1>Formula Details</h1>
+<h1>Details of formula {{formula_rec.name}}</h1>
 
 <table class="table table-striped">
     <thead>
@@ -11,10 +11,9 @@
         <th></th>      
       </tr>
     </thead>
-    <tbody>
-      <tr><td>Name</td><td>{{ formula_rec.name }}</td></tr>      
-      <tr><td>Description</td><td>{{ formula_rec.description }}</td></tr>
-      <tr><td>Registered on</td><td>{{ formula_rec.registered_on }}</td></tr>
+    <tbody>        
+        <tr><td>Description</td><td>{{ formula_rec.description }}</td></tr>
+        <tr><td>Registered on</td><td>{{ formula_rec.registered_on }}</td></tr>
     </tbody>
   </table>
 
@@ -29,7 +28,7 @@
     <tbody>
         {% for i in range(subformula_recs|length) %}
             <tr>
-                <td><b>{{subformula_recs[i].name}}</b></td>
+                <td><b>{{subformula_recs[i].name}}</b> ({{taste_names[i]}})</td>
                 <td></td>
             </tr>
         

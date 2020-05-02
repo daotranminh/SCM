@@ -291,7 +291,8 @@ class SubFormulaManager:
 
     def get_cost_estimation(self, subformula_id):        
         current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)
-        material_version_cost_estimations = self.material_version_cost_estimation_repo.get_material_version_cost_estimation_of_cost_estimation(current_cost_estimation.id)
+        material_version_cost_estimations = \
+            self.material_version_cost_estimation_repo.get_material_version_cost_estimation_of_cost_estimation(current_cost_estimation.id)
 
         material_cost_estimation_dtos = []
         for material_version_cost_estimation, material_name in material_version_cost_estimations:

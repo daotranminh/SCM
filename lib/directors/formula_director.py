@@ -81,4 +81,38 @@ class FormulaDirector:
                 update_parent_formula_cost=False)
             total_cost += subformula_cost
 
+        formula_rec.total_cost = total_cost
+        formula_rec.has_up_to_date_cost_estimation = True
+
         return total_cost
+
+    def formula_cost_estimation_details(self, formula_id):
+        formula_rec = self.formula_repo.get_formula(formula_id)
+        subformula_dtos = self.formula_repo.get_subformula_dtos_of_formula(formula_id)
+
+        current_subformula_cost_estimations = []
+        material_cost_estimation_dtos = []
+        subformula_recs = []
+        taste_names = []
+        begin_material_cost_estimation_dtos = []
+        end_material_cost_estimation_dtos = []
+
+        for subformula_rec, taste_name in subformula_dtos:
+            subformula_recs.append(subformula_rec)
+            taste_names.append(taste_name)
+
+            current_subformula_cost_estimation, material_cost_estimation_dtos_per_subformula = \
+                self.subformula_manager.get_cost_estimation(subformula_rec.id)
+
+            current_subformula_cost_estimations.append(current_subformula_cost_estimation)
+            begin_material_cost_estimation_dtos.append(len(material_cost_estimation_dtos))
+            material_cost_estimation_dtos += material_cost_estimation_dtos_per_subformula
+            end_material_cost_estimation_dtos.append(len(material_cost_estimation_dtos))
+
+        return formula_rec, \
+            subformula_recs, \
+            taste_names, \
+            current_subformula_cost_estimations, \
+            material_cost_estimation_dtos, \
+            begin_material_cost_estimation_dtos, \
+            end_material_cost_estimation_dtos
