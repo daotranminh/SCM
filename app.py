@@ -842,7 +842,7 @@ def update_subformula(subformula_id):
 def subformula_cost_estimation_details(subformula_id):
     subformula_rec = subformula_repo.get_subformula(subformula_id)
     cost_estimation, material_cost_estimation_dtos = subformula_manager.get_cost_estimation(subformula_id)
-    return render_scm_template('cost_estimation.html',
+    return render_scm_template('subformula_cost_estimation.html',
                                subformula_rec=subformula_rec,
                                cost_estimation=cost_estimation,
                                material_cost_estimation_dtos=material_cost_estimation_dtos)
