@@ -24,7 +24,7 @@
   <tbody>
     {% for formula_dto in formula_dtos.items %}
     <tr>
-      <td>{{formula_dto.name}}</td>
+      <td><a href="{{ url_for('formula_details', formula_id=formula_dto.formula_id) }}">{{formula_dto.name}}</a></td>
       <td>{{formula_dto.registered_on}}</td>
       <td>{{formula_dto.total_cost}}</td>
     </tr>

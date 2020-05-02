@@ -1,6 +1,7 @@
 import logging
 import os
 import datetime
+import json
 from decimal import Decimal
 
 from flask import Flask, Response, render_template, request, flash, redirect, make_response, session, url_for
@@ -86,7 +87,8 @@ subformula_manager = SubFormulaManager(subformula_repo,
                                  order_repo,
                                  formula_subformula_repo)
 formula_manager = FormulaManager(formula_repo,
-                                 formula_subformula_repo)                                 
+                                 formula_subformula_repo,
+                                 material_subformula_repo)                                 
 order_manager = OrderManager(order_repo,
                              product_repo)
 sample_images_group_manager = SampleImagesGroupManager(sample_images_group_repo,
@@ -848,6 +850,23 @@ def cost_estimation_details(subformula_id):
 ####################################################################################
 # FORMULAS
 ####################################################################################
+
+@app.route('/formula_details/<int:formula_id>')
+def formula_details(formula_id):
+    formula_rec, \
+    subformula_recs, \
+    taste_names, \
+    material_dtos, \
+    begin_material_dtos, \
+    end_material_dtos = formula_manager.get_formula_details(formula_id)
+
+    return render_scm_template('formula_details.html',
+                                formula_rec=formula_rec,
+                                subformula_recs=subformula_recs,
+                                taste_names=taste_names,
+                                material_dtos=material_dtos,
+                                begin_material_dtos=begin_material_dtos,
+                                end_material_dtos=end_material_dtos)
 
 @app.route('/list_formulas', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_formulas/', methods=['GET', 'POST'], defaults={'page':1})

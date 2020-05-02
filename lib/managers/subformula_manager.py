@@ -47,13 +47,18 @@ class SubFormulaManager:
 
         material_dtos = []
 
-        for material_subformula_dto in material_subformula_dtos:
-            material_dto = MaterialSubFormulaDto(material_subformula_dto[0].id,
-                                              material_subformula_dto[1],
-                                              material_subformula_dto[2],
-                                              material_subformula_dto[3],
-                                              material_subformula_dto[4],
-                                              material_subformula_dto[0].amount)
+        for material_subformula_rec, \
+            material_name, \
+            material_description, \
+            material_is_organic, \
+            material_unit, \
+            in material_subformula_dtos:
+            material_dto = MaterialSubFormulaDto(material_subformula_rec.id,
+                                                 material_name,
+                                                 material_description,
+                                                 material_is_organic,
+                                                 material_unit,
+                                                 material_subformula_rec.amount)
             material_dtos.append(material_dto)
             
         return subformula_rec, taste_rec, material_dtos

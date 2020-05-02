@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import Formula, config
+from init import Formula, FormulaSubFormula, SubFormula, Taste, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
 from utilities.scm_logger import ScmLogger
@@ -58,3 +58,14 @@ class FormulaRepository:
         formula_rec = self.get_formula(formula_id)
         formula_rec.total_cost = total_cost
         formula_rec.has_up_to_date_cost_estimation = True
+
+    def get_subformula_dtos_of_formula(self, formula_id):
+        taste_query = self.db.session.query(Taste.id, Taste.name).subquery()
+        formula_subformula_query = self.db.session.query(FormulaSubFormula.subformula_id). \
+            filter(FormulaSubFormula.formula_id == formula_id). \
+            subquery()
+
+        return self.db.session.query(SubFormula, taste_query.c.name). \
+            join(formula_subformula_query, formula_subformula_query.c.subformula_id == SubFormula.id). \
+            join(taste_query, taste_query.c.id == SubFormula.taste_id). \
+            all()

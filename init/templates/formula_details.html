@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Formula Details</h1>
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>      
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Name</td><td>{{ formula_rec.name }}</td></tr>      
+      <tr><td>Description</td><td>{{ formula_rec.description }}</td></tr>
+      <tr><td>Registered on</td><td>{{ formula_rec.registered_on }}</td></tr>
+    </tbody>
+  </table>
+
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+    <tbody>
+        {% for i in range(subformula_recs|length) %}
+            <tr>
+                <td><b>{{subformula_recs[i].name}}</b></td>
+                <td></td>
+            </tr>
+        
+            {% for j in range(begin_material_dtos[i], end_material_dtos[i]) %}
+            <tr>
+                <td>{{material_dtos[j].name}}</td>
+                <td>{{material_dtos[j].amount}} {{material_dtos[j].unit}}</td>   
+            </tr>
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
