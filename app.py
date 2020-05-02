@@ -851,6 +851,14 @@ def cost_estimation_details(subformula_id):
 # FORMULAS
 ####################################################################################
 
+@app.route('/update_formula/<int:formula_id>')
+def update_formula(formula_id):
+    pass
+
+@app.route('/formula_cost_estimation_details/<int:formula_id>')
+def formula_cost_estimation_details(formula_id):
+    pass
+
 @app.route('/formula_details/<int:formula_id>')
 def formula_details(formula_id):
     formula_rec, \
