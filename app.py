@@ -838,8 +838,8 @@ def update_subformula(subformula_id):
                                material_dtos=material_dtos,
                                total_cost=total_cost)
 
-@app.route('/cost_estimation_details/<int:subformula_id>', methods=['GET', 'POST'])
-def cost_estimation_details(subformula_id):
+@app.route('/subformula_cost_estimation_details/<int:subformula_id>', methods=['GET', 'POST'])
+def subformula_cost_estimation_details(subformula_id):
     subformula_rec = subformula_repo.get_subformula(subformula_id)
     cost_estimation, material_cost_estimation_dtos = subformula_manager.get_cost_estimation(subformula_id)
     return render_scm_template('cost_estimation.html',

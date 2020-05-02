@@ -32,7 +32,6 @@
       <th>Registered on<i class="fa fa-sort-asc"></i></th>
       <th>Cost estimation</th>
       <th></th>
-      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -41,13 +40,10 @@
       <td><a href="{{ url_for('subformula_details', 
 	   subformula_id=subformula_dto.subformula_id) }}">{{subformula_dto.name}}</a></td>
       <td>{{subformula_dto.registered_on}}</td>
-      <td>{{subformula_dto.total_cost}}</td>
+      <td><a href="{{ url_for('subformula_cost_estimation_details', subformula_id=subformula_dto.subformula_id) }}">{{subformula_dto.total_cost}}</a></td>
       <td><a href="{{ url_for('update_subformula', 
 		                  subformula_id=subformula_dto.subformula_id) }}"
                       class="btn btn-default pullright">Update</a></td>
-      <td><a href="{{ url_for('cost_estimation_details', 
-                        subformula_id=subformula_dto.subformula_id) }}"
-                        class="btn btn-default pullright">Cost estimation details</a></td>
     </tr>
     {% endfor %}
   </tbody>
