@@ -1,3 +1,105 @@
+
+// FORMULA
+
+function add_another_subformula()
+{
+    var subformulas_list = document.getElementsByName("subformula[]")
+    var len = subformulas_list.length
+  
+    var last_subformula = subformulas_list[len - 1]
+    last_subformula.id = "subformula_" + (len-1).toString()
+    var next_subformula = last_subformula.cloneNode(true)
+    next_subformula.id = "subformula_" + len.toString()
+
+    var taste_label = next_subformula.children[0]
+    var taste_choices = next_subformula.children[1]
+    var subformula_label = next_subformula.children[2]
+    var subformula_choices = next_subformula.children[3]
+    var delete_btn = next_subformula.children[4]
+
+    taste_label.htmlFor = "taste_choices_" + len.toString()
+    taste_choices.id = "taste_choices_" + len.toString()
+    subformula_label.htmlFor = "subformula_choices_" + len.toString()
+    subformula_choices.id = "subformula_choices_" + len.toString()
+    delete_btn.id = "delete_subformula_" + len.toString()
+
+    taste_choices.name = "taste_choices_" + len.toString()
+    subformula_choices.name = "subformula_choices_" + len.toString()
+
+    for (var i = 0; i < taste_choices.options.length; i++)
+    {
+	    taste_choices.options[i].selected = false
+    }
+    
+    taste_choices.options[0].selected = true
+
+    while (subformula_choices.options.length > 0)
+    {
+        subformula_choices.remove(0)
+    }
+
+    var taste_choice_id = parseInt(taste_choices.value)
+    if (taste_choice_id != -1)
+    {
+        subformula_ids = taste_subformula_dict[taste_choice_id]
+        for (let i = 0; i < subformula_ids.length; ++i)
+        {
+            var opt = document.createElement("option")
+            opt.value = subformula_ids[i]
+            opt.innerHTML = subformula_dict[subformula_ids[i]]
+            subformula_choices.appendChild(opt)
+        }
+    }
+  
+    last_subformula.insertAdjacentElement("afterend", next_subformula)
+    return false;
+}
+
+function delete_subformula(delete_btn)
+{
+    if (confirm('Are you sure to delete this subformula?') == false)
+    {
+        return;
+    }
+
+    var subformula_list = document.getElementsByName("subformula[]")
+    var len = subformula_list.length
+
+    if (len <= 1)
+    {
+        window.alert('Cannot delete this only subformula!')
+        return;
+    }
+
+    var strIndex = get_index(delete_btn)
+    var intIndex = parseInt(strIndex)
+    document.getElementById("subformula_" + strIndex).remove()
+    subformula_list = document.getElementsByName("subformula[]")
+
+    for (var i = intIndex; i < subformula_list.length; i++)
+    {
+	    subformula = subformula_list[i]
+        subformula.id = "subformula_" + i.toString()
+        
+        var taste_label = subformula.children[0]
+        var taste_choices = subformula.children[1]
+        var subformula_label = subformula.children[2]
+        var subformula_choices = subformula.children[3]
+        var delete_btn = subformula.children[4]
+
+        taste_label.htmlFor = "taste_choices_" + i.toString()
+        taste_choices.id = "taste_choices_" + i.toString()
+        subformula_label.htmlFor = "subformula_choices_" + i.toString()
+        subformula_choices.id = "subformula_choices_" + i.toString()
+
+        taste_choices.name = "taste_choices_" + i.toString()
+        subformula_choices.name = "subformula_choices_" + i.toString()
+    }    
+}
+
+// ORDER
+
+
 function validate_add_order()
 {
     var products_list = document.getElementsByName("product[]")
