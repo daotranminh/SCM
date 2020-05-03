@@ -10,6 +10,8 @@ class FormulaSubFormulaRepository:
     def __init__(self, db):
         self.db = db
 
+    
+
     def get_subformulas_of_formula(self, formula_id):
         return FormulaSubFormula.query. \
             filter(FormulaSubFormula.formula_id == formula_id). \
@@ -20,10 +22,15 @@ class FormulaSubFormulaRepository:
             filter(FormulaSubFormula.subformula_id == subformula_id). \
             all()
 
+    def delete_formula_subformula(self, formula_subformula_id):
+        FormulaSubFormula.query. \
+            filter(FormulaSubFormula.id == formula_subformula_id). \
+            delete()
+
     def delete_subformulas_of_formula(self, formula_id):
-        subformulas_of_formula = FormulaSubFormula.query. \
-                                    filter(FormulaSubFormula.formula_id == formula_id). \
-                                    delete()
+        FormulaSubFormula.query. \
+            filter(FormulaSubFormula.formula_id == formula_id). \
+            delete()
 
     def add_formula_subformula(self,
                                formula_id,

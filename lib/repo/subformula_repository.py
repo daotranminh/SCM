@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import SubFormula, Taste, CostEstimation, config
+from init import SubFormula, FormulaSubFormula, Taste, CostEstimation, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
 from utilities.scm_logger import ScmLogger
@@ -27,6 +27,15 @@ class SubFormulaRepository:
 
     def get_subformulas_of_taste(self, taste_id):
         return SubFormula.query.filter(SubFormula.taste_id == taste_id).all()
+
+    def get_subformulas_of_formula(self, formula_id):
+        formula_subformula_query = self.db.session.query(FormulaSubFormula.subformula_id). \
+            filter(FormulaSubFormula.formula_id == formula_id). \
+            subquery()
+
+        return self.db.session.query(SubFormula). \
+            join(formula_subformula_query, SubFormula.id == formula_subformula_query.c.subformula_id). \
+            all()
 
     def get_paginated_subformulas(self,
                                taste_id,

@@ -851,10 +851,6 @@ def subformula_cost_estimation_details(subformula_id):
 # FORMULAS
 ####################################################################################
 
-@app.route('/update_formula/<int:formula_id>')
-def update_formula(formula_id):
-    pass
-
 @app.route('/formula_cost_estimation_details/<int:formula_id>')
 def formula_cost_estimation_details(formula_id):
     formula_rec, \
@@ -939,26 +935,29 @@ def add_formula():
     taste_recs = taste_repo.get_all_tastes()
     taste_subformula_dict, subformula_dict = subformula_manager.get_taste_subformula_dict()
 
-    if request.method == 'POST':
+    if request.method == 'GET':
+        return render_scm_template('add_formula.html',
+                                   taste_recs=taste_recs,
+                                   taste_subformula_dict=taste_subformula_dict,
+                                   subformula_dict=subformula_dict)
+    elif request.method == 'POST':
         try:
-            print(request.form)
-
             formula_name, \
             formula_description, \
             formula_note, \
             subformula_ids = __extract_formula_props(request.form)
 
             formula_director.add_formula(formula_name,
-                                        formula_description,
-                                        formula_note,
-                                        subformula_ids)
+                                         formula_description,
+                                         formula_note,
+                                         subformula_ids)
             
             db.session.commit()
 
             message = 'Successfully added formula %s' % formula_name
             logger.info(message)
 
-            return redirect_with_message(url_for('add_formula'), message, 'info')
+            return redirect_with_message(url_for('list_formulas'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
             return render_scm_template_with_message('add_formula.html',
@@ -968,11 +967,48 @@ def add_formula():
                                                     taste_recs=taste_recs,
                                                     taste_subformula_dict=taste_subformula_dict,
                                                     subformula_dict=subformula_dict)
-    else:
-        return render_scm_template('add_formula.html',
-                                   taste_recs=taste_recs,
-                                   taste_subformula_dict=taste_subformula_dict,
-                                   subformula_dict=subformula_dict)
+
+@app.route('/update_formula/<int:formula_id>', methods=['GET', 'POST'])
+def update_formula(formula_id):
+    formula_rec = formula_repo.get_formula(formula_id)
+    taste_recs = taste_repo.get_all_tastes()
+    taste_subformula_dict, subformula_dict = subformula_manager.get_taste_subformula_dict()
+    subformula_recs = subformula_repo.get_subformulas_of_formula(formula_id)
+
+    if request.method == 'GET':
+        return render_scm_template('formula_update.html',
+                                    formula_rec=formula_rec,
+                                    taste_recs=taste_recs,
+                                    taste_subformula_dict=taste_subformula_dict,
+                                    subformula_dict=subformula_dict,
+                                    subformula_recs=subformula_recs)
+    elif request.method == 'POST':
+        try:
+            new_formula_name, \
+            new_formula_description, \
+            new_formula_note, \
+            new_subformula_ids = __extract_formula_props(request.form)
+
+            formula_director.update_formula(formula_id,
+                                            new_formula_name,
+                                            new_formula_description,
+                                            new_formula_note,
+                                            new_subformula_ids)
+            db.session.commit()
+            message = 'Successfully updated formula %s' % formula_id
+            logger.info(message)
+            return redirect_with_message(url_for('list_formulas'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('formula_update.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    formula_rec=formula_rec,
+                                                    taste_recs=taste_recs,
+                                                    taste_subformula_dict=taste_subformula_dict,
+                                                    subformula_dict=subformula_dict,
+                                                    subformula_recs=subformula_recs)
 
 ####################################################################################
 # ORDER
