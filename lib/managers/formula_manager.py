@@ -20,14 +20,16 @@ class FormulaManager:
                     formula_name,
                     formula_description,
                     formula_note,
-                    subformula_ids):
+                    subformula_ids,
+                    subformula_counts):
         new_formula_id = self.formula_repo.add_formula(name=formula_name,
                                                        description=formula_description,
                                                        note=formula_note)
         
-        for subformula_id in subformula_ids:
+        for i in range(len(subformula_ids)):
             self.formula_subformula_repo.add_formula_subformula(new_formula_id,
-                                                                subformula_id)
+                                                                subformula_ids[i],
+                                                                subformula_counts[i])
         
         return new_formula_id
 

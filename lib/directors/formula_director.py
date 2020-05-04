@@ -22,15 +22,17 @@ class FormulaDirector:
                     formula_name,
                     formula_description,
                     formula_note,
-                    subformula_ids):
+                    subformula_ids,
+                    subformula_counts):
         new_formula_id = self.formula_manager.add_formula(formula_name,
                                                           formula_description,
                                                           formula_note,
-                                                          subformula_ids)
+                                                          subformula_ids,
+                                                          subformula_counts)
         total_cost = 0
-        for subformula_id in subformula_ids:
-            subformula_cost = self.subformula_manager.estimate_subformula_cost(subformula_id)
-            total_cost += subformula_cost
+        for i in range(len(subformula_ids)):
+            subformula_cost = self.subformula_manager.estimate_subformula_cost(subformula_ids[i])
+            total_cost += subformula_cost * subformula_counts[i]
 
         self.formula_repo.update_cost_estimation(new_formula_id, total_cost)
 

@@ -15,16 +15,23 @@ function add_another_subformula()
     var taste_choices = next_subformula.children[1]
     var subformula_label = next_subformula.children[2]
     var subformula_choices = next_subformula.children[3]
-    var delete_btn = next_subformula.children[4]
+    var subformula_count_label = next_subformula.children[4]
+    var subformula_count = next_subformula.children[5]
+    var delete_btn = next_subformula.children[6]
 
     taste_label.htmlFor = "taste_choices_" + len.toString()
     taste_choices.id = "taste_choices_" + len.toString()
     subformula_label.htmlFor = "subformula_choices_" + len.toString()
     subformula_choices.id = "subformula_choices_" + len.toString()
+    subformula_count_label.htmlFor = "subformula_count_" + len.toString()
+    subformula_count.id = "subformula_count_" + len.toString()
     delete_btn.id = "delete_subformula_" + len.toString()
 
     taste_choices.name = "taste_choices_" + len.toString()
     subformula_choices.name = "subformula_choices_" + len.toString()
+    subformula_count.name = "subformula_count_" + len.toString()
+
+    subformula_count.value = "1"
 
     for (var i = 0; i < taste_choices.options.length; i++)
     {
@@ -85,15 +92,20 @@ function delete_subformula(delete_btn)
         var taste_choices = subformula.children[1]
         var subformula_label = subformula.children[2]
         var subformula_choices = subformula.children[3]
-        var delete_btn = subformula.children[4]
+        var subformula_count_label = subformula.children[4]
+        var subformula_count = subformula.children[5]
+        var delete_btn = subformula.children[6]
 
         taste_label.htmlFor = "taste_choices_" + i.toString()
         taste_choices.id = "taste_choices_" + i.toString()
         subformula_label.htmlFor = "subformula_choices_" + i.toString()
         subformula_choices.id = "subformula_choices_" + i.toString()
+        subformula_count_label.htmlFor = "subformula_count_" + i.toString()
+        subformula_count.id = "subformula_count" + i.toString()
 
         taste_choices.name = "taste_choices_" + i.toString()
         subformula_choices.name = "subformula_choices_" + i.toString()
+        subformula_count.name = "subformula_count_" + i.toString()
     }    
 }
 

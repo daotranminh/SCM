@@ -31,7 +31,10 @@
             {% for subformula_id in taste_subformula_dict[taste_recs[0].id] %}
                 <option value="{{subformula_id}}">{{subformula_dict[subformula_id]}}</option>
             {% endfor %}
-	    </select>
+      </select>
+      
+      <label for="subformula_count_0">Count</label>
+      <input type="number" style="text-align:right" id="subformula_count_0" name="subformula_count_0" min="1" value="1"/>
 
 	    <button type="button" class="btn btn-default pullright" id="delete_subformula_0" onclick="delete_subformula(this);">Delete</button>
       </div>

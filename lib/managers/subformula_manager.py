@@ -190,7 +190,6 @@ class SubFormulaManager:
         return paginated_subformula_dtos, db_changed
 
     def estimate_subformula_cost(self, subformula_id, update_parent_formula_cost=True):
-        print('subformula_id: ' + str(subformula_id))
         subformula_rec = self.subformula_repo.get_subformula(subformula_id)
         current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)
 

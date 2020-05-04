@@ -896,6 +896,7 @@ def formula_details(formula_id):
 @app.route('/list_formulas/<int:page>', methods=['GET', 'POST'])
 @app.route('/list_formulas/<int:page>/', methods=['GET', 'POST'])
 def list_formulas(page):
+    print('page ==> ' + str(page))
     per_page = int(config['PAGING']['formulas_per_page'])
     search_text = request.args.get('search_text')
 
@@ -917,22 +918,27 @@ def __extract_formula_props(props_dict):
     formula_note = props_dict['formula_note']
 
     subformula_ids = []
+    subformula_counts = []
         
     i = 0
     while True:
-        subformula_choices_i = 'subformula_choices_' + str(i)        
+        subformula_choices_i = 'subformula_choices_' + str(i)
+        subformula_count_i = 'subformula_count_' + str(i)
         if subformula_choices_i not in props_dict:
             break
 
         subformula_id = int(props_dict[subformula_choices_i])
+        subformula_count = int(props_dict[subformula_count_i])
             
         subformula_ids.append(subformula_id)
+        subformula_counts.append(subformula_count)
         i += 1
 
     return formula_name, \
         formula_description, \
         formula_note, \
-        subformula_ids
+        subformula_ids, \
+        subformula_counts
 
 @app.route('/add_formula', methods=['GET', 'POST'])
 def add_formula():
@@ -945,16 +951,19 @@ def add_formula():
                                    taste_subformula_dict=taste_subformula_dict,
                                    subformula_dict=subformula_dict)
     elif request.method == 'POST':
+        print(request.form)
         try:
             formula_name, \
             formula_description, \
             formula_note, \
-            subformula_ids = __extract_formula_props(request.form)
+            subformula_ids, \
+            subformula_counts = __extract_formula_props(request.form)
 
             formula_director.add_formula(formula_name,
                                          formula_description,
                                          formula_note,
-                                         subformula_ids)
+                                         subformula_ids,
+                                         subformula_counts)
             
             db.session.commit()
 

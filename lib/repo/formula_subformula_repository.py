@@ -34,10 +34,12 @@ class FormulaSubFormulaRepository:
 
     def add_formula_subformula(self,
                                formula_id,
-                               subformula_id):
+                               subformula_id,
+                               subformula_count):
         try:
             formula_subformula_rec = FormulaSubFormula(formula_id=formula_id,
-                                                       subformula_id=subformula_id)
+                                                       subformula_id=subformula_id,
+                                                       count=subformula_count)
             self.db.session.add(formula_subformula_rec)
         
         except sqlalchemy.exc.SQLAlchemyError as e:

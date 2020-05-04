@@ -38,7 +38,7 @@
   {% if formula_dtos.has_prev %}
   <li class="page-item"><a class="page-link"
          href="{{ url_for('list_formulas',
-				 page=subformula_dtos.prev_num) }}">Previous</a></li>
+				 page=formula_dtos.prev_num) }}">Previous</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled" href="#">Previous</a></li>
   {% endif %}
