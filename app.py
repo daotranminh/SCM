@@ -855,6 +855,7 @@ def subformula_cost_estimation_details(subformula_id):
 def formula_cost_estimation_details(formula_id):
     formula_rec, \
     subformula_recs, \
+    subformula_counts, \
     taste_names, \
     subformula_cost_estimations, \
     material_cost_estimation_dtos, \
@@ -864,6 +865,7 @@ def formula_cost_estimation_details(formula_id):
     return render_scm_template('formula_cost_estimation.html',
                                 formula_rec=formula_rec,
                                 subformula_recs=subformula_recs,
+                                subformula_counts=subformula_counts,
                                 taste_names=taste_names,
                                 subformula_cost_estimations=subformula_cost_estimations,
                                 material_cost_estimation_dtos=material_cost_estimation_dtos,
@@ -874,6 +876,7 @@ def formula_cost_estimation_details(formula_id):
 def formula_details(formula_id):
     formula_rec, \
     subformula_recs, \
+    subformula_counts, \
     taste_names, \
     material_dtos, \
     begin_material_dtos, \
@@ -882,6 +885,7 @@ def formula_details(formula_id):
     return render_scm_template('formula_details.html',
                                 formula_rec=formula_rec,
                                 subformula_recs=subformula_recs,
+                                subformula_counts=subformula_counts,
                                 taste_names=taste_names,
                                 material_dtos=material_dtos,
                                 begin_material_dtos=begin_material_dtos,

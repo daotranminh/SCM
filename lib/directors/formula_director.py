@@ -108,14 +108,14 @@ class FormulaDirector:
         if formula_rec.has_up_to_date_cost_estimation:
             return formula_rec.total_cost
 
-        subformula_recs = self.formula_subformula_repo.get_subformulas_of_formula(formula_rec.id)
+        formula_subformula_recs = self.formula_subformula_repo.get_subformulas_of_formula(formula_rec.id)
         total_cost = 0
 
-        for subformula_rec in subformula_recs:
+        for formula_subformula_rec in formula_subformula_recs:
             subformula_cost = self.subformula_manager.estimate_subformula_cost(
                 subformula_id=subformula_rec.subformula_id,
                 update_parent_formula_cost=False)
-            total_cost += subformula_cost
+            total_cost += subformula_cost * formula_subformula_rec.count
 
         formula_rec.total_cost = total_cost
         formula_rec.has_up_to_date_cost_estimation = True
@@ -129,12 +129,14 @@ class FormulaDirector:
         current_subformula_cost_estimations = []
         material_cost_estimation_dtos = []
         subformula_recs = []
+        subformula_counts = []
         taste_names = []
         begin_material_cost_estimation_dtos = []
         end_material_cost_estimation_dtos = []
 
-        for subformula_rec, taste_name in subformula_dtos:
+        for subformula_rec, taste_name, count in subformula_dtos:
             subformula_recs.append(subformula_rec)
+            subformula_counts.append(count)
             taste_names.append(taste_name)
 
             current_subformula_cost_estimation, material_cost_estimation_dtos_per_subformula = \
@@ -147,6 +149,7 @@ class FormulaDirector:
 
         return formula_rec, \
             subformula_recs, \
+            subformula_counts, \
             taste_names, \
             current_subformula_cost_estimations, \
             material_cost_estimation_dtos, \

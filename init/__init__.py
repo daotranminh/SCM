@@ -78,6 +78,7 @@ class FormulaSubFormula(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     formula_id = Column(Integer, ForeignKey(Formula.id))
     subformula_id = Column(Integer, ForeignKey(SubFormula.id))
+    count = Column(Integer, default=1)
 
 class MaterialSubFormula(db.Model):
     __tablename__ = 'material_subformula'

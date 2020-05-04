@@ -61,11 +61,11 @@ class FormulaRepository:
 
     def get_subformula_dtos_of_formula(self, formula_id):
         taste_query = self.db.session.query(Taste.id, Taste.name).subquery()
-        formula_subformula_query = self.db.session.query(FormulaSubFormula.subformula_id). \
+        formula_subformula_query = self.db.session.query(FormulaSubFormula.subformula_id, FormulaSubFormula.count). \
             filter(FormulaSubFormula.formula_id == formula_id). \
             subquery()
 
-        return self.db.session.query(SubFormula, taste_query.c.name). \
+        return self.db.session.query(SubFormula, taste_query.c.name, formula_subformula_query.c.count). \
             join(formula_subformula_query, formula_subformula_query.c.subformula_id == SubFormula.id). \
             join(taste_query, taste_query.c.id == SubFormula.taste_id). \
             all()

@@ -40,12 +40,14 @@ class FormulaManager:
         subformula_dtos = self.formula_repo.get_subformula_dtos_of_formula(formula_id)
 
         subformula_recs = []
+        subformula_counts = []
         taste_names = []
         begin_material_dtos = []
         end_material_dtos = []
         material_dtos = []
-        for subformula_rec, taste_name in subformula_dtos:
+        for subformula_rec, taste_name, count in subformula_dtos:
             subformula_recs.append(subformula_rec)
+            subformula_counts.append(count)
             taste_names.append(taste_name)
             
             material_dtos_per_subformula = self.material_subformula_repo.get_material_dtos_of_subformula(subformula_rec.id)
@@ -69,6 +71,7 @@ class FormulaManager:
 
         return formula_rec, \
             subformula_recs, \
+            subformula_counts, \
             taste_names, \
             material_dtos, \
             begin_material_dtos, \

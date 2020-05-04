@@ -29,7 +29,7 @@
     <tbody>
     {% for i in range(subformula_recs|length) %}
         <tr>
-            <td><b>{{subformula_recs[i].name}}</b> ({{taste_names[i]}})</td>
+            <td><b>{{subformula_recs[i].name}}</b> ({{taste_names[i]}}) x {{subformula_counts[i]}}</td>
             <td></td>
             <td></td>
             <td></td>
@@ -47,7 +47,7 @@
             <td>Subformula total</td>
             <td></td>
             <td></td>
-            <td>{{ subformula_cost_estimations[i].total_cost }}</td>
+            <td>{{ subformula_cost_estimations[i].total_cost }} x {{subformula_counts[i]}}</td>
         </tr>
     {% endfor %}
     <tr>
