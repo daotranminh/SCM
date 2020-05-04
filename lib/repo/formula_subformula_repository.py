@@ -10,7 +10,10 @@ class FormulaSubFormulaRepository:
     def __init__(self, db):
         self.db = db
 
-    
+    def get_count(self, formula_id, subformula_id):
+        return self.db.session.query(FormulaSubFormula.count). \
+            filter(FormulaSubFormula.formula_id == formula_id, FormulaSubFormula.subformula_id == subformula_id). \
+            first()
 
     def get_subformulas_of_formula(self, formula_id):
         return FormulaSubFormula.query. \

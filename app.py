@@ -87,6 +87,7 @@ subformula_manager = SubFormulaManager(subformula_repo,
                                  order_repo,
                                  formula_subformula_repo)
 formula_manager = FormulaManager(formula_repo,
+                                 subformula_repo,
                                  formula_subformula_repo,
                                  material_subformula_repo)                                 
 order_manager = OrderManager(order_repo,
@@ -896,7 +897,6 @@ def formula_details(formula_id):
 @app.route('/list_formulas/<int:page>', methods=['GET', 'POST'])
 @app.route('/list_formulas/<int:page>/', methods=['GET', 'POST'])
 def list_formulas(page):
-    print('page ==> ' + str(page))
     per_page = int(config['PAGING']['formulas_per_page'])
     search_text = request.args.get('search_text')
 
@@ -986,7 +986,9 @@ def update_formula(formula_id):
     formula_rec = formula_repo.get_formula(formula_id)
     taste_recs = taste_repo.get_all_tastes()
     taste_subformula_dict, subformula_dict = subformula_manager.get_taste_subformula_dict()
-    subformula_recs = subformula_repo.get_subformulas_of_formula(formula_id)
+    subformula_recs, subformula_counts = formula_manager.get_subformula_info_of_formula(formula_id)
+
+    print(subformula_counts)
 
     if request.method == 'GET':
         return render_scm_template('formula_update.html',
@@ -994,19 +996,22 @@ def update_formula(formula_id):
                                     taste_recs=taste_recs,
                                     taste_subformula_dict=taste_subformula_dict,
                                     subformula_dict=subformula_dict,
-                                    subformula_recs=subformula_recs)
+                                    subformula_recs=subformula_recs,
+                                    subformula_counts=subformula_counts)
     elif request.method == 'POST':
         try:
             new_formula_name, \
             new_formula_description, \
             new_formula_note, \
-            new_subformula_ids = __extract_formula_props(request.form)
+            new_subformula_ids, \
+            new_subformula_counts = __extract_formula_props(request.form)
 
             formula_director.update_formula(formula_id,
                                             new_formula_name,
                                             new_formula_description,
                                             new_formula_note,
-                                            new_subformula_ids)
+                                            new_subformula_ids,
+                                            new_subformula_counts)
             db.session.commit()
             message = 'Successfully updated formula %s' % formula_id
             logger.info(message)
@@ -1021,7 +1026,8 @@ def update_formula(formula_id):
                                                     taste_recs=taste_recs,
                                                     taste_subformula_dict=taste_subformula_dict,
                                                     subformula_dict=subformula_dict,
-                                                    subformula_recs=subformula_recs)
+                                                    subformula_recs=subformula_recs,
+                                                    subformula_counts=subformula_counts)
 
 ####################################################################################
 # ORDER

@@ -41,36 +41,29 @@ class FormulaDirector:
                        new_formula_name,
                        new_formula_description,
                        new_formula_note,
-                       new_subformula_ids):
+                       new_subformula_ids,
+                       new_subformula_counts):
         formula_rec = self.formula_repo.get_formula(formula_id)
         formula_rec.name = new_formula_name
         formula_rec.description = new_formula_description
         formula_rec.note = new_formula_note
         formula_subformula_recs = self.formula_subformula_repo.get_subformulas_of_formula(formula_id)
 
-        remaining_subformula_ids = []
-        subformulas_changed = False
+        self.formula_subformula_repo.delete_subformulas_of_formula(formula_id)
+        total_cost = 0
+        for i in range(len(new_subformula_ids)):
+            self.formula_subformula_repo.add_formula_subformula(
+                formula_id, 
+                new_subformula_ids[i],
+                new_subformula_counts[i])
 
-        for formula_subformula_rec in formula_subformula_recs:
-            if formula_subformula_rec.subformula_id not in new_subformula_ids:
-                self.formula_subformula_repo.delete_formula_subformula(formula_subformula_rec.id)
-                subformulas_changed = True
-            else:
-                remaining_subformula_ids.append(formula_subformula_rec.subformula_id)
-
-        for new_subformula_id in new_subformula_ids:
-            if new_subformula_id not in remaining_subformula_ids:
-                self.formula_subformula_repo.add_formula_subformula(formula_id, new_subformula_id)
-                subformulas_changed = True
-
-        if subformulas_changed:
-            total_cost = 0
-            for new_subformula_id in new_subformula_ids:
-                subformula_cost = self.subformula_manager.estimate_subformula_cost(
-                    subformula_id=new_subformula_id,
+            subformula_cost = self.subformula_manager.estimate_subformula_cost(
+                    subformula_id=new_subformula_ids[i],
                     update_parent_formula_cost=False)
-            total_cost += subformula_cost
-            formula_rec.total_cost = total_cost
+
+            total_cost += subformula_cost * new_subformula_counts[i]
+        
+        formula_rec.total_cost = total_cost
 
     def get_paginated_formula_dtos(self,
                                    page,

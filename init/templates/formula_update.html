@@ -32,7 +32,7 @@
         </select>
 
         <label for="subformula_choices_{{i}}">Subformula</label>
-	    <select id="subformula_choices_{{i}}" name="subformula_choices_{{i}}">
+	      <select id="subformula_choices_{{i}}" name="subformula_choices_{{i}}">
             {% for subformula_id in taste_subformula_dict[subformula_recs[i].taste_id] %}
                 {% if subformula_recs[i].id == subformula_id %}
                     <option value="{{subformula_id}}" selected>{{subformula_dict[subformula_id]}}</option>
@@ -41,6 +41,9 @@
                 {% endif %}
             {% endfor %}
         </select>
+
+        <label for="subformula_count_{{i}}">Count</label>
+        <input type="number" style="text-align:right" id="subformula_count_{{i}}" name="subformula_count_{{i}}" min="1" value="{{subformula_counts[i]}}"/>
 
         <button type="button" class="btn btn-default pullright" id="delete_subformula_{{i}}" onclick="delete_subformula(this);">Delete</button>
       </div>

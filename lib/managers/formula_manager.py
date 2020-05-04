@@ -10,9 +10,11 @@ class FormulaManager:
 
     def __init__(self,
                  formula_repo,
+                 subformula_repo,
                  formula_subformula_repo,
                  material_subformula_repo):
         self.formula_repo = formula_repo
+        self.subformula_repo = subformula_repo
         self.formula_subformula_repo = formula_subformula_repo
         self.material_subformula_repo = material_subformula_repo
 
@@ -36,6 +38,16 @@ class FormulaManager:
     def delete_formula(self, formula_id):
         self.formula_subformula_repo.delete_subformulas_of_formula(formula_id)
         self.formula_repo.delete_formula(formula_id)
+
+    def get_subformula_info_of_formula(self, formula_id):
+        subformula_recs = self.subformula_repo.get_subformulas_of_formula(formula_id)
+        subformula_counts = []
+
+        for subformula_rec in subformula_recs:
+            formula_subformula_rec_count = self.formula_subformula_repo.get_count(formula_id, subformula_rec.id)
+            subformula_counts.append(formula_subformula_rec_count.count)
+
+        return subformula_recs, subformula_counts
 
     def get_formula_details(self, formula_id):
         formula_rec = self.formula_repo.get_formula(formula_id)
