@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import Product, SubFormula, DecorationForm, DecorationTechnique, SampleImagesGroup, CostEstimation, config
+from init import Product, Formula, DecorationForm, DecorationTechnique, SampleImagesGroup, CostEstimation, config
 from utilities.scm_enums import ErrorCodes, BoxStatus
 from utilities.scm_exceptions import ScmException
 from utilities.scm_logger import ScmLogger
@@ -66,7 +66,7 @@ class ProductRepository:
     def get_product_dto(self, product_id):
         decoration_form_query = self.db.session.query(DecorationForm.id, DecorationForm.name).subquery()
         decoration_technique_query = self.db.session.query(DecorationTechnique.id, DecorationTechnique.name).subquery()
-        subformula_query = self.db.session.query(SubFormula.id, SubFormula.name, SubFormula.has_up_to_date_cost_estimation).subquery()
+        formula_query = self.db.session.query(Formula.id, Formula.name, Formula.has_up_to_date_cost_estimation).subquery()
         sample_images_group_query = self.db.session.query(SampleImagesGroup.id, SampleImagesGroup.name).subquery()
         
         cost_estimation_query = self.db.session.query(CostEstimation.id, CostEstimation.total_cost). \
@@ -78,17 +78,15 @@ class ProductRepository:
                                                   decoration_form_query.c.name, \
                                                   decoration_technique_query.c.id, \
                                                   decoration_technique_query.c.name, \
-                                                  subformula_query.c.id, \
-                                                  subformula_query.c.name, \
-                                                  subformula_query.c.has_up_to_date_cost_estimation, \
+                                                  formula_query.c.id, \
+                                                  formula_query.c.name, \
+                                                  formula_query.c.has_up_to_date_cost_estimation, \
                                                   sample_images_group_query.c.id, \
-                                                  sample_images_group_query.c.name, \
-                                                  cost_estimation_query.c.total_cost). \
+                                                  sample_images_group_query.c.name). \
             filter(Product.id == product_id). \
             join(decoration_form_query, Product.decoration_form_id == decoration_form_query.c.id). \
             join(decoration_technique_query, Product.decoration_technique_id == decoration_technique_query.c.id). \
-            outerjoin(subformula_query, Product.subformula_id == subformula_query.c.id). \
-            outerjoin(sample_images_group_query, Product.sample_images_group_id == sample_images_group_query.c.id). \
-            outerjoin(cost_estimation_query, Product.cost_estimation_id == cost_estimation_query.c.id)
+            outerjoin(formula_query, Product.formula_id == formula_query.c.id). \
+            outerjoin(sample_images_group_query, Product.sample_images_group_id == sample_images_group_query.c.id)
             
         return product_dto_query.first()

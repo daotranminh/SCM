@@ -18,9 +18,9 @@ class ProductDto:
                  decoration_form_name,
                  decoration_technique_id,
                  decoration_technique_name,
-                 subformula_id,
-                 subformula_name,
-                 subformula_has_up_to_date_cost_estimation,
+                 formula_id,
+                 formula_name,
+                 formula_has_up_to_date_cost_estimation,
                  price_to_customer,
                  sample_images_group_id,
                  sample_images_group_name,
@@ -34,9 +34,9 @@ class ProductDto:
         self.decoration_form_name = decoration_form_name
         self.decoration_technique_id = decoration_technique_id
         self.decoration_technique_name = decoration_technique_name
-        self.subformula_id = subformula_id
-        self.subformula_name = subformula_name
-        self.subformula_has_up_to_date_cost_estimation = subformula_has_up_to_date_cost_estimation
+        self.formula_id = formula_id
+        self.formula_name = formula_name
+        self.formula_has_up_to_date_cost_estimation = formula_has_up_to_date_cost_estimation
         self.price_to_customer = price_to_customer
         self.sample_images_group_id = sample_images_group_id
         self.sample_images_group_name = sample_images_group_name

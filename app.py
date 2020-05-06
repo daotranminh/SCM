@@ -1201,8 +1201,8 @@ def __lazy_get_product_dtos(order_id):
     product_dtos = product_manager.get_product_dtos(order_id)
 
     for product_dto in product_dtos:
-        if product_dto.subformula_has_up_to_date_cost_estimation == False:
-            new_product_cost_estimation = subformula_manager.estimate_subformula_cost(product_dto.subformula_id)
+        if product_dto.formula_has_up_to_date_cost_estimation == False:
+            new_product_cost_estimation = formula_director.estimate_formula_cost(product_dto.formula_id)
             product_dto.product_cost_estimation = new_product_cost_estimation
             db_changed = True
     
