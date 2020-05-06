@@ -29,7 +29,7 @@ class ProductRepository:
                     name,
                     amount,
                     order_id,                    
-                    subformula_id,
+                    formula_id,
                     decoration_form_id,
                     decoration_technique_id,
                     with_box):
@@ -37,15 +37,11 @@ class ProductRepository:
             box_status = int(BoxStatus.BOX_NOT_NEEDED)
             if with_box:
                 box_status = int(BoxStatus.BOX_WITH_PRODUCT_IN_PRODUCTION)
-
-            cost_estimation_rec = CostEstimation.query.filter(CostEstimation.subformula_id == subformula_id, CostEstimation.is_current == True).first()
                 
             product_rec = Product(name=name, 
                                   amount=amount,
                                   order_id=order_id,
-                                  subformula_id=subformula_id,
-                                  cost_estimation_id=cost_estimation_rec.id,
-                                  total_cost=cost_estimation_rec.total_cost,
+                                  formula_id=formula_id,                                  
                                   decoration_form_id=decoration_form_id,
                                   decoration_technique_id=decoration_technique_id,
                                   box_status=box_status)

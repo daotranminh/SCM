@@ -13,12 +13,14 @@ class ProductManager:
                  product_image_path_repo,
                  sample_image_path_repo,
                  cost_estimation_repo,
-                 order_repo):
+                 order_repo,
+                 product_cost_estimation_repo):
         self.product_repo = product_repo
         self.product_image_path_repo = product_image_path_repo
         self.sample_image_path_repo = sample_image_path_repo
         self.cost_estimation_repo = cost_estimation_repo
         self.order_repo = order_repo
+        self.product_cost_estimation_repo = product_cost_estimation_repo
 
     def get_latest_groups_3_image_paths(self,
                                         product_recs):
@@ -33,24 +35,35 @@ class ProductManager:
                     name,
                     amount,
                     order_id,
-                    subformula_id,
+                    formula_id,
                     decoration_form_id,
                     decoration_technique_id,
                     with_box):
         new_product_id = self.product_repo.add_product(name,
                                                       amount,
                                                       order_id,
-                                                      subformula_id,
+                                                      formula_id,
                                                       decoration_form_id,
                                                       decoration_technique_id,
                                                       with_box)
-        product_rec = self.product_repo.get_product(new_product_id)
-        order_rec = self.order_repo.get_order(order_id)
         
-        if order_rec.total_cost is None:
-            order_rec.total_cost = product_rec.total_cost
-        else:
-            order_rec.total_cost += product_rec.total_cost
+        product_rec = self.product_repo.get_product(new_product_id)
+
+        cost_estimation_infos = self.cost_estimation_repo.get_cost_estimations_of_formula(formula_id)        
+
+        total_product_cost = 0
+        for cost_estimation_rec, count in cost_estimation_infos:
+            print(cost_estimation_rec)
+            print(count)
+            self.product_cost_estimation_repo.add_product_cost_estimation(new_product_id, cost_estimation_rec.id)
+            print('total_product_cost: ' + str(total_product_cost))
+            total_product_cost += (cost_estimation_rec.total_cost * count)
+            print('total_product_cost: ' + str(total_product_cost))
+        
+        product_rec.total_cost = total_product_cost
+        product_rec.has_up_to_date_cost_estimation = True
+
+        return new_product_id
 
     def delete_product(self,
                        product_id):

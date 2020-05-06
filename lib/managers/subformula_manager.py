@@ -231,10 +231,12 @@ class SubFormulaManager:
 
             self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
             self.subformula_repo.set_flag_has_up_to_date_cost_estimation(subformula_id, True)
-            self.__update_product_cost_estimation(subformula_id, new_cost_estimation_id, total_cost)
 
             if update_parent_formula_cost:
                 self.__update_parent_formula_cost_estimation(subformula_id, total_cost)
+
+            #if update_depending_product_cost:
+            #    self.__update_product_cost_estimation(subformula_id, new_cost_estimation_id, total_cost)
             
             return total_cost
 

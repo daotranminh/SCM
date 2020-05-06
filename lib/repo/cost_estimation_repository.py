@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import CostEstimation, config
+from init import CostEstimation, FormulaSubFormula, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
 from utilities.scm_logger import ScmLogger
@@ -17,6 +17,16 @@ class CostEstimationRepository:
         return CostEstimation.query. \
             filter(CostEstimation.id == cost_esitimation_id). \
             first()
+
+    def get_cost_estimations_of_formula(self, formula_id):
+        formula_subformula_query = self.db.session.query(FormulaSubFormula.subformula_id, FormulaSubFormula.count). \
+            filter(FormulaSubFormula.formula_id == formula_id). \
+            subquery()
+
+        return self.db.session.query(CostEstimation, formula_subformula_query.c.count). \
+            filter(CostEstimation.is_current == True). \
+            join(formula_subformula_query, CostEstimation.subformula_id == formula_subformula_query.c.subformula_id). \
+            all()
 
     def get_current_cost_estimation_of_subformula(self, subformula_id):
         return CostEstimation.query. \

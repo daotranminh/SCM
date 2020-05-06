@@ -26,6 +26,7 @@ from lib.repo.formula_subformula_repository import FormulaSubFormulaRepository
 from lib.repo.order_repository import OrderRepository
 from lib.repo.product_repository import ProductRepository
 from lib.repo.product_image_path_repository import ProductImagePathRepository
+from lib.repo.product_cost_estimation_repository import ProductCostEstimationRepository
 from lib.repo.sample_image_path_repository import SampleImagePathRepository
 from lib.repo.sample_images_group_repository import SampleImagesGroupRepository
 
@@ -39,6 +40,7 @@ from lib.managers.product_manager import ProductManager
 from lib.managers.sample_images_group_manager import SampleImagesGroupManager
 
 from lib.directors.formula_director import FormulaDirector
+from lib.directors.order_director import OrderDirector
 
 from utilities import scm_constants
 from utilities.scm_enums import OrderStatus, PaymentStatus
@@ -69,6 +71,7 @@ sample_image_path_repo = SampleImagePathRepository(db)
 sample_images_group_repo = SampleImagesGroupRepository(db)
 product_repo = ProductRepository(db)
 product_image_path_repo = ProductImagePathRepository(db)
+product_cost_estimation_repo = ProductCostEstimationRepository(db)
 
 ###################################################################################
 # MANAGERS
@@ -98,7 +101,8 @@ product_manager = ProductManager(product_repo,
                                  product_image_path_repo,
                                  sample_image_path_repo,
                                  cost_estimation_repo,
-                                 order_repo)
+                                 order_repo,
+                                 product_cost_estimation_repo)
 
 ###################################################################################
 # DIRECTORS
@@ -107,6 +111,10 @@ formula_director = FormulaDirector(formula_repo,
                                    formula_subformula_repo,
                                    formula_manager,
                                    subformula_manager)
+
+order_director = OrderDirector(order_repo,
+                               product_repo,
+                               product_manager)
 
 ####################################################################################
 # MENU
@@ -1042,7 +1050,7 @@ def __extract_order_props(props_dict):
 
     product_names = []
     product_amounts = []
-    subformula_ids = []
+    formula_ids = []
     decoration_form_ids = []
     decoration_technique_ids = []
     with_boxes = []
@@ -1051,7 +1059,7 @@ def __extract_order_props(props_dict):
     while True:
         product_name_id = 'product_name_' + str(i)
         product_amount_id = 'product_amount_' + str(i)
-        subformula_choices_id = 'subformula_choices_' + str(i)
+        formula_choices_id = 'formula_choices_' + str(i)
         decoration_form_choices_id = 'decoration_form_choices_' + str(i)
         decoration_technique_choices_id = 'decoration_technique_choices_' + str(i)
         with_box_id = 'with_box_' + str(i)
@@ -1059,7 +1067,7 @@ def __extract_order_props(props_dict):
         if product_name_id in props_dict:
             product_names.append(props_dict[product_name_id])
             product_amounts.append(props_dict[product_amount_id])
-            subformula_ids.append(int(props_dict[subformula_choices_id]))
+            formula_ids.append(int(props_dict[formula_choices_id]))
             decoration_form_ids.append(int(props_dict[decoration_form_choices_id]))
             decoration_technique_ids.append(int(props_dict[decoration_technique_choices_id]))
             if with_box_id in props_dict:
@@ -1077,7 +1085,7 @@ def __extract_order_props(props_dict):
            message, \
            product_names, \
            product_amounts, \
-           subformula_ids, \
+           formula_ids, \
            decoration_form_ids, \
            decoration_technique_ids, \
            with_boxes
@@ -1087,12 +1095,10 @@ def add_order():
     customer_recs = customer_repo.get_all_customers()
     delivery_method_recs = delivery_method_repo.get_all_delivery_methods()    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
-    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
-    subformula_recs = subformula_repo.get_all_subformulas()
+    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()    
+    formula_recs = formula_repo.get_all_formulas()
 
     if request.method == 'POST':
-        print(request.form)
-
         try:
             customer_id, \
             ordered_on, \
@@ -1101,22 +1107,22 @@ def add_order():
             message, \
             product_names, \
             product_amounts, \
-            subformula_ids, \
+            formula_ids, \
             decoration_form_ids, \
             decoration_technique_ids, \
             with_boxes = __extract_order_props(request.form)
 
-            new_order_id = order_manager.add_order(customer_id,
-                                                   ordered_on,
-                                                   delivery_appointment,
-                                                   delivery_method_id,
-                                                   message,
-                                                   product_names,
-                                                   product_amounts,
-                                                   subformula_ids,
-                                                   decoration_form_ids,
-                                                   decoration_technique_ids,
-                                                   with_boxes)
+            new_order_id = order_director.add_order(customer_id,
+                                                    ordered_on,
+                                                    delivery_appointment,
+                                                    delivery_method_id,
+                                                    message,
+                                                    product_names,
+                                                    product_amounts,
+                                                    formula_ids,
+                                                    decoration_form_ids,
+                                                    decoration_technique_ids,
+                                                    with_boxes)
             db.session.commit()
 
             message = 'Successfully added order %s' % str(new_order_id)
@@ -1131,38 +1137,41 @@ def add_order():
                                 delivery_method_recs=delivery_method_recs,
                                 decoration_form_recs=decoration_form_recs,
                                 decoration_technique_recs=decoration_technique_recs,
-                                subformula_recs=subformula_recs)
+                                formula_recs=formula_recs)
 
 def __lazy_get_order_dtos(page, per_page, search_text):
     paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
                                                                   per_page,
                                                                   search_text)
     db_changed = False
-    checked_subformula_ids_set = set()
-    subformula_ids_set = set()
+    checked_formula_ids_set = set()
+    formula_ids_set = set()
     order_dtos_need_cost_update = []
     for i in range(len(paginated_order_dtos.items)):
         product_recs = product_repo.get_products_of_order(paginated_order_dtos.items[i].order_id)
         product_cost_changed = False
         
         for product_rec in product_recs:
-            if product_rec.is_fixed == False and product_rec.subformula_id is not None and product_rec.subformula_id != -1:
-                if product_rec.subformula_id not in checked_subformula_ids_set:
-                    checked_subformula_ids_set.add(product_rec.subformula_id)
-                    subformula_rec = subformula_repo.get_subformula(product_rec.subformula_id)
-                    if subformula_rec.has_up_to_date_cost_estimation == False:
-                        subformula_ids_set.add(product_rec.subformula_id)
+            if product_rec.is_fixed == False and product_rec.formula_id is not None and product_rec.formula_id != -1:
+                if product_rec.formula_id not in checked_formula_ids_set:
+                    checked_formula_ids_set.add(product_rec.formula_id)
+                    formula_rec = formula_repo.get_formula(product_rec.formula_id)
+                    if formula_rec.has_up_to_date_cost_estimation == False:
+                        formula_ids_set.add(product_rec.formula_id)
                         product_cost_changed = True
                         db_changed = True
                 else:
-                    if product_rec.subformula_id in subformula_ids_set:
+                    if product_rec.formula_id in formula_ids_set:
                         product_cost_changed = True
         
         if product_cost_changed == True:
             order_dtos_need_cost_update.append(i)
     
-    for subformula_id in subformula_ids_set:
-        new_cost = subformula_manager.estimate_subformula_cost(subformula_id)
+    print(checked_formula_ids_set)
+    print(formula_ids_set)
+    for formula_id in formula_ids_set:
+        print('formula_id: ' + str(formula_id))
+        new_cost = formula_director.estimate_formula_cost(formula_id)
 
     db.session.flush()
 

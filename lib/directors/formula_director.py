@@ -99,6 +99,10 @@ class FormulaDirector:
                                               paginated_formula_infos.pages)
         return paginated_formula_dtos, db_changed
 
+    def estimate_formula_cost(self, formula_id):
+        formula_rec = self.get_formula(formula_id)
+        return estimate_formula_rec_cost(formula_id)
+
     def estimate_formula_rec_cost(self, formula_rec):
         if formula_rec.has_up_to_date_cost_estimation:
             return formula_rec.total_cost

@@ -184,15 +184,22 @@ class Product(db.Model):
     order_id = Column(Integer, ForeignKey(Order.id))    
     decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
     decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
-    subformula_id = Column(Integer, ForeignKey(SubFormula.id))
-    cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
+    formula_id = Column(Integer, ForeignKey(Formula.id))    
     sample_images_group_id = Column(Integer, ForeignKey(SampleImagesGroup.id))
     box_status = Column(Integer, default=0)
     box_returned_on = Column(DateTime())
     is_fixed = Column(Boolean, default=False)
     total_cost = Column(Numeric(10, 2))
+    has_up_to_date_cost_estimation = Column(Boolean, default=False)
     price_to_customer = Column(Numeric(10, 2))
     amount = Column(Integer, default=1)
+
+class ProductCostEstimation(db.Model):
+    __tablename__ = 'product_cost_estimation'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    product_id = Column(Integer, ForeignKey(Product.id))
+    cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
+    last_updated_on = Column(DateTime(), default=datetime.datetime.utcnow)
 
 class ProductImagePath(db.Model):
     __tablename__ = 'product_image_path'

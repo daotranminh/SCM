@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import Formula, FormulaSubFormula, SubFormula, Taste, config
+from init import Formula, FormulaSubFormula, SubFormula, Taste, CostEstimation, config
 from utilities.scm_enums import ErrorCodes
 from utilities.scm_exceptions import ScmException
 from utilities.scm_logger import ScmLogger

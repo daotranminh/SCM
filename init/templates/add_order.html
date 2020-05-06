@@ -51,10 +51,10 @@
             </p>
 
             <p>
-                  <label for="subformula_choices_0">SubFormula</label>
-                  <select id="subformula_choices_0" name="subformula_choices_0">
-                        {% for subformula_rec in subformula_recs %}
-                        <option value="{{subformula_rec.id}}">{{subformula_rec.name}}</option>
+                  <label for="formula_choices_0">Formula</label>
+                  <select id="formula_choices_0" name="formula_choices_0">
+                        {% for formula_rec in formula_recs %}
+                        <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
                         {% endfor %}
                   </select>
             </p>
@@ -86,7 +86,7 @@
             <button type="button"
 		class="btn btn-default pullright"
 		id="delete_product_0"
-            onclick="delete_product(this);">Delete</button>
+            onclick="delete_product_in_add_order(this);">Delete</button>
             </p>
             <hr>
       </div>
