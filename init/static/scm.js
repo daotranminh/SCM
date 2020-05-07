@@ -168,7 +168,7 @@ function extract_update_order_args()
 
     var newProductName = document.getElementById("new_product_name").value
     var product_amount = document.getElementById("product_amount").value
-    var subformulaId = document.getElementById("subformula_id").value
+    var formulaId = document.getElementById("formula_id").value
     var decorationFormId = document.getElementById("decoration_form_id").value
     var decorationTechniqueId = document.getElementById("decoration_technique_id").value
     var withBox = document.getElementById("with_box").checked
@@ -194,7 +194,7 @@ function extract_update_order_args()
             message,                // 8
             newProductName,         // 9
             product_amount,         // 10
-            subformulaId,              // 11
+            formulaId,              // 11
             decorationFormId,       // 12
             decorationTechniqueId,  // 13
             withBox,                // 14

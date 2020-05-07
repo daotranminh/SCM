@@ -111,7 +111,7 @@
                   <td>{{product_dtos[i].formula_name}}</td>
                 {% endif %}
                 {% if product_dtos[i].sample_images_group_id is not none %}
-                  <td><a href="{{ url_for('sample_images_group_details', sample_images_group_id=product_dtos[i].sample_images_group_id) }}">{{product_dto.sample_images_group_name}}</a></td>
+                  <td><a href="{{ url_for('sample_images_group_details', sample_images_group_id=product_dtos[i].sample_images_group_id) }}">{{product_dtos[i].sample_images_group_name}}</a></td>
                 {% else %}
                   <td>{{product_dtos[i].sample_images_group_name}}</td>
                 {% endif %}

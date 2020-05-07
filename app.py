@@ -1376,7 +1376,7 @@ def update_order(order_id):
     delivery_method_recs = delivery_method_repo.get_all_delivery_methods()    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
-    subformula_recs = subformula_repo.get_all_subformulas()
+    formula_recs = formula_repo.get_all_formulas()
     
     total_price_to_customer = 0
     for product_dto in product_dtos:
@@ -1417,7 +1417,7 @@ def update_order(order_id):
                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,
                                     decoration_form_recs=decoration_form_recs,
                                     decoration_technique_recs=decoration_technique_recs,
-                                    subformula_recs=subformula_recs,
+                                    formula_recs=formula_recs,
                                     total_price_to_customer=total_price_to_customer,
                                     price_to_customers=price_to_customers)
     elif request.method == 'POST':        
@@ -1489,7 +1489,7 @@ def update_order(order_id):
                                                     payment_status_names=scm_constants.PAYMENT_STATUS_NAMES,
                                                     decoration_form_recs=decoration_form_recs,
                                                     decoration_technique_recs=decoration_technique_recs,
-                                                    subformula_recs=subformula_recs,
+                                                    formula_recs=formula_recs,
                                                     total_price_to_customer=total_price_to_customer,
                                                     price_to_customers=price_to_customers)
 
@@ -1497,7 +1497,7 @@ def update_order(order_id):
 def add_new_product_to_order(order_id):
     new_product_name = request.args.get('new_product_name_arg')
     product_amount = int(request.args.get('product_amount_arg'))    
-    subformula_id = int(request.args.get('subformula_id_arg'))
+    formula_id = int(request.args.get('formula_id_arg'))
     decoration_form_id = int(request.args.get('decoration_form_id_arg'))
     decoration_technique_id = int(request.args.get('decoration_technique_id_arg'))
     
@@ -1508,7 +1508,7 @@ def add_new_product_to_order(order_id):
         product_manager.add_product(new_product_name,
                                     product_amount,
                                     order_id,
-                                    subformula_id,
+                                    formula_id,
                                     decoration_form_id,
                                     decoration_technique_id,
                                     with_box)
@@ -1530,7 +1530,7 @@ def add_new_product_to_order(order_id):
                                              price_to_customers_arg=[request.args.get('price_to_customers_arg')],
                                              new_product_name_arg=[request.args.get('new_product_name_arg')],
                                              product_amount_arg=[request.args.get('product_amount_arg')],                                             
-                                             chosen_subformula_id_arg=[request.args.get('subformula_id_arg')],
+                                             chosen_formula_id_arg=[request.args.get('formula_id_arg')],
                                              chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                              with_box_arg=[request.args.get('with_box_arg')]
@@ -1555,7 +1555,7 @@ def add_new_product_to_order(order_id):
                                  price_to_customers_arg=[request.args.get('price_to_customers_arg')],
                                  new_product_name_arg=[''],
                                  product_amount_arg=['1'],                                 
-                                 chosen_subformula_id_arg=['-1'],
+                                 chosen_formula_id_arg=['-1'],
                                  chosen_decoration_form_id_arg=['-1'],
                                  chosen_decoration_technique_id_arg=['-1'],
                                  with_box_arg=['false']

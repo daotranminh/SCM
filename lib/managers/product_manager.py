@@ -59,6 +59,8 @@ class ProductManager:
         product_rec.total_cost = total_product_cost
         product_rec.has_up_to_date_cost_estimation = True
 
+        self.update_order_cost(order_id)
+
         return new_product_id
 
     def delete_product(self,
@@ -153,16 +155,7 @@ class ProductManager:
             message = 'Formula of product %s changed to %s. New total cost = %s' % (product_id, formula_id, total_product_cost)
             ProductManager.logger.info(message)
 
-            sibling_products = self.product_repo.get_products_of_order(product_rec.order_id)
-
-            order_cost = 0
-            for sibling_product in sibling_products:
-                if sibling_product.total_cost is not None:
-                    order_cost += sibling_product.total_cost * sibling_product.amount
-            order_rec = self.order_repo.get_order(product_rec.order_id)
-            order_rec.total_cost = order_cost
-            message = 'Cost of order %s updated to %s' % (order_rec.id, order_cost)
-            ProductManager.logger.info(message)
+            self.update_order_cost(product_rec.order_id)
 
         product_rec.name = product_name
         product_rec.decoration_form_id = decoration_form_id
@@ -176,6 +169,19 @@ class ProductManager:
                                                                 product_image_path_recs,
                                                                 remaining_product_image_path_ids,
                                                                 uploaded_files)
+
+    def update_order_cost(self, order_id):
+        sibling_products = self.product_repo.get_products_of_order(order_id)
+
+        order_cost = 0
+        for sibling_product in sibling_products:
+            if sibling_product.total_cost is not None:
+                order_cost += sibling_product.total_cost * sibling_product.amount
+
+        order_rec = self.order_repo.get_order(order_id)
+        order_rec.total_cost = order_cost
+        message = 'Cost of order %s updated to %s' % (order_rec.id, order_cost)
+        ProductManager.logger.info(message)
 
     def update_prices_to_customer(self, product_prices_to_customer):
         for key, value in product_prices_to_customer.items():
