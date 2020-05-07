@@ -67,9 +67,9 @@ class MaterialSubFormulaRepository:
         return material_subformula_dtos
     
     def delete_materials_of_subformula(self, subformula_id):
-        materials_of_subformula = MaterialSubFormula.query. \
-                               filter(MaterialSubFormula.subformula_id == subformula_id). \
-                               delete()
+        MaterialSubFormula.query. \
+            filter(MaterialSubFormula.subformula_id == subformula_id). \
+            delete()
 
     def add_material_subformula(self,
                              subformula_id,

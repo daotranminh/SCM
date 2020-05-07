@@ -49,17 +49,13 @@ class ProductManager:
         
         product_rec = self.product_repo.get_product(new_product_id)
 
-        cost_estimation_infos = self.cost_estimation_repo.get_cost_estimations_of_formula(formula_id)        
+        cost_estimation_infos = self.cost_estimation_repo.get_cost_estimations_of_formula(formula_id)
 
         total_product_cost = 0
         for cost_estimation_rec, count in cost_estimation_infos:
-            print(cost_estimation_rec)
-            print(count)
             self.product_cost_estimation_repo.add_product_cost_estimation(new_product_id, cost_estimation_rec.id)
-            print('total_product_cost: ' + str(total_product_cost))
             total_product_cost += (cost_estimation_rec.total_cost * count)
-            print('total_product_cost: ' + str(total_product_cost))
-        
+            
         product_rec.total_cost = total_product_cost
         product_rec.has_up_to_date_cost_estimation = True
 
@@ -133,7 +129,7 @@ class ProductManager:
                        product_name,
                        decoration_form_id,
                        decoration_technique_id,
-                       subformula_id,
+                       formula_id,
                        box_status,
                        box_returned_on,
                        sample_images_group_id,
@@ -141,14 +137,20 @@ class ProductManager:
                        remaining_product_image_path_ids,
                        uploaded_files):        
         product_rec = self.product_repo.get_product(product_id)
-        if product_rec.subformula_id != subformula_id:
-            new_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)
-            product_rec.cost_estimation_id = new_cost_estimation.id
-            product_rec.total_cost = new_cost_estimation.total_cost
+        if product_rec.formula_id != formula_id:
+            self.product_cost_estimation_repo.delete_cost_estimation_of_product(product_id)
 
-            message = 'SubFormula of product %s changed. Refer to cost_estimation %s with total_cost=%s' % (product_id,
-                                                                                                         new_cost_estimation.id,
-                                                                                                         new_cost_estimation.total_cost)
+            cost_estimation_infos = self.cost_estimation_repo.get_cost_estimations_of_formula(formula_id)
+
+            total_product_cost = 0
+            for cost_estimation_rec, count in cost_estimation_infos:
+                self.product_cost_estimation_repo.add_product_cost_estimation(product_id, cost_estimation_rec.id)
+                total_product_cost += (cost_estimation_rec.total_cost * count)
+            
+            product_rec.total_cost = total_product_cost
+            product_rec.has_up_to_date_cost_estimation = True
+
+            message = 'Formula of product %s changed to %s. New total cost = %s' % (product_id, formula_id, total_product_cost)
             ProductManager.logger.info(message)
 
             sibling_products = self.product_repo.get_products_of_order(product_rec.order_id)
@@ -165,7 +167,7 @@ class ProductManager:
         product_rec.name = product_name
         product_rec.decoration_form_id = decoration_form_id
         product_rec.decoration_technique_id = decoration_technique_id
-        product_rec.subformula_id = subformula_id
+        product_rec.formula_id = formula_id
         product_rec.box_status = box_status
         product_rec.box_returned_on = box_returned_on
         product_rec.sample_images_group_id = sample_images_group_id

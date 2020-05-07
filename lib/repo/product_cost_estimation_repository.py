@@ -28,3 +28,6 @@ class ProductCostEstimationRepository:
             message = 'Error: failed to add product_cost_estimation record. Details: %s' % (str(ex))
             ProductCostEstimationRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_PRODUCT_COST_ESTIMATION_FAILED, message)
+
+    def delete_cost_estimation_of_product(self, product_id):
+        ProductCostEstimation.query.filter(ProductCostEstimation.product_id == product_id).delete()

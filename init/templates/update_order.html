@@ -176,13 +176,13 @@
         </p>
 
         <p>
-          <label for="subformula_id">SubFormula</label>
-          <select id="subformula_id" name="subformula_id">
-            {% for subformula_rec in subformula_recs %}
-              {% if subformula_rec.id == chosen_subformula_id %}
-                <option value="{{subformula_rec.id}}" selected>{{subformula_rec.name}}</option>
+          <label for="formula_id">Formula</label>
+          <select id="formula_id" name="formula_id">
+            {% for formula_rec in formula_recs %}
+              {% if formula_rec.id == chosen_formula_id %}
+                <option value="{{formula_rec.id}}" selected>{{formula_rec.name}}</option>
               {% else %}
-                <option value="{{subformula_rec.id}}">{{subformula_rec.name}}</option>
+                <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
               {% endif %}
             {% endfor %}
           </select>

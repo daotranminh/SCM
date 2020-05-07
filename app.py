@@ -1286,11 +1286,11 @@ def __extract_update_order_args(order_rec, args):
     else:
         product_amount_arg = int(product_amount_arg)
 
-    chosen_subformula_id_arg = args.get('chosen_subformula_id_arg')
-    if chosen_subformula_id_arg is None or chosen_subformula_id_arg == '':
-        chosen_subformula_id_arg = -1
+    chosen_formula_id_arg = args.get('chosen_formula_id_arg')
+    if chosen_formula_id_arg is None or chosen_formula_id_arg == '':
+        chosen_formula_id_arg = -1
     else:
-        chosen_subformula_id_arg = int(chosen_subformula_id_arg)
+        chosen_formula_id_arg = int(chosen_formula_id_arg)
 
     chosen_decoration_form_id_arg = args.get('chosen_decoration_form_id_arg')
     if chosen_decoration_form_id_arg is None or chosen_decoration_form_id_arg == '':
@@ -1319,7 +1319,7 @@ def __extract_update_order_args(order_rec, args):
         message_arg, \
         new_product_name_arg, \
         product_amount_arg, \
-        chosen_subformula_id_arg, \
+        chosen_formula_id_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
         with_box_arg, \
@@ -1360,7 +1360,7 @@ def update_order(order_id):
         message_arg, \
         new_product_name_arg, \
         product_amount_arg, \
-        chosen_subformula_id_arg, \
+        chosen_formula_id_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
         with_box_arg, \
@@ -1405,7 +1405,7 @@ def update_order(order_id):
                                     paid_on=paid_on_arg,
                                     new_product_name=new_product_name_arg,
                                     product_amount=product_amount_arg,
-                                    chosen_subformula_id=chosen_subformula_id_arg,
+                                    chosen_formula_id=chosen_formula_id_arg,
                                     chosen_decoration_form_id=chosen_decoration_form_id_arg,
                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
                                     with_box=with_box_arg,
@@ -1477,7 +1477,7 @@ def update_order(order_id):
                                                     new_product_name=new_product_name_arg,
                                                     product_amount=product_amount_arg,
                                                     chosen_taste_id=chosen_taste_id_arg,
-                                                    chosen_subformula_id=chosen_subformula_id_arg,
+                                                    chosen_formula_id=chosen_formula_id_arg,
                                                     chosen_decoration_form_id=chosen_decoration_form_id_arg,
                                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
                                                     with_box=with_box_arg,
@@ -1599,11 +1599,11 @@ def __extract_update_product_args(product_rec, args):
     else:
         selected_decoration_technique_id = product_rec.decoration_technique_id
 
-    selected_subformula_id = args.get('subformula_id_arg')
-    if selected_subformula_id is not None:
-        selected_subformula_id = int(selected_subformula_id)
+    selected_formula_id = args.get('formula_id_arg')
+    if selected_formula_id is not None:
+        selected_formula_id = int(selected_formula_id)
     else:
-        selected_subformula_id = product_rec.subformula_id
+        selected_formula_id = product_rec.formula_id
 
     selected_box_status = args.get('box_status_arg')
     if selected_box_status is not None:
@@ -1622,7 +1622,7 @@ def __extract_update_product_args(product_rec, args):
             product_amount, \
             selected_decoration_form_id, \
             selected_decoration_technique_id, \
-            selected_subformula_id, \
+            selected_formula_id, \
             selected_box_status, \
             chosen_box_returned_on, \
             selected_sample_images_group_id
@@ -1646,12 +1646,12 @@ def update_product(product_id):
             product_amount, \
             selected_decoration_form_id, \
             selected_decoration_technique_id, \
-            selected_subformula_id, \
+            selected_formula_id, \
             selected_box_status, \
             chosen_box_returned_on, \
             selected_sample_images_group_id = __extract_update_product_args(product_rec, request.args)
 
-        subformula_recs = subformula_repo.get_all_subformulas()
+        formula_recs = formula_repo.get_all_formulas()
         existing_product_image_paths_arg = request.args.get('existing_product_image_paths_arg')
         product_image_path_recs = __infer_product_image_path_recs(product_id, existing_product_image_paths_arg)
 
@@ -1664,15 +1664,14 @@ def update_product(product_id):
             remaining_product_image_path_ids = __extract_remaining_image_path_ids(request.form, 'existing_product_image_')
             current_product_name = request.form['product_name']
             product_amount = int(request.form['product_amount'])
-            selected_subformula_id = int(request.form['subformula_id'])
             selected_decoration_form_id = int(request.form['decoration_form_id'])
             selected_decoration_technique_id = int(request.form['decoration_technique_id'])            
             selected_box_status = int(request.form['box_status'])
             chosen_box_returned_on = request.form['box_returned_on']
             
-            selected_subformula_id = int(request.form['subformula_id'])
-            if selected_subformula_id == -1:
-                selected_subformula_id = None
+            selected_formula_id = int(request.form['formula_id'])
+            if selected_formula_id == -1:
+                selected_formula_id = None
 
             selected_sample_images_group_id = int(request.form['sample_images_group_id'])
             if selected_sample_images_group_id == -1:
@@ -1685,7 +1684,7 @@ def update_product(product_id):
                                            current_product_name,
                                            selected_decoration_form_id,
                                            selected_decoration_technique_id,
-                                           selected_subformula_id,
+                                           selected_formula_id,
                                            selected_box_status,
                                            chosen_box_returned_on,
                                            selected_sample_images_group_id,
@@ -1694,7 +1693,7 @@ def update_product(product_id):
                                            uploaded_files)
             db.session.commit()
 
-            subformula_recs = subformula_repo.get_all_subformulas()
+            formula_recs = formula_repo.get_all_formulas()
             product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
             
             message = 'Successfully updated product %s (%s)' % (current_product_name, product_id)
@@ -1711,12 +1710,12 @@ def update_product(product_id):
                                                     decoration_technique_recs=decoration_technique_recs,
                                                     product_rec=product_rec,
                                                     product_image_path_recs=product_image_path_recs,
-                                                    subformula_recs=subformula_recs,
+                                                    formula_recs=formula_recs,
                                                     box_status_names=scm_constants.BOX_STATUS_NAMES,
                                                     sample_images_group_recs=sample_images_group_recs,
                                                     latest_3_sample_image_paths=latest_3_sample_image_paths,
                                                     current_product_name=current_product_name,
-                                                    selected_subformula_id=selected_subformula_id,
+                                                    selected_formula_id=selected_formula_id,
                                                     selected_decoration_form_id=selected_decoration_form_id,
                                                     selected_decoration_technique_id=selected_decoration_technique_id,                                                    
                                                     selected_box_status=selected_box_status,
@@ -1728,14 +1727,14 @@ def update_product(product_id):
                                decoration_technique_recs=decoration_technique_recs,
                                product_rec=product_rec,
                                product_image_path_recs=product_image_path_recs,
-                               subformula_recs=subformula_recs,
+                               formula_recs=formula_recs,
                                box_status_names=scm_constants.BOX_STATUS_NAMES,
                                sample_images_group_recs=sample_images_group_recs,
                                latest_3_sample_image_paths=latest_3_sample_image_paths,
                                current_product_name=current_product_name,
                                selected_decoration_form_id=selected_decoration_form_id,
                                selected_decoration_technique_id=selected_decoration_technique_id,
-                               selected_subformula_id=selected_subformula_id,
+                               selected_formula_id=selected_formula_id,
                                selected_box_status=selected_box_status,
                                chosen_box_returned_on=chosen_box_returned_on,
                                selected_sample_images_group_id=selected_sample_images_group_id)
