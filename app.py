@@ -1587,13 +1587,13 @@ def __extract_update_product_args(product_rec, args):
     else:
         product_amount = product_rec.amount        
         
-    selected_decoration_form_id = args.get('selected_decoration_form_id_arg')
+    selected_decoration_form_id = args.get('decoration_form_id_arg')
     if selected_decoration_form_id is not None:
         selected_decoration_form_id = int(selected_decoration_form_id)
     else:
         selected_decoration_form_id = product_rec.decoration_form_id
 
-    selected_decoration_technique_id = args.get('selected_decoration_technique_id_arg')
+    selected_decoration_technique_id = args.get('decoration_technique_id_arg')
     if selected_decoration_technique_id is not None:
         selected_decoration_technique_id = int(selected_decoration_technique_id)
     else:
