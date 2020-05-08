@@ -1741,7 +1741,6 @@ def update_product(product_id):
 
 @app.route('/delete_product/<int:product_id>', methods=['GET', 'POST'])
 def delete_product(product_id):
-    print('IN DELETE PRODUCT')
     product_rec = product_repo.get_product(product_id)
     order_id = product_rec.order_id
     product_name = product_rec.name
