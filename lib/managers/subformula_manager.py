@@ -191,62 +191,59 @@ class SubFormulaManager:
 
     def estimate_subformula_cost(self, subformula_id, update_parent_formula_cost=True):
         subformula_rec = self.subformula_repo.get_subformula(subformula_id)
-        current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)
 
         if subformula_rec.has_up_to_date_cost_estimation == True:
-            message = 'SubFormula %s has up-to-date cost estimation (%s). Return %s' % (subformula_id, 
-                                                                                     current_cost_estimation.id,
-                                                                                     current_cost_estimation.total_cost)
+            message = 'SubFormula %s has up-to-date cost estimation. Return %s' % (subformula_id,
+                                                                                   subformula_rec.total_cost)
             SubFormulaManager.logger.info(message)
-            return current_cost_estimation.total_cost
-        else:
-            if current_cost_estimation is not None:
-                current_cost_estimation.is_current = False
+            return subformula_rec.total_cost
 
-            new_cost_estimation_id = self.cost_estimation_repo.add_cost_estimation(subformula_id)
+        current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)
+        if current_cost_estimation is not None:
+            current_cost_estimation.is_current = False
 
-            material_subformulas_w_uprice = self.material_subformula_repo.get_materials_of_subformula_w_uprice(subformula_id)
-            total_cost = 0
+        new_cost_estimation_id = self.cost_estimation_repo.add_cost_estimation(subformula_id)
+
+        material_subformulas_w_uprice = self.material_subformula_repo.get_materials_of_subformula_w_uprice(subformula_id)
+        total_cost = 0
         
-            message = 'SubFormula %s does not has up-to-date cost estimation. Going to calculate new cost estimation' % subformula_id
+        message = 'SubFormula %s does not has up-to-date cost estimation. Going to calculate new cost estimation' % subformula_id
+        SubFormulaManager.logger.info(message)
+
+        for material_subformula_rec, unit_amount, unit, material_version_id, unit_price in material_subformulas_w_uprice:
+            single_cost = material_subformula_rec.amount * unit_price / unit_amount
+            self.material_version_cost_estimation_repo.add_material_version_cost_estimation(
+                material_subformula_rec.material_id,
+                material_version_id,
+                new_cost_estimation_id,
+                unit_amount,
+                unit,
+                unit_price,
+                material_subformula_rec.amount,
+                single_cost)            
+            total_cost += single_cost
+            message = 'Added current cost %s of material %s to subformula_cost' % (single_cost, material_subformula_rec.material_id)
             SubFormulaManager.logger.info(message)
 
-            for material_subformula_rec, unit_amount, unit, material_version_id, unit_price in material_subformulas_w_uprice:
-                single_cost = material_subformula_rec.amount * unit_price / unit_amount
-                self.material_version_cost_estimation_repo.add_material_version_cost_estimation(
-                    material_subformula_rec.material_id,
-                    material_version_id,
-                    new_cost_estimation_id,
-                    unit_amount,
-                    unit,
-                    unit_price,
-                    material_subformula_rec.amount,
-                    single_cost)            
-                total_cost += single_cost
-                message = 'Added current cost %s of material %s to subformula_cost' % (single_cost, material_subformula_rec.material_id)
-                SubFormulaManager.logger.info(message)
+        message = 'Total subformula cost = %s' % total_cost
+        SubFormulaManager.logger.info(message)
 
-            message = 'Total subformula cost = %s' % total_cost
-            SubFormulaManager.logger.info(message)
+        subformula_rec.total_cost = total_cost
+        self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
+        self.subformula_repo.set_flag_has_up_to_date_cost_estimation(subformula_id, True)
 
-            self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
-            self.subformula_repo.set_flag_has_up_to_date_cost_estimation(subformula_id, True)
-
-            if update_parent_formula_cost:
-                self.__update_parent_formula_cost_estimation(subformula_id, total_cost)
-
-            #if update_depending_product_cost:
-            #    self.__update_product_cost_estimation(subformula_id, new_cost_estimation_id, total_cost)
+        if update_parent_formula_cost:
+            self.__notify_parent_formula_about_cost_estimation_change(subformula_id)
             
-            return total_cost
+        return total_cost
 
     def __update_product_cost_estimation(self, 
                                          subformula_id,
                                          new_cost_estimation_id,
                                          total_cost):
         message = 'Update product cost of (non-fixed) products having subformula %s with cost estimation %s and total_cost %s' % (subformula_id,
-                                                                                                                               new_cost_estimation_id,
-                                                                                                                               total_cost)
+                                                                                                                                  new_cost_estimation_id,
+                                                                                                                                  total_cost)
         SubFormulaManager.logger.info(message)
 
         product_recs = self.product_repo.get_products_having_subformula(subformula_id)
@@ -276,19 +273,10 @@ class SubFormulaManager:
             message = 'New cost of order %s is %s' % (order_id, order_cost)
             SubFormulaManager.logger.info(message)
     
-    def __update_parent_formula_cost_estimation(self,
-                                                subformula_id,
-                                                subformula_cost):
+    def __notify_parent_formula_about_cost_estimation_change(self, subformula_id):
         parent_formula_recs = self.formula_subformula_repo.get_formulas_of_subformula(subformula_id)
         for parent_formula_rec in parent_formula_recs:
-            total_cost = 0
-            sibling_subformula_recs = self.formula_subformula_repo.get_subformulas_of_formula(parent_formula_rec.id)
-            for sibling_subformula_rec in sibling_subformula_recs:
-                if sibling_subformula_rec.id == subformula_id:
-                    total_cost += subformula_cost
-                else:
-                    total_cost += sibling_subformula_rec.total_cost
-            parent_formula_rec.total_cost = total_cost
+            parent_formula_rec.has_up_to_date_cost_estimation = False
 
     def get_cost_estimation(self, subformula_id):        
         current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)
