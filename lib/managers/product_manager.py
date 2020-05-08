@@ -77,6 +77,7 @@ class ProductManager:
         order_rec.total_cost = order_cost
 
         self.product_image_path_repo.delete_product_image_paths(product_id)
+        self.product_cost_estimation_repo.delete_cost_estimation_of_product(product_id)
         self.product_repo.delete_product(product_id)
 
     def get_product_dto(self, product_id):
