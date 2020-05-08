@@ -15,7 +15,7 @@ class FormulaSubFormulaRepository:
             filter(FormulaSubFormula.formula_id == formula_id, FormulaSubFormula.subformula_id == subformula_id). \
             first()
 
-    def get_subformulas_of_formula(self, formula_id):
+    def get_formula_subformulas_of_formula(self, formula_id):
         return FormulaSubFormula.query. \
             filter(FormulaSubFormula.formula_id == formula_id). \
             all()

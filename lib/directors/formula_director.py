@@ -47,7 +47,7 @@ class FormulaDirector:
         formula_rec.name = new_formula_name
         formula_rec.description = new_formula_description
         formula_rec.note = new_formula_note
-        formula_subformula_recs = self.formula_subformula_repo.get_subformulas_of_formula(formula_id)
+        formula_subformula_recs = self.formula_subformula_repo.get_formula_subformulas_of_formula(formula_id)
 
         self.formula_subformula_repo.delete_subformulas_of_formula(formula_id)
         total_cost = 0
@@ -107,7 +107,7 @@ class FormulaDirector:
         if formula_rec.has_up_to_date_cost_estimation:
             return formula_rec.total_cost
 
-        formula_subformula_recs = self.formula_subformula_repo.get_subformulas_of_formula(formula_rec.id)
+        formula_subformula_recs = self.formula_subformula_repo.get_formula_subformulas_of_formula(formula_rec.id)
         total_cost = 0
 
         for formula_subformula_rec in formula_subformula_recs:
