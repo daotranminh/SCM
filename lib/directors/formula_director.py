@@ -46,9 +46,9 @@ class FormulaDirector:
                        new_subformula_ids,
                        new_subformula_counts):
         formula_rec = self.formula_repo.get_formula(formula_id)
-        formula_rec.name = new_formula_name
-        formula_rec.description = new_formula_description
-        formula_rec.note = new_formula_note
+        self.formula_repo.update_formula(new_formula_name,
+                                         new_formula_description,
+                                         new_formula_note)
         formula_subformula_recs = self.formula_subformula_repo.get_formula_subformulas_of_formula(formula_id)
 
         self.formula_subformula_repo.delete_subformulas_of_formula(formula_id)
@@ -65,7 +65,7 @@ class FormulaDirector:
 
             total_cost += subformula_cost * new_subformula_counts[i]
         
-        formula_rec.total_cost = total_cost
+        self.formula_repo.update_cost_estimation_formula_rec(formula_rec, total_cost)
 
     def get_paginated_formula_dtos(self,
                                    page,
@@ -118,9 +118,7 @@ class FormulaDirector:
                 update_parent_formula_cost=False)
             total_cost += subformula_cost * formula_subformula_rec.count
 
-        formula_rec.total_cost = total_cost
-        formula_rec.has_up_to_date_cost_estimation = True
-
+        self.formula_repo.update_cost_estimation_formula_rec(formula_rec, total_cost)
         self.__notify_parent_products_about_cost_estimation_changed(formula_id)
 
         return total_cost
@@ -128,7 +126,7 @@ class FormulaDirector:
     def __notify_parent_products_about_cost_estimation_changed(self, formula_id):
         parent_product_recs = self.product_repo.get_products_using_formula(formula_id)
         for parent_product_rec in parent_product_recs:
-            parent_product_rec.has_up_to_date_cost_estimation = False
+            self.product_repo.set_has_up_to_date_cost_estimation_flag_product_rec(parent_product_rec, False)
 
     def formula_cost_estimation_details(self, formula_id):
         formula_rec = self.formula_repo.get_formula(formula_id)

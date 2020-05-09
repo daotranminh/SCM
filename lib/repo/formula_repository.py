@@ -51,6 +51,15 @@ class FormulaRepository:
             FormulaRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_FORMULA_FAILED, message)
 
+    def update_formula(self,
+                       new_formula_name,
+                       new_formula_description,
+                       new_formula_note):
+        formula_rec.name = new_formula_name
+        formula_rec.description = new_formula_description
+        formula_rec.note = new_formula_note
+        self.db.session.flush()
+
     def set_flag_has_up_to_date_cost_estimation(self, formula_id, flag):
         formula_rec = self.get_formula(formula_id)
         formula_rec.has_up_to_date_cost_estimation = flag
@@ -58,6 +67,9 @@ class FormulaRepository:
 
     def update_cost_estimation(self, formula_id, total_cost):
         formula_rec = self.get_formula(formula_id)
+        self.update_cost_estimation_formula_rec(formula_rec, total_cost)
+
+    def update_cost_estimation_formula_rec(self, formula_rec, total_cost):        
         formula_rec.total_cost = total_cost
         formula_rec.has_up_to_date_cost_estimation = True
         self.db.session.flush()
