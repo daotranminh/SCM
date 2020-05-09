@@ -21,7 +21,7 @@ class ScmLogger:
         message_elements = []
 
         if self.log_function_name:
-            message_elements.append('CALLER: ' + inspect.currentframe().f_back.f_back.f_code.co_name)
+            message_elements.append('CALLER: ' + inspect.currentframe().f_back.f_back.f_code.co_name + ':')
 
         message_elements.append(message)
 
