@@ -269,42 +269,6 @@ class SubFormulaManager:
             
         return total_cost
 
-    def __update_product_cost_estimation(self, 
-                                         subformula_id,
-                                         new_cost_estimation_id,
-                                         total_cost):
-        message = 'Update product cost of (non-fixed) products having subformula %s with cost estimation %s and total_cost %s' % (subformula_id,
-                                                                                                                                  new_cost_estimation_id,
-                                                                                                                                  total_cost)
-        SubFormulaManager.logger.info(message)
-
-        product_recs = self.product_repo.get_products_having_subformula(subformula_id)
-        order_ids_set = set()
-
-        for product_rec in product_recs:
-            if product_rec.is_fixed == False:                
-                product_rec.cost_estimation_id = new_cost_estimation_id
-                product_rec.total_cost = total_cost
-                order_ids_set.add(product_rec.order_id)
-
-                message = 'Updated product %s' % product_rec.id
-        
-        if len(order_ids_set) > 0:
-            message = 'Update total cost of affected orders'
-            SubFormulaManager.logger.info(message)
-
-        for order_id in order_ids_set:
-            order_rec = self.order_repo.get_order(order_id)
-            order_cost = 0
-            product_recs = self.product_repo.get_products_of_order(order_id)
-            for product_rec in product_recs:
-                if product_rec.total_cost is not None:
-                    order_cost += product_rec.total_cost * product_rec.amount
-            order_rec.total_cost = order_cost
-
-            message = 'New cost of order %s is %s' % (order_id, order_cost)
-            SubFormulaManager.logger.info(message)
-    
     def __notify_parent_formula_about_cost_estimation_change(self, subformula_id):
         parent_formula_recs = self.formula_subformula_repo.get_formulas_of_subformula(subformula_id)
         for parent_formula_rec in parent_formula_recs:
