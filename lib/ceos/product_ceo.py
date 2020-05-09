@@ -115,8 +115,8 @@ class ProductCEO:
 
     def estimate_product_cost(self, product_id):
         product_rec = self.product_repo.get_product(product_id)
-        #if product_rec.has_up_to_date_cost_estimation:
-        #    return product_rec.total_cost
+        if product_rec.has_up_to_date_cost_estimation:
+            return product_rec.total_cost
         
         new_product_cost_estimation = self.formula_director.estimate_formula_cost(product_rec.formula_id)
         self.product_repo.update_cost_product_rec(product_rec, new_product_cost_estimation)
