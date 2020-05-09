@@ -18,7 +18,8 @@ class SubFormulaManager:
                  cost_estimation_repo,
                  product_repo,
                  order_repo,
-                 formula_subformula_repo):
+                 formula_subformula_repo,
+                 formula_repo):
         self.subformula_repo = subformula_repo
         self.material_subformula_repo = material_subformula_repo
         self.taste_repo = taste_repo
@@ -27,6 +28,7 @@ class SubFormulaManager:
         self.product_repo = product_repo
         self.order_repo = order_repo
         self.formula_subformula_repo = formula_subformula_repo
+        self.formula_repo = formula_repo
 
     def get_subformula_info(self, subformula_id):
         subformula_rec = self.subformula_repo.get_subformula(subformula_id)
@@ -270,6 +272,9 @@ class SubFormulaManager:
         return total_cost
 
     def __notify_parent_formula_about_cost_estimation_change(self, subformula_id):
-        parent_formula_recs = self.formula_subformula_repo.get_formulas_of_subformula(subformula_id)
-        for parent_formula_rec in parent_formula_recs:
-            parent_formula_rec.has_up_to_date_cost_estimation = False
+        message = 'Going to notify parent formulas of subformula %s about cost estimation change' % subformula_id
+        SubFormulaManager.logger.info(message)
+
+        formula_subformula_recs = self.formula_subformula_repo.get_formulas_of_subformula(subformula_id)
+        for formula_subformula_rec in formula_subformula_recs:
+            self.formula_repo.set_flag_has_up_to_date_cost_estimation(formula_subformula_rec.formula_id, False)

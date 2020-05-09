@@ -44,9 +44,9 @@ class FormulaDirector:
                        new_formula_description,
                        new_formula_note,
                        new_subformula_ids,
-                       new_subformula_counts):
-        formula_rec = self.formula_repo.get_formula(formula_id)
-        self.formula_repo.update_formula(new_formula_name,
+                       new_subformula_counts):        
+        self.formula_repo.update_formula(formula_id,
+                                         new_formula_name,
                                          new_formula_description,
                                          new_formula_note)
         formula_subformula_recs = self.formula_subformula_repo.get_formula_subformulas_of_formula(formula_id)
@@ -60,12 +60,11 @@ class FormulaDirector:
                 new_subformula_counts[i])
 
             subformula_cost = self.subformula_manager.estimate_subformula_cost(
-                    subformula_id=new_subformula_ids[i],
-                    update_parent_formula_cost=False)
+                    subformula_id=new_subformula_ids[i])
 
             total_cost += subformula_cost * new_subformula_counts[i]
         
-        self.formula_repo.update_cost_estimation_formula_rec(formula_rec, total_cost)
+        self.formula_repo.update_cost_estimation(formula_id, total_cost)
 
     def get_paginated_formula_dtos(self,
                                    page,

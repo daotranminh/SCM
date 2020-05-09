@@ -92,7 +92,8 @@ subformula_manager = SubFormulaManager(subformula_repo,
                                  cost_estimation_repo,
                                  product_repo,
                                  order_repo,
-                                 formula_subformula_repo)
+                                 formula_subformula_repo,
+                                 formula_repo)
 formula_manager = FormulaManager(formula_repo,
                                  subformula_repo,
                                  formula_subformula_repo,
