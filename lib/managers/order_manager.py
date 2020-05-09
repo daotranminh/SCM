@@ -41,34 +41,6 @@ class OrderManager:
 
         return order_dto
 
-    def update_order(self,
-                     order_id,
-                     customer_id,
-                     delivery_appointment,
-                     delivery_method_id,
-                     ordered_on,
-                     order_status,
-                     delivered_on,
-                     payment_status,
-                     paid_on,
-                     message,
-                     price_to_customer):
-        self.order_repo.update_order(order_id,
-                                     customer_id,
-                                     delivery_appointment,
-                                     delivery_method_id,
-                                     ordered_on,
-                                     order_status,
-                                     delivered_on,
-                                     payment_status,
-                                     paid_on,
-                                     message,
-                                     price_to_customer)
-        if order_status == int(OrderStatus.DELIVERED):
-            product_recs = self.product_repo.get_products_of_order(order_id)
-            for product_rec in product_recs:
-                product_rec.is_fixed = True
-
     def get_paginated_order_dtos(self,
                                  page,
                                  per_page,
@@ -120,3 +92,31 @@ class OrderManager:
         message = 'Payment status key %s does not exist' % (str(payment_status))
         OrderManager.logger.error(message)
         raise ScmException(ErrorCodes.ERROR_PAYMENT_STATUS_KEY_NOT_EXIST, message)
+
+    def update_order(self,
+                     order_id,
+                     customer_id,
+                     delivery_appointment,
+                     delivery_method_id,
+                     ordered_on,
+                     order_status,
+                     delivered_on,
+                     payment_status,
+                     paid_on,
+                     message,
+                     price_to_customer):
+        self.order_repo.update_order(order_id,
+                                     customer_id,
+                                     delivery_appointment,
+                                     delivery_method_id,
+                                     ordered_on,
+                                     order_status,
+                                     delivered_on,
+                                     payment_status,
+                                     paid_on,
+                                     message,
+                                     price_to_customer)
+        if order_status == int(OrderStatus.DELIVERED):
+            product_recs = self.product_repo.get_products_of_order(order_id)
+            for product_rec in product_recs:
+                self.product_repo.set_product_rec_fixed_flag(product_rec)

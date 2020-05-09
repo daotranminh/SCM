@@ -115,3 +115,7 @@ class ProductRepository:
         product_rec.total_cost = new_total_cost
         product_rec.has_up_to_date_cost_estimation = True
         self.db.session.flush()
+
+    def set_product_rec_fixed_flag(self, product_rec, flag=True):
+        product_rec = flag
+        self.db.session.flush()
