@@ -32,55 +32,6 @@ class ProductManager:
             latest_groups_3_image_paths += most_3_latest_product_image_paths
 
         return latest_groups_3_image_paths
-        
-    def add_product(self,
-                    name,
-                    amount,
-                    order_id,
-                    formula_id,
-                    decoration_form_id,
-                    decoration_technique_id,
-                    with_box):
-        new_product_id = self.product_repo.add_product(name,
-                                                      amount,
-                                                      order_id,
-                                                      formula_id,
-                                                      decoration_form_id,
-                                                      decoration_technique_id,
-                                                      with_box)
-        
-        product_rec = self.product_repo.get_product(new_product_id)
-
-        cost_estimation_infos = self.cost_estimation_repo.get_cost_estimations_of_formula(formula_id)
-
-        total_product_cost = 0
-        for cost_estimation_rec, count in cost_estimation_infos:
-            self.product_cost_estimation_repo.add_product_cost_estimation(new_product_id, cost_estimation_rec.id)
-            total_product_cost += (cost_estimation_rec.total_cost * count)
-            
-        product_rec.total_cost = total_product_cost
-        product_rec.has_up_to_date_cost_estimation = True
-
-        self.update_order_cost(order_id)
-
-        return new_product_id
-
-    def delete_product(self,
-                       product_id):
-        product_rec = self.product_repo.get_product(product_id)
-        
-        order_rec = self.order_repo.get_order(product_rec.order_id)
-        
-        order_cost = 0
-        sibling_products = self.product_repo.get_products_of_order(product_rec.order_id)
-        for sibling_product in sibling_products:
-            if sibling_product.id != product_id and sibling_product.total_cost is not None:
-                order_cost += sibling_product.total_cost * sibling_product.amount
-        order_rec.total_cost = order_cost
-
-        self.product_image_path_repo.delete_product_image_paths(product_id)
-        self.product_cost_estimation_repo.delete_cost_estimation_of_product(product_id)
-        self.product_repo.delete_product(product_id)
 
     def get_product_dto(self, product_id):
         product_rec, \
@@ -128,8 +79,54 @@ class ProductManager:
             product_dtos.append(product_dto)
 
         return product_dtos
+        
+    def add_product(self,
+                    name,
+                    amount,
+                    order_id,
+                    formula_id,
+                    decoration_form_id,
+                    decoration_technique_id,
+                    with_box):
+        new_product_id = self.product_repo.add_product(name,
+                                                      amount,
+                                                      order_id,
+                                                      formula_id,
+                                                      decoration_form_id,
+                                                      decoration_technique_id,
+                                                      with_box)
+        
+        product_rec = self.product_repo.get_product(new_product_id)
+
+        cost_estimation_infos = self.cost_estimation_repo.get_cost_estimations_of_formula(formula_id)
+
+        total_product_cost = 0
+        for cost_estimation_rec, count in cost_estimation_infos:
+            self.product_cost_estimation_repo.add_product_cost_estimation(new_product_id, cost_estimation_rec.id)
+            total_product_cost += (cost_estimation_rec.total_cost * count)
+            
+        self.product_repo.update_cost_product_rec(product_rec, total_product_cost)
+        self.update_order_cost(order_id)
+
+        return new_product_id
+
+    def delete_product(self,
+                       product_id):
+        product_rec = self.product_repo.get_product(product_id)        
+        order_rec = self.order_repo.get_order(product_rec.order_id)
+        
+        order_cost = 0
+        sibling_products = self.product_repo.get_products_of_order(product_rec.order_id)
+        for sibling_product in sibling_products:
+            if sibling_product.id != product_id and sibling_product.total_cost is not None:
+                order_cost += sibling_product.total_cost * sibling_product.amount
+
+        self.order_repo.update_cost_order_rec(order_rec, order_cost)
+        self.product_image_path_repo.delete_product_image_paths(product_id)
+        self.product_cost_estimation_repo.delete_cost_estimation_of_product(product_id)
+        self.product_repo.delete_product(product_id)
 
     def update_prices_to_customer(self, product_prices_to_customer):
         for key, value in product_prices_to_customer.items():
             product_rec = self.product_repo.get_product(key)
-            product_rec.price_to_customer = value
+            self.product_repo.update_price_to_customer_product_rec(product_rec, value)

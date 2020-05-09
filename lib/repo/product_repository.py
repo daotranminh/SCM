@@ -119,3 +119,7 @@ class ProductRepository:
     def set_product_rec_fixed_flag(self, product_rec, flag=True):
         product_rec = flag
         self.db.session.flush()
+
+    def update_price_to_customer_product_rec(self, product_rec, new_price_to_customer):
+        product_rec.price_to_customer = new_price_to_customer
+        self.db.session.flush()
