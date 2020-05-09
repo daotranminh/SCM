@@ -100,15 +100,13 @@ class ProductCEO:
                                                                 uploaded_files)
 
     def update_order_cost(self, order_id):
-        print('order_id = ' + str(order_id))
         sibling_products = self.product_repo.get_products_of_order(order_id)
 
         order_cost = 0
         for sibling_product in sibling_products:
             if sibling_product.total_cost is not None:
                 order_cost += sibling_product.total_cost * sibling_product.amount
-
-        print('order_cost = ' + str(order_cost))
+        
         self.order_repo.update_cost(order_id, order_cost)
         message = 'Cost of order %s updated to %s' % (order_id, order_cost)
         ProductCEO.logger.info(message)
@@ -119,5 +117,11 @@ class ProductCEO:
             return product_rec.total_cost
         
         new_product_cost_estimation = self.formula_director.estimate_formula_cost(product_rec.formula_id)
+
+        message = 'Estimate cost of formula %s. Got %s' % (product_rec.formula_id, new_product_cost_estimation)
+        ProductCEO.logger.info(message)
+
         self.product_repo.update_cost_product_rec(product_rec, new_product_cost_estimation)
         self.update_order_cost(product_rec.order_id)
+
+        return new_product_cost_estimation

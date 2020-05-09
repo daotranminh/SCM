@@ -278,3 +278,8 @@ class SubFormulaManager:
         formula_subformula_recs = self.formula_subformula_repo.get_formulas_of_subformula(subformula_id)
         for formula_subformula_rec in formula_subformula_recs:
             self.formula_repo.set_flag_has_up_to_date_cost_estimation(formula_subformula_rec.formula_id, False)
+
+            product_recs = self.product_repo.get_products_having_formula(formula_subformula_rec.formula_id)
+            for product_rec in product_recs:
+                self.product_repo.set_flag_has_up_to_date_cost_estimation_product_rec(product_rec, False)
+                self.order_repo.set_flag_has_up_to_date_cost_estimation(product_rec.order_id, False)

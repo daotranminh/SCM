@@ -22,8 +22,8 @@ class ProductRepository:
     def get_products_of_order(self, order_id):
         return Product.query.filter(Product.order_id == order_id).all()
 
-    def get_products_having_subformula(self, subformula_id):
-        return Product.query.filter(Product.subformula_id == subformula_id).all()
+    def get_products_having_formula(self, formula_id):
+        return Product.query.filter(Product.formula_id == formula_id).all()
 
     def get_product_dto(self, product_id):
         decoration_form_query = self.db.session.query(DecorationForm.id, DecorationForm.name).subquery()

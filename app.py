@@ -82,7 +82,11 @@ product_cost_estimation_repo = ProductCostEstimationRepository(db)
 material_manager = MaterialManager(material_repo,
                                    material_version_repo,
                                    material_subformula_repo,
-                                   subformula_repo)
+                                   subformula_repo,
+                                   product_repo,
+                                   order_repo,
+                                   formula_subformula_repo,
+                                   formula_repo)
 customer_manager = CustomerManager(customer_repo)
 topic_manager = TopicManager(topic_repo)
 subformula_manager = SubFormulaManager(subformula_repo,
@@ -980,7 +984,6 @@ def add_formula():
                                    taste_subformula_dict=taste_subformula_dict,
                                    subformula_dict=subformula_dict)
     elif request.method == 'POST':
-        print(request.form)
         try:
             formula_name, \
             formula_description, \
@@ -1016,8 +1019,6 @@ def update_formula(formula_id):
     taste_recs = taste_repo.get_all_tastes()
     taste_subformula_dict, subformula_dict = subformula_manager.get_taste_subformula_dict()
     subformula_recs, subformula_counts = formula_manager.get_subformula_info_of_formula(formula_id)
-
-    print(subformula_counts)
 
     if request.method == 'GET':
         return render_scm_template('formula_update.html',
@@ -1188,10 +1189,7 @@ def __lazy_get_order_dtos(page, per_page, search_text):
         if product_cost_changed == True:
             order_dtos_need_cost_update.append(i)
     
-    print(checked_formula_ids_set)
-    print(formula_ids_set)
     for formula_id in formula_ids_set:
-        print('formula_id: ' + str(formula_id))
         new_cost = formula_director.estimate_formula_cost(formula_id)
 
     db.session.flush()
@@ -1223,7 +1221,8 @@ def __lazy_get_product_dtos(order_id):
 
     for product_dto in product_dtos:
         if product_dto.has_up_to_date_cost_estimation == False:
-            new_product_cost_estimation = product_ceo.estimate_product_cost(product_dto.product_id)            
+            new_product_cost_estimation = product_ceo.estimate_product_cost(product_dto.product_id)
+
             product_dto.product_cost_estimation = new_product_cost_estimation
             db_changed = True
     
@@ -1233,9 +1232,9 @@ def __lazy_get_product_dtos(order_id):
     return product_dtos
 
 @app.route('/order_details/<int:order_id>', methods=['GET', 'POST'])
-def order_details(order_id):
-    order_dto = order_manager.get_order_dto(order_id)
+def order_details(order_id):    
     product_dtos = __lazy_get_product_dtos(order_id)
+    order_dto = order_manager.get_order_dto(order_id)
 
     return render_scm_template('order_details.html',
                                order_dto=order_dto,

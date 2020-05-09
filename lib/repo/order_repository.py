@@ -108,3 +108,14 @@ class OrderRepository:
         order_rec.total_cost = new_total_cost
         order_rec.has_up_to_date_cost_estimation = True
         self.db.session.flush()
+
+        message = 'Update cost of order %s to %s' % (order_rec.id, new_total_cost)
+        OrderRepository.logger.info(message)
+
+    def set_flag_has_up_to_date_cost_estimation(self, order_id, flag):
+        order_rec = self.get_order(order_id)
+        order_rec.has_up_to_date_cost_estimation = flag
+        self.db.session.flush()
+
+        message = 'Set flag of order %s to %s' % (order_rec.id, flag)
+        OrderRepository.logger.info(message)

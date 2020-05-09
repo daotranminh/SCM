@@ -11,11 +11,19 @@ class MaterialManager:
                  material_repo,
                  material_version_repo,
                  material_subformula_repo,
-                 subformula_repo):
+                 subformula_repo,
+                 product_repo,
+                 order_repo,
+                 formula_subformula_repo,
+                 formula_repo):
         self.material_repo = material_repo
         self.material_version_repo = material_version_repo
         self.material_subformula_repo = material_subformula_repo
         self.subformula_repo = subformula_repo
+        self.product_repo = product_repo
+        self.order_repo = order_repo
+        self.formula_subformula_repo = formula_subformula_repo
+        self.formula_repo = formula_repo
 
     def get_material_dtos(self):
         materials = self.material_repo.get_all_materials()
@@ -68,7 +76,19 @@ class MaterialManager:
             self.material_version_repo.add_material_version(material_id, 
                                                             unit_price,
                                                             material_rec.latest_version)
-            
-            subformula_recs = self.material_subformula_repo.get_subformulas_having_material(material_rec.id)
-            for subformula_rec in subformula_recs:
-                self.subformula_repo.set_flag_has_up_to_date_cost_estimation_subformula_rec(subformula_rec, False)
+        self.__notify_subformula_about_price_change(material_rec.id)
+    
+    def __notify_subformula_about_price_change(self, material_id):            
+        subformula_recs = self.material_subformula_repo.get_subformulas_having_material(material_id)
+        for subformula_rec in subformula_recs:
+            self.subformula_repo.set_flag_has_up_to_date_cost_estimation_subformula_rec(subformula_rec, False)
+
+            formula_subformula_recs = self.formula_subformula_repo.get_formulas_of_subformula(subformula_rec.id)
+            for formula_subformula_rec in formula_subformula_recs:
+                self.formula_repo.set_flag_has_up_to_date_cost_estimation(formula_subformula_rec.formula_id, False)
+
+                product_recs = self.product_repo.get_products_having_formula(formula_subformula_rec.formula_id)
+                for product_rec in product_recs:
+                    self.product_repo.set_flag_has_up_to_date_cost_estimation_product_rec(product_rec, False)
+                    self.order_repo.set_flag_has_up_to_date_cost_estimation(product_rec.order_id, False)
+
