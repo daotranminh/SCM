@@ -11,10 +11,12 @@ class FormulaDirector:
     def __init__(self,
                  formula_repo,
                  formula_subformula_repo,
+                 product_repo,
                  formula_manager,
                  subformula_manager):
         self.formula_repo = formula_repo
         self.formula_subformula_repo = formula_subformula_repo
+        self.product_repo = product_repo
         self.formula_manager = formula_manager
         self.subformula_manager = subformula_manager
 
@@ -112,14 +114,21 @@ class FormulaDirector:
 
         for formula_subformula_rec in formula_subformula_recs:
             subformula_cost = self.subformula_manager.estimate_subformula_cost(
-                subformula_id=subformula_rec.subformula_id,
+                subformula_id=formula_subformula_rec.subformula_id,
                 update_parent_formula_cost=False)
             total_cost += subformula_cost * formula_subformula_rec.count
 
         formula_rec.total_cost = total_cost
         formula_rec.has_up_to_date_cost_estimation = True
 
+        self.__notify_parent_products_about_cost_estimation_changed(formula_id)
+
         return total_cost
+
+    def __notify_parent_products_about_cost_estimation_changed(self, formula_id):
+        parent_product_recs = self.product_repo.get_products_using_formula(formula_id)
+        for parent_product_rec in parent_product_recs:
+            parent_product_rec.has_up_to_date_cost_estimation = False
 
     def formula_cost_estimation_details(self, formula_id):
         formula_rec = self.formula_repo.get_formula(formula_id)

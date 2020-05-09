@@ -189,7 +189,7 @@ class SubFormulaManager:
                                               paginated_subformula_infos.pages)
         return paginated_subformula_dtos, db_changed
 
-    def estimate_subformula_cost(self, subformula_id, update_parent_formula_cost=True):
+    def estimate_subformula_cost(self, subformula_id):
         subformula_rec = self.subformula_repo.get_subformula(subformula_id)
 
         if subformula_rec.has_up_to_date_cost_estimation == True:
@@ -231,9 +231,7 @@ class SubFormulaManager:
         subformula_rec.total_cost = total_cost
         self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
         self.subformula_repo.set_flag_has_up_to_date_cost_estimation(subformula_id, True)
-
-        if update_parent_formula_cost:
-            self.__notify_parent_formula_about_cost_estimation_change(subformula_id)
+        self.__notify_parent_formula_about_cost_estimation_change(subformula_id)
             
         return total_cost
 
