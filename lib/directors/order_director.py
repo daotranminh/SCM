@@ -33,8 +33,6 @@ class OrderDirector:
                                                 delivery_appointment,
                                                 message)
 
-        print('new_order_id: ' + str(new_order_id))    
-
         order_cost = 0                                                
         for i in range(len(product_names)):
             print('formula_ids[i]: ' + str(formula_ids[i])) 
@@ -45,13 +43,9 @@ class OrderDirector:
                                                               decoration_form_ids[i],
                                                               decoration_technique_ids[i],
                                                               with_boxes[i])
-            print('new_product_id: ' + str(new_product_id)) 
             product_rec = self.product_repo.get_product(new_product_id)
-            print('order_cost: ' + str(order_cost)) 
             order_cost += product_rec.total_cost
-            print('order_cost: ' + str(order_cost)) 
         
-        order_rec = self.order_repo.get_order(new_order_id)
-        order_rec.total_cost = order_cost
+        self.order_repo(new_order_id, order_cost)
         
         return new_order_id
