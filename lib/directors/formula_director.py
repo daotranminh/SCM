@@ -101,8 +101,8 @@ class FormulaDirector:
         return paginated_formula_dtos, db_changed
 
     def estimate_formula_cost(self, formula_id):
-        formula_rec = self.get_formula(formula_id)
-        return estimate_formula_rec_cost(formula_id)
+        formula_rec = self.formula_repo.get_formula(formula_id)
+        return self.estimate_formula_rec_cost(formula_rec)
 
     def estimate_formula_rec_cost(self, formula_rec):
         if formula_rec.has_up_to_date_cost_estimation:
@@ -112,17 +112,18 @@ class FormulaDirector:
         total_cost = 0
 
         for formula_subformula_rec in formula_subformula_recs:
-            subformula_cost = self.subformula_manager.estimate_subformula_cost(
-                subformula_id=formula_subformula_rec.subformula_id,
-                update_parent_formula_cost=False)
+            subformula_cost = self.subformula_manager.estimate_subformula_cost(formula_subformula_rec.subformula_id)
             total_cost += subformula_cost * formula_subformula_rec.count
 
         self.formula_repo.update_cost_estimation_formula_rec(formula_rec, total_cost)
-        self.__notify_parent_products_about_cost_estimation_changed(formula_id)
+        self.__notify_parent_products_about_cost_estimation_changed(formula_rec.id)
 
         return total_cost
 
     def __notify_parent_products_about_cost_estimation_changed(self, formula_id):
+        message = 'Going to notify (not-yet-fixed) product having formula %s formula_id about cost estimation change' % (formula_id)
+        FormulaDirector.logger.info(message)
+
         parent_product_recs = self.product_repo.get_products_using_formula(formula_id)
         for parent_product_rec in parent_product_recs:
             self.product_repo.set_has_up_to_date_cost_estimation_flag_product_rec(parent_product_rec, False)
