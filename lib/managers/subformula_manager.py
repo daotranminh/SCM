@@ -62,6 +62,78 @@ class SubFormulaManager:
             material_dtos.append(material_dto)
             
         return subformula_rec, taste_rec, material_dtos
+
+    def get_cost_estimation(self, subformula_id):        
+        current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)
+        material_version_cost_estimations = \
+            self.material_version_cost_estimation_repo.get_material_version_cost_estimation_of_cost_estimation(current_cost_estimation.id)
+
+        material_cost_estimation_dtos = []
+        for material_version_cost_estimation, material_name in material_version_cost_estimations:
+            material_cost_estimation_dto = MaterialCostEstimationDto(material_version_cost_estimation.id,
+                                                                     material_version_cost_estimation.material_id,
+                                                                     material_version_cost_estimation.material_verion_id,
+                                                                     material_version_cost_estimation.cost_estimation_id,
+                                                                     material_version_cost_estimation.unit_amount,
+                                                                     material_version_cost_estimation.unit,
+                                                                     material_version_cost_estimation.unit_price,
+                                                                     material_version_cost_estimation.amount,
+                                                                     material_version_cost_estimation.cost,
+                                                                     material_name)
+            material_cost_estimation_dtos.append(material_cost_estimation_dto)
+
+        return current_cost_estimation, material_cost_estimation_dtos
+
+    def get_taste_subformula_dict(self):
+        taste_subformula_dict = {}
+        subformula_dict = {}
+
+        subformula_recs = self.subformula_repo.get_all_subformulas()
+        for subformula_rec in subformula_recs:
+            subformula_dict[subformula_rec.id] = subformula_rec.name
+            if subformula_rec.taste_id in taste_subformula_dict:
+                taste_subformula_dict[subformula_rec.taste_id].append(subformula_rec.id)
+            else:
+                taste_subformula_dict[subformula_rec.taste_id] = [subformula_rec.id]
+
+        return taste_subformula_dict, subformula_dict
+
+    def get_paginated_subformula_dtos(self,
+                                   taste_id,
+                                   page,
+                                   per_page,
+                                   search_text):
+        paginated_subformula_infos = self.subformula_repo.get_paginated_subformulas(
+            taste_id,
+            page,
+            per_page,
+            search_text)
+
+        subformula_dtos = []
+        db_changed = False
+        for subformula_rec, subformula_cost in paginated_subformula_infos.items:
+            up_to_date_subformula_cost = subformula_cost
+            if subformula_rec.has_up_to_date_cost_estimation == False:
+                up_to_date_subformula_cost = self.estimate_subformula_cost(subformula_rec.id)
+                db_changed = True
+
+            subformula_dto = SubFormulaDto(subformula_rec.id,
+                                     subformula_rec.name,
+                                     subformula_rec.subformula_type,
+                                     subformula_rec.description,
+                                     subformula_rec.note,
+                                     up_to_date_subformula_cost,
+                                     subformula_rec.registered_on)
+            subformula_dtos.append(subformula_dto)
+
+        paginated_subformula_dtos = PaginatedScm(subformula_dtos,
+                                              paginated_subformula_infos.has_prev,
+                                              paginated_subformula_infos.has_next,
+                                              paginated_subformula_infos.prev_num,
+                                              paginated_subformula_infos.next_num,
+                                              paginated_subformula_infos.page,
+                                              paginated_subformula_infos.pages)
+        return paginated_subformula_dtos, db_changed        
         
     def add_subformula(self,
                     subformula_name,
@@ -108,11 +180,11 @@ class SubFormulaManager:
 
         existing_material_subformula_recs = self.material_subformula_repo.get_materials_of_subformula(subformula_id)        
         if self.__materials_of_subformula_changed(existing_material_subformula_recs,
-                                               material_ids,
-                                               amounts):
+                                                  material_ids,
+                                                  amounts):
             message = 'Detected materials changed for subformula %s' % subformula_id
             SubFormulaManager.logger.info(message)
-            subformula_rec.has_up_to_date_cost_estimation = False
+            self.subformula_repo.set_flag_has_up_to_date_cost_estimation_subformula_rec(subformula_rec, False)
 
             message = 'Going to delete all existing material_subformula of subformula %s' % subformula_id
             SubFormulaManager.logger.info(message)
@@ -151,43 +223,6 @@ class SubFormulaManager:
                 return True
 
         return False
-
-    def get_paginated_subformula_dtos(self,
-                                   taste_id,
-                                   page,
-                                   per_page,
-                                   search_text):
-        paginated_subformula_infos = self.subformula_repo.get_paginated_subformulas(
-            taste_id,
-            page,
-            per_page,
-            search_text)
-
-        subformula_dtos = []
-        db_changed = False
-        for subformula_rec, subformula_cost in paginated_subformula_infos.items:
-            up_to_date_subformula_cost = subformula_cost
-            if subformula_rec.has_up_to_date_cost_estimation == False:
-                up_to_date_subformula_cost = self.estimate_subformula_cost(subformula_rec.id)
-                db_changed = True
-
-            subformula_dto = SubFormulaDto(subformula_rec.id,
-                                     subformula_rec.name,
-                                     subformula_rec.subformula_type,
-                                     subformula_rec.description,
-                                     subformula_rec.note,
-                                     up_to_date_subformula_cost,
-                                     subformula_rec.registered_on)
-            subformula_dtos.append(subformula_dto)
-
-        paginated_subformula_dtos = PaginatedScm(subformula_dtos,
-                                              paginated_subformula_infos.has_prev,
-                                              paginated_subformula_infos.has_next,
-                                              paginated_subformula_infos.prev_num,
-                                              paginated_subformula_infos.next_num,
-                                              paginated_subformula_infos.page,
-                                              paginated_subformula_infos.pages)
-        return paginated_subformula_dtos, db_changed
 
     def estimate_subformula_cost(self, subformula_id):
         subformula_rec = self.subformula_repo.get_subformula(subformula_id)
@@ -228,9 +263,8 @@ class SubFormulaManager:
         message = 'Total subformula cost = %s' % total_cost
         SubFormulaManager.logger.info(message)
 
-        subformula_rec.total_cost = total_cost
         self.cost_estimation_repo.update_total_cost(new_cost_estimation_id, total_cost)
-        self.subformula_repo.set_flag_has_up_to_date_cost_estimation(subformula_id, True)
+        self.subformula_repo.update_total_cost_subformula_rec(subformula_rec, total_cost)
         self.__notify_parent_formula_about_cost_estimation_change(subformula_id)
             
         return total_cost
@@ -275,38 +309,3 @@ class SubFormulaManager:
         parent_formula_recs = self.formula_subformula_repo.get_formulas_of_subformula(subformula_id)
         for parent_formula_rec in parent_formula_recs:
             parent_formula_rec.has_up_to_date_cost_estimation = False
-
-    def get_cost_estimation(self, subformula_id):        
-        current_cost_estimation = self.cost_estimation_repo.get_current_cost_estimation_of_subformula(subformula_id)
-        material_version_cost_estimations = \
-            self.material_version_cost_estimation_repo.get_material_version_cost_estimation_of_cost_estimation(current_cost_estimation.id)
-
-        material_cost_estimation_dtos = []
-        for material_version_cost_estimation, material_name in material_version_cost_estimations:
-            material_cost_estimation_dto = MaterialCostEstimationDto(material_version_cost_estimation.id,
-                                                                     material_version_cost_estimation.material_id,
-                                                                     material_version_cost_estimation.material_verion_id,
-                                                                     material_version_cost_estimation.cost_estimation_id,
-                                                                     material_version_cost_estimation.unit_amount,
-                                                                     material_version_cost_estimation.unit,
-                                                                     material_version_cost_estimation.unit_price,
-                                                                     material_version_cost_estimation.amount,
-                                                                     material_version_cost_estimation.cost,
-                                                                     material_name)
-            material_cost_estimation_dtos.append(material_cost_estimation_dto)
-
-        return current_cost_estimation, material_cost_estimation_dtos
-
-    def get_taste_subformula_dict(self):
-        taste_subformula_dict = {}
-        subformula_dict = {}
-
-        subformula_recs = self.subformula_repo.get_all_subformulas()
-        for subformula_rec in subformula_recs:
-            subformula_dict[subformula_rec.id] = subformula_rec.name
-            if subformula_rec.taste_id in taste_subformula_dict:
-                taste_subformula_dict[subformula_rec.taste_id].append(subformula_rec.id)
-            else:
-                taste_subformula_dict[subformula_rec.taste_id] = [subformula_rec.id]
-
-        return taste_subformula_dict, subformula_dict

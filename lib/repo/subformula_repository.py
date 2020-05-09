@@ -83,3 +83,8 @@ class SubFormulaRepository:
     def set_flag_has_up_to_date_cost_estimation_subformula_rec(self, subformula_rec, flag):        
         subformula_rec.has_up_to_date_cost_estimation = flag
         self.db.session.flush()
+
+    def update_total_cost_subformula_rec(self, subformula_rec, new_total_cost):
+        subformula_rec.total_cost = new_total_cost
+        subformula_rec.has_up_to_date_cost_estimation = True
+        self.db.session.flush()
