@@ -114,5 +114,4 @@ class ProductCEO:
     def estimate_product_cost(self, product_id):
         product_rec = self.product_repo.get_product(product_id)
         new_product_cost_estimation = self.formula_director.estimate_formula_cost(product_rec.formula_id)
-        product_rec.total_cost = new_product_cost_estimation
-        self.db.session.flush()
+        self.product_repo.update_cost_product_rec(product_rec, new_product_cost_estimation)
