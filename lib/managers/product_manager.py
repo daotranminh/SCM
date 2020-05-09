@@ -14,13 +14,15 @@ class ProductManager:
                  sample_image_path_repo,
                  cost_estimation_repo,
                  order_repo,
-                 product_cost_estimation_repo):
+                 product_cost_estimation_repo,
+                 formula_repo):
         self.product_repo = product_repo
         self.product_image_path_repo = product_image_path_repo
         self.sample_image_path_repo = sample_image_path_repo
         self.cost_estimation_repo = cost_estimation_repo
         self.order_repo = order_repo
         self.product_cost_estimation_repo = product_cost_estimation_repo
+        self.formula_repo = formula_repo
 
     def get_latest_groups_3_image_paths(self,
                                         product_recs):
@@ -126,63 +128,6 @@ class ProductManager:
             product_dtos.append(product_dto)
 
         return product_dtos
-
-    def update_product(self,
-                       product_id,
-                       product_name,
-                       decoration_form_id,
-                       decoration_technique_id,
-                       formula_id,
-                       box_status,
-                       box_returned_on,
-                       sample_images_group_id,
-                       product_image_path_recs,
-                       remaining_product_image_path_ids,
-                       uploaded_files):        
-        product_rec = self.product_repo.get_product(product_id)
-        if product_rec.formula_id != formula_id:
-            self.product_cost_estimation_repo.delete_cost_estimation_of_product(product_id)
-
-            cost_estimation_infos = self.cost_estimation_repo.get_cost_estimations_of_formula(formula_id)
-
-            total_product_cost = 0
-            for cost_estimation_rec, count in cost_estimation_infos:
-                self.product_cost_estimation_repo.add_product_cost_estimation(product_id, cost_estimation_rec.id)
-                total_product_cost += (cost_estimation_rec.total_cost * count)
-            
-            product_rec.total_cost = total_product_cost
-            product_rec.has_up_to_date_cost_estimation = True
-
-            message = 'Formula of product %s changed to %s. New total cost = %s' % (product_id, formula_id, total_product_cost)
-            ProductManager.logger.info(message)
-
-            self.update_order_cost(product_rec.order_id)
-
-        product_rec.name = product_name
-        product_rec.decoration_form_id = decoration_form_id
-        product_rec.decoration_technique_id = decoration_technique_id
-        product_rec.formula_id = formula_id
-        product_rec.box_status = box_status
-        product_rec.box_returned_on = box_returned_on
-        product_rec.sample_images_group_id = sample_images_group_id
-        
-        self.product_image_path_repo.update_product_image_paths(product_id,
-                                                                product_image_path_recs,
-                                                                remaining_product_image_path_ids,
-                                                                uploaded_files)
-
-    def update_order_cost(self, order_id):
-        sibling_products = self.product_repo.get_products_of_order(order_id)
-
-        order_cost = 0
-        for sibling_product in sibling_products:
-            if sibling_product.total_cost is not None:
-                order_cost += sibling_product.total_cost * sibling_product.amount
-
-        order_rec = self.order_repo.get_order(order_id)
-        order_rec.total_cost = order_cost
-        message = 'Cost of order %s updated to %s' % (order_rec.id, order_cost)
-        ProductManager.logger.info(message)
 
     def update_prices_to_customer(self, product_prices_to_customer):
         for key, value in product_prices_to_customer.items():

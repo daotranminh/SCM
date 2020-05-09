@@ -99,3 +99,12 @@ class OrderRepository:
             order_rec.is_fixed = True
 
         self.db.session.flush()
+
+    def update_cost(self, order_id, new_total_cost):
+        order_rec = self.get_order(order_id)
+        self.update_cost_order_rec(order_rec, new_total_cost)
+
+    def update_cost_order_rec(self, order_id, new_total_cost):
+        order_rec.total_cost = new_total_cost
+        order_rec.has_up_to_date_cost_estimation = True
+        self.db.session.flush()

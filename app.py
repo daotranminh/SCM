@@ -42,6 +42,8 @@ from lib.managers.sample_images_group_manager import SampleImagesGroupManager
 from lib.directors.formula_director import FormulaDirector
 from lib.directors.order_director import OrderDirector
 
+from lib.ceos.product_ceo import ProductCEO
+
 from utilities import scm_constants
 from utilities.scm_enums import OrderStatus, PaymentStatus
 from utilities.scm_exceptions import ScmException
@@ -102,19 +104,30 @@ product_manager = ProductManager(product_repo,
                                  sample_image_path_repo,
                                  cost_estimation_repo,
                                  order_repo,
-                                 product_cost_estimation_repo)
+                                 product_cost_estimation_repo,
+                                 formula_repo)
 
 ###################################################################################
 # DIRECTORS
 ###################################################################################
 formula_director = FormulaDirector(formula_repo,
                                    formula_subformula_repo,
+                                   product_repo,
                                    formula_manager,
                                    subformula_manager)
 
 order_director = OrderDirector(order_repo,
                                product_repo,
                                product_manager)
+
+###################################################################################
+# CEOS
+###################################################################################
+product_ceo = ProductCEO(product_repo,
+                         formula_repo,
+                         product_cost_estimation_repo,
+                         product_image_path_repo,
+                         formula_director)
 
 ####################################################################################
 # MENU
@@ -1680,17 +1693,17 @@ def update_product(product_id):
 
             uploaded_files = request.files.getlist('file[]')
 
-            product_manager.update_product(product_id,
-                                           current_product_name,
-                                           selected_decoration_form_id,
-                                           selected_decoration_technique_id,
-                                           selected_formula_id,
-                                           selected_box_status,
-                                           chosen_box_returned_on,
-                                           selected_sample_images_group_id,
-                                           product_image_path_recs,
-                                           remaining_product_image_path_ids,
-                                           uploaded_files)
+            product_ceo.update_product(product_id,
+                                       current_product_name,
+                                       selected_decoration_form_id,
+                                       selected_decoration_technique_id,
+                                       selected_formula_id,
+                                       selected_box_status,
+                                       chosen_box_returned_on,
+                                       selected_sample_images_group_id,
+                                       product_image_path_recs,
+                                       remaining_product_image_path_ids,
+                                       uploaded_files)
             db.session.commit()
 
             formula_recs = formula_repo.get_all_formulas()
