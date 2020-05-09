@@ -40,6 +40,7 @@ class SampleImagesGroupRepository:
         if sample_images_group_rec is not None:
             sample_images_group_rec.topic_id = topic_id
             sample_images_group_rec.name = sample_images_group_name
+            self.db.session.flush()
     
     def add_sample_images_group(self,
                                 topic_id,
@@ -61,6 +62,7 @@ class SampleImagesGroupRepository:
             sample_images_group_rec = self.get_sample_images_group(sample_images_group_id)
             if sample_images_group_rec is not None:
                 self.db.session.delete(sample_images_group_rec)
+                self.db.session.flush()
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to delete sample_images_group %s. Detail: %s' % (str(sample_images_group_id), str(ex))
             SampleImagesGroupRepository.logger.error(message)

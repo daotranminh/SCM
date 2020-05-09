@@ -35,7 +35,7 @@ class MaterialVersionRepository:
                                                    unit_price=unit_price,
                                                    version=version)
             self.db.session.add(material_version_rec)
-        
+            self.db.session.flush()
         except sqlalchemy.exc.SQLAlchemyError as e:
             message = 'Error: failed to add material version. Details: %s' % (str(e))
             MaterialVersionRepository.logger.error(message)

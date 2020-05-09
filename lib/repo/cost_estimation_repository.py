@@ -49,6 +49,7 @@ class CostEstimationRepository:
                           total_cost):
         cost_estimation_rec = self.get_cost_estimation(cost_estimation_id)
         cost_estimation_rec.total_cost = total_cost
+        self.db.session.flush()
 
         message = 'Set total_cost of cost_estimation_rec %s to %s' % (cost_estimation_id, total_cost)
         CostEstimationRepository.logger.info(message)

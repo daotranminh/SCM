@@ -31,3 +31,4 @@ class ProductCostEstimationRepository:
 
     def delete_cost_estimation_of_product(self, product_id):
         ProductCostEstimation.query.filter(ProductCostEstimation.product_id == product_id).delete()
+        self.db.session.flush()

@@ -44,7 +44,8 @@ class MaterialVersionCostEstimationRepository:
                 unit_price=unit_price,
                 amount=amount,
                 cost=cost)
-            self.db.session.add(material_version_cost_estimation_rec)        
+            self.db.session.add(material_version_cost_estimation_rec)
+            self.db.session.flush()
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add material_version_cost_estimation_rec. Details: %s' % (str(ex))
             MaterialVersionCostEstimationRepository.logger.error(message)

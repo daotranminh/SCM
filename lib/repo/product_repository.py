@@ -90,3 +90,6 @@ class ProductRepository:
             outerjoin(sample_images_group_query, Product.sample_images_group_id == sample_images_group_query.c.id)
             
         return product_dto_query.first()
+
+    def get_products_using_formula(self, formula_id):
+        return Product.query.filter(Product.formula_id == formula_id).all()

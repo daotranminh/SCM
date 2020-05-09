@@ -70,6 +70,7 @@ class MaterialSubFormulaRepository:
         MaterialSubFormula.query. \
             filter(MaterialSubFormula.subformula_id == subformula_id). \
             delete()
+        self.db.session.flush()
 
     def add_material_subformula(self,
                              subformula_id,
@@ -80,6 +81,7 @@ class MaterialSubFormulaRepository:
                                                    material_id=material_id,
                                                    amount=amount)
             self.db.session.add(material_subformula_rec)
+            self.db.session.flush()
         
         except sqlalchemy.exc.SQLAlchemyError as e:
             message = 'Error: failed to add material_subformula record. Details: %s' % (str(e))

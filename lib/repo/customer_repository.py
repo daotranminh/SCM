@@ -50,6 +50,8 @@ class CustomerRepository:
                                     recommended_by=recommended_by,
                                     note=note)
             self.db.session.add(customer_rec)
+            self.db.session.flush()
+            return customer_rec.id
         
         except sqlalchemy.exc.SQLAlchemyError as e:
             message = 'Error: failed to add customer. Details: %s' % (str(e))
@@ -75,3 +77,4 @@ class CustomerRepository:
         customer_rec.facebook = facebook
         customer_rec.recommended_by = recommended_by
         customer_rec.note = note
+        self.db.session.flush()

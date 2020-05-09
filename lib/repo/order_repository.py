@@ -97,3 +97,5 @@ class OrderRepository:
 
         if payment_status == int(PaymentStatus.FULLY_PAID):
             order_rec.is_fixed = True
+
+        self.db.session.flush()

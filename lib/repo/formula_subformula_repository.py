@@ -29,11 +29,13 @@ class FormulaSubFormulaRepository:
         FormulaSubFormula.query. \
             filter(FormulaSubFormula.id == formula_subformula_id). \
             delete()
+        self.db.session.flush()
 
     def delete_subformulas_of_formula(self, formula_id):
         FormulaSubFormula.query. \
             filter(FormulaSubFormula.formula_id == formula_id). \
             delete()
+        self.db.session.flush()
 
     def add_formula_subformula(self,
                                formula_id,
@@ -44,6 +46,7 @@ class FormulaSubFormulaRepository:
                                                        subformula_id=subformula_id,
                                                        count=subformula_count)
             self.db.session.add(formula_subformula_rec)
+            self.db.session.flush()
         
         except sqlalchemy.exc.SQLAlchemyError as e:
             message = 'Error: failed to add formula_subformula record. Details: %s' % (str(e))

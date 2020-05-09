@@ -39,3 +39,4 @@ class DecorationTechniqueRepository:
         decoration_technique_rec = self.get_decoration_technique(decoration_technique_id)
         decoration_technique_rec.name = name
         decoration_technique_rec.description = description
+        self.db.session.flush()

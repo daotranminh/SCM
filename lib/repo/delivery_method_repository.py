@@ -39,3 +39,4 @@ class DeliveryMethodRepository:
         delivery_method_rec = self.get_delivery_method(delivery_method_id)
         delivery_method_rec.name = name
         delivery_method_rec.description = description
+        self.db.session.flush()

@@ -51,3 +51,4 @@ class TopicRepository:
         topic_rec.name = name
         topic_rec.description = description
         topic_rec.parent_id = parent_id
+        self.db.session.flush()

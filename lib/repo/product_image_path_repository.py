@@ -54,6 +54,7 @@ class ProductImagePathRepository:
             product_image_path_rec = ProductImagePath(product_id=product_id,
                                                      file_path=file_path)
             self.db.session.add(product_image_path_rec)
+            delete_cost_estimation_of_product
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add product_image_path record. Detail: %s' % (str(ex))
             ProductImagePathRepository.logger.error(message)
@@ -64,6 +65,7 @@ class ProductImagePathRepository:
         product_image_path_recs = self.get_product_image_paths(product_id)
         for product_image_path_rec in product_image_path_recs:
             self.delete_product_image_path(product_image_path_rec)
+        delete_cost_estimation_of_product
         
     def delete_product_image_path(self, product_id):
         try:
@@ -88,8 +90,8 @@ class ProductImagePathRepository:
                     filepath_for_deleting = os.path.join('init', product_image_path_rec.file_path[1:])
                     os.remove(filepath_for_deleting)
 
-        self.add_product_image_paths(product_id,
-                                    uploaded_files)
+        self.add_product_image_paths(product_id, uploaded_files)
+        delete_cost_estimation_of_product
 
     def add_product_image_paths(self,
                                product_id,

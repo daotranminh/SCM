@@ -56,6 +56,7 @@ class SampleImagePathRepository:
             sample_image_path_rec = SampleImagePath(sample_images_group_id=sample_images_group_id,
                                                     file_path=file_path)
             self.db.session.add(sample_image_path_rec)
+            delete_cost_estimation_of_product
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add sample_image_path record. Detail: %s' % (str(ex))
             SampleImagePathRepository.logger.error(message)
@@ -74,6 +75,7 @@ class SampleImagePathRepository:
                 filepath_for_deleting = os.path.join('init', sample_image_path_rec.file_path[1:])                
                 self.db.session.delete(sample_image_path_rec)
                 os.remove(filepath_for_deleting)
+                self.db.session.flush()
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to delete sample_image_path %s. Detail: %s' % (str(sample_image_path_id), str(ex))
             SampleImagePathRepository.logger.error(message)
@@ -91,8 +93,8 @@ class SampleImagePathRepository:
                     filepath_for_deleting = os.path.join('init', sample_image_path_rec.file_path[1:])
                     os.remove(filepath_for_deleting)
 
-        self.add_sample_image_paths(sample_images_group_id,
-                                    uploaded_files)
+        self.add_sample_image_paths(sample_images_group_id, uploaded_files)
+        self.db.session.flush()
 
     def add_sample_image_paths(self,
                                sample_images_group_id,

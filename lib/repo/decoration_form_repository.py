@@ -39,3 +39,4 @@ class DecorationFormRepository:
         decoration_form_rec = self.get_decoration_form(decoration_form_id)
         decoration_form_rec.name = name
         decoration_form_rec.description = description
+        self.db.session.flush()
