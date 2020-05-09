@@ -48,3 +48,18 @@ class OrderChairman:
         self.order_repo.update_cost(new_order_id, order_cost)
         
         return new_order_id
+
+    def estimate_order_cost(self, order_id):
+        order_rec = self.order_repo.get_order(order_id)        
+        if order_rec.has_up_to_date_cost_estimation == True:
+            return order_rec.total_cost
+
+        product_recs = self.product_repo.get_products_of_order(order_id)
+        new_order_cost = 0
+        for product_rec in product_recs:
+            product_cost = self.product_ceo.estimate_product_cost(product_rec.id)
+            new_order_cost += product_cost * product_rec.amount
+
+        self.order_repo.update_cost(order_rec.id, new_order_cost)
+
+        return new_order_cost

@@ -50,7 +50,7 @@ class ProductCEO:
             total_product_cost += (cost_estimation_rec.total_cost * count)
             
         self.product_repo.update_cost_product_rec(product_rec, total_product_cost)
-        self.update_order_cost(order_id)
+        self.order_repo.set_flag_has_up_to_date_cost_estimation(order_id, False)
 
         return new_product_id
 
@@ -84,7 +84,7 @@ class ProductCEO:
             message = 'Formula of product %s changed to %s. New total cost = %s' % (product_id, formula_id, product_total_cost)
             ProductCEO.logger.info(message)
 
-            self.update_order_cost(product_rec.order_id)
+            self.order_repo.set_flag_has_up_to_date_cost_estimation(product_rec.order_id, False)
 
         self.product_repo.update_product(product_name,
                                          decoration_form_id,
@@ -99,18 +99,6 @@ class ProductCEO:
                                                                 remaining_product_image_path_ids,
                                                                 uploaded_files)
 
-    def update_order_cost(self, order_id):
-        sibling_products = self.product_repo.get_products_of_order(order_id)
-
-        order_cost = 0
-        for sibling_product in sibling_products:
-            if sibling_product.total_cost is not None:
-                order_cost += sibling_product.total_cost * sibling_product.amount
-        
-        self.order_repo.update_cost(order_id, order_cost)
-        message = 'Cost of order %s updated to %s' % (order_id, order_cost)
-        ProductCEO.logger.info(message)
-
     def estimate_product_cost(self, product_id):
         product_rec = self.product_repo.get_product(product_id)
         if product_rec.has_up_to_date_cost_estimation:
@@ -122,6 +110,6 @@ class ProductCEO:
         ProductCEO.logger.info(message)
 
         self.product_repo.update_cost_product_rec(product_rec, new_product_cost_estimation)
-        self.update_order_cost(product_rec.order_id)
+        self.order_repo.set_flag_has_up_to_date_cost_estimation(product_rec.order_id, False)
 
         return new_product_cost_estimation

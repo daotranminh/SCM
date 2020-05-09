@@ -37,6 +37,7 @@ class OrderManager:
                              payment_status_name,
                              order_rec.paid_on,
                              order_rec.total_cost,
+                             order_rec.has_up_to_date_cost_estimation,
                              order_rec.price_to_customer)
 
         return order_dto
@@ -63,6 +64,7 @@ class OrderManager:
                                  payment_status_name,
                                  order_rec.paid_on,
                                  order_rec.total_cost,
+                                 order_rec.has_up_to_date_cost_estimation,
                                  order_rec.price_to_customer)
             order_dtos.append(order_dto)
 

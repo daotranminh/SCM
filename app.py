@@ -1170,33 +1170,10 @@ def __lazy_get_order_dtos(page, per_page, search_text):
     formula_ids_set = set()
     order_dtos_need_cost_update = []
     for i in range(len(paginated_order_dtos.items)):
-        product_recs = product_repo.get_products_of_order(paginated_order_dtos.items[i].order_id)
-        product_cost_changed = False
-        
-        for product_rec in product_recs:
-            if product_rec.is_fixed == False and product_rec.formula_id is not None and product_rec.formula_id != -1:
-                if product_rec.formula_id not in checked_formula_ids_set:
-                    checked_formula_ids_set.add(product_rec.formula_id)
-                    formula_rec = formula_repo.get_formula(product_rec.formula_id)
-                    if formula_rec.has_up_to_date_cost_estimation == False:
-                        formula_ids_set.add(product_rec.formula_id)
-                        product_cost_changed = True
-                        db_changed = True
-                else:
-                    if product_rec.formula_id in formula_ids_set:
-                        product_cost_changed = True
-        
-        if product_cost_changed == True:
-            order_dtos_need_cost_update.append(i)
-    
-    for formula_id in formula_ids_set:
-        new_cost = formula_director.estimate_formula_cost(formula_id)
-
-    db.session.flush()
-
-    for i in order_dtos_need_cost_update:
-        order_rec = order_repo.get_order(paginated_order_dtos.items[i].order_id)
-        paginated_order_dtos.items[i].total_cost = order_rec.total_cost
+        if paginated_order_dtos.items[i].has_up_to_date_cost_estimation == False:
+            new_order_cost = order_chairman.estimate_order_cost(paginated_order_dtos.items[i].order_id)
+            paginated_order_dtos.items[i].total_cost = new_order_cost
+            db_changed = True
 
     return paginated_order_dtos, db_changed
 

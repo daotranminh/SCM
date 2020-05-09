@@ -114,6 +114,9 @@ class OrderRepository:
 
     def set_flag_has_up_to_date_cost_estimation(self, order_id, flag):
         order_rec = self.get_order(order_id)
+        self.set_flag_has_up_to_date_cost_estimation_order_rec(order_rec, flag)
+
+    def set_flag_has_up_to_date_cost_estimation_order_rec(self, order_rec, flag):
         order_rec.has_up_to_date_cost_estimation = flag
         self.db.session.flush()
 
