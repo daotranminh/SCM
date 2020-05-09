@@ -126,7 +126,7 @@ class FormulaDirector:
 
         parent_product_recs = self.product_repo.get_products_using_formula(formula_id)
         for parent_product_rec in parent_product_recs:
-            self.product_repo.set_has_up_to_date_cost_estimation_flag_product_rec(parent_product_rec, False)
+            self.product_repo.set_flag_has_up_to_date_cost_estimation_product_rec(parent_product_rec, False)
 
     def formula_cost_estimation_details(self, formula_id):
         formula_rec = self.formula_repo.get_formula(formula_id)
