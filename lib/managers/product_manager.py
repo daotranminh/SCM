@@ -41,7 +41,6 @@ class ProductManager:
         decoration_technique_name, \
         formula_id, \
         formula_name, \
-        formula_has_up_to_date_cost_estimation, \
         sample_images_group_id, \
         sample_images_group_name = self.product_repo.get_product_dto(product_id)
 
@@ -60,12 +59,12 @@ class ProductManager:
                                  decoration_technique_id,
                                  decoration_technique_name,
                                  formula_id,
-                                 formula_name,
-                                 formula_has_up_to_date_cost_estimation,
+                                 formula_name,                                 
                                  product_rec.price_to_customer,
                                  sample_images_group_id,
                                  sample_images_group_name, 
                                  product_rec.total_cost,
+                                 product_rec.has_up_to_date_cost_estimation,
                                  latest_3_sample_image_paths,
                                  latest_3_product_image_paths)
         return product_dto
@@ -80,36 +79,6 @@ class ProductManager:
 
         return product_dtos
         
-    def add_product(self,
-                    name,
-                    amount,
-                    order_id,
-                    formula_id,
-                    decoration_form_id,
-                    decoration_technique_id,
-                    with_box):
-        new_product_id = self.product_repo.add_product(name,
-                                                      amount,
-                                                      order_id,
-                                                      formula_id,
-                                                      decoration_form_id,
-                                                      decoration_technique_id,
-                                                      with_box)
-        
-        product_rec = self.product_repo.get_product(new_product_id)
-
-        cost_estimation_infos = self.cost_estimation_repo.get_cost_estimations_of_formula(formula_id)
-
-        total_product_cost = 0
-        for cost_estimation_rec, count in cost_estimation_infos:
-            self.product_cost_estimation_repo.add_product_cost_estimation(new_product_id, cost_estimation_rec.id)
-            total_product_cost += (cost_estimation_rec.total_cost * count)
-            
-        self.product_repo.update_cost_product_rec(product_rec, total_product_cost)
-        self.update_order_cost(order_id)
-
-        return new_product_id
-
     def delete_product(self,
                        product_id):
         product_rec = self.product_repo.get_product(product_id)        

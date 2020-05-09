@@ -28,7 +28,7 @@ class ProductRepository:
     def get_product_dto(self, product_id):
         decoration_form_query = self.db.session.query(DecorationForm.id, DecorationForm.name).subquery()
         decoration_technique_query = self.db.session.query(DecorationTechnique.id, DecorationTechnique.name).subquery()
-        formula_query = self.db.session.query(Formula.id, Formula.name, Formula.has_up_to_date_cost_estimation).subquery()
+        formula_query = self.db.session.query(Formula.id, Formula.name).subquery()
         sample_images_group_query = self.db.session.query(SampleImagesGroup.id, SampleImagesGroup.name).subquery()
         
         cost_estimation_query = self.db.session.query(CostEstimation.id, CostEstimation.total_cost). \
@@ -42,7 +42,6 @@ class ProductRepository:
                                                   decoration_technique_query.c.name, \
                                                   formula_query.c.id, \
                                                   formula_query.c.name, \
-                                                  formula_query.c.has_up_to_date_cost_estimation, \
                                                   sample_images_group_query.c.id, \
                                                   sample_images_group_query.c.name). \
             filter(Product.id == product_id). \

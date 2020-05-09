@@ -40,9 +40,10 @@ from lib.managers.product_manager import ProductManager
 from lib.managers.sample_images_group_manager import SampleImagesGroupManager
 
 from lib.directors.formula_director import FormulaDirector
-from lib.directors.order_director import OrderDirector
 
 from lib.ceos.product_ceo import ProductCEO
+
+from lib.chairmans.order_chairman import OrderChairman
 
 from utilities import scm_constants
 from utilities.scm_enums import OrderStatus, PaymentStatus
@@ -80,7 +81,8 @@ product_cost_estimation_repo = ProductCostEstimationRepository(db)
 ###################################################################################
 material_manager = MaterialManager(material_repo,
                                    material_version_repo,
-                                   material_subformula_repo)
+                                   material_subformula_repo,
+                                   subformula_repo)
 customer_manager = CustomerManager(customer_repo)
 topic_manager = TopicManager(topic_repo)
 subformula_manager = SubFormulaManager(subformula_repo,
@@ -116,10 +118,6 @@ formula_director = FormulaDirector(formula_repo,
                                    formula_manager,
                                    subformula_manager)
 
-order_director = OrderDirector(order_repo,
-                               product_repo,
-                               product_manager)
-
 ###################################################################################
 # CEOS
 ###################################################################################
@@ -127,7 +125,16 @@ product_ceo = ProductCEO(product_repo,
                          formula_repo,
                          product_cost_estimation_repo,
                          product_image_path_repo,
+                         cost_estimation_repo,
+                         order_repo,
                          formula_director)
+
+###################################################################################
+# CHAIRMANS
+###################################################################################
+order_chairman = OrderChairman(order_repo,
+                               product_repo,
+                               product_ceo)
 
 ####################################################################################
 # MENU
@@ -1125,7 +1132,7 @@ def add_order():
             decoration_technique_ids, \
             with_boxes = __extract_order_props(request.form)
 
-            new_order_id = order_director.add_order(customer_id,
+            new_order_id = order_chairman.add_order(customer_id,
                                                     ordered_on,
                                                     delivery_appointment,
                                                     delivery_method_id,
@@ -1214,8 +1221,8 @@ def __lazy_get_product_dtos(order_id):
     product_dtos = product_manager.get_product_dtos(order_id)
 
     for product_dto in product_dtos:
-        if product_dto.formula_has_up_to_date_cost_estimation == False:
-            new_product_cost_estimation = formula_director.estimate_formula_cost(product_dto.formula_id)
+        if product_dto.has_up_to_date_cost_estimation == False:
+            new_product_cost_estimation = product_ceo.estimate_product_cost(product_dto.product_id)            
             product_dto.product_cost_estimation = new_product_cost_estimation
             db_changed = True
     
@@ -1518,13 +1525,13 @@ def add_new_product_to_order(order_id):
     with_box = with_box_arg.upper() == 'TRUE'
 
     try:
-        product_manager.add_product(new_product_name,
-                                    product_amount,
-                                    order_id,
-                                    formula_id,
-                                    decoration_form_id,
-                                    decoration_technique_id,
-                                    with_box)
+        product_ceo.add_product(new_product_name,
+                                product_amount,
+                                order_id,
+                                formula_id,
+                                decoration_form_id,
+                                decoration_technique_id,
+                                with_box)
         db.session.commit()
     except ScmException as ex:
         db.session.rollback()
