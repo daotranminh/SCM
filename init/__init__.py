@@ -208,3 +208,40 @@ class ProductImagePath(db.Model):
     product_id = Column(Integer, ForeignKey(Product.id))
     file_path = Column(String(500))
     uploaded_on = Column(DateTime(), default=datetime.datetime.utcnow)
+
+class FixedFormula(db.Model):
+    __tablename__ = 'fixed_formula'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    product_id = Column(Integer, ForeignKey(Product.id))
+    original_formula_id = Column(Integer, ForeignKey(Formula.id))
+    name = Column(String(200))    
+    description = Column(String(400))
+    note = Column(String(10000))
+    total_cost = Column(Numeric(10, 2), default=0)
+    fixed_on = Column(DateTime(), default=datetime.datetime.utcnow)
+
+class FixedSubFormula(db.Model):
+    __tablename__ = 'fixed_subformula'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    fixed_formula_id = Column(Integer, ForeignKey(FixedFormula.id))
+    original_subformula_id = Column(Integer, ForeignKey(SubFormula.id))
+    taste_id = Column(Integer, ForeignKey(Taste.id))
+    subformula_type = Column(Integer)
+    name = Column(String(200))
+    description = Column(String(400))
+    note = Column(String(10000))
+    total_cost = Column(Numeric(10, 2))
+    fixed_on = Column(DateTime(), default=datetime.datetime.utcnow)
+
+class FixedMaterialSubFormula(db.Model):
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    fixed_subformula_id = Column(Integer, ForeignKey(FixedSubFormula.id))
+    material_id = Column(Integer, ForeignKey(Material.id))
+    material_version_id = Column(Integer, ForeignKey(MaterialVersion.id))
+    name = Column(String(200))
+    description = Column(String(400))
+    is_organic = Column(Boolean)
+    unit_amount = Column(Numeric(10, 2))
+    unit = Column(String(50))
+    unit_price = Column(Numeric(10, 2))
+    fixed_on = Column(DateTime(), default=datetime.datetime.utcnow)

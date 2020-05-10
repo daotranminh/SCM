@@ -29,6 +29,9 @@ from lib.repo.product_image_path_repository import ProductImagePathRepository
 from lib.repo.product_cost_estimation_repository import ProductCostEstimationRepository
 from lib.repo.sample_image_path_repository import SampleImagePathRepository
 from lib.repo.sample_images_group_repository import SampleImagesGroupRepository
+from lib.repo.fixed_formula_repository import FixedFormulaRepository
+from lib.repo.fixed_subformula_repository import FixedSubFormulaRepository
+from lib.repo.fixed_material_subformula_repository import FixedMaterialSubFormulaRepository
 
 from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
@@ -75,6 +78,9 @@ sample_images_group_repo = SampleImagesGroupRepository(db)
 product_repo = ProductRepository(db)
 product_image_path_repo = ProductImagePathRepository(db)
 product_cost_estimation_repo = ProductCostEstimationRepository(db)
+fixed_formula_repo = FixedFormulaRepository(db)
+fixed_subformula_repo = FixedSubFormulaRepository(db)
+fixed_material_subformula_repo = FixedMaterialSubFormulaRepository(db)
 
 ###################################################################################
 # MANAGERS
