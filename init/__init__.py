@@ -244,4 +244,6 @@ class FixedMaterialSubFormula(db.Model):
     unit_amount = Column(Numeric(10, 2))
     unit = Column(String(50))
     unit_price = Column(Numeric(10, 2))
+    amount = Column(Numeric(10, 2))
+    cost = Column(Numeric(10, 2))
     fixed_on = Column(DateTime(), default=datetime.datetime.utcnow)

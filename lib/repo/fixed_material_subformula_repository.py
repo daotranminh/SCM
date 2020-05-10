@@ -27,7 +27,9 @@ class FixedMaterialSubFormulaRepository:
                                       is_organic,
                                       unit_amount,
                                       unit,
-                                      unit_price):
+                                      unit_price,
+                                      amount,
+                                      cost):
         try:
             fixed_material_subformula_rec = FixedMaterialSubFormula(fixed_subformula_id=fixed_subformula_id,
                                                                     material_id=material_id,
@@ -37,7 +39,9 @@ class FixedMaterialSubFormulaRepository:
                                                                     is_organic=is_organic,
                                                                     unit_amount=unit_amount,
                                                                     unit=unit,
-                                                                    unit_price)
+                                                                    unit_price=unit_price,
+                                                                    amount=amount,
+                                                                    cost=cost)
             self.db.session.add(fixed_material_subformula_rec)
             self.db.session.flush()
         except sqlalchemy.exc.SQLAlchemyError as ex:

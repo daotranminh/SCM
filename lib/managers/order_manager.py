@@ -121,4 +121,4 @@ class OrderManager:
         if order_status == int(OrderStatus.DELIVERED):
             product_recs = self.product_repo.get_products_of_order(order_id)
             for product_rec in product_recs:
-                self.product_repo.set_product_rec_fixed_flag(product_rec)
+                self.product_manager.set_product_rec_fixed(product_rec)

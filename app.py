@@ -118,7 +118,13 @@ product_manager = ProductManager(product_repo,
                                  cost_estimation_repo,
                                  order_repo,
                                  product_cost_estimation_repo,
-                                 formula_repo)
+                                 formula_repo,
+                                 subformula_repo,
+                                 material_version_cost_estimation_repo,
+                                 material_repo,
+                                 fixed_formula_repo,
+                                 fixed_subformula_repo,
+                                 fixed_material_subformula_repo)
 
 ###################################################################################
 # DIRECTORS
