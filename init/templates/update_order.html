@@ -116,7 +116,7 @@
                   <td>{{product_dtos[i].sample_images_group_name}}</td>
                 {% endif %}
 
-                <td>{{product_dtos[i].product_cost_estimation}}</td>
+                <td><a href="{{ url_for('product_cost_estimation_details', product_id=product_dtos[i].product_id)}}">{{product_dtos[i].product_cost_estimation}}</a></td>
 
                 <td>{{product_dtos[i].product_amount}}</td>
                 {% if product_dtos[i].product_cost_estimation is not none %}

@@ -13,7 +13,7 @@ class FixedMaterialSubFormulaRepository:
     def __init__(self, db):
         self.db = db
 
-    def get_fixed_materials_of_subformula(self, fixed_subformula_id):
+    def get_fixed_materials_of_fixed_subformula(self, fixed_subformula_id):
         return FixedMaterialSubFormula.query. \
             filter(FixedMaterialSubFormula.fixed_subformula_id == fixed_subformula_id). \
             all()
@@ -46,5 +46,5 @@ class FixedMaterialSubFormulaRepository:
             self.db.session.flush()
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add fixed_material_subformula_rec. Details: %s' % (str(ex))
-            CostEstimationRepository.logger.error(message)
+            FixedMaterialSubFormulaRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_FIXED_MATERIAL_SUBFORMULA_FAILED, message)

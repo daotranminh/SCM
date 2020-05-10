@@ -226,14 +226,17 @@ class FixedSubFormula(db.Model):
     fixed_formula_id = Column(Integer, ForeignKey(FixedFormula.id))
     original_subformula_id = Column(Integer, ForeignKey(SubFormula.id))
     taste_id = Column(Integer, ForeignKey(Taste.id))
+    taste_name = Column(String(200))
     subformula_type = Column(Integer)
     name = Column(String(200))
     description = Column(String(400))
     note = Column(String(10000))
     total_cost = Column(Numeric(10, 2))
+    count = Column(Integer)
     fixed_on = Column(DateTime(), default=datetime.datetime.utcnow)
 
 class FixedMaterialSubFormula(db.Model):
+    __tablename__ = 'fixed_material_subformula'
     id = Column(Integer, autoincrement=True, primary_key=True)
     fixed_subformula_id = Column(Integer, ForeignKey(FixedSubFormula.id))
     material_id = Column(Integer, ForeignKey(Material.id))

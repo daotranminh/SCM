@@ -151,6 +151,7 @@ product_ceo = ProductCEO(product_repo,
 ###################################################################################
 order_chairman = OrderChairman(order_repo,
                                product_repo,
+                               product_manager,
                                product_ceo)
 
 ####################################################################################
@@ -1451,17 +1452,17 @@ def update_order(order_id):
             order_price_to_customer, product_prices_to_customer = __extract_product_prices_to_customer(request.form)
             product_manager.update_prices_to_customer(product_prices_to_customer)
 
-            order_manager.update_order(order_id,
-                                       customer_id,
-                                       delivery_appointment,
-                                       delivery_method_id,
-                                       ordered_on,
-                                       order_status,
-                                       delivered_on,
-                                       payment_status,
-                                       paid_on,
-                                       message,
-                                       order_price_to_customer)
+            order_chairman.update_order(order_id,
+                                        customer_id,
+                                        delivery_appointment,
+                                        delivery_method_id,
+                                        ordered_on,
+                                        order_status,
+                                        delivered_on,
+                                        payment_status,
+                                        paid_on,
+                                        message,
+                                        order_price_to_customer)
             db.session.commit()
             
             message = 'Successfully updated order %s' % order_id
@@ -1584,6 +1585,26 @@ def product_details(product_id):
     return render_scm_template('product_details.html',
                                 product_dto=product_dto,
                                 product_image_path_recs=product_image_path_recs)
+
+@app.route('/product_cost_estimantion_details/<int:product_id>', methods=['GET', 'POST'])
+def product_cost_estimation_details(product_id):
+    product_rec = product_repo.get_product(product_id)
+    if product_rec.is_fixed == False:
+        return redirect(url_for('formula_cost_estimation_details', formula_id=product_rec.formula_id))
+    else:
+        fixed_formula_rec, \
+        fixed_subformula_recs, \
+        fixed_material_subformula_recs, \
+        begin_fixed_material_subformula_recs, \
+        end_fixed_material_subformula_recs = product_manager.get_product_cost_estimation_details(product_id)
+
+        return render_scm_template('product_cost_estimation.html',
+                                   product_rec=product_rec,
+                                   fixed_formula_rec=fixed_formula_rec,
+                                   fixed_subformula_recs=fixed_subformula_recs,
+                                   fixed_material_subformula_recs=fixed_material_subformula_recs,
+                                   begin_fixed_material_subformula_recs=begin_fixed_material_subformula_recs,
+                                   end_fixed_material_subformula_recs=end_fixed_material_subformula_recs)
 
 def __extract_update_product_args(product_rec, args):
     current_product_name = args.get('product_name_arg')

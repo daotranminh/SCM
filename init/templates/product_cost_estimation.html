@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Cost estimation for product "{{ product_rec.name }}"</h1>
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>      
+      </tr>
+    </thead>
+    <tbody>        
+        <tr><td>Formula</td><td>{{ fixed_formula_rec.name }}</td></tr>
+        <tr><td>Fixed on</td><td>{{ fixed_formula_rec.fixed_on }}</td></tr>
+    </tbody>
+</table>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for i in range(fixed_subformula_recs|length) %}
+        <tr>
+            <td><b>{{fixed_subformula_recs[i].name}}</b> ({{fixed_subformula_recs[i].taste_name}}) x {{fixed_subformula_recs[i].count}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    
+        {% for j in range(begin_fixed_material_subformula_recs[i], end_fixed_material_subformula_recs[i]) %}
+        <tr>
+            <td>{{ fixed_material_subformula_recs[j].material_name }}</td>
+            <td>{{ fixed_material_subformula_recs[j].amount }}</td>
+            <td>{{ fixed_material_subformula_recs[j].unit_price }} / {{ fixed_material_subformula_recs[j].unit_amount }} {{ fixed_material_subformula_recs[j].unit }}</td>
+            <td>{{ fixed_material_subformula_recs[j].cost }}</td> 
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>Subformula total</td>
+            <td></td>
+            <td></td>
+            <td>{{ fixed_subformula_recs[i].total_cost }} x {{fixed_subformula_recs[i].count}}</td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td><b>Prodduct total cost</b></td>
+        <td></td>
+        <td></td>
+        <td><b>{{ product_rec.total_cost }}</b></td>
+    </tr>
+    </tbody>
+</table>
+
+{% endblock %}

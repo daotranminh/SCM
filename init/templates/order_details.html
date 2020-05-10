@@ -61,7 +61,7 @@
         <td>{{product_dto.sample_images_group_name}}</td>
       {% endif %}
 
-      <td>{{product_dto.product_cost_estimation}}</td>
+      <td><a href="{{ url_for('product_cost_estimation_details', product_id=product_dto.product_id)}}">{{product_dto.product_cost_estimation}}</a></td>
       <td>{{product_dto.product_amount}}</td>
       
       {% if product_dto.product_cost_estimation is not none %}

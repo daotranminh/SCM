@@ -119,7 +119,7 @@ class ProductRepository:
         ProductRepository.logger.info(message)
 
     def set_product_rec_fixed_flag(self, product_rec, flag=True):
-        product_rec = flag
+        product_rec.is_fixed = flag
         self.db.session.flush()
 
         message = 'Set fixed flag of product %s to %s' % (product_rec.id, flag)

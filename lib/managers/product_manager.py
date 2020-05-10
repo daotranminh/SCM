@@ -92,9 +92,24 @@ class ProductManager:
         return product_dtos
 
     def get_product_cost_estimation_details(self, product_id):
-        cost_estimation_recs = self.cost_estimation_repo.get_cost_estimations_of_product(product_id)
+        fixed_formula_rec = self.fixed_formula_repo.get_fixed_formula_of_product(product_id)
+        fixed_subformula_recs = self.fixed_subformula_repo.get_fixed_subformulas_of_fixed_formula(fixed_formula_rec.id)
 
-        #for cost_estimation_rec in cost_estimation_recs:
+        fixed_material_subformula_recs = []
+        begin_fixed_material_subformula_recs = []
+        end_fixed_material_subformula_recs = []
+
+        for fixed_subformula_rec in fixed_subformula_recs:
+            fixed_material_subformula_recs1 = self.fixed_material_subformula_repo.get_fixed_materials_of_fixed_subformula(fixed_subformula_recs.id)
+            begin_fixed_material_subformula_recs.append(len(fixed_material_subformula_recs))
+            fixed_material_subformula_recs += fixed_material_subformula_recs1
+            end_fixed_material_subformula_recs.append(len(fixed_material_subformula_recs))
+
+        return fixed_formula_rec, \
+            fixed_subformula_recs, \
+            fixed_material_subformula_recs, \
+            begin_fixed_material_subformula_recs, \
+            end_fixed_material_subformula_recs
         
     def delete_product(self, product_id):
         product_rec = self.product_repo.get_product(product_id)        
@@ -132,16 +147,18 @@ class ProductManager:
         message = 'Add fixed_formula %s from formula %s' % (new_fixed_formula_id, formula_rec.id)
         ProductManager.logger.info(message)
 
-        subformula_recs = self.subformula_repo.get_subformulas_of_formula(formula_rec.id)
-        for subformula_rec in subformula_recs:
-            new_fixed_subformula_id = self.fixed_subformula_repo.add_fixed_subformula(fixed_formula_id=formula_rec.id,
+        subformula_dtos = self.formula_repo.get_subformula_dtos_of_formula(formula_rec.id)
+        for subformula_rec, taste_name, count in subformula_dtos:
+            new_fixed_subformula_id = self.fixed_subformula_repo.add_fixed_subformula(fixed_formula_id=new_fixed_formula_id,
                                                                                       original_subformula_id=subformula_rec.id,
                                                                                       taste_id=subformula_rec.taste_id,
+                                                                                      taste_name=taste_name,
                                                                                       subformula_type=subformula_rec.subformula_type,
                                                                                       name=subformula_rec.name,
                                                                                       description=subformula_rec.description,
                                                                                       note=subformula_rec.note,
-                                                                                      total_cost=subformula_rec.total_cost)
+                                                                                      total_cost=subformula_rec.total_cost,
+                                                                                      count=count)
             message = 'Add fixed_subformula %s from subformula %s' % (new_fixed_subformula_id, subformula_rec.id)
             ProductManager.logger.info(message)
 
@@ -151,13 +168,13 @@ class ProductManager:
             material_version_cost_estimation_recs = \
                 self.material_version_cost_estimation_repo.get_material_version_cost_estimation_of_cost_estimation(current_cost_estimation_rec.id)
 
-            for material_version_cost_estimation_rec in material_version_cost_estimation_recs:
+            for material_version_cost_estimation_rec, material_name in material_version_cost_estimation_recs:
                 material_rec = self.material_repo.get_material(material_version_cost_estimation_rec.material_id)
                 new_fixed_material_subformula_id = \
                     self.fixed_material_subformula_repo.add_fixed_material_subformula(fixed_subformula_id=new_fixed_subformula_id,
                                                                                       material_id=material_rec.id,
                                                                                       material_version_id=material_version_cost_estimation_rec.material_verion_id,
-                                                                                      name=material_rec.name,
+                                                                                      name=material_name,
                                                                                       description=material_rec.description,
                                                                                       is_organic=material_rec.is_organic,
                                                                                       unit_amount=material_version_cost_estimation_rec.unit_amount,
@@ -166,7 +183,7 @@ class ProductManager:
                                                                                       amount=material_version_cost_estimation_rec.amount,
                                                                                       cost=material_version_cost_estimation_rec.cost)
                 message = 'Add fixed_material_subformula %s from material %s (%s) and material_version %s' % (new_fixed_material_subformula_id,
-                                                                                                              material_rec.name,
-                                                                                                              material_rec.id,
-                                                                                                              material_version_cost_estimation_rec.material_version_id)
+                                                                                                              material_name,
+                                                                                                              material_version_cost_estimation_rec.material_id,
+                                                                                                              material_version_cost_estimation_rec.material_verion_id)
                 ProductManager.logger.info(message)

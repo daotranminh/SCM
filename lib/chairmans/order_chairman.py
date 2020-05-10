@@ -3,16 +3,19 @@ import logging
 from init import config
 from dto.paginated_scm import PaginatedScm
 from utilities.scm_logger import ScmLogger
+from utilities.scm_enums import ErrorCodes, OrderStatus
 
 class OrderChairman:
     logger = ScmLogger(__name__)
 
     def __init__(self,
-                 order_repo,
+                 order_repo,                 
                  product_repo,
+                 product_manager,
                  product_ceo):
         self.order_repo = order_repo
         self.product_repo = product_repo
+        self.product_manager = product_manager
         self.product_ceo = product_ceo
 
     def add_order(self,
@@ -63,3 +66,31 @@ class OrderChairman:
         self.order_repo.update_cost(order_rec.id, new_order_cost)
 
         return new_order_cost
+
+    def update_order(self,
+                     order_id,
+                     customer_id,
+                     delivery_appointment,
+                     delivery_method_id,
+                     ordered_on,
+                     order_status,
+                     delivered_on,
+                     payment_status,
+                     paid_on,
+                     message,
+                     price_to_customer):
+        self.order_repo.update_order(order_id,
+                                     customer_id,
+                                     delivery_appointment,
+                                     delivery_method_id,
+                                     ordered_on,
+                                     order_status,
+                                     delivered_on,
+                                     payment_status,
+                                     paid_on,
+                                     message,
+                                     price_to_customer)
+        if order_status == int(OrderStatus.DELIVERED):
+            product_recs = self.product_repo.get_products_of_order(order_id)
+            for product_rec in product_recs:
+                self.product_manager.set_product_rec_fixed(product_rec)
