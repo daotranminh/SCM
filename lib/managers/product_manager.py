@@ -173,7 +173,7 @@ class ProductManager:
                 new_fixed_material_subformula_id = \
                     self.fixed_material_subformula_repo.add_fixed_material_subformula(fixed_subformula_id=new_fixed_subformula_id,
                                                                                       material_id=material_rec.id,
-                                                                                      material_version_id=material_version_cost_estimation_rec.material_verion_id,
+                                                                                      material_version_id=material_version_cost_estimation_rec.material_version_id,
                                                                                       name=material_name,
                                                                                       description=material_rec.description,
                                                                                       is_organic=material_rec.is_organic,
@@ -185,5 +185,5 @@ class ProductManager:
                 message = 'Add fixed_material_subformula %s from material %s (%s) and material_version %s' % (new_fixed_material_subformula_id,
                                                                                                               material_name,
                                                                                                               material_version_cost_estimation_rec.material_id,
-                                                                                                              material_version_cost_estimation_rec.material_verion_id)
+                                                                                                              material_version_cost_estimation_rec.material_version_id)
                 ProductManager.logger.info(message)

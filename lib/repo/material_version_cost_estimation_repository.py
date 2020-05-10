@@ -27,7 +27,7 @@ class MaterialVersionCostEstimationRepository:
 
     def add_material_version_cost_estimation(self,
                                              material_id,
-                                             material_verion_id,
+                                             material_version_id,
                                              cost_estimation_id,
                                              unit_amount,
                                              unit,
@@ -37,7 +37,7 @@ class MaterialVersionCostEstimationRepository:
         try:
             material_version_cost_estimation_rec = MaterialVersionCostEstimation(
                 material_id=material_id,
-                material_verion_id=material_verion_id,
+                material_version_id=material_version_id,
                 cost_estimation_id=cost_estimation_id,
                 unit_amount=unit_amount,
                 unit=unit,

@@ -13,7 +13,7 @@ class MaterialCostEstimationDto:
     def __init__(self,
                  material_version_cost_estimation_id,
                  material_id,
-                 material_verion_id,
+                 material_version_id,
                  cost_estimation_id,
                  unit_amount,
                  unit,
@@ -23,7 +23,7 @@ class MaterialCostEstimationDto:
                  material_name):
         self.material_version_cost_estimation_id = material_version_cost_estimation_id
         self.material_id = material_id
-        self.material_verion_id = material_verion_id
+        self.material_version_id = material_version_id
         self.cost_estimation_id = cost_estimation_id
         self.unit_amount = unit_amount
         self.unit = unit

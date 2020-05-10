@@ -74,7 +74,7 @@ class SubFormulaManager:
         for material_version_cost_estimation, material_name in material_version_cost_estimations:
             material_cost_estimation_dto = MaterialCostEstimationDto(material_version_cost_estimation.id,
                                                                      material_version_cost_estimation.material_id,
-                                                                     material_version_cost_estimation.material_verion_id,
+                                                                     material_version_cost_estimation.material_version_id,
                                                                      material_version_cost_estimation.cost_estimation_id,
                                                                      material_version_cost_estimation.unit_amount,
                                                                      material_version_cost_estimation.unit,
