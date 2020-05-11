@@ -99,7 +99,7 @@ class MaterialVersionCostEstimation(db.Model):
     __tablename__ = 'material_version_cost_estimation'
     id = Column(Integer, autoincrement=True, primary_key=True)
     material_id = Column(Integer, ForeignKey(Material.id))
-    material_verion_id = Column(Integer, ForeignKey(MaterialVersion.id))
+    material_version_id = Column(Integer, ForeignKey(MaterialVersion.id))
     cost_estimation_id = Column(Integer, ForeignKey(CostEstimation.id))
     unit_amount = Column(Numeric(10, 2))
     unit = Column(String(50))
