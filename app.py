@@ -1712,6 +1712,7 @@ def update_product(product_id):
 
             product_ceo.update_product(product_id,
                                        current_product_name,
+                                       product_amount,
                                        selected_decoration_form_id,
                                        selected_decoration_technique_id,
                                        selected_formula_id,

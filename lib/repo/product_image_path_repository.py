@@ -91,7 +91,6 @@ class ProductImagePathRepository:
                     os.remove(filepath_for_deleting)
 
         self.add_product_image_paths(product_id, uploaded_files)
-        delete_cost_estimation_of_product
 
     def add_product_image_paths(self,
                                product_id,

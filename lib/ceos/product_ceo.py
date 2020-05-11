@@ -57,6 +57,7 @@ class ProductCEO:
     def update_product(self,
                        product_id,
                        product_name,
+                       product_amount,
                        decoration_form_id,
                        decoration_technique_id,
                        formula_id,
@@ -86,13 +87,20 @@ class ProductCEO:
 
             self.order_repo.set_flag_has_up_to_date_cost_estimation(product_rec.order_id, False)
 
-        self.product_repo.update_product(product_name,
-                                         decoration_form_id,
-                                         decoration_technique_id,
-                                         formula_id,
-                                         box_status,
-                                         box_returned_on,
-                                         sample_images_group_id)
+        if product_rec.amount != product_amount:
+            message = 'Amount of product %s changed to %s' % (product_id, product_amount)
+            ProductCEO.logger.info(message)
+            self.order_repo.set_flag_has_up_to_date_cost_estimation(product_rec.order_id, False)
+
+        self.product_repo.update_product_rec(product_rec,
+                                             product_name,
+                                             product_amount,
+                                             decoration_form_id,
+                                             decoration_technique_id,
+                                             formula_id,
+                                             box_status,
+                                             box_returned_on,
+                                             sample_images_group_id)
         
         self.product_image_path_repo.update_product_image_paths(product_id,
                                                                 product_image_path_recs,

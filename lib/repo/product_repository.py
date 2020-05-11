@@ -83,15 +83,39 @@ class ProductRepository:
             ProductRepository.logger.error(message)
             raise ScmException(ErrorCodes.ERROR_ADD_PRODUCT_FAILED, message)
 
-    def update_product(self, 
+    def update_product(self,
+                       product_id,
                        product_name,
+                       product_amount,
                        decoration_form_id,
                        decoration_technique_id,
                        formula_id,
                        box_status,
                        box_returned_on,
                        sample_images_group_id):
+        product_rec = self.get_product(product_id)
+        self.update_product_rec(product_rec,
+                                product_name,
+                                product_amount,
+                                decoration_form_id,
+                                decoration_technique_id,
+                                formula_id,
+                                box_status,
+                                box_returned_on,
+                                sample_images_group_id)
+
+    def update_product_rec(self, 
+                           product_rec,
+                           product_name,
+                           product_amount,
+                           decoration_form_id,
+                           decoration_technique_id,
+                           formula_id,
+                           box_status,
+                           box_returned_on,
+                           sample_images_group_id):        
         product_rec.name = product_name
+        product_rec.amount = product_amount
         product_rec.decoration_form_id = decoration_form_id
         product_rec.decoration_technique_id = decoration_technique_id
         product_rec.formula_id = formula_id
