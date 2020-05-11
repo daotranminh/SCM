@@ -46,7 +46,7 @@ class OrderChairman:
                                                           decoration_technique_ids[i],
                                                           with_boxes[i])
             product_rec = self.product_repo.get_product(new_product_id)
-            order_cost += product_rec.total_cost
+            order_cost += product_rec.total_cost * product_rec.amount
         
         self.order_repo.update_cost(new_order_id, order_cost)
         
