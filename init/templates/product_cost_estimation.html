@@ -37,7 +37,7 @@
     
         {% for j in range(begin_fixed_material_subformula_recs[i], end_fixed_material_subformula_recs[i]) %}
         <tr>
-            <td>{{ fixed_material_subformula_recs[j].material_name }}</td>
+            <td>{{ fixed_material_subformula_recs[j].name }}</td>
             <td>{{ fixed_material_subformula_recs[j].amount }}</td>
             <td>{{ fixed_material_subformula_recs[j].unit_price }} / {{ fixed_material_subformula_recs[j].unit_amount }} {{ fixed_material_subformula_recs[j].unit }}</td>
             <td>{{ fixed_material_subformula_recs[j].cost }}</td> 
