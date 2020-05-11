@@ -100,7 +100,7 @@ class ProductManager:
         end_fixed_material_subformula_recs = []
 
         for fixed_subformula_rec in fixed_subformula_recs:
-            fixed_material_subformula_recs1 = self.fixed_material_subformula_repo.get_fixed_materials_of_fixed_subformula(fixed_subformula_recs.id)
+            fixed_material_subformula_recs1 = self.fixed_material_subformula_repo.get_fixed_materials_of_fixed_subformula(fixed_subformula_rec.id)
             begin_fixed_material_subformula_recs.append(len(fixed_material_subformula_recs))
             fixed_material_subformula_recs += fixed_material_subformula_recs1
             end_fixed_material_subformula_recs.append(len(fixed_material_subformula_recs))
