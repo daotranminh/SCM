@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 
 from init import app, db, config
 
+from lib.repo.box_repository import BoxRepository
 from lib.repo.delivery_method_repository import DeliveryMethodRepository
 from lib.repo.decoration_form_repository import DecorationFormRepository
 from lib.repo.decoration_technique_repository import DecorationTechniqueRepository
@@ -34,6 +35,7 @@ from lib.repo.fixed_formula_repository import FixedFormulaRepository
 from lib.repo.fixed_subformula_repository import FixedSubFormulaRepository
 from lib.repo.fixed_material_subformula_repository import FixedMaterialSubFormulaRepository
 
+from lib.managers.box_manager import BoxManager
 from lib.managers.material_manager import MaterialManager
 from lib.managers.customer_manager import CustomerManager
 from lib.managers.topic_manager import TopicManager
@@ -84,6 +86,7 @@ fixed_formula_repo = FixedFormulaRepository(db)
 fixed_subformula_repo = FixedSubFormulaRepository(db)
 fixed_material_subformula_repo = FixedMaterialSubFormulaRepository(db)
 plate_repo = PlateRepository(db)
+box_repo = BoxRepository(db)
 
 ###################################################################################
 # MANAGERS
@@ -131,6 +134,9 @@ product_manager = ProductManager(product_repo,
 plate_manager = PlateManager(plate_repo,
                              product_repo,
                              order_repo)
+box_manager = BoxManager(box_repo,
+                         product_repo,
+                         order_repo)
 
 ###################################################################################
 # DIRECTORS
@@ -173,7 +179,8 @@ def menu_setup():
         ['list_decoration_forms', 'List of decoration forms'],
         ['list_decoration_techniques', 'List of decoration techniques'],        
         ['list_tastes', 'List of tastes'],
-        ['list_plates', 'List of plates']
+        ['list_plates', 'List of plates'],
+        ['list_boxes', 'List of boxes']
     ]
 
     business_funcs = [
@@ -426,11 +433,11 @@ def update_plate(plate_id):
             unit_count = int(request.form['unit_count'])
             unit_price = Decimal(request.form['unit_price'])
             
-            plate_repo.update_plate_rec(plate_rec,
-                                        name,
-                                        description,
-                                        unit_count,
-                                        unit_price)
+            plate_manager.update_plate_rec(plate_rec,
+                                           name,
+                                           description,
+                                           unit_count,
+                                           unit_price)
             db.session.commit()
             
             message = 'Successfully updated plate %s (%s)' % (name, plate_id)
@@ -453,6 +460,83 @@ def update_plate(plate_id):
 def list_plates():
     plate_recs = plate_repo.get_all_plates()
     return render_scm_template('plate_list.html', plate_recs=plate_recs)
+
+####################################################################################
+# BOXES
+####################################################################################
+@app.route('/add_box', methods=['GET', 'POST'])
+def add_box():
+    if request.method == 'POST':
+        try:
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
+            unit_count = int(request.form['unit_count'])
+            unit_price = Decimal(request.form['unit_price'])
+            
+            box_repo.add_box(name=name,
+                             description=description,
+                             unit_count=unit_count,
+                             unit_price=unit_price)
+            db.session.commit()
+
+            message = 'Successfully added box %s' % name
+            logger.info(message)
+            
+            return redirect_with_message(url_for('list_boxes'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            message = 'Failed to add box %s' % name
+            flash(message, 'danger')
+            return render_scm_template('name_description_cost.html',
+                                        site_title='Add a new box')
+    else:
+        return render_scm_template('name_description_cost.html',
+                                    site_title='Add a box')
+
+@app.route('/update_box/<int:box_id>', methods=['GET', 'POST'])
+def update_box(box_id):
+    box_rec = box_repo.get_box(box_id)
+    if request.method == 'GET':
+        return render_scm_template('name_description_cost.html',
+                                    site_title='Update box',
+                                    old_name=box_rec.name,
+                                    old_description=box_rec.description,
+                                    old_unit_count=box_rec.unit_count,
+                                    old_unit_price=box_rec.unit_price)
+    elif request.method == 'POST':
+        try:
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
+            unit_count = int(request.form['unit_count'])
+            unit_price = Decimal(request.form['unit_price'])
+            
+            box_manager.update_box_rec(box_rec,
+                                       name,
+                                       description,
+                                       unit_count,
+                                       unit_price)
+            db.session.commit()
+            
+            message = 'Successfully updated box %s (%s)' % (name, box_id)
+            logger.info(message)
+
+            return redirect_with_message(url_for('list_boxes'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('name_description_cost.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    site_title='Update box',
+                                                    old_name=box_rec.name,
+                                                    old_description=box_rec.description,
+                                                    old_unit_count=box_rec.unit_count,
+                                                    old_unit_price=box_rec.old_unit_price)
+
+@app.route('/list_boxes', methods=['GET', 'POST'])
+def list_boxes():
+    box_recs = box_repo.get_all_boxes()
+    return render_scm_template('box_list.html', box_recs=box_recs)
 
 ####################################################################################
 # DECORATION FORMS
