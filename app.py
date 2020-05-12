@@ -24,6 +24,7 @@ from lib.repo.subformula_repository import SubFormulaRepository
 from lib.repo.formula_repository import FormulaRepository
 from lib.repo.formula_subformula_repository import FormulaSubFormulaRepository
 from lib.repo.order_repository import OrderRepository
+from lib.repo.plate_repository import PlateRepository
 from lib.repo.product_repository import ProductRepository
 from lib.repo.product_image_path_repository import ProductImagePathRepository
 from lib.repo.product_cost_estimation_repository import ProductCostEstimationRepository
@@ -39,6 +40,7 @@ from lib.managers.topic_manager import TopicManager
 from lib.managers.subformula_manager import SubFormulaManager
 from lib.managers.formula_manager import FormulaManager
 from lib.managers.order_manager import OrderManager
+from lib.managers.plate_manager import PlateManager
 from lib.managers.product_manager import ProductManager
 from lib.managers.sample_images_group_manager import SampleImagesGroupManager
 
@@ -81,6 +83,7 @@ product_cost_estimation_repo = ProductCostEstimationRepository(db)
 fixed_formula_repo = FixedFormulaRepository(db)
 fixed_subformula_repo = FixedSubFormulaRepository(db)
 fixed_material_subformula_repo = FixedMaterialSubFormulaRepository(db)
+plate_repo = PlateRepository(db)
 
 ###################################################################################
 # MANAGERS
@@ -125,6 +128,9 @@ product_manager = ProductManager(product_repo,
                                  fixed_formula_repo,
                                  fixed_subformula_repo,
                                  fixed_material_subformula_repo)
+plate_manager = PlateManager(plate_repo,
+                             product_repo,
+                             order_repo)
 
 ###################################################################################
 # DIRECTORS
@@ -132,6 +138,7 @@ product_manager = ProductManager(product_repo,
 formula_director = FormulaDirector(formula_repo,
                                    formula_subformula_repo,
                                    product_repo,
+                                   order_repo,
                                    formula_manager,
                                    subformula_manager)
 
@@ -165,7 +172,8 @@ def menu_setup():
         ['list_formulas', 'List of formulas'],
         ['list_decoration_forms', 'List of decoration forms'],
         ['list_decoration_techniques', 'List of decoration techniques'],        
-        ['list_tastes', 'List of tastes']
+        ['list_tastes', 'List of tastes'],
+        ['list_plates', 'List of plates']
     ]
 
     business_funcs = [
@@ -368,6 +376,83 @@ def update_topic(topic_id):
 def list_topics():
     topic_dtos = topic_manager.get_topic_dtos()
     return render_scm_template('list_topics.html', topic_dtos=topic_dtos)
+
+####################################################################################
+# PLATES
+####################################################################################
+@app.route('/add_plate', methods=['GET', 'POST'])
+def add_plate():
+    if request.method == 'POST':
+        try:
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
+            unit_count = int(request.form['unit_count'])
+            unit_price = Decimal(request.form['unit_price'])
+            
+            plate_repo.add_plate(name=name,
+                                 description=description,
+                                 unit_count=unit_count,
+                                 unit_price=unit_price)
+            db.session.commit()
+
+            message = 'Successfully added plate %s' % name
+            logger.info(message)
+            
+            return redirect_with_message(url_for('list_plates'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            message = 'Failed to add plate %s' % name
+            flash(message, 'danger')
+            return render_scm_template('name_description_cost.html',
+                                        site_title='Add a new plate')
+    else:
+        return render_scm_template('name_description_cost.html',
+                                    site_title='Add a plate')
+
+@app.route('/update_plate/<int:plate_id>', methods=['GET', 'POST'])
+def update_plate(plate_id):
+    plate_rec = plate_repo.get_plate(plate_id)
+    if request.method == 'GET':
+        return render_scm_template('name_description_cost.html',
+                                    site_title='Update plate',
+                                    old_name=plate_rec.name,
+                                    old_description=plate_rec.description,
+                                    old_unit_count=plate_rec.unit_count,
+                                    old_unit_price=plate_rec.unit_price)
+    elif request.method == 'POST':
+        try:
+            name = request.form['name'].strip()
+            description = request.form['description'].strip()
+            unit_count = int(request.form['unit_count'])
+            unit_price = Decimal(request.form['unit_price'])
+            
+            plate_repo.update_plate_rec(plate_rec,
+                                        name,
+                                        description,
+                                        unit_count,
+                                        unit_price)
+            db.session.commit()
+            
+            message = 'Successfully updated plate %s (%s)' % (name, plate_id)
+            logger.info(message)
+
+            return redirect_with_message(url_for('list_plates'), message, 'info')
+        except ScmException as ex:
+            db.session.rollback()
+            return render_scm_template_with_message('name_description_cost.html',
+                                                    ex.message,
+                                                    'danger',
+                                                    ex,
+                                                    site_title='Update plate',
+                                                    old_name=plate_rec.name,
+                                                    old_description=plate_rec.description,
+                                                    old_unit_count=plate_rec.unit_count,
+                                                    old_unit_price=plate_rec.old_unit_price)
+
+@app.route('/list_plates', methods=['GET', 'POST'])
+def list_plates():
+    plate_recs = plate_repo.get_all_plates()
+    return render_scm_template('plate_list.html', plate_recs=plate_recs)
 
 ####################################################################################
 # DECORATION FORMS
