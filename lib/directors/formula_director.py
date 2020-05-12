@@ -12,11 +12,13 @@ class FormulaDirector:
                  formula_repo,
                  formula_subformula_repo,
                  product_repo,
+                 order_repo,
                  formula_manager,
                  subformula_manager):
         self.formula_repo = formula_repo
         self.formula_subformula_repo = formula_subformula_repo
         self.product_repo = product_repo
+        self.order_repo = order_repo
         self.formula_manager = formula_manager
         self.subformula_manager = subformula_manager
 
@@ -161,3 +163,4 @@ class FormulaDirector:
         parent_product_recs = self.product_repo.get_products_using_formula(formula_id)
         for parent_product_rec in parent_product_recs:
             self.product_repo.set_flag_has_up_to_date_cost_estimation_product_rec(parent_product_rec, False)
+            self.order_repo.set_flag_has_up_to_date_cost_estimation(parent_product_rec.order_id, False)
