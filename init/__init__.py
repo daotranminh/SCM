@@ -176,7 +176,7 @@ class Order(db.Model):
     total_cost = Column(Numeric(10, 2))
     has_up_to_date_cost_estimation = Column(Boolean, default=False)
     price_to_customer = Column(Numeric(10, 2))
-    payment_from_customer = Column(Numeric(10, 2))
+    paid_by_customer = Column(Numeric(10, 2))
 
 class Product(db.Model):
     __tablename__ = 'product'

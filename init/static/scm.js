@@ -172,6 +172,7 @@ function extract_update_order_args()
     var decorationFormId = document.getElementById("decoration_form_id").value
     var decorationTechniqueId = document.getElementById("decoration_technique_id").value
     var withBox = document.getElementById("with_box").checked
+    var paidByCustomer = document.getElementById("paid_by_customer").value
 
     var existingProductIds = document.querySelectorAll('*[id^="product_id_"]');
     var existingProductPriceIds = document.querySelectorAll('*[id^="price_to_customer_"]');
@@ -198,7 +199,8 @@ function extract_update_order_args()
             decorationFormId,       // 12
             decorationTechniqueId,  // 13
             withBox,                // 14
-            priceToCustomersStr]    // 15
+            priceToCustomersStr,    // 15
+            paidByCustomer]         // 16
 }
 
 function delete_product_in_update_order(delete_btn)
@@ -235,6 +237,7 @@ function delete_product_in_update_order(delete_btn)
     var decorationTechniqueId = args[13]
     var withBox = args[14]
     var priceToCustomersStr = args[15]
+    var paidByCustomer = args[16]
 
     currentHref = location.href
     currentHrefComponents = currentHref.split("/")
@@ -255,7 +258,8 @@ function delete_product_in_update_order(delete_btn)
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
         "&with_box_arg=" + withBox +
-        "&price_to_customers_arg=" + priceToCustomersStr
+        "&price_to_customers_arg=" + priceToCustomersStr +
+        "&paid_by_customer_arg=" + paidByCustomer
         
     location.href = newHref
 }
@@ -329,6 +333,7 @@ function add_new_product_to_order()
     var decorationTechniqueId = args[13]
     var withBox = args[14]
     var priceToCustomersStr = args[15]
+    var paidByCustomer = args[16]
 
     if (newProductName == "")
     {
@@ -355,7 +360,8 @@ function add_new_product_to_order()
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
         "&with_box_arg=" + withBox +
-        "&price_to_customers_arg=" + priceToCustomersStr
+        "&price_to_customers_arg=" + priceToCustomersStr +
+        "&paid_by_customer_arg=" + paidByCustomer
     
     location.href = newHref
 }

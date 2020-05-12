@@ -82,7 +82,8 @@ class OrderRepository:
                      payment_status,
                      paid_on,
                      message,
-                     price_to_customer):
+                     price_to_customer,
+                     paid_by_customer):
         order_rec = self.get_order(order_id)
         order_rec.customer_id = customer_id
         order_rec.delivery_appointment = delivery_appointment
@@ -94,6 +95,7 @@ class OrderRepository:
         order_rec.paid_on = paid_on  
         order_rec.message = message
         order_rec.price_to_customer = price_to_customer
+        order_rec.paid_by_customer = paid_by_customer
 
         if payment_status == int(PaymentStatus.FULLY_PAID):
             order_rec.is_fixed = True

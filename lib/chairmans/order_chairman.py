@@ -78,7 +78,8 @@ class OrderChairman:
                      payment_status,
                      paid_on,
                      message,
-                     price_to_customer):
+                     price_to_customer,
+                     paid_by_customer):
         self.order_repo.update_order(order_id,
                                      customer_id,
                                      delivery_appointment,
@@ -89,7 +90,8 @@ class OrderChairman:
                                      payment_status,
                                      paid_on,
                                      message,
-                                     price_to_customer)
+                                     price_to_customer,
+                                     paid_by_customer)
         if order_status == int(OrderStatus.DELIVERED):
             product_recs = self.product_repo.get_products_of_order(order_id)
             for product_rec in product_recs:

@@ -1318,6 +1318,12 @@ def __extract_update_order_args(order_rec, args):
     if with_box_arg is None or with_box_arg == '':
         with_box_arg = 'false'
 
+    paid_by_customer = args.get('paid_by_customer_arg')
+    if paid_by_customer is None:
+        paid_by_customer = order_rec.paid_by_customer
+    else:
+        paid_by_customer = Decimal(paid_by_customer)
+
     return customer_id_arg, \
         ordered_on_arg, \
         delivery_appointment_arg, \
@@ -1333,7 +1339,8 @@ def __extract_update_order_args(order_rec, args):
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
         with_box_arg, \
-        price_to_customers
+        price_to_customers, \
+        paid_by_customer
 
 def __extract_product_prices_to_customer(props):
     product_prices_to_customer = {}
@@ -1346,7 +1353,7 @@ def __extract_product_prices_to_customer(props):
 
             product_price = 0
             try:
-                product_price = float(value)
+                product_price = Decimal(value)
             except ValueError:
                 pass
 
@@ -1374,7 +1381,8 @@ def update_order(order_id):
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
         with_box_arg, \
-        price_to_customers = __extract_update_order_args(order_rec, request.args)
+        price_to_customers, \
+        paid_by_customer = __extract_update_order_args(order_rec, request.args)
 
     customer_recs = customer_repo.get_all_customers()    
     product_dtos = __lazy_get_product_dtos(order_id)
@@ -1395,7 +1403,7 @@ def update_order(order_id):
             if price_to_customer is not None:
                 if type(price_to_customer) == str:
                     try:
-                        price_to_customer = float(price_to_customer)                    
+                        price_to_customer = Decimal(price_to_customer)                    
                         total_price_to_customer += price_to_customer
                     except ValueError:
                         pass
@@ -1429,7 +1437,8 @@ def update_order(order_id):
                                     decoration_technique_recs=decoration_technique_recs,
                                     formula_recs=formula_recs,
                                     total_price_to_customer=total_price_to_customer,
-                                    price_to_customers=price_to_customers)
+                                    price_to_customers=price_to_customers,
+                                    paid_by_customer=paid_by_customer)
     elif request.method == 'POST':        
         try:
             customer_id = int(request.form['customer_id'])
@@ -1447,6 +1456,8 @@ def update_order(order_id):
             if payment_status != int(PaymentStatus.NOT_PAID):
                 paid_on = request.form['paid_on']
 
+            paid_by_customer = Decimal(request.form['paid_by_customer'])
+
             message = request.form['message']
 
             order_price_to_customer, product_prices_to_customer = __extract_product_prices_to_customer(request.form)
@@ -1462,7 +1473,8 @@ def update_order(order_id):
                                         payment_status,
                                         paid_on,
                                         message,
-                                        order_price_to_customer)
+                                        order_price_to_customer,
+                                        paid_by_customer)
             db.session.commit()
             
             message = 'Successfully updated order %s' % order_id
@@ -1501,7 +1513,8 @@ def update_order(order_id):
                                                     decoration_technique_recs=decoration_technique_recs,
                                                     formula_recs=formula_recs,
                                                     total_price_to_customer=total_price_to_customer,
-                                                    price_to_customers=price_to_customers)
+                                                    price_to_customers=price_to_customers,
+                                                    paid_by_customer=paid_by_customer)
 
 @app.route('/add_new_product_to_order/<int:order_id>', methods=['GET', 'POST'])
 def add_new_product_to_order(order_id):
@@ -1537,7 +1550,8 @@ def add_new_product_to_order(order_id):
                                              payment_status_arg=[request.args.get('payment_status_arg')],
                                              paid_on_arg=[request.args.get('paid_on_arg')],
                                              message_arg=[request.args.get('message_arg')],
-                                             price_to_customers_arg=[request.args.get('price_to_customers_arg')],
+                                             price_to_customers_arg=[request.args.get('price_to_customers_arg')],                                             
+                                             paid_by_customer_arg=[request.args.get('paid_by_customer_arg')],
                                              new_product_name_arg=[request.args.get('new_product_name_arg')],
                                              product_amount_arg=[request.args.get('product_amount_arg')],                                             
                                              chosen_formula_id_arg=[request.args.get('formula_id_arg')],
@@ -1563,6 +1577,7 @@ def add_new_product_to_order(order_id):
                                  paid_on_arg=[request.args.get('paid_on_arg')],
                                  message_arg=[request.args.get('message_arg')],
                                  price_to_customers_arg=[request.args.get('price_to_customers_arg')],
+                                 paid_by_customer_arg=[request.args.get('paid_by_customer_arg')],
                                  new_product_name_arg=[''],
                                  product_amount_arg=['1'],                                 
                                  chosen_formula_id_arg=['-1'],
@@ -1794,6 +1809,7 @@ def delete_product(product_id):
                                              paid_on_arg=[request.args.get('paid_on_arg')],
                                              message_arg=[request.args.get('message_arg')],
                                              price_to_customers_arg=[request.args.get('price_to_customers_arg')],
+                                             paid_by_customer_arg=[request.args.get('paid_by_customer_arg')],
                                              new_product_name_arg=[request.args.get('new_product_name_arg')],
                                              product_amount_arg=[request.args.get('product_amount_arg')],
                                              chosen_subformula_id_arg=[request.args.get('subformula_id_arg')],
@@ -1819,6 +1835,7 @@ def delete_product(product_id):
                                  paid_on_arg=[request.args.get('paid_on_arg')],
                                  message_arg=[request.args.get('message_arg')],
                                  price_to_customers_arg=[request.args.get('price_to_customers_arg')],
+                                 paid_by_customer_arg=[request.args.get('paid_by_customer_arg')],
                                  new_product_name_arg=[request.args.get('new_product_name_arg')],
                                  product_amount_arg=[request.args.get('product_amount_arg')],
                                  chosen_subformula_id_arg=[request.args.get('subformula_id_arg')],
