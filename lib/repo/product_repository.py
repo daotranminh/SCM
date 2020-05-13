@@ -2,7 +2,7 @@ import logging
 
 from flask_sqlalchemy import sqlalchemy
 
-from init import Product, Formula, DecorationForm, DecorationTechnique, SampleImagesGroup, CostEstimation, config
+from init import Product, Formula, DecorationForm, DecorationTechnique, SampleImagesGroup, CostEstimation, Plate, Box, config
 from utilities.scm_enums import ErrorCodes, BoxStatus
 from utilities.scm_exceptions import ScmException
 from utilities.scm_logger import ScmLogger
@@ -34,6 +34,8 @@ class ProductRepository:
     def get_product_dto(self, product_id):
         decoration_form_query = self.db.session.query(DecorationForm.id, DecorationForm.name).subquery()
         decoration_technique_query = self.db.session.query(DecorationTechnique.id, DecorationTechnique.name).subquery()
+        plate_query = self.db.session.query(Plate.id, Plate.name).subquery()
+        box_query = self.db.session.query(Box.id, Box.name).subquery()
         formula_query = self.db.session.query(Formula.id, Formula.name).subquery()
         sample_images_group_query = self.db.session.query(SampleImagesGroup.id, SampleImagesGroup.name).subquery()
         
@@ -46,6 +48,10 @@ class ProductRepository:
                                                   decoration_form_query.c.name, \
                                                   decoration_technique_query.c.id, \
                                                   decoration_technique_query.c.name, \
+                                                  plate_query.c.id, \
+                                                  plate_query.c.name, \
+                                                  box_query.c.id, \
+                                                  box_query.c.name, \
                                                   formula_query.c.id, \
                                                   formula_query.c.name, \
                                                   sample_images_group_query.c.id, \
@@ -53,6 +59,8 @@ class ProductRepository:
             filter(Product.id == product_id). \
             join(decoration_form_query, Product.decoration_form_id == decoration_form_query.c.id). \
             join(decoration_technique_query, Product.decoration_technique_id == decoration_technique_query.c.id). \
+            join(plate_query, Product.plate_id == plate_query.c.id). \
+            join(box_query, Product.box_id == box_query.c.id). \
             outerjoin(formula_query, Product.formula_id == formula_query.c.id). \
             outerjoin(sample_images_group_query, Product.sample_images_group_id == sample_images_group_query.c.id)
             

@@ -34,6 +34,8 @@
       <th>Decoration Form</th>
       <th>Decoration Technique</th>
       <th>Formula</th>
+      <th>Plate</th>
+      <th>Box</th>
       <th>Sample Images</th>
       <th>Cost Estimation per Product</th>
       <th>Amount</th>
@@ -54,6 +56,9 @@
       {% else %}
         <td>{{product_dto.formula_name}}</td>
       {% endif %}
+
+      <td>{{product_dto.plate_name}}</td>
+      <td>{{product_dto.box_name}}</td>
       
       {% if product_dto.sample_images_group_id is not none %}
         <td><a href="{{ url_for('sample_images_group_details', sample_images_group_id=product_dto.sample_images_group_id) }}">{{product_dto.sample_images_group_name}}</a></td>
@@ -75,6 +80,8 @@
     {% endfor %}
     <tr>
       <td>Total cost</td>
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>

@@ -51,6 +51,10 @@ class ProductManager:
         decoration_form_name, \
         decoration_technique_id, \
         decoration_technique_name, \
+        plate_id, \
+        plate_name, \
+        box_id, \
+        box_name, \
         formula_id, \
         formula_name, \
         sample_images_group_id, \
@@ -70,6 +74,10 @@ class ProductManager:
                                  decoration_form_name,
                                  decoration_technique_id,
                                  decoration_technique_name,
+                                 plate_id,
+                                 plate_name,
+                                 box_id,
+                                 box_name,
                                  formula_id,
                                  formula_name,                                 
                                  product_rec.price_to_customer,

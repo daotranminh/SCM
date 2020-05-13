@@ -89,6 +89,8 @@
                 <th>Decoration Form</th>
                 <th>Decoration Technique</th>
                 <th>Formula</th>
+                <th>Plate</th>
+                <th>Box</th>
                 <th>Sample Images</th>
                 <th>Cost Estimation per Product</th>
                 <th>Amount</th>
@@ -110,6 +112,10 @@
                 {% else %}
                   <td>{{product_dtos[i].formula_name}}</td>
                 {% endif %}
+
+                <td>{{product_dtos[i].plate_name}}</td>
+                <td>{{product_dtos[i].box_name}}</td>
+
                 {% if product_dtos[i].sample_images_group_id is not none %}
                   <td><a href="{{ url_for('sample_images_group_details', sample_images_group_id=product_dtos[i].sample_images_group_id) }}">{{product_dtos[i].sample_images_group_name}}</a></td>
                 {% else %}
@@ -156,6 +162,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
                 <td>{{ order_cost_estimation }}</td>
                 <td><input type="text" id="total_price_to_customer" name="total_price_to_customer" style="text-align:right" value="{{total_price_to_customer}}" disabled/></td>
                 <td></td>
@@ -163,6 +171,8 @@
               </tr>
               <tr>
                 <td>Paid by customer</td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

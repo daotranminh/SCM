@@ -18,6 +18,10 @@ class ProductDto:
                  decoration_form_name,
                  decoration_technique_id,
                  decoration_technique_name,
+                 plate_id,
+                 plate_name,
+                 box_id,
+                 box_name,
                  formula_id,
                  formula_name,
                  price_to_customer,
@@ -34,6 +38,10 @@ class ProductDto:
         self.decoration_form_name = decoration_form_name
         self.decoration_technique_id = decoration_technique_id
         self.decoration_technique_name = decoration_technique_name
+        self.plate_id = plate_id
+        self.plate_name = plate_name
+        self.box_id = box_id
+        self.box_name = box_name
         self.formula_id = formula_id
         self.formula_name = formula_name        
         self.price_to_customer = price_to_customer
