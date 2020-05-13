@@ -1572,6 +1572,9 @@ def __extract_product_prices_to_customer(props):
 def update_order(order_id):
     order_rec = order_repo.get_order(order_id)
 
+    if order_rec.has_up_to_date_cost_estimation == False:
+        order_chairman.estimate_order_cost(order_id)
+
     customer_id_arg, \
         ordered_on_arg, \
         delivery_appointment_arg, \
