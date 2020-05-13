@@ -41,7 +41,7 @@ class PaymentStatus(IntEnum):
     FULLY_PAID = 2
 
 class BoxStatus(IntEnum):
-    BOX_NOT_NEEDED = 0
+    BOX_NOT_NEEDED_TO_BE_RETURNED = 0
     BOX_WITH_PRODUCT_IN_PRODUCTION = 1
     BOX_AT_CUSTOMER_AFTER_DELIVERY = 2
     BOX_RETURNED = 3

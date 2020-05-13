@@ -1262,7 +1262,7 @@ def __extract_order_props(props_dict):
     decoration_technique_ids = []
     plate_ids = []
     box_ids = []
-    with_boxes = []
+    boxes_to_be_returned = []
 
     i = 0
     while True:
@@ -1273,7 +1273,7 @@ def __extract_order_props(props_dict):
         decoration_technique_choices_id = 'decoration_technique_choices_' + str(i)
         plate_choices_id = 'plate_choices_' + str(i)
         box_choices_id = 'box_choices_' + str(i)
-        with_box_id = 'with_box_' + str(i)
+        box_to_be_returned_id = 'box_to_be_returned_' + str(i)
         
         if product_name_id in props_dict:
             product_names.append(props_dict[product_name_id])
@@ -1284,10 +1284,10 @@ def __extract_order_props(props_dict):
             plate_ids.append(int(props_dict[plate_choices_id]))
             box_ids.append(int(props_dict[box_choices_id]))
 
-            if with_box_id in props_dict:
-                with_boxes.append(True)
+            if box_to_be_returned_id in props_dict:
+                boxes_to_be_returned.append(True)
             else:
-                with_boxes.append(False)
+                boxes_to_be_returned.append(False)
             i += 1
         else:
             break
@@ -1304,7 +1304,7 @@ def __extract_order_props(props_dict):
            decoration_technique_ids, \
            plate_ids, \
            box_ids, \
-           with_boxes
+           boxes_to_be_returned
 
 @app.route('/add_order', methods=['GET', 'POST'])
 def add_order():
@@ -1330,7 +1330,7 @@ def add_order():
             decoration_technique_ids, \
             plate_ids, \
             box_ids, \
-            with_boxes = __extract_order_props(request.form)
+            boxes_to_be_returned = __extract_order_props(request.form)
 
             new_order_id = order_chairman.add_order(customer_id,
                                                     ordered_on,
@@ -1344,7 +1344,7 @@ def add_order():
                                                     decoration_technique_ids,
                                                     plate_ids,
                                                     box_ids,
-                                                    with_boxes)
+                                                    boxes_to_be_returned)
             db.session.commit()
 
             message = 'Successfully added order %s' % str(new_order_id)
@@ -1515,9 +1515,9 @@ def __extract_update_order_args(order_rec, args):
     else:
         chosen_box_id_arg = int(chosen_box_id_arg)
 
-    with_box_arg = args.get('with_box_arg')
-    if with_box_arg is None or with_box_arg == '':
-        with_box_arg = 'false'
+    box_to_be_returned_arg = args.get('box_to_be_returned_arg')
+    if box_to_be_returned_arg is None or box_to_be_returned_arg == '':
+        box_to_be_returned_arg = 'false'
 
     paid_by_customer = args.get('paid_by_customer_arg')
     if paid_by_customer is None:
@@ -1544,7 +1544,7 @@ def __extract_update_order_args(order_rec, args):
         chosen_decoration_techinque_id_arg, \
         chosen_plate_id_arg, \
         chosen_box_id_arg, \
-        with_box_arg, \
+        box_to_be_returned_arg, \
         price_to_customers, \
         paid_by_customer
 
@@ -1591,7 +1591,7 @@ def update_order(order_id):
         chosen_decoration_techinque_id_arg, \
         chosen_plate_id_arg, \
         chosen_box_id_arg, \
-        with_box_arg, \
+        box_to_be_returned_arg, \
         price_to_customers, \
         paid_by_customer = __extract_update_order_args(order_rec, request.args)
 
@@ -1641,7 +1641,7 @@ def update_order(order_id):
                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
                                     chosen_plate_id=chosen_plate_id_arg,
                                     chosen_box_id=chosen_box_id_arg,
-                                    with_box=with_box_arg,
+                                    box_to_be_returned=box_to_be_returned_arg,
                                     order_cost_estimation=order_rec.total_cost,
                                     customer_recs=customer_recs,
                                     delivery_method_recs=delivery_method_recs,
@@ -1721,7 +1721,7 @@ def update_order(order_id):
                                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
                                                     chosen_plate_id=chosen_plate_id,
                                                     chosen_box_id=chosen_box_id,
-                                                    with_box=with_box_arg,
+                                                    box_to_be_returned=box_to_be_returned_arg,
                                                     order_cost_estimation=order_rec.total_cost,
                                                     customer_recs=customer_recs,
                                                     delivery_method_recs=delivery_method_recs,
@@ -1747,8 +1747,8 @@ def add_new_product_to_order(order_id):
     plate_id = int(request.args.get('plate_id_arg'))
     box_id = int(request.args.get('box_id_arg'))
     
-    with_box_arg = request.args.get('with_box_arg')
-    with_box = with_box_arg.upper() == 'TRUE'
+    box_to_be_returned_arg = request.args.get('box_to_be_returned_arg')
+    box_to_be_returned = box_to_be_returned_arg.upper() == 'TRUE'
 
     try:
         product_ceo.add_product(new_product_name,
@@ -1759,7 +1759,7 @@ def add_new_product_to_order(order_id):
                                 decoration_technique_id,
                                 plate_id,
                                 box_id,
-                                with_box)
+                                box_to_be_returned)
         db.session.commit()
     except ScmException as ex:
         db.session.rollback()
@@ -1784,7 +1784,7 @@ def add_new_product_to_order(order_id):
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                              chosen_plate_id_arg=[request.args.get('formula_id_arg')],
                                              chosen_box_id_arg=[request.args.get('formula_id_arg')],
-                                             with_box_arg=[request.args.get('with_box_arg')]
+                                             box_to_be_returned_arg=[request.args.get('box_to_be_returned_arg')]
                                              ),
                                              message,
                                              'danger')
@@ -1812,7 +1812,7 @@ def add_new_product_to_order(order_id):
                                  chosen_decoration_technique_id_arg=['-1'],
                                  chosen_plate_id_arg=['-1'],
                                  chosen_box_id_arg=['-1'],
-                                 with_box_arg=['false']
+                                 box_to_be_returned_arg=['false']
                                  ), 
                                  message, 
                                  'info')
@@ -2076,7 +2076,7 @@ def delete_product(product_id):
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                              chosen_plate_id_arg=[request.args.get('plate_id_arg')],
                                              chosen_box_id_arg=[request.args.get('box_id_arg')],
-                                             with_box_arg=[request.args.get('with_box_arg')]
+                                             box_to_be_returned_arg=[request.args.get('box_to_be_returned_arg')]
                                              ),
                                              message,
                                              'danger')
@@ -2104,7 +2104,7 @@ def delete_product(product_id):
                                  chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                  chosen_plate_id_arg=[request.args.get('plate_id_arg')],
                                  chosen_box_id_arg=[request.args.get('box_id_arg')],
-                                 with_box_arg=[request.args.get('with_box_arg')]
+                                 box_to_be_returned_arg=[request.args.get('box_to_be_returned_arg')]
                                  ),
                                  message,
                                  'info')

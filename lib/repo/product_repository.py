@@ -78,10 +78,10 @@ class ProductRepository:
                     decoration_technique_id,
                     plate_id,
                     box_id,
-                    with_box):
+                    box_to_be_returned):
         try:
-            box_status = int(BoxStatus.BOX_NOT_NEEDED)
-            if with_box:
+            box_status = int(BoxStatus.BOX_NOT_NEEDED_TO_BE_RETURNED)
+            if box_to_be_returned:
                 box_status = int(BoxStatus.BOX_WITH_PRODUCT_IN_PRODUCTION)
                 
             product_rec = Product(name=name, 

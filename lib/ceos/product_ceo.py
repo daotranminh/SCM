@@ -37,7 +37,7 @@ class ProductCEO:
                     decoration_technique_id,
                     plate_id,
                     box_id,
-                    with_box):
+                    box_to_be_returned):
         new_product_id = self.product_repo.add_product(name,
                                                       amount,
                                                       order_id,
@@ -46,7 +46,7 @@ class ProductCEO:
                                                       decoration_technique_id,
                                                       plate_id,
                                                       box_id,
-                                                      with_box)
+                                                      box_to_be_returned)
         
         product_rec = self.product_repo.get_product(new_product_id)
 
@@ -173,7 +173,7 @@ class ProductCEO:
         ProductCEO.logger.info(message)
         
 
-        self.product_repo.update_cost_product_rec(product_rec, new_product_cost_estimation)
+        self.product_repo.update_cost_product_rec(product_rec, new_product_cost)
         self.order_repo.set_flag_has_up_to_date_cost_estimation(product_rec.order_id, False)
 
         return new_product_cost

@@ -170,7 +170,7 @@ function extract_update_order_args()
     var formulaId = document.getElementById("formula_id").value
     var decorationFormId = document.getElementById("decoration_form_id").value
     var decorationTechniqueId = document.getElementById("decoration_technique_id").value
-    var withBox = document.getElementById("with_box").checked
+    var boxToBeReturned = document.getElementById("box_to_be_returned").checked
     var paidByCustomer = document.getElementById("paid_by_customer").value
     var plateId = document.getElementById("plate_id").value
     var boxId = document.getElementById("box_id").value
@@ -199,7 +199,7 @@ function extract_update_order_args()
             formulaId,              // 11
             decorationFormId,       // 12
             decorationTechniqueId,  // 13
-            withBox,                // 14
+            boxToBeReturned,                // 14
             priceToCustomersStr,    // 15
             paidByCustomer,         // 16
             plateId,                // 17
@@ -238,7 +238,7 @@ function delete_product_in_update_order(delete_btn)
     var subformulaId = args[11]
     var decorationFormId = args[12]
     var decorationTechniqueId = args[13]
-    var withBox = args[14]
+    var boxToBeReturned = args[14]
     var priceToCustomersStr = args[15]
     var paidByCustomer = args[16]
     var plateId = args[17]
@@ -262,7 +262,7 @@ function delete_product_in_update_order(delete_btn)
         "&subformula_id_arg=" + subformulaId +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
-        "&with_box_arg=" + withBox +
+        "&box_to_be_returned_arg=" + boxToBeReturned +
         "&price_to_customers_arg=" + priceToCustomersStr +
         "&paid_by_customer_arg=" + paidByCustomer +
         "&plate_id_arg=" + plateId +
@@ -338,7 +338,7 @@ function add_new_product_to_order()
     var formulaId = args[11]
     var decorationFormId = args[12]
     var decorationTechniqueId = args[13]
-    var withBox = args[14]
+    var boxToBeReturned = args[14]
     var priceToCustomersStr = args[15]
     var paidByCustomer = args[16]
     var plateId = args[17]
@@ -368,7 +368,7 @@ function add_new_product_to_order()
         "&formula_id_arg=" + formulaId +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
-        "&with_box_arg=" + withBox +
+        "&box_to_be_returned_arg=" + boxToBeReturned +
         "&price_to_customers_arg=" + priceToCustomersStr +
         "&paid_by_customer_arg=" + paidByCustomer +
         "&plate_id_arg=" + plateId +
