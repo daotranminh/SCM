@@ -19,6 +19,11 @@ class BoxRepository:
     def get_all_boxes(self):
         return Box.query.all()
 
+    def get_all_boxes1(self):
+        box_recs = self.get_all_boxes()
+        box_recs.insert(0, None)
+        return box_recs
+
     def add_box(self,
                 name,
                 description,

@@ -178,14 +178,32 @@ class Order(db.Model):
     price_to_customer = Column(Numeric(10, 2))
     paid_by_customer = Column(Numeric(10, 2))
 
+class Box(db.Model):
+    __tablename__ = 'box'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(200))
+    description = Column(String(400))
+    unit_count = Column(Integer, default=1)
+    unit_price = Column(Numeric(10, 2))
+
+class Plate(db.Model):
+    __tablename__ = 'plate'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(200))
+    description = Column(String(400))
+    unit_count = Column(Integer, default=1)
+    unit_price = Column(Numeric(10, 2))
+
 class Product(db.Model):
     __tablename__ = 'product'
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String(100))
-    order_id = Column(Integer, ForeignKey(Order.id))    
+    order_id = Column(Integer, ForeignKey(Order.id))
     decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
     decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
-    formula_id = Column(Integer, ForeignKey(Formula.id))    
+    formula_id = Column(Integer, ForeignKey(Formula.id))
+    plate_id = Column(Integer, ForeignKey(Plate.id))
+    box_id = Column(Integer, ForeignKey(Box.id))
     sample_images_group_id = Column(Integer, ForeignKey(SampleImagesGroup.id))
     box_status = Column(Integer, default=0)
     box_returned_on = Column(DateTime())
@@ -250,31 +268,3 @@ class FixedMaterialSubFormula(db.Model):
     amount = Column(Numeric(10, 2))
     cost = Column(Numeric(10, 2))
     fixed_on = Column(DateTime(), default=datetime.datetime.utcnow)
-
-class Plate(db.Model):
-    __tablename__ = 'plate'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(200))
-    description = Column(String(400))
-    unit_count = Column(Integer, default=1)
-    unit_price = Column(Numeric(10, 2))
-
-class ProductPlate(db.Model):
-    __tablename__ = 'product_plate'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    product_id = Column(Integer, ForeignKey(Product.id))
-    plate_id = Column(Integer, ForeignKey(Plate.id))
-
-class Box(db.Model):
-    __tablename__ = 'box'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    name = Column(String(200))
-    description = Column(String(400))
-    unit_count = Column(Integer, default=1)
-    unit_price = Column(Numeric(10, 2))
-
-class ProductBox(db.Model):
-    __tablename__ = 'product_box'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    product_id = Column(Integer, ForeignKey(Product.id))
-    box_id = Column(Integer, ForeignKey(Box.id))

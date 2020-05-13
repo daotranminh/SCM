@@ -157,6 +157,8 @@ product_ceo = ProductCEO(product_repo,
                          product_image_path_repo,
                          cost_estimation_repo,
                          order_repo,
+                         plate_repo,
+                         box_repo,
                          formula_director)
 
 ###################################################################################
@@ -1257,6 +1259,8 @@ def __extract_order_props(props_dict):
     formula_ids = []
     decoration_form_ids = []
     decoration_technique_ids = []
+    plate_ids = []
+    box_ids = []
     with_boxes = []
 
     i = 0
@@ -1266,6 +1270,8 @@ def __extract_order_props(props_dict):
         formula_choices_id = 'formula_choices_' + str(i)
         decoration_form_choices_id = 'decoration_form_choices_' + str(i)
         decoration_technique_choices_id = 'decoration_technique_choices_' + str(i)
+        plate_choices_id = 'plate_choices_' + str(i)
+        box_choices_id = 'box_choices_' + str(i)
         with_box_id = 'with_box_' + str(i)
         
         if product_name_id in props_dict:
@@ -1274,6 +1280,9 @@ def __extract_order_props(props_dict):
             formula_ids.append(int(props_dict[formula_choices_id]))
             decoration_form_ids.append(int(props_dict[decoration_form_choices_id]))
             decoration_technique_ids.append(int(props_dict[decoration_technique_choices_id]))
+            plate_ids.append(int(props_dict[plate_choices_id]))
+            box_ids.append(int(props_dict[box_choices_id]))
+
             if with_box_id in props_dict:
                 with_boxes.append(True)
             else:
@@ -1292,6 +1301,8 @@ def __extract_order_props(props_dict):
            formula_ids, \
            decoration_form_ids, \
            decoration_technique_ids, \
+           plate_ids, \
+           box_ids, \
            with_boxes
 
 @app.route('/add_order', methods=['GET', 'POST'])
@@ -1301,6 +1312,8 @@ def add_order():
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()    
     formula_recs = formula_repo.get_all_formulas()
+    plate_recs = plate_repo.get_all_plates1()
+    box_recs = box_repo.get_all_boxes1()
 
     if request.method == 'POST':
         try:
@@ -1314,6 +1327,8 @@ def add_order():
             formula_ids, \
             decoration_form_ids, \
             decoration_technique_ids, \
+            plate_ids, \
+            box_ids, \
             with_boxes = __extract_order_props(request.form)
 
             new_order_id = order_chairman.add_order(customer_id,
@@ -1326,6 +1341,8 @@ def add_order():
                                                     formula_ids,
                                                     decoration_form_ids,
                                                     decoration_technique_ids,
+                                                    plate_ids,
+                                                    box_ids,
                                                     with_boxes)
             db.session.commit()
 
@@ -1341,7 +1358,9 @@ def add_order():
                                 delivery_method_recs=delivery_method_recs,
                                 decoration_form_recs=decoration_form_recs,
                                 decoration_technique_recs=decoration_technique_recs,
-                                formula_recs=formula_recs)
+                                formula_recs=formula_recs,
+                                plate_recs=plate_recs,
+                                box_recs=box_recs)
 
 def __lazy_get_order_dtos(page, per_page, search_text):
     paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
@@ -1483,6 +1502,18 @@ def __extract_update_order_args(order_rec, args):
     else:
         chosen_decoration_techinque_id_arg = int(chosen_decoration_techinque_id_arg)
 
+    chosen_plate_id_arg = args.get('chosen_plate_id_arg')
+    if chosen_plate_id_arg is None or chosen_plate_id_arg == '':
+        chosen_plate_id_arg = -1
+    else:
+        chosen_plate_id_arg = int(chosen_plate_id_arg)
+
+    chosen_box_id_arg = args.get('chosen_box_id_arg')
+    if chosen_box_id_arg is None or chosen_box_id_arg == '':
+        chosen_box_id_arg = -1
+    else:
+        chosen_box_id_arg = int(chosen_box_id_arg)
+
     with_box_arg = args.get('with_box_arg')
     if with_box_arg is None or with_box_arg == '':
         with_box_arg = 'false'
@@ -1507,6 +1538,8 @@ def __extract_update_order_args(order_rec, args):
         chosen_formula_id_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
+        chosen_plate_id_arg, \
+        chosen_box_id_arg, \
         with_box_arg, \
         price_to_customers, \
         paid_by_customer
@@ -1549,6 +1582,8 @@ def update_order(order_id):
         chosen_formula_id_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
+        chosen_plate_id_arg, \
+        chosen_box_id_arg, \
         with_box_arg, \
         price_to_customers, \
         paid_by_customer = __extract_update_order_args(order_rec, request.args)
@@ -1595,6 +1630,8 @@ def update_order(order_id):
                                     chosen_formula_id=chosen_formula_id_arg,
                                     chosen_decoration_form_id=chosen_decoration_form_id_arg,
                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
+                                    chosen_plate_id=chosen_plate_id_arg,
+                                    chosen_box_id=chosen_box_id_arg,
                                     with_box=with_box_arg,
                                     order_cost_estimation=order_rec.total_cost,
                                     customer_recs=customer_recs,
@@ -1671,6 +1708,8 @@ def update_order(order_id):
                                                     chosen_formula_id=chosen_formula_id_arg,
                                                     chosen_decoration_form_id=chosen_decoration_form_id_arg,
                                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
+                                                    chosen_plate_id=chosen_plate_id,
+                                                    chosen_box_id=chosen_box_id,
                                                     with_box=with_box_arg,
                                                     order_cost_estimation=order_rec.total_cost,
                                                     customer_recs=customer_recs,
@@ -1692,6 +1731,8 @@ def add_new_product_to_order(order_id):
     formula_id = int(request.args.get('formula_id_arg'))
     decoration_form_id = int(request.args.get('decoration_form_id_arg'))
     decoration_technique_id = int(request.args.get('decoration_technique_id_arg'))
+    plate_id = int(request.args.get('plate_id_arg'))
+    box_id = int(request.args.get('box_id_arg'))
     
     with_box_arg = request.args.get('with_box_arg')
     with_box = with_box_arg.upper() == 'TRUE'
@@ -1703,6 +1744,8 @@ def add_new_product_to_order(order_id):
                                 formula_id,
                                 decoration_form_id,
                                 decoration_technique_id,
+                                plate_id,
+                                box_id,
                                 with_box)
         db.session.commit()
     except ScmException as ex:
@@ -1726,6 +1769,8 @@ def add_new_product_to_order(order_id):
                                              chosen_formula_id_arg=[request.args.get('formula_id_arg')],
                                              chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
+                                             chosen_plate_id_arg=[request.args.get('formula_id_arg')],
+                                             chosen_box_id_arg=[request.args.get('formula_id_arg')],
                                              with_box_arg=[request.args.get('with_box_arg')]
                                              ),
                                              message,
@@ -1752,6 +1797,8 @@ def add_new_product_to_order(order_id):
                                  chosen_formula_id_arg=['-1'],
                                  chosen_decoration_form_id_arg=['-1'],
                                  chosen_decoration_technique_id_arg=['-1'],
+                                 chosen_plate_id_arg=['-1'],
+                                 chosen_box_id_arg=['-1'],
                                  with_box_arg=['false']
                                  ), 
                                  message, 
@@ -1813,6 +1860,18 @@ def __extract_update_product_args(product_rec, args):
     else:
         selected_decoration_technique_id = product_rec.decoration_technique_id
 
+    selected_plate_id = args.get('plate_id_arg')
+    if selected_plate_id is not None:
+        selected_plate_id = int(selected_plate_id)
+    else:
+        selected_plate_id = product_rec.plate_id
+
+    selected_box_id = args.get('box_id_arg')
+    if selected_box_id is not None:
+        selected_box_id = int(selected_box_id)
+    else:
+        selected_box_id = product_rec.box_id
+
     selected_formula_id = args.get('formula_id_arg')
     if selected_formula_id is not None:
         selected_formula_id = int(selected_formula_id)
@@ -1836,6 +1895,8 @@ def __extract_update_product_args(product_rec, args):
             product_amount, \
             selected_decoration_form_id, \
             selected_decoration_technique_id, \
+            selected_plate_id, \
+            selected_box_id, \
             selected_formula_id, \
             selected_box_status, \
             chosen_box_returned_on, \
@@ -1860,6 +1921,8 @@ def update_product(product_id):
             product_amount, \
             selected_decoration_form_id, \
             selected_decoration_technique_id, \
+            selected_plate_id, \
+            selected_box_id, \
             selected_formula_id, \
             selected_box_status, \
             chosen_box_returned_on, \
@@ -1879,7 +1942,9 @@ def update_product(product_id):
             current_product_name = request.form['product_name']
             product_amount = int(request.form['product_amount'])
             selected_decoration_form_id = int(request.form['decoration_form_id'])
-            selected_decoration_technique_id = int(request.form['decoration_technique_id'])            
+            selected_decoration_technique_id = int(request.form['decoration_technique_id'])
+            selected_plate_id = int(request.form['plate_id'])
+            selected_box_id = int(request.form['box_id'])
             selected_box_status = int(request.form['box_status'])
             chosen_box_returned_on = request.form['box_returned_on']
             
@@ -1899,6 +1964,8 @@ def update_product(product_id):
                                        product_amount,
                                        selected_decoration_form_id,
                                        selected_decoration_technique_id,
+                                       selected_plate_id,
+                                       selected_box_id,
                                        selected_formula_id,
                                        selected_box_status,
                                        chosen_box_returned_on,
@@ -1932,7 +1999,9 @@ def update_product(product_id):
                                                     current_product_name=current_product_name,
                                                     selected_formula_id=selected_formula_id,
                                                     selected_decoration_form_id=selected_decoration_form_id,
-                                                    selected_decoration_technique_id=selected_decoration_technique_id,                                                    
+                                                    selected_decoration_technique_id=selected_decoration_technique_id,
+                                                    selected_plate_id=selected_plate_id,
+                                                    selected_box_id=selected_box_id,
                                                     selected_box_status=selected_box_status,
                                                     chosen_box_returned_on=chosen_box_returned_on,
                                                     selected_sample_images_group_id=selected_sample_images_group_id)
@@ -1949,6 +2018,8 @@ def update_product(product_id):
                                current_product_name=current_product_name,
                                selected_decoration_form_id=selected_decoration_form_id,
                                selected_decoration_technique_id=selected_decoration_technique_id,
+                               selected_plate_id=selected_plate_id,
+                               selected_box_id=selected_box_id,
                                selected_formula_id=selected_formula_id,
                                selected_box_status=selected_box_status,
                                chosen_box_returned_on=chosen_box_returned_on,
@@ -1984,6 +2055,8 @@ def delete_product(product_id):
                                              chosen_subformula_id_arg=[request.args.get('subformula_id_arg')],
                                              chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
+                                             chosen_plate_id_arg=[request.args.get('plate_id_arg')],
+                                             chosen_box_id_arg=[request.args.get('box_id_arg')],
                                              with_box_arg=[request.args.get('with_box_arg')]
                                              ),
                                              message,

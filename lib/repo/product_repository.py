@@ -28,6 +28,9 @@ class ProductRepository:
     def get_products_having_plate(self, plate_id):
         return Product.query.filter(Product.plate_id == plate_id).all()
 
+    def get_products_having_box(self, box_id):
+        return Product.query.filter(Product.box_id == box_id).all()
+
     def get_product_dto(self, product_id):
         decoration_form_query = self.db.session.query(DecorationForm.id, DecorationForm.name).subquery()
         decoration_technique_query = self.db.session.query(DecorationTechnique.id, DecorationTechnique.name).subquery()
@@ -65,6 +68,8 @@ class ProductRepository:
                     formula_id,
                     decoration_form_id,
                     decoration_technique_id,
+                    plate_id,
+                    box_id,
                     with_box):
         try:
             box_status = int(BoxStatus.BOX_NOT_NEEDED)
@@ -77,6 +82,8 @@ class ProductRepository:
                                   formula_id=formula_id,                                  
                                   decoration_form_id=decoration_form_id,
                                   decoration_technique_id=decoration_technique_id,
+                                  plate_id=plate_id,
+                                  box_id=box_id,
                                   box_status=box_status)
             self.db.session.add(product_rec)
             self.db.session.flush()

@@ -78,6 +78,32 @@
             </p>
 
             <p>
+                  <label for="plate_choices_0">Plate</label>
+                  <select id="plate_choices_0" name="plate_choices_0">
+                  {% for plate_rec in plate_recs %}
+                        {% if plate_rec is none%}
+                        <option value="-1"></option>
+                        {% else %}
+                        <option value="{{plate_rec.id}}">{{plate_rec.name}}</option>
+                        {% endif %}
+                  {% endfor %}
+                  </select>
+            </p>
+
+            <p>
+                  <label for="box_choices_0">Box</label>
+                  <select id="box_choices_0" name="box_choices_0">
+                  {% for box_rec in box_recs %}
+                        {% if box_rec is none%}
+                        <option value="-1"></option>
+                        {% else %}
+                        <option value="{{box_rec.id}}">{{box_rec.name}}</option>
+                        {% endif %}
+                  {% endfor %}
+                  </select>
+                  </p>
+
+            <p>
                   <label for="with_box_0">With box</label><br>
                   <input type="checkbox" id="with_box_0" name="with_box_0">  
             </p>

@@ -33,9 +33,9 @@ class BoxManager:
                        unit_count,
                        unit_price):
         if box_rec.unit_count != unit_count or box_rec.unit_price != unit_price:
-            parent_product_recs = self.product_repo.get_products_having_box(box_id)
+            parent_product_recs = self.product_repo.get_products_having_box(box_rec.id)
             for parent_product_rec in parent_product_recs:
                 self.product_repo.set_flag_has_up_to_date_cost_estimation_product_rec(parent_product_rec, False)
                 self.order_repo.set_flag_has_up_to_date_cost_estimation(parent_product_rec.order_id, False)
 
-        self.box_repo.update_box_rec(box_rec)
+        self.box_repo.update_box_rec(box_rec, name, description, unit_count, unit_price)

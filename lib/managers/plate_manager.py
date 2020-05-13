@@ -33,9 +33,9 @@ class PlateManager:
                          unit_count,
                          unit_price):
         if plate_rec.unit_count != unit_count or plate_rec.unit_price != unit_price:
-            parent_product_recs = self.product_repo.get_products_having_plate(plate_id)
+            parent_product_recs = self.product_repo.get_products_having_plate(plate_rec.id)
             for parent_product_rec in parent_product_recs:
                 self.product_repo.set_flag_has_up_to_date_cost_estimation_product_rec(parent_product_rec, False)
                 self.order_repo.set_flag_has_up_to_date_cost_estimation(parent_product_rec.order_id, False)
 
-        self.plate_repo.update_plate_rec(plate_rec)
+        self.plate_repo.update_plate_rec(plate_rec, name, description, unit_count, unit_price)
