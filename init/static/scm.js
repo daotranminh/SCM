@@ -172,6 +172,8 @@ function extract_update_order_args()
     var decorationTechniqueId = document.getElementById("decoration_technique_id").value
     var withBox = document.getElementById("with_box").checked
     var paidByCustomer = document.getElementById("paid_by_customer").value
+    var plateId = document.getElementById("plate_id").value
+    var boxId = document.getElementById("box_id").value
 
     var existingProductIds = document.querySelectorAll('*[id^="product_id_"]');
     var existingProductPriceIds = document.querySelectorAll('*[id^="price_to_customer_"]');
@@ -199,7 +201,9 @@ function extract_update_order_args()
             decorationTechniqueId,  // 13
             withBox,                // 14
             priceToCustomersStr,    // 15
-            paidByCustomer]         // 16
+            paidByCustomer,         // 16
+            plateId,                // 17
+            boxId]                  // 18
 }
 
 function delete_product_in_update_order(delete_btn)
@@ -237,6 +241,8 @@ function delete_product_in_update_order(delete_btn)
     var withBox = args[14]
     var priceToCustomersStr = args[15]
     var paidByCustomer = args[16]
+    var plateId = args[17]
+    var boxId = args[18]
 
     currentHref = location.href
     currentHrefComponents = currentHref.split("/")
@@ -258,7 +264,9 @@ function delete_product_in_update_order(delete_btn)
         "&decoration_technique_id_arg=" + decorationTechniqueId +
         "&with_box_arg=" + withBox +
         "&price_to_customers_arg=" + priceToCustomersStr +
-        "&paid_by_customer_arg=" + paidByCustomer
+        "&paid_by_customer_arg=" + paidByCustomer +
+        "&plate_id_arg=" + plateId +
+        "&box_id_arg=" + boxId
         
     location.href = newHref
 }
@@ -333,6 +341,8 @@ function add_new_product_to_order()
     var withBox = args[14]
     var priceToCustomersStr = args[15]
     var paidByCustomer = args[16]
+    var plateId = args[17]
+    var boxId = args[18]
 
     if (newProductName == "")
     {
@@ -360,7 +370,9 @@ function add_new_product_to_order()
         "&decoration_technique_id_arg=" + decorationTechniqueId +
         "&with_box_arg=" + withBox +
         "&price_to_customers_arg=" + priceToCustomersStr +
-        "&paid_by_customer_arg=" + paidByCustomer
+        "&paid_by_customer_arg=" + paidByCustomer +
+        "&plate_id_arg=" + plateId +
+        "&box_id_arg=" + boxId
     
     location.href = newHref
 }

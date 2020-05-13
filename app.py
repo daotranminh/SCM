@@ -2,6 +2,7 @@ import logging
 import os
 import datetime
 import json
+import decimal
 from decimal import Decimal
 
 from flask import Flask, Response, render_template, request, flash, redirect, make_response, session, url_for
@@ -1312,8 +1313,8 @@ def add_order():
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()    
     formula_recs = formula_repo.get_all_formulas()
-    plate_recs = plate_repo.get_all_plates1()
-    box_recs = box_repo.get_all_boxes1()
+    plate_recs = plate_repo.get_all_plates()
+    box_recs = box_repo.get_all_boxes()
 
     if request.method == 'POST':
         try:
@@ -1522,7 +1523,10 @@ def __extract_update_order_args(order_rec, args):
     if paid_by_customer is None:
         paid_by_customer = order_rec.paid_by_customer
     else:
-        paid_by_customer = Decimal(paid_by_customer)
+        try:        
+            paid_by_customer = Decimal(paid_by_customer)
+        except decimal.InvalidOperation:
+            paid_by_customer = order_rec.paid_by_customer
 
     return customer_id_arg, \
         ordered_on_arg, \
@@ -1599,6 +1603,8 @@ def update_order(order_id):
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
     formula_recs = formula_repo.get_all_formulas()
+    plate_recs = plate_repo.get_all_plates()
+    box_recs = box_repo.get_all_boxes()
     
     total_price_to_customer = 0
     for product_dto in product_dtos:
@@ -1609,7 +1615,7 @@ def update_order(order_id):
                     try:
                         price_to_customer = Decimal(price_to_customer)                    
                         total_price_to_customer += price_to_customer
-                    except ValueError:
+                    except decimal.InvalidOperation:
                         pass
                 else:
                     total_price_to_customer += price_to_customer
@@ -1644,7 +1650,9 @@ def update_order(order_id):
                                     formula_recs=formula_recs,
                                     total_price_to_customer=total_price_to_customer,
                                     price_to_customers=price_to_customers,
-                                    paid_by_customer=paid_by_customer)
+                                    paid_by_customer=paid_by_customer,
+                                    plate_recs=plate_recs,
+                                    box_recs=box_recs)
     elif request.method == 'POST':        
         try:
             customer_id = int(request.form['customer_id'])
@@ -1722,7 +1730,9 @@ def update_order(order_id):
                                                     formula_recs=formula_recs,
                                                     total_price_to_customer=total_price_to_customer,
                                                     price_to_customers=price_to_customers,
-                                                    paid_by_customer=paid_by_customer)
+                                                    paid_by_customer=paid_by_customer,
+                                                    plate_recs=plate_recs,
+                                                    box_recs=box_recs)
 
 @app.route('/add_new_product_to_order/<int:order_id>', methods=['GET', 'POST'])
 def add_new_product_to_order(order_id):
@@ -1750,7 +1760,7 @@ def add_new_product_to_order(order_id):
         db.session.commit()
     except ScmException as ex:
         db.session.rollback()
-        message = 'Failed to add a new product "%s" to order %s' % (product_name, order_id)
+        message = 'Failed to add a new product "%s" to order %s' % (new_product_name, order_id)
         return redirect_with_message(url_for('update_order', 
                                              order_id=order_id,
                                              customer_id_arg=[request.args.get('customer_id_arg')],
@@ -1909,6 +1919,8 @@ def update_product(product_id):
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()    
     sample_images_group_recs = sample_images_group_repo.get_all_sample_images_groups()
+    plate_recs = plate_repo.get_all_plates()
+    box_recs = box_repo.get_all_boxes()
     
     latest_3_sample_image_paths = []
     if product_rec.sample_images_group_id is not None:
@@ -2004,7 +2016,9 @@ def update_product(product_id):
                                                     selected_box_id=selected_box_id,
                                                     selected_box_status=selected_box_status,
                                                     chosen_box_returned_on=chosen_box_returned_on,
-                                                    selected_sample_images_group_id=selected_sample_images_group_id)
+                                                    selected_sample_images_group_id=selected_sample_images_group_id,
+                                                    plate_recs=plate_recs,
+                                                    box_recs=box_recs)
     
     return render_scm_template('update_product.html',
                                decoration_form_recs=decoration_form_recs,
@@ -2023,7 +2037,9 @@ def update_product(product_id):
                                selected_formula_id=selected_formula_id,
                                selected_box_status=selected_box_status,
                                chosen_box_returned_on=chosen_box_returned_on,
-                               selected_sample_images_group_id=selected_sample_images_group_id)
+                               selected_sample_images_group_id=selected_sample_images_group_id,
+                               plate_recs=plate_recs,
+                               box_recs=box_recs)
 
 @app.route('/delete_product/<int:product_id>', methods=['GET', 'POST'])
 def delete_product(product_id):
@@ -2083,6 +2099,8 @@ def delete_product(product_id):
                                  chosen_subformula_id_arg=[request.args.get('subformula_id_arg')],
                                  chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                  chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
+                                 chosen_plate_id_arg=[request.args.get('plate_id_arg')],
+                                 chosen_box_id_arg=[request.args.get('box_id_arg')],
                                  with_box_arg=[request.args.get('with_box_arg')]
                                  ),
                                  message,

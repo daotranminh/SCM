@@ -241,6 +241,32 @@
         </p>
 
         <p>
+          <label for="plate_id">Plate</label>
+          <select id="plate_id" name="plate_id">
+          {% for plate_rec in plate_recs %}
+            {% if plate_rec.id == chosen_plate_id %}
+              <option value="{{plate_rec.id}}" selected>{{plate_rec.name}}</option>
+            {% else %}
+              <option value="{{plate_rec.id}}">{{plate_rec.name}}</option>
+            {% endif %}
+	        {% endfor %}
+          </select>
+        </p>
+
+        <p>
+          <label for="box_id">Box</label>
+          <select id="box_id" name="box_id">
+          {% for box_rec in box_recs %}
+            {% if box_rec.id == chosen_box_id %}
+              <option value="{{box_rec.id}}" selected>{{box_rec.name}}</option>
+            {% else %}
+              <option value="{{box_rec.id}}">{{box_rec.name}}</option>
+            {% endif %}
+	        {% endfor %}
+          </select>
+        </p>
+
+        <p>
           <label for="with_box">With box</label><br>
           {% if with_box == 'true' %}
             <input type="checkbox" id="with_box" name="with_box" checked>

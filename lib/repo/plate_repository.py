@@ -19,11 +19,6 @@ class PlateRepository:
     def get_all_plates(self):
         return Plate.query.all()
 
-    def get_all_plates1(self):
-        plate_recs = self.get_all_plates()
-        plate_recs.insert(0, None)
-        return plate_recs
-
     def add_plate(self,
                   name,
                   description,
