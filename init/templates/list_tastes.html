@@ -11,6 +11,7 @@
     <tr>
       <th>Name</th>
       <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -18,7 +19,9 @@
     <tr>
       <td><span data-toggle="tooltip" title="{{taste.description}}">{{taste.name}}</span></td>
       <td><a href="{{ url_for('update_taste', taste_id=taste.id) }}"
-	     class="btn btn-default pullright">Update</a></td>
+       class="btn btn-default pullright">Update</a></td>
+       <td><a href="{{ url_for('list_subformulas_per_taste', taste_id=taste.id) }}"
+        class="btn btn-default pullright">Subformulas</a></td>
     </tr>
     {% endfor %}
   </tbody>

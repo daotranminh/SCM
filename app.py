@@ -892,19 +892,19 @@ def customer_details(customer_id):
 # SUB FORMULAS
 ####################################################################################
 
-@app.route('/list_subformulas', methods=['GET', 'POST'])
-@app.route('/list_subformulas/', methods=['GET', 'POST'])
-def list_subformulas_default():
+@app.route('/list_subformulas_per_taste', methods=['GET', 'POST'])
+@app.route('/list_subformulas_per_taste/', methods=['GET', 'POST'])
+def list_subformulas_per_taste_default():
     first_taste_rec = taste_repo.get_first_taste()
     if first_taste_rec is not None:
-        return redirect('/list_subformulas/' + str(first_taste_rec.id))
+        return redirect('/list_subformulas_per_taste/' + str(first_taste_rec.id))
     return render_error('No taste found in the database. Please add a taste.')
 
-@app.route('/list_subformulas/<int:taste_id>', methods=['GET', 'POST'], defaults={'page':1})
-@app.route('/list_subformulas/<int:taste_id>/', methods=['GET', 'POST'], defaults={'page':1})
-@app.route('/list_subformulas/<int:taste_id>/<int:page>', methods=['GET', 'POST'])
-@app.route('/list_subformulas/<int:taste_id>/<int:page>/', methods=['GET', 'POST'])
-def list_subformulas(taste_id, page):
+@app.route('/list_subformulas_per_taste/<int:taste_id>', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_subformulas_per_taste/<int:taste_id>/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_subformulas_per_taste/<int:taste_id>/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_subformulas_per_taste/<int:taste_id>/<int:page>/', methods=['GET', 'POST'])
+def list_subformulas_per_taste(taste_id, page):
     per_page = int(config['PAGING']['subformulas_per_page'])
     search_text = request.args.get('search_text')
     
@@ -920,7 +920,7 @@ def list_subformulas(taste_id, page):
     taste_rec = taste_repo.get_taste(taste_id)
     taste_recs = taste_repo.get_all_tastes()
                                                                   
-    return render_scm_template('list_subformulas.html',
+    return render_scm_template('subformulas_list_per_taste.html',
                                 search_text=search_text,
                                 taste_rec=taste_rec,
                                 taste_recs=taste_recs,
