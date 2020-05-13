@@ -19,9 +19,13 @@ class ProductManager:
                  subformula_repo,
                  material_version_cost_estimation_repo,
                  material_repo,
+                 plate_repo,
+                 box_repo,
                  fixed_formula_repo,
                  fixed_subformula_repo,
-                 fixed_material_subformula_repo):
+                 fixed_material_subformula_repo,
+                 fixed_plate_repo,
+                 fixed_box_repo):
         self.product_repo = product_repo
         self.product_image_path_repo = product_image_path_repo
         self.sample_image_path_repo = sample_image_path_repo
@@ -32,9 +36,13 @@ class ProductManager:
         self.subformula_repo = subformula_repo
         self.material_version_cost_estimation_repo = material_version_cost_estimation_repo
         self.material_repo = material_repo
+        self.plate_repo = plate_repo
+        self.box_repo = box_repo
         self.fixed_formula_repo = fixed_formula_repo
         self.fixed_subformula_repo = fixed_subformula_repo
         self.fixed_material_subformula_repo = fixed_material_subformula_repo
+        self.fixed_plate_repo = fixed_plate_repo
+        self.fixed_box_repo = fixed_box_repo
 
     def get_latest_groups_3_image_paths(self,
                                         product_recs):
@@ -99,7 +107,9 @@ class ProductManager:
 
         return product_dtos
 
-    def get_product_cost_estimation_details(self, product_id):
+    def get_fixed_product_cost_estimation_details(self, product_id):
+        fixed_plate_rec = self.fixed_plate_repo.get_fixed_plate_of_product(product_id)
+        fixed_box_rec = self.fixed_box_repo.get_fixed_box_of_product(product_id)
         fixed_formula_rec = self.fixed_formula_repo.get_fixed_formula_of_product(product_id)
         fixed_subformula_recs = self.fixed_subformula_repo.get_fixed_subformulas_of_fixed_formula(fixed_formula_rec.id)
 
@@ -114,6 +124,8 @@ class ProductManager:
             end_fixed_material_subformula_recs.append(len(fixed_material_subformula_recs))
 
         return fixed_formula_rec, \
+            fixed_plate_rec, \
+            fixed_box_rec, \
             fixed_subformula_recs, \
             fixed_material_subformula_recs, \
             begin_fixed_material_subformula_recs, \
@@ -143,6 +155,22 @@ class ProductManager:
         self.product_repo.set_product_rec_fixed_flag(product_rec)
         message = 'Set product %s to fixed' % (product_rec.id)
         ProductManager.logger.info(message)
+
+        plate_rec = self.plate_repo.get_plate(product_rec.plate_id)
+        new_fixed_plate_id = self.fixed_plate_repo.add_fixed_plate(product_id=product_rec.id,
+                                                                   original_plate_id=plate_rec.id,
+                                                                   name=plate_rec.name,
+                                                                   description=plate_rec.description,
+                                                                   unit_count=plate_rec.unit_count,
+                                                                   unit_price=plate_rec.unit_price)
+
+        box_rec = self.box_repo.get_box(product_rec.box_id)
+        new_fixed_box_id = self.fixed_box_repo.add_fixed_box(product_id=product_rec.id,
+                                                             original_box_id=box_rec.id,
+                                                             name=box_rec.name,
+                                                             description=box_rec.description,
+                                                             unit_count=box_rec.unit_count,
+                                                             unit_price=box_rec.unit_price)
 
         formula_rec = self.formula_repo.get_formula(product_rec.formula_id)
         new_fixed_formula_id = self.fixed_formula_repo.add_fixed_formula(product_id=product_rec.id,

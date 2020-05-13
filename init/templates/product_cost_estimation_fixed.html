@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<h1>Cost estimation for product "{{ product_rec.name }}"</h1>
+<h1>Cost estimation for product "{{ product_rec.name }}" (FIXED)</h1>
 
 <table class="table table-striped">
     <thead>
@@ -50,6 +50,18 @@
             <td>{{ fixed_subformula_recs[i].total_cost }} x {{fixed_subformula_recs[i].count}}</td>
         </tr>
     {% endfor %}
+    <tr>
+        <td><b>Plate</b></td>
+        <td>{{fixed_plate_rec.name}}</td>
+        <td></td>
+        <td>{{ fixed_plate_rec.unit_price / fixed_plate_rec.unit_count }}</td>
+    </tr>
+    <tr>
+        <td><b>Box</b></td>
+        <td>{{fixed_box_rec.name}}</td>
+        <td></td>
+        <td>{{ fixed_box_rec.unit_price / fixed_box_rec.unit_count }}</td>
+    </tr>
     <tr>
         <td><b>Prodduct total cost</b></td>
         <td></td>

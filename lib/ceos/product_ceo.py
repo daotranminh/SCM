@@ -126,7 +126,6 @@ class ProductCEO:
                 box_rec = self.box_repo.get_box(product_rec.box_id)
             box_cost = box_rec.unit_price / box_rec.unit_count
 
-
             self.product_repo.update_cost_product_rec(product_rec, formula_cost + plate_cost + box_cost)
         
             message = 'New cost of product %s is %s' % (product_id, formula_cost + plate_cost + box_cost)

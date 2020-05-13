@@ -46,4 +46,4 @@ class FixedSubFormulaRepository:
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add fixed_subformula_rec. Details: %s' % (str(ex))
             FixedSubFormulaRepository.logger.error(message)
-            raise ScmException(ErrorCodes.ERROR_ADD_SUBFORMULA_FAILED, message)
+            raise ScmException(ErrorCodes.ERROR_ADD_FIXED_SUBFORMULA_FAILED, message)

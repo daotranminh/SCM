@@ -35,6 +35,8 @@ from lib.repo.sample_images_group_repository import SampleImagesGroupRepository
 from lib.repo.fixed_formula_repository import FixedFormulaRepository
 from lib.repo.fixed_subformula_repository import FixedSubFormulaRepository
 from lib.repo.fixed_material_subformula_repository import FixedMaterialSubFormulaRepository
+from lib.repo.fixed_plate_repository import FixedPlateRepository
+from lib.repo.fixed_box_repository import FixedBoxRepository
 
 from lib.managers.box_manager import BoxManager
 from lib.managers.material_manager import MaterialManager
@@ -88,6 +90,8 @@ fixed_subformula_repo = FixedSubFormulaRepository(db)
 fixed_material_subformula_repo = FixedMaterialSubFormulaRepository(db)
 plate_repo = PlateRepository(db)
 box_repo = BoxRepository(db)
+fixed_plate_repo = FixedPlateRepository(db)
+fixed_box_repo = FixedBoxRepository(db)
 
 ###################################################################################
 # MANAGERS
@@ -129,9 +133,13 @@ product_manager = ProductManager(product_repo,
                                  subformula_repo,
                                  material_version_cost_estimation_repo,
                                  material_repo,
+                                 plate_repo,
+                                 box_repo,
                                  fixed_formula_repo,
                                  fixed_subformula_repo,
-                                 fixed_material_subformula_repo)
+                                 fixed_material_subformula_repo,
+                                 fixed_plate_repo,
+                                 fixed_box_repo)
 plate_manager = PlateManager(plate_repo,
                              product_repo,
                              order_repo)
@@ -1673,7 +1681,10 @@ def update_order(order_id):
             if payment_status != int(PaymentStatus.NOT_PAID):
                 paid_on = request.form['paid_on']
 
-            paid_by_customer = Decimal(request.form['paid_by_customer'])
+            try:
+                paid_by_customer = Decimal(request.form['paid_by_customer'])
+            except decimal.InvalidOperation:
+                paid_by_customer = order_rec.paid_by_customer
 
             message = request.form['message']
 
@@ -1866,7 +1877,7 @@ def product_cost_estimation_details(product_id):
         fixed_subformula_recs, \
         fixed_material_subformula_recs, \
         begin_fixed_material_subformula_recs, \
-        end_fixed_material_subformula_recs = product_manager.get_product_cost_estimation_details(product_id)
+        end_fixed_material_subformula_recs = product_manager.get_fixed_product_cost_estimation_details(product_id)
 
         return render_scm_template('product_cost_estimation_fixed.html',
                                    product_rec=product_rec,

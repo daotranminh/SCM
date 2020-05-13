@@ -268,3 +268,23 @@ class FixedMaterialSubFormula(db.Model):
     amount = Column(Numeric(10, 2))
     cost = Column(Numeric(10, 2))
     fixed_on = Column(DateTime(), default=datetime.datetime.utcnow)
+
+class FixedBox(db.Model):
+    __tablename__ = 'fixed_box'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    product_id = Column(Integer, ForeignKey(Product.id))
+    original_box_id = Column(Integer, ForeignKey(Box.id))
+    name = Column(String(200))
+    description = Column(String(400))
+    unit_count = Column(Integer, default=1)
+    unit_price = Column(Numeric(10, 2))
+
+class FixedPlate(db.Model):
+    __tablename__ = 'fixed_plate'
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    original_plate_id = Column(Integer, ForeignKey(Plate.id))
+    product_id = Column(Integer, ForeignKey(Product.id))
+    name = Column(String(200))
+    description = Column(String(400))
+    unit_count = Column(Integer, default=1)
+    unit_price = Column(Numeric(10, 2))
