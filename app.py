@@ -1832,23 +1832,51 @@ def product_details(product_id):
 
 @app.route('/product_cost_estimantion_details/<int:product_id>', methods=['GET', 'POST'])
 def product_cost_estimation_details(product_id):
-    product_rec = product_repo.get_product(product_id)
+    product_rec = product_repo.get_product(product_id)    
+
     if product_rec.is_fixed == False:
-        return redirect(url_for('formula_cost_estimation_details', formula_id=product_rec.formula_id))
+        formula_rec, \
+        subformula_recs, \
+        subformula_counts, \
+        taste_names, \
+        subformula_cost_estimations, \
+        material_cost_estimation_dtos, \
+        begin_material_cost_estimation_dtos, \
+        end_material_cost_estimation_dtos = formula_director.get_formula_cost_estimation_details(product_rec.formula_id)
+
+        plate_rec = plate_repo.get_plate(product_rec.plate_id)
+        box_rec = box_repo.get_box(product_rec.box_id)
+
+        return render_scm_template('product_cost_estimation_not_fixed.html',
+                                    product_rec=product_rec,
+                                    formula_rec=formula_rec,
+                                    subformula_recs=subformula_recs,
+                                    subformula_counts=subformula_counts,
+                                    taste_names=taste_names,
+                                    subformula_cost_estimations=subformula_cost_estimations,
+                                    material_cost_estimation_dtos=material_cost_estimation_dtos,
+                                    begin_material_cost_estimation_dtos=begin_material_cost_estimation_dtos,
+                                    end_material_cost_estimation_dtos=end_material_cost_estimation_dtos,
+                                    plate_rec=plate_rec,
+                                    box_rec=box_rec)
     else:
         fixed_formula_rec, \
+        fixed_plate_rec, \
+        fixed_box_rec, \
         fixed_subformula_recs, \
         fixed_material_subformula_recs, \
         begin_fixed_material_subformula_recs, \
         end_fixed_material_subformula_recs = product_manager.get_product_cost_estimation_details(product_id)
 
-        return render_scm_template('product_cost_estimation.html',
+        return render_scm_template('product_cost_estimation_fixed.html',
                                    product_rec=product_rec,
                                    fixed_formula_rec=fixed_formula_rec,
                                    fixed_subformula_recs=fixed_subformula_recs,
                                    fixed_material_subformula_recs=fixed_material_subformula_recs,
                                    begin_fixed_material_subformula_recs=begin_fixed_material_subformula_recs,
-                                   end_fixed_material_subformula_recs=end_fixed_material_subformula_recs)
+                                   end_fixed_material_subformula_recs=end_fixed_material_subformula_recs,
+                                   fixed_plate_rec=fixed_plate_rec,
+                                   fixed_box_rec=fixed_box_rec)
 
 def __extract_update_product_args(product_rec, args):
     current_product_name = args.get('product_name_arg')

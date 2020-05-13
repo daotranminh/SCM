@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Cost estimation for product "{{ product_rec.name }}"</h1>
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>      
+      </tr>
+    </thead>
+    <tbody>        
+        <tr><td>Formula</td><td>{{ formula_rec.description }}</td></tr>
+        <tr><td>Registered on</td><td>{{ formula_rec.registered_on }}</td></tr>
+    </tbody>
+</table>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for i in range(subformula_recs|length) %}
+        <tr>
+            <td><b>{{subformula_recs[i].name}}</b> ({{taste_names[i]}}) x {{subformula_counts[i]}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    
+        {% for j in range(begin_material_cost_estimation_dtos[i], end_material_cost_estimation_dtos[i]) %}
+        <tr>
+            <td>{{ material_cost_estimation_dtos[j].material_name }}</td>
+            <td>{{ material_cost_estimation_dtos[j].amount }}</td>
+            <td>{{ material_cost_estimation_dtos[j].unit_price }} / {{ material_cost_estimation_dtos[j].unit_amount }} {{ material_cost_estimation_dtos[j].unit }}</td>
+            <td>{{ material_cost_estimation_dtos[j].cost }}</td> 
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>Subformula total</td>
+            <td></td>
+            <td></td>
+            <td>{{ subformula_cost_estimations[i].total_cost }} x {{subformula_counts[i]}}</td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td><b>Formula total</b></td>
+        <td></td>
+        <td></td>
+        <td><b>{{ formula_rec.total_cost }}</b></td>
+    </tr>
+    <tr>
+        <td><b>Plate</b></td>
+        <td>{{plate_rec.name}}</td>
+        <td></td>
+        <td>{{ plate_rec.unit_price / plate_rec.unit_count }}</td>
+    </tr>
+    <tr>
+        <td><b>Box</b></td>
+        <td>{{box_rec.name}}</td>
+        <td></td>
+        <td>{{ box_rec.unit_price / box_rec.unit_count }}</td>
+    </tr>
+    <tr>
+        <td><b>Total product cost</b></td>
+        <td></td>
+        <td></td>
+        <td><b>{{ product_rec.total_cost }}</b></td>
+    </tr>
+    </tbody>
+</table>
+
+{% endblock %}
