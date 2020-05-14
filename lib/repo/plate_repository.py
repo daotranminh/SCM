@@ -17,7 +17,9 @@ class PlateRepository:
         return Plate.query.filter(Plate.id == plate_id).first()
 
     def get_all_plates(self):
-        return Plate.query.all()
+        return Plate.query. \
+            order_by(Plate.name). \
+            all()
 
     def add_plate(self,
                   name,

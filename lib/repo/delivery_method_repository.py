@@ -14,7 +14,9 @@ class DeliveryMethodRepository:
         self.db = db
 
     def get_all_delivery_methods(self):
-        return DeliveryMethod.query.all()
+        return DeliveryMethod.query. \
+            order_by(DeliveryMethod.name). \
+            all()
 
     def get_delivery_method(self, id):
         return DeliveryMethod.query.filter(DeliveryMethod.id == id).first()

@@ -17,7 +17,9 @@ class BoxRepository:
         return Box.query.filter(Box.id == box_id).first()
 
     def get_all_boxes(self):
-        return Box.query.all()
+        return Box.query. \
+            order_by(Box.name). \
+            all()
 
     def add_box(self,
                 name,

@@ -14,7 +14,9 @@ class DecorationTechniqueRepository:
         self.db = db
 
     def get_all_decoration_techniques(self):
-        return DecorationTechnique.query.all()
+        return DecorationTechnique.query. \
+            order_by(DecorationTechnique.name). \
+            all()
 
     def get_decoration_technique(self, id):
         return DecorationTechnique.query.filter(DecorationTechnique.id == id).first()

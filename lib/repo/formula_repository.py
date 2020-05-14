@@ -21,7 +21,9 @@ class FormulaRepository:
         self.db.session.flush()
 
     def get_all_formulas(self):
-        return Formula.query.all()
+        return Formula.query. \
+            order_by(Formula.name). \
+            all()
 
     def get_paginated_formulas(self,
                                page,

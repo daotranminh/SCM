@@ -14,7 +14,9 @@ class TasteRepository:
         self.db = db
 
     def get_all_tastes(self):
-        return Taste.query.all()
+        return Taste.query. \
+            order_by(Taste.name). \
+            all()
 
     def get_taste(self, id):
         return Taste.query.filter(Taste.id == id).first()

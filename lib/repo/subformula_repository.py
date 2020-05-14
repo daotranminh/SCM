@@ -23,10 +23,15 @@ class SubFormulaRepository:
             first()
         
     def get_all_subformulas(self):
-        return SubFormula.query.all()
+        return SubFormula.query. \
+            order_by(SubFormula.name). \
+            all()
 
     def get_subformulas_of_taste(self, taste_id):
-        return SubFormula.query.filter(SubFormula.taste_id == taste_id).all()
+        return SubFormula.query. \
+            filter(SubFormula.taste_id == taste_id). \
+            order_by(SubFormula.name). \
+            all()
 
     def get_subformulas_of_formula(self, formula_id):
         formula_subformula_query = self.db.session.query(FormulaSubFormula.subformula_id). \
@@ -52,6 +57,9 @@ class SubFormulaRepository:
             search_pattern = '%' + search_text + '%'
             subformula_query = subformula_query.filter((SubFormula.name.ilike(search_pattern)) |
                                                 (SubFormula.description.ilike(search_pattern)))
+
+        subformula_query = subformula_query.order_by(SubFormula.name)
+        
         return subformula_query.paginate(page, per_page, error_out=False)
 
 
@@ -72,6 +80,9 @@ class SubFormulaRepository:
             search_pattern = '%' + search_text + '%'
             subformula_query = subformula_query.filter((SubFormula.name.ilike(search_pattern)) |
                                                 (SubFormula.description.ilike(search_pattern)))
+        
+        subformula_query = subformula_query.order_by(SubFormula.name)
+        
         return subformula_query.paginate(page, per_page, error_out=False)
 
     def add_subformula(self,

@@ -14,7 +14,9 @@ class DecorationFormRepository:
         self.db = db
 
     def get_all_decoration_forms(self):
-        return DecorationForm.query.all()
+        return DecorationForm.query. \
+            order_by(DecorationForm.name). \
+            all()
 
     def get_decoration_form(self, id):
         return DecorationForm.query.filter(DecorationForm.id == id).first()

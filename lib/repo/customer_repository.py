@@ -14,7 +14,9 @@ class CustomerRepository:
         self.db = db
 
     def get_all_customers(self):
-        return Customer.query.all()
+        return Customer.query. \
+            order_by(Customer.name). \
+            all()
 
     def get_paginated_customers(self,
                                 page,
@@ -26,6 +28,7 @@ class CustomerRepository:
             customer_recs = customer_recs.filter((Customer.name.ilike(search_pattern)) |
                                                  (Customer.phone.ilike(search_pattern)) |
                                                  (Customer.facebook.ilike(search_pattern)))
+        customer_recs = customer_recs.order_by(Customer.name)
         return customer_recs.paginate(page, per_page, error_out=False)
     
     def get_customer(self, customer_id):

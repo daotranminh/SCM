@@ -1,4 +1,5 @@
 import logging
+from sqlalchemy import desc
 
 from flask_sqlalchemy import sqlalchemy
 
@@ -14,7 +15,9 @@ class ProductRepository:
         self.db = db
 
     def get_all_products(self):
-        return Product.query.all()
+        return Product.query. \
+            order_by(desc(Product.id)). \
+            all()
 
     def get_product(self, id):
         return Product.query.filter(Product.id == id).first()

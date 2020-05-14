@@ -1,6 +1,7 @@
 import logging
 
 from flask_sqlalchemy import sqlalchemy
+from sqlalchemy import desc
 
 from init import Order, Customer, DeliveryMethod, config
 from utilities.scm_enums import ErrorCodes, PaymentStatus
@@ -14,7 +15,9 @@ class OrderRepository:
         self.db = db
 
     def get_all_orders(self):
-        return Order.query.all()
+        return Order.query. \
+            order_by(desc(Order.id)). \
+            all()
 
     def get_paginated_order_dtos(self,
                                 page,

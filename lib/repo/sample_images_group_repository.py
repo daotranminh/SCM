@@ -24,6 +24,7 @@ class SampleImagesGroupRepository:
 
     def get_all_sample_images_groups(self):
         return SampleImagesGroup.query. \
+            order_by(SampleImagesGroup.name). \
             all()
 
     def get_sample_images_groups_by_topic(self,
