@@ -21,6 +21,7 @@ class MaterialVersionCostEstimationRepository:
                                             query(MaterialVersionCostEstimation, material_query.c.name). \
                                             filter(MaterialVersionCostEstimation.cost_estimation_id == cost_estimation_id). \
                                             join(material_query, material_query.c.id == MaterialVersionCostEstimation.material_id). \
+                                            order_by(material_query.c.name). \
                                             all()
 
         return material_version_cost_estimations

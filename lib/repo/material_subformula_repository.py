@@ -52,7 +52,6 @@ class MaterialSubFormulaRepository:
     def get_material_dtos_of_subformula(self, subformula_id):
         sub_query_material = self.db.session. \
                              query(Material). \
-                             order_by(Material.name). \
                              subquery()
 
         material_subformula_dtos = self.db.session. \
@@ -63,6 +62,7 @@ class MaterialSubFormulaRepository:
                                           sub_query_material.c.unit). \
                                     filter(MaterialSubFormula.subformula_id == subformula_id). \
                                     join(sub_query_material, sub_query_material.c.id == MaterialSubFormula.material_id). \
+                                    order_by(sub_query_material.c.name). \
                                     all()
         return material_subformula_dtos
     

@@ -16,6 +16,7 @@ class FixedMaterialSubFormulaRepository:
     def get_fixed_materials_of_fixed_subformula(self, fixed_subformula_id):
         return FixedMaterialSubFormula.query. \
             filter(FixedMaterialSubFormula.fixed_subformula_id == fixed_subformula_id). \
+            order_by(FixedMaterialSubFormula.name). \
             all()
 
     def add_fixed_material_subformula(self,
