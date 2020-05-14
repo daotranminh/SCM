@@ -1011,7 +1011,7 @@ def add_subformula():
             return redirect_with_message(url_for('list_subformulas', taste_id=taste_id), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('add_subformula.html',
+            return render_scm_template_with_message('subformula_add.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
@@ -1019,7 +1019,7 @@ def add_subformula():
                                                     material_dtos=material_dtos,
                                                     subformula_type_names=scm_constants.FORMULA_TYPE_NAMES)
     else:
-        return render_scm_template('add_subformula.html',
+        return render_scm_template('subformula_add.html',
                                    taste_recs=taste_recs,
                                    material_dtos=material_dtos,
                                    subformula_type_names=scm_constants.FORMULA_TYPE_NAMES)
@@ -1067,7 +1067,7 @@ def update_subformula(subformula_id):
             return redirect_with_message(url_for('list_subformulas', taste_id=taste_id), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('update_subformula.html',
+            return render_scm_template_with_message('subformula_update.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
@@ -1078,7 +1078,7 @@ def update_subformula(subformula_id):
                                                     subformula_type_names=scm_constants.FORMULA_TYPE_NAMES,
                                                     total_cost=total_cost)
 
-    return render_scm_template('update_subformula.html',
+    return render_scm_template('subformula_update.html',
                                subformula_rec=subformula_rec,
                                material_subformulas=material_subformulas,
                                taste_recs=taste_recs,

@@ -61,10 +61,11 @@
 	  {% endfor %}
 	</select>
 
-	<input type="text"
+	<input type="number"
 	       id="material_amount_{{i}}"
 	       name="material_amount_{{i}}"
-	       value="{{material_subformulas[i].amount}}"
+		   value="{{material_subformulas[i].amount}}"
+		   style="text-align:right"
 	       onkeyup="update_cost(this)">
 
 	<select id="material_unit_price_{{i}}"
@@ -81,10 +82,11 @@
 
 	{% for material_dto in material_dtos %}
 	  {% if material_dto.material_id == material_subformulas[i].material_id %}	  
-  	  <input type="text"
+  	  <input type="number"
 	         id="material_cost_{{i}}"
-	         name="material_cost_{{i}}"
-		 value="{{ material_dto.unit_price * material_subformulas[i].amount / material_dto.unit_amount }}"
+			 name="material_cost_{{i}}"
+			 style="text-align:right"
+		 	 value="{{ material_dto.unit_price * material_subformulas[i].amount / material_dto.unit_amount }}"
 	         disabled>
 	  {% endif %}
 	{% endfor %}
@@ -98,10 +100,11 @@
 
       <div>
 	<input
-	   type="text"
+	   type="number"
 	   id="total_cost"
 	   name="total_cost"
 	   value="{{total_cost}}"
+	   style="text-align:right"
 	   disabled>
       </div>
       

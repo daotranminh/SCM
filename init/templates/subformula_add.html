@@ -47,9 +47,10 @@
 	  {% endfor %}
 	</select>
 
-	<input type="text"
+	<input type="number"
 	       id="material_amount_0"
-	       name="material_amount_0"
+		   name="material_amount_0"
+		   style="text-align:right"
 	       onkeyup="update_cost(this)">
 
 	<select id="material_unit_price_0"
@@ -60,9 +61,10 @@
 	  	{% endfor %}
 	</select>
 
-	<input type="text"
+	<input type="number"
 	       id="material_cost_0"
-	       name="material_cost_0"
+		   name="material_cost_0"
+		   style="text-align:right"
 	       disabled>
 
 	<button type="button"
@@ -72,7 +74,7 @@
       </div>
 
       <div>
-	<input type="text" id="total_cost" name="total_cost" disabled>
+	<input type="number" id="total_cost" name="total_cost" style="text-align:right" disabled>
       </div>
       
       <p><button type="button" class="btn btn-default pullright" onclick="add_another_material();">Add another material</button></p>
