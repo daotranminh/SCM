@@ -1196,7 +1196,7 @@ def add_formula():
     subformula_cost_dict = subformula_manager.get_taste_subformula_dict()
 
     if request.method == 'GET':
-        return render_scm_template('add_formula.html',
+        return render_scm_template('formula_add.html',
                                    taste_recs=taste_recs,
                                    taste_subformula_dict=taste_subformula_dict,
                                    subformula_dict=subformula_dict,
@@ -1223,7 +1223,7 @@ def add_formula():
             return redirect_with_message(url_for('list_formulas'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('add_formula.html',
+            return render_scm_template_with_message('formula_add.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
