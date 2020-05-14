@@ -5,7 +5,6 @@
 {% from "includes/_formhelpers.html" import render_field %}
 
 <div class="row">
-  <div class="col-md-9 col-md-offset-3">
     <h1>Update formula "{{formula_rec.name}} ({{formula_rec.id}})"</h1>
     <form method="POST" action="">
       <div class="form-group">
@@ -32,7 +31,7 @@
         </select>
 
         <label for="subformula_choices_{{i}}">Subformula</label>
-	      <select id="subformula_choices_{{i}}" name="subformula_choices_{{i}}">
+	      <select id="subformula_choices_{{i}}" name="subformula_choices_{{i}}" onchange="subformula_change(this)">
             {% for subformula_id in taste_subformula_dict[subformula_recs[i].taste_id] %}
                 {% if subformula_recs[i].id == subformula_id %}
                     <option value="{{subformula_id}}" selected>{{subformula_dict[subformula_id]}}</option>
@@ -42,14 +41,25 @@
             {% endfor %}
         </select>
 
+        <label for="subformula_single_cost_{{i}}">Single cost</label>
+        <input type="number" style="text-align:right" id="subformula_single_cost_{{i}}" name="subformula_single_cost_{{i}}" value="{{subformula_cost_dict[subformula_recs[i].id]}}" disabled/>
+
         <label for="subformula_count_{{i}}">Count</label>
-        <input type="number" style="text-align:right" id="subformula_count_{{i}}" name="subformula_count_{{i}}" min="1" value="{{subformula_counts[i]}}"/>
+        <input type="number" style="text-align:right" id="subformula_count_{{i}}" name="subformula_count_{{i}}" min="1" value="{{subformula_counts[i]}}" onchange="subformula_count_change(this)"/>
+
+        <label for="subformula_cost_{{i}}">Cost</label>
+        <input type="number" style="text-align:right" id="subformula_cost_{{i}}" name="subformula_cost_{{i}}" value="{{(subformula_cost_dict[subformula_recs[i].id]|float) * subformula_counts[i]}}" disabled/>
 
         <button type="button" class="btn btn-default pullright" id="delete_subformula_{{i}}" onclick="delete_subformula(this);">Delete</button>
       </div>
       {% endfor %}
       
     <p><button type="button" class="btn btn-default pullright" onclick="add_another_subformula();">Add another subformula</button></p>
+
+    <div class="form-group">
+      <label for="total_formula_cost">Total formula cost</label>
+    <input type="number" style="text-align:right" id="total_formula_cost" name="total_formula_cost" value="{{formula_rec.total_cost}}" disabled/>
+    </div>
 
       <div class="form-group">
 	<label for="formula_note">Note</label>
@@ -61,13 +71,13 @@
       
       <p><input type="submit" class="btn btn-primary" value="Submit"/></p>
     </form>
-  </div>
 </div>
 
 <script>
 
 var taste_subformula_dict = {{taste_subformula_dict | tojson}};
 var subformula_dict = {{subformula_dict | tojson}}
+var subformula_cost_dict = {{subformula_cost_dict | tojson}}
 
 </script>
 

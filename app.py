@@ -1243,6 +1243,7 @@ def update_formula(formula_id):
     subformula_cost_dict = subformula_manager.get_taste_subformula_dict()
 
     if request.method == 'GET':
+        print(subformula_cost_dict)
         return render_scm_template('formula_update.html',
                                     formula_rec=formula_rec,
                                     taste_recs=taste_recs,
