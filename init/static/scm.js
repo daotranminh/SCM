@@ -294,6 +294,39 @@ function update_order_taste_change(taste_choices)
     }
 }
 
+function update_subformula_cost(strIndex)
+{
+    var subformula_single_cost_id = "subformula_single_cost_" + strIndex
+    var subformula_single_cost = document.getElementById(subformula_single_cost_id)
+
+    var subformula_count_id = "subformula_count_" + strIndex
+    var subformula_count = document.getElementById(subformula_count_id)
+
+    var subformula_cost_id = "subformula_cost_" + strIndex
+    var subformula_cost = document.getElementById(subformula_cost_id)
+    subformula_cost.value = parseFloat(subformula_single_cost.value) * parseFloat(subformula_count.value)
+}
+
+function subformula_count_change(subformula_count)
+{
+    var strIndex = get_index(subformula_count)
+    update_subformula_cost(strIndex)
+}
+
+function subformula_change(subformula_choices)
+{
+    var strIndex = get_index(subformula_choices)
+
+    var subformula_single_cost_id = "subformula_single_cost_" + strIndex
+    var subformula_single_cost = document.getElementById(subformula_single_cost_id)
+
+    var index = subformula_choices.options[subformula_choices.selectedIndex].value
+    subformula_single_cost_value = parseFloat(subformula_cost_dict[index])
+    subformula_single_cost.value = subformula_single_cost_value
+
+    update_subformula_cost(strIndex)
+}
+
 function taste_change(taste_choices)
 {
     var strIndex = get_index(taste_choices)
@@ -317,6 +350,8 @@ function taste_change(taste_choices)
             subformula_choices.appendChild(opt)
         }
     }
+
+    subformula_change(subformula_choices)
 }
 
 function add_new_product_to_order()

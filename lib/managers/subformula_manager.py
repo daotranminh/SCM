@@ -89,16 +89,19 @@ class SubFormulaManager:
     def get_taste_subformula_dict(self):
         taste_subformula_dict = {}
         subformula_dict = {}
+        subformula_cost_dict = {}
 
         subformula_recs = self.subformula_repo.get_all_subformulas()
         for subformula_rec in subformula_recs:
             subformula_dict[subformula_rec.id] = subformula_rec.name
+            subformula_cost_dict[subformula_rec.id] = str(subformula_rec.total_cost)
+
             if subformula_rec.taste_id in taste_subformula_dict:
                 taste_subformula_dict[subformula_rec.taste_id].append(subformula_rec.id)
             else:
                 taste_subformula_dict[subformula_rec.taste_id] = [subformula_rec.id]
 
-        return taste_subformula_dict, subformula_dict
+        return taste_subformula_dict, subformula_dict, subformula_cost_dict
 
     def __post_process_subformula_infos(self, paginated_subformula_infos):
         subformula_dtos = []

@@ -1190,13 +1190,17 @@ def __extract_formula_props(props_dict):
 @app.route('/add_formula', methods=['GET', 'POST'])
 def add_formula():
     taste_recs = taste_repo.get_all_tastes()
-    taste_subformula_dict, subformula_dict = subformula_manager.get_taste_subformula_dict()
+    
+    taste_subformula_dict, \
+    subformula_dict, \
+    subformula_cost_dict = subformula_manager.get_taste_subformula_dict()
 
     if request.method == 'GET':
         return render_scm_template('add_formula.html',
                                    taste_recs=taste_recs,
                                    taste_subformula_dict=taste_subformula_dict,
-                                   subformula_dict=subformula_dict)
+                                   subformula_dict=subformula_dict,
+                                   subformula_cost_dict=subformula_cost_dict)
     elif request.method == 'POST':
         try:
             formula_name, \
@@ -1225,14 +1229,18 @@ def add_formula():
                                                     ex,
                                                     taste_recs=taste_recs,
                                                     taste_subformula_dict=taste_subformula_dict,
-                                                    subformula_dict=subformula_dict)
+                                                    subformula_dict=subformula_dict,
+                                                    subformula_cost_dict=subformula_cost_dict)
 
 @app.route('/update_formula/<int:formula_id>', methods=['GET', 'POST'])
 def update_formula(formula_id):
     formula_rec = formula_repo.get_formula(formula_id)
-    taste_recs = taste_repo.get_all_tastes()
-    taste_subformula_dict, subformula_dict = subformula_manager.get_taste_subformula_dict()
+    taste_recs = taste_repo.get_all_tastes()    
     subformula_recs, subformula_counts = formula_manager.get_subformula_info_of_formula(formula_id)
+    
+    taste_subformula_dict, \
+    subformula_dict, \
+    subformula_cost_dict = subformula_manager.get_taste_subformula_dict()
 
     if request.method == 'GET':
         return render_scm_template('formula_update.html',
@@ -1240,6 +1248,7 @@ def update_formula(formula_id):
                                     taste_recs=taste_recs,
                                     taste_subformula_dict=taste_subformula_dict,
                                     subformula_dict=subformula_dict,
+                                    subformula_cost_dict=subformula_cost_dict,
                                     subformula_recs=subformula_recs,
                                     subformula_counts=subformula_counts)
     elif request.method == 'POST':
