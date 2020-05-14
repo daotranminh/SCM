@@ -717,9 +717,9 @@ def add_material():
                        unit_amount,
                        unit)
             flash(message, 'danger')            
-            return render_scm_template('add_material.html', unit_choices=scm_constants.UNIT_CHOICES)
+            return render_scm_template('material_add.html', unit_choices=scm_constants.UNIT_CHOICES)
     else:
-        return render_scm_template('add_material.html', unit_choices=scm_constants.UNIT_CHOICES)
+        return render_scm_template('material_add.html', unit_choices=scm_constants.UNIT_CHOICES)
 
 @app.route('/update_material/<int:material_id>', methods=['GET', 'POST'])
 def update_material(material_id):
@@ -727,7 +727,7 @@ def update_material(material_id):
     material_version_rec = material_version_repo.get_latest_version_of_material(material_id)
 
     if request.method == 'GET':        
-        return render_scm_template('update_material.html',
+        return render_scm_template('material_update.html',
                                     material_rec=material_rec,
                                     material_version_rec=material_version_rec,
                                     unit_choices=scm_constants.UNIT_CHOICES)
@@ -752,7 +752,7 @@ def update_material(material_id):
             return redirect_with_message(url_for('list_materials'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('update_material.html',
+            return render_scm_template_with_message('material_update.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
