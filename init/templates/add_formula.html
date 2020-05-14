@@ -32,7 +32,7 @@
             {% endfor %}
       </select>
 
-      <label for="subformula_single_cost_0">Cost</label>
+      <label for="subformula_single_cost_0">Single cost</label>
       <input type="number" style="text-align:right" id="subformula_single_cost_0" name="subformula_single_cost_0" value="{{subformula_cost_dict[taste_subformula_dict[taste_recs[0].id][0]]}}" disabled/>
       
       <label for="subformula_count_0">Count</label>
@@ -45,6 +45,11 @@
       </div>
       
     <p><button type="button" class="btn btn-default pullright" onclick="add_another_subformula();">Add another subformula</button></p>
+
+      <div class="form-group">
+        <label for="total_formula_cost">Total formula cost</label>
+      <input type="number" style="text-align:right" id="total_formula_cost" name="total_formula_cost" value="{{subformula_cost_dict[taste_subformula_dict[taste_recs[0].id][0]]}}" disabled/>
+      </div>
 
       <div class="form-group">
 	<label for="formula_note">Note</label>

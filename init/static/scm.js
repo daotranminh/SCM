@@ -14,21 +14,31 @@ function add_another_subformula()
     var taste_choices = next_subformula.children[1]
     var subformula_label = next_subformula.children[2]
     var subformula_choices = next_subformula.children[3]
-    var subformula_count_label = next_subformula.children[4]
-    var subformula_count = next_subformula.children[5]
-    var delete_btn = next_subformula.children[6]
+    var subformula_single_cost_label = next_subformula.children[4]
+    var subformula_single_cost = next_subformula.children[5]
+    var subformula_count_label = next_subformula.children[6]
+    var subformula_count = next_subformula.children[7]
+    var subformula_cost_label = next_subformula.children[8]
+    var subformula_cost = next_subformula.children[9]
+    var delete_btn = next_subformula.children[10]
 
     taste_label.htmlFor = "taste_choices_" + len.toString()
     taste_choices.id = "taste_choices_" + len.toString()
     subformula_label.htmlFor = "subformula_choices_" + len.toString()
     subformula_choices.id = "subformula_choices_" + len.toString()
+    subformula_single_cost_label.htmlFor = "subformula_single_cost_" + len.toString()
+    subformula_single_cost.id = "subformula_single_cost_" + len.toString()
     subformula_count_label.htmlFor = "subformula_count_" + len.toString()
     subformula_count.id = "subformula_count_" + len.toString()
+    subformula_cost_label.htmlFor = "subformula_cost_" + len.toString()
+    subformula_cost.id = "subformula_cost_" + len.toString()
     delete_btn.id = "delete_subformula_" + len.toString()
 
     taste_choices.name = "taste_choices_" + len.toString()
     subformula_choices.name = "subformula_choices_" + len.toString()
+    subformula_single_cost.name = "subformula_single_cost_" + len.toString()
     subformula_count.name = "subformula_count_" + len.toString()
+    subformula_cost.name = "subformula_cost_" + len.toString()
 
     subformula_count.value = "1"
 
@@ -58,6 +68,7 @@ function add_another_subformula()
     }
   
     last_subformula.insertAdjacentElement("afterend", next_subformula)
+    subformula_change(subformula_choices)
     return false;
 }
 
@@ -91,21 +102,34 @@ function delete_subformula(delete_btn)
         var taste_choices = subformula.children[1]
         var subformula_label = subformula.children[2]
         var subformula_choices = subformula.children[3]
-        var subformula_count_label = subformula.children[4]
-        var subformula_count = subformula.children[5]
-        var delete_btn = subformula.children[6]
+        var subformula_single_cost_label = subformula.children[4]
+        var subformula_single_cost = subformula.children[5]
+        var subformula_count_label = subformula.children[6]
+        var subformula_count = subformula.children[7]
+        var subformula_cost_label = subformula.children[8]
+        var subformula_cost = subformula.children[9]
+        var delete_btn = subformula.children[10]        
 
         taste_label.htmlFor = "taste_choices_" + i.toString()
         taste_choices.id = "taste_choices_" + i.toString()
         subformula_label.htmlFor = "subformula_choices_" + i.toString()
         subformula_choices.id = "subformula_choices_" + i.toString()
+        subformula_single_cost_label.htmlFor = "subformula_single_cost_" + i.toString()
+        subformula_single_cost.id = "subformula_single_cost_" + i.toString()
         subformula_count_label.htmlFor = "subformula_count_" + i.toString()
         subformula_count.id = "subformula_count" + i.toString()
+        subformula_cost_label.htmlFor = "subformula_cost_" + i.toString()
+        subformula_cost.id = "subformula_cost_" + i.toString()
+        delete_btn.id = "delete_subformula_" + i.toString()
 
         taste_choices.name = "taste_choices_" + i.toString()
         subformula_choices.name = "subformula_choices_" + i.toString()
         subformula_count.name = "subformula_count_" + i.toString()
-    }    
+        subformula_single_cost.name = "subformula_single_cost_" + i.toString()
+        subformula_cost.name = "subformula_cost_" + i.toString()
+    }
+
+    update_total_formula_cost()
 }
 
 // ORDER
@@ -199,7 +223,7 @@ function extract_update_order_args()
             formulaId,              // 11
             decorationFormId,       // 12
             decorationTechniqueId,  // 13
-            boxToBeReturned,                // 14
+            boxToBeReturned,        // 14
             priceToCustomersStr,    // 15
             paidByCustomer,         // 16
             plateId,                // 17
@@ -305,6 +329,8 @@ function update_subformula_cost(strIndex)
     var subformula_cost_id = "subformula_cost_" + strIndex
     var subformula_cost = document.getElementById(subformula_cost_id)
     subformula_cost.value = parseFloat(subformula_single_cost.value) * parseFloat(subformula_count.value)
+
+    update_total_formula_cost()
 }
 
 function subformula_count_change(subformula_count)
@@ -352,6 +378,22 @@ function taste_change(taste_choices)
     }
 
     subformula_change(subformula_choices)
+}
+
+function update_total_formula_cost()
+{
+    subformula_list = document.getElementsByName("subformula[]")
+    var total_formula_cost_value = 0
+
+    for (let i = 0; i < subformula_list.length; ++i)
+    {
+        var subformula_cost_id = "subformula_cost_" + i.toString()
+        var subformula_cost = document.getElementById(subformula_cost_id)
+        total_formula_cost_value += parseFloat(subformula_cost.value)
+    }
+
+    var total_formula_cost = document.getElementById("total_formula_cost")
+    total_formula_cost.value = total_formula_cost_value
 }
 
 function add_new_product_to_order()
