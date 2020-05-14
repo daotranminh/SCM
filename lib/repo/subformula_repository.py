@@ -38,10 +38,28 @@ class SubFormulaRepository:
             all()
 
     def get_paginated_subformulas(self,
-                               taste_id,
-                               page,
-                               per_page,
-                               search_text):
+                                  page,
+                                  per_page,
+                                  search_text):
+        cost_estimation_query = self.db.session.query(CostEstimation.subformula_id, CostEstimation.total_cost). \
+            filter(CostEstimation.is_current == True). \
+            subquery()
+
+        subformula_query = self.db.session.query(SubFormula, cost_estimation_query.c.total_cost). \
+            outerjoin(cost_estimation_query, SubFormula.id == cost_estimation_query.c.subformula_id)
+
+        if search_text is not None and search_text != '':
+            search_pattern = '%' + search_text + '%'
+            subformula_query = subformula_query.filter((SubFormula.name.ilike(search_pattern)) |
+                                                (SubFormula.description.ilike(search_pattern)))
+        return subformula_query.paginate(page, per_page, error_out=False)
+
+
+    def get_paginated_subformulas_per_taste(self,
+                                            taste_id,
+                                            page,
+                                            per_page,
+                                            search_text):
         cost_estimation_query = self.db.session.query(CostEstimation.subformula_id, CostEstimation.total_cost). \
             filter(CostEstimation.is_current == True). \
             subquery()

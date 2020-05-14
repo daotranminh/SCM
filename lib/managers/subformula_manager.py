@@ -100,17 +100,7 @@ class SubFormulaManager:
 
         return taste_subformula_dict, subformula_dict
 
-    def get_paginated_subformula_dtos(self,
-                                   taste_id,
-                                   page,
-                                   per_page,
-                                   search_text):
-        paginated_subformula_infos = self.subformula_repo.get_paginated_subformulas(
-            taste_id,
-            page,
-            per_page,
-            search_text)
-
+    def __post_process_subformula_infos(self, paginated_subformula_infos):
         subformula_dtos = []
         db_changed = False
         for subformula_rec, subformula_cost in paginated_subformula_infos.items:
@@ -135,7 +125,29 @@ class SubFormulaManager:
                                               paginated_subformula_infos.next_num,
                                               paginated_subformula_infos.page,
                                               paginated_subformula_infos.pages)
-        return paginated_subformula_dtos, db_changed        
+        return paginated_subformula_dtos, db_changed
+
+    def get_paginated_subformula_dtos(self,
+                                      page,
+                                      per_page,
+                                      search_text):
+        paginated_subformula_infos = self.subformula_repo.get_paginated_subformulas(
+            page,
+            per_page,
+            search_text)
+        return self.__post_process_subformula_infos(paginated_subformula_infos)
+
+    def get_paginated_subformula_dtos_per_taste(self,
+                                                taste_id,
+                                                page,
+                                                per_page,
+                                                search_text):
+        paginated_subformula_infos = self.subformula_repo.get_paginated_subformulas_per_taste(
+            taste_id,
+            page,
+            per_page,
+            search_text)
+        return self.__post_process_subformula_infos(paginated_subformula_infos)
         
     def add_subformula(self,
                     subformula_name,

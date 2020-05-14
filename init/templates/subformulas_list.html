@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% from "includes/_formhelpers.html" import render_field %}
+
+{% if search_text == '' %}
+  <input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+{% else %}
+  <input type="text" class="form-control" value="{{search_text}}" id="searchInput">  
+{% endif %}
+<br/>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Registered on<i class="fa fa-sort-asc"></i></th>
+      <th>Cost estimation</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for subformula_dto in subformula_dtos.items %}
+    <tr>
+      <td><a href="{{ url_for('subformula_details', 
+	   subformula_id=subformula_dto.subformula_id) }}">{{subformula_dto.name}}</a></td>
+      <td>{{subformula_dto.registered_on}}</td>
+      <td><a href="{{ url_for('subformula_cost_estimation_details', subformula_id=subformula_dto.subformula_id) }}">{{subformula_dto.total_cost}}</a></td>
+      <td><a href="{{ url_for('update_subformula', 
+		                  subformula_id=subformula_dto.subformula_id) }}"
+                      class="btn btn-default pullright">Update</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{subformula_dtos.page}}/{{subformula_dtos.pages}}</li>
+
+  {% if subformula_dtos.has_prev %}
+  <li class="page-item"><a class="page-link"
+         href="{{ url_for('list_subformulas', 
+         taste_id=taste_rec.id,
+				 page=subformula_dtos.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if subformula_dtos.has_next %}
+  <li class="page-item"><a class="page-link"
+         href="{{ url_for('list_subformulas', 
+         taste_id=taste_rec.id,
+				 page=subformula_dtos.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
+
+<a href="{{ url_for('add_subformula') }}"
+   class="btn btn-default pullright">Add a new subformula</a>
+
+<script>
+  $('#taste_choices').select2();
+
+  $("#searchInput").keyup(function(e) {
+    if (e.keyCode == 13) {
+      let search_text = this.value
+      location.href = "/list_subformulas/1/?search_text=" + search_text
+    }
+  })
+
+</script>
+
+{% endblock %}

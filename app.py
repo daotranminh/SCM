@@ -892,6 +892,27 @@ def customer_details(customer_id):
 # SUB FORMULAS
 ####################################################################################
 
+
+@app.route('/list_subformulas', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_subformulas/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_subformulas/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_subformulas/<int:page>/', methods=['GET', 'POST'])
+def list_subformulas(page):
+    per_page = int(config['PAGING']['subformulas_per_page'])
+    search_text = request.args.get('search_text')
+
+    subformula_dtos, db_changed = subformula_manager.get_paginated_subformula_dtos(
+        page,
+        per_page,
+        search_text)
+
+    if db_changed == True:
+        db.session.commit()
+                                                                  
+    return render_scm_template('subformulas_list.html',
+                                search_text=search_text,
+                                subformula_dtos=subformula_dtos)
+
 @app.route('/list_subformulas_per_taste', methods=['GET', 'POST'])
 @app.route('/list_subformulas_per_taste/', methods=['GET', 'POST'])
 def list_subformulas_per_taste_default():
@@ -908,7 +929,7 @@ def list_subformulas_per_taste(taste_id, page):
     per_page = int(config['PAGING']['subformulas_per_page'])
     search_text = request.args.get('search_text')
     
-    subformula_dtos, db_changed = subformula_manager.get_paginated_subformula_dtos(
+    subformula_dtos, db_changed = subformula_manager.get_paginated_subformula_dtos_per_taste(
         taste_id,
         page,
         per_page,
