@@ -1421,7 +1421,7 @@ def list_orders(page):
     if db_changed == True:
         db.session.commit()
 
-    return render_scm_template('list_orders.html', order_dtos=paginated_order_dtos)
+    return render_scm_template('orders_list.html', order_dtos=paginated_order_dtos)
 
 def __lazy_get_product_dtos(order_id):
     db_changed = False
