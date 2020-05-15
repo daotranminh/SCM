@@ -347,11 +347,11 @@ def add_topic():
             logger.error(message)
             
             flash(message, 'danger')
-            return render_scm_template('add_update_topic.html', 
+            return render_scm_template('topic_add_update.html', 
                                         topic_rec=None,
                                         topic_recs=topic_recs)
     else:
-        return render_scm_template('add_update_topic.html', 
+        return render_scm_template('topic_add_update.html', 
                                    topic_rec=None,
                                    topic_recs=topic_recs)
 
@@ -362,7 +362,7 @@ def update_topic(topic_id):
     topic_rec = topic_repo.get_topic(topic_id)
 
     if request.method == 'GET':        
-        return render_scm_template('add_update_topic.html', 
+        return render_scm_template('topic_add_update.html', 
                                    topic_rec=topic_rec,
                                    topic_recs=topic_recs)
     elif request.method == 'POST':
@@ -383,7 +383,7 @@ def update_topic(topic_id):
             return redirect_with_message(url_for('list_topics'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('add_update_topic.html',
+            return render_scm_template_with_message('topic_add_update.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
@@ -393,7 +393,7 @@ def update_topic(topic_id):
 @app.route('/list_topics', methods=['GET', 'POST'])
 def list_topics():
     topic_dtos = topic_manager.get_topic_dtos()
-    return render_scm_template('list_topics.html', topic_dtos=topic_dtos)
+    return render_scm_template('topics_list.html', topic_dtos=topic_dtos)
 
 ####################################################################################
 # PLATES
@@ -809,14 +809,14 @@ def add_customer():
         except ScmException as ex:
             message = ex.message
             db.session.rollback()
-            return render_scm_template_with_message('add_update_customer.html',
+            return render_scm_template_with_message('customer_add_update.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
                                                     customer_rec=None,
                                                     customer_recs=customer_recs)
     else:
-        return render_scm_template('add_update_customer.html', 
+        return render_scm_template('customer_add_update.html', 
                                    customer_rec=None,
                                    customer_recs=customer_recs)
 
@@ -826,7 +826,7 @@ def update_customer(customer_id):
     customer_recs.insert(0, None)
     customer_rec = customer_repo.get_customer(customer_id)
     if request.method == 'GET':
-        return render_scm_template('add_update_customer.html',
+        return render_scm_template('customer_add_update.html',
                                    customer_rec=customer_rec,
                                    customer_recs=customer_recs)
     elif request.method == 'POST':
@@ -857,7 +857,7 @@ def update_customer(customer_id):
             return redirect_with_message(url_for('list_customers'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('add_update_customer.html',
+            return render_scm_template_with_message('customer_add_update.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
@@ -880,7 +880,7 @@ def list_customers(page):
                                                                  per_page,
                                                                  search_text)
     
-    return render_scm_template('list_customers.html', customer_dtos=customer_dtos)
+    return render_scm_template('customers_list.html', customer_dtos=customer_dtos)
 
 @app.route('/customer_details/<int:customer_id>', methods=['GET', 'POST'])
 def customer_details(customer_id):
