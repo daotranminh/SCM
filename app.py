@@ -1393,7 +1393,7 @@ def add_order():
         except ScmException as ex:
             db.session.rollback()
 
-    return render_scm_template('add_order.html', 
+    return render_scm_template('order_add.html', 
                                 customer_recs=customer_recs,
                                 delivery_method_recs=delivery_method_recs,
                                 decoration_form_recs=decoration_form_recs,
