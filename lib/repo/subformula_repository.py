@@ -46,11 +46,15 @@ class SubFormulaRepository:
                                   page,
                                   per_page,
                                   search_text):
+        taste_query = self.db.session.query(Taste.id, Taste.name). \
+            subquery()
+
         cost_estimation_query = self.db.session.query(CostEstimation.subformula_id, CostEstimation.total_cost). \
             filter(CostEstimation.is_current == True). \
             subquery()
 
-        subformula_query = self.db.session.query(SubFormula, cost_estimation_query.c.total_cost). \
+        subformula_query = self.db.session.query(SubFormula, taste_query.c.name, cost_estimation_query.c.total_cost). \
+            join(taste_query, SubFormula.taste_id == taste_query.c.id). \
             outerjoin(cost_estimation_query, SubFormula.id == cost_estimation_query.c.subformula_id)
 
         if search_text is not None and search_text != '':
@@ -68,12 +72,16 @@ class SubFormulaRepository:
                                             page,
                                             per_page,
                                             search_text):
+        taste_query = self.db.session.query(Taste.id, Taste.name). \
+            filter(Taste.id == taste_id). \
+            subquery()
+
         cost_estimation_query = self.db.session.query(CostEstimation.subformula_id, CostEstimation.total_cost). \
             filter(CostEstimation.is_current == True). \
             subquery()
 
-        subformula_query = self.db.session.query(SubFormula, cost_estimation_query.c.total_cost). \
-            filter(SubFormula.taste_id == taste_id). \
+        subformula_query = self.db.session.query(SubFormula, taste_query.c.name, cost_estimation_query.c.total_cost). \
+            join(taste_query, SubFormula.taste_id == taste_query.c.id). \
             outerjoin(cost_estimation_query, SubFormula.id == cost_estimation_query.c.subformula_id)
 
         if search_text is not None and search_text != '':

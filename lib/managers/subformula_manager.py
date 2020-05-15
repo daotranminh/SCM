@@ -106,7 +106,7 @@ class SubFormulaManager:
     def __post_process_subformula_infos(self, paginated_subformula_infos):
         subformula_dtos = []
         db_changed = False
-        for subformula_rec, subformula_cost in paginated_subformula_infos.items:
+        for subformula_rec, taste_name, subformula_cost in paginated_subformula_infos.items:
             up_to_date_subformula_cost = subformula_cost
             if subformula_rec.has_up_to_date_cost_estimation == False:
                 up_to_date_subformula_cost = self.estimate_subformula_cost(subformula_rec.id)
@@ -114,6 +114,7 @@ class SubFormulaManager:
 
             subformula_dto = SubFormulaDto(subformula_rec.id,
                                      subformula_rec.name,
+                                     taste_name,
                                      subformula_rec.subformula_type,
                                      subformula_rec.description,
                                      subformula_rec.note,

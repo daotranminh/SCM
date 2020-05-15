@@ -13,6 +13,7 @@ class SubFormulaDto:
     def __init__(self,
                  subformula_id,
                  name,
+                 taste_name,
                  subformula_type,
                  description,
                  note,
@@ -20,6 +21,7 @@ class SubFormulaDto:
                  registered_on):
         self.subformula_id = subformula_id
         self.name = name
+        self.taste_name = taste_name
         self.subformula_type = subformula_type
         self.description = description
         self.note = note
