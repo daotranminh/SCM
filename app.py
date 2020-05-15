@@ -1663,7 +1663,7 @@ def update_order(order_id):
                     total_price_to_customer += price_to_customer
 
     if request.method == 'GET':        
-        return render_scm_template('update_order.html',
+        return render_scm_template('order_update.html',
                                     order_id=order_id,
                                     customer_id=customer_id_arg,
                                     ordered_on=ordered_on_arg,
@@ -1742,7 +1742,7 @@ def update_order(order_id):
             return redirect_with_message(url_for('list_orders'), message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('update_order.html',
+            return render_scm_template_with_message('order_update.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,

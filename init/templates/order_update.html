@@ -92,10 +92,10 @@
                 <th>Plate</th>
                 <th>Box</th>
                 <th>Sample Images</th>
-                <th>Cost Estimation per Product</th>
-                <th>Amount</th>
-                <th>Cost estimation</th>
-                <th>Price to customer</th>
+                <th style="text-align:right">Cost Estimation per Product</th>
+                <th style="text-align:right">Amount</th>
+                <th style="text-align:right">Cost estimation</th>
+                <th style="text-align:right">Price to customer</th>
                 <th></th>
                 <th></th>
               </tr>
@@ -122,24 +122,24 @@
                   <td>{{product_dtos[i].sample_images_group_name}}</td>
                 {% endif %}
 
-                <td><a href="{{ url_for('product_cost_estimation_details', product_id=product_dtos[i].product_id)}}">{{product_dtos[i].product_cost_estimation}}</a></td>
+                <td style="text-align:right"><a href="{{ url_for('product_cost_estimation_details', product_id=product_dtos[i].product_id)}}">{{product_dtos[i].product_cost_estimation}}</a></td>
 
-                <td>{{product_dtos[i].product_amount}}</td>
+                <td style="text-align:right">{{product_dtos[i].product_amount}}</td>
                 {% if product_dtos[i].product_cost_estimation is not none %}
-                <td>{{product_dtos[i].product_cost_estimation * product_dtos[i].product_amount }}</td>
+                <td style="text-align:right">{{product_dtos[i].product_cost_estimation * product_dtos[i].product_amount }}</td>
                 {% else %}
-                <td>{{product_dtos[i].product_cost_estimation}}</td>
+                <td style="text-align:right">{{product_dtos[i].product_cost_estimation}}</td>
                 {% endif %}
 
                 {% if price_to_customers[product_dtos[i].product_id] is not none %}
-                  <td><input type="text" 
+                  <td style="text-align:right"><input type="text" 
                     id="price_to_customer_{{product_dtos[i].product_id}}" 
                     name="price_to_customer_{{product_dtos[i].product_id}}"
                     style="text-align: right"
                     onkeyup="update_total_price_to_customer(this)"
                     value="{{price_to_customers[product_dtos[i].product_id]}}"/></td>
                 {% else %}
-                  <td><input type="text" 
+                  <td style="text-align:right"><input type="text" 
                     id="price_to_customer_{{product_dtos[i].product_id}}" 
                     name="price_to_customer_{{product_dtos[i].product_id}}"
                     style="text-align: right"
@@ -164,8 +164,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{{ order_cost_estimation }}</td>
-                <td><input type="text" id="total_price_to_customer" name="total_price_to_customer" style="text-align:right" value="{{total_price_to_customer}}" disabled/></td>
+                <td style="text-align:right">{{ order_cost_estimation }}</td>
+                <td style="text-align:right"><input type="text" id="total_price_to_customer" name="total_price_to_customer" style="text-align:right" value="{{total_price_to_customer}}" disabled/></td>
                 <td></td>
                 <td></td>
               </tr>
@@ -181,7 +181,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><input type="text" id="paid_by_customer" name="paid_by_customer" style="text-align:right" value="{{paid_by_customer}}"/></td>
+                <td style="text-align:right"><input type="text" id="paid_by_customer" name="paid_by_customer" style="text-align:right" value="{{paid_by_customer}}"/></td>
                 <td></td>
                 <td></td>
               </tr>
