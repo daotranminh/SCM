@@ -15,8 +15,8 @@
       <th>Customer</th>
       <th>Delivery appointment</th>
       <th>Order status</th>
-      <th>Cost estimation</th>
-      <th>Price to customer</th>
+      <th style="text-align:right">Cost estimation</th>
+      <th style="text-align:right">Price to customer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
       <th></th>
     </tr>
   </thead>
@@ -29,8 +29,8 @@
 		   customer_id=order_dto.customer_id)}}">{{order_dto.customer_name}}</a></td>
       <td>{{order_dto.delivery_appointment}}</td>
       <td>{{order_dto.order_status_name}}</td>
-      <td style="text-align:right">{{order_dto.total_cost}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td style="text-align:right">{{order_dto.price_to_customer}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td style="text-align:right">{{order_dto.total_cost}}</td>
+      <td style="text-align:right">{{order_dto.price_to_customer}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td><a href="{{ url_for('update_order',
 		   order_id=order_dto.order_id) }}"
 	     class="btn btn-default pullright">Update</a></td>
