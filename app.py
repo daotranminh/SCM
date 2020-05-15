@@ -1155,7 +1155,7 @@ def list_formulas(page):
     if db_changed == True:
         db.session.commit()
                                                                   
-    return render_scm_template('list_formulas.html',
+    return render_scm_template('formulas_list.html',
                                 search_text=search_text,
                                 formula_dtos=formula_dtos)
 

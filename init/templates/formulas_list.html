@@ -14,18 +14,20 @@
 <table class="table table-striped">
   <thead>
     <tr>
+      <th>Id</th>
       <th>Name</th>
       <th>Registered on<i class="fa fa-sort-asc"></i></th>
-      <th>Cost estimation</th>      
+      <th style="text-align:right">Cost estimation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>      
       <th></th>
     </tr>
   </thead>
   <tbody>
     {% for formula_dto in formula_dtos.items %}
     <tr>
+      <td>{{formula_dto.formula_id}}</td>
       <td><a href="{{ url_for('formula_details', formula_id=formula_dto.formula_id) }}">{{formula_dto.name}}</a></td>
       <td>{{formula_dto.registered_on}}</td>
-      <td><a href="{{ url_for('formula_cost_estimation_details', formula_id=formula_dto.formula_id)}}">{{formula_dto.total_cost}}</a></td>
+      <td style="text-align:right"><a href="{{ url_for('formula_cost_estimation_details', formula_id=formula_dto.formula_id)}}">{{formula_dto.total_cost}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td><a href="{{ url_for('update_formula', formula_id=formula_dto.formula_id)}}" class="btn btn-default pullright">Update</a></td>
     </tr>
     {% endfor %}
