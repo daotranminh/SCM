@@ -771,7 +771,7 @@ def show_material_unit_price_history(material_id):
 @app.route('/list_materials', methods=['GET', 'POST'])
 def list_materials():
     material_dtos = material_manager.get_material_dtos()
-    return render_scm_template('list_materials.html', material_dtos=material_dtos)
+    return render_scm_template('materials_list.html', material_dtos=material_dtos)
 
 ####################################################################################
 # CUSTOMERS

@@ -9,10 +9,11 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Name</th>      
+      <th>Id</th>
+      <th>Name</th>
       <th>Is organic</th>
-      <th>Unit price</th>
-      <th>Unit</th>
+      <th style="text-align:right">Unit price</th>
+      <th style="text-align:right">Unit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
       <th></th>
       <th></th>
     </tr>
@@ -20,10 +21,11 @@
   <tbody>
     {% for material_dto in material_dtos %}
     <tr>
+      <td>{{material_dto.material_id}}</td>
       <td><span data-toggle="tooltip" title="{{material_dto.description}}">{{material_dto.name}}</span></td>      
       <td>{{material_dto.is_organic}}</td>
-      <td>{{material_dto.unit_price}}</td>
-      <td>{{material_dto.unit_amount}} {{material_dto.unit}}</td>
+      <td style="text-align:right">{{material_dto.unit_price}}</td>
+      <td style="text-align:right">{{material_dto.unit_amount}} {{material_dto.unit}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td><a href="{{ url_for('update_material', 
 		   material_id=material_dto.material_id) }}"
 	     class="btn btn-default pullright">Update</a></td>
