@@ -315,7 +315,7 @@ def update_taste(taste_id):
 @app.route('/list_tastes', methods=['GET', 'POST'])
 def list_tastes():
     tastes = taste_repo.get_all_tastes()
-    return render_scm_template('list_tastes.html', tastes=tastes)
+    return render_scm_template('tastes_list.html', tastes=tastes)
 
 ####################################################################################
 # TOPIC
@@ -612,7 +612,7 @@ def update_decoration_form(decoration_form_id):
 @app.route('/list_decoration_forms', methods=['GET', 'POST'])
 def list_decoration_forms():
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
-    return render_scm_template('list_decoration_forms.html', decoration_form_recs=decoration_form_recs)
+    return render_scm_template('decoration_forms_list.html', decoration_form_recs=decoration_form_recs)
 
 ####################################################################################
 # DECORATION TECHNIQUES
@@ -677,7 +677,7 @@ def update_decoration_technique(decoration_technique_id):
 @app.route('/list_decoration_techniques', methods=['GET', 'POST'])
 def list_decoration_techniques():
     decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
-    return render_scm_template('list_decoration_techniques.html', decoration_technique_recs=decoration_technique_recs)
+    return render_scm_template('decoration_techniques_list.html', decoration_technique_recs=decoration_technique_recs)
 
 ####################################################################################
 # MATERIALS
@@ -2069,7 +2069,7 @@ def update_product(product_id):
             flash(message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('update_sample_images_group.html',
+            return render_scm_template_with_message('sample_images_group_update.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
@@ -2093,7 +2093,7 @@ def update_product(product_id):
                                                     plate_recs=plate_recs,
                                                     box_recs=box_recs)
     
-    return render_scm_template('update_product.html',
+    return render_scm_template('product_update.html',
                                decoration_form_recs=decoration_form_recs,
                                decoration_technique_recs=decoration_technique_recs,
                                product_rec=product_rec,
@@ -2256,7 +2256,7 @@ def update_delivery_method(delivery_method_id):
 @app.route('/list_delivery_methods', methods=['GET', 'POST'])
 def list_delivery_methods():
     delivery_methods = delivery_method_repo.get_all_delivery_methods()
-    return render_scm_template('list_delivery_methods.html', delivery_methods=delivery_methods)
+    return render_scm_template('delivery_methods_list.html', delivery_methods=delivery_methods)
 
 @app.route('/list_sample_images', methods=['GET', 'POST'])
 def list_sample_images_default():
@@ -2277,7 +2277,7 @@ def list_sample_images(topic_id):
     sample_images_group_recs = sample_images_group_repo.get_sample_images_groups_by_topic(topic_id)
     latest_groups_3_image_paths = sample_images_group_manager.get_latest_groups_3_image_paths(sample_images_group_recs)
 
-    return render_scm_template('list_sample_images.html',
+    return render_scm_template('sample_images_list.html',
                                topic_recs=topic_recs,
                                sample_images_group_recs=sample_images_group_recs,
                                latest_groups_3_image_paths=latest_groups_3_image_paths,
@@ -2297,7 +2297,7 @@ def add_sample_images_group(topic_id):
             db.session.commit()
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('add_sample_images_group.html',
+            return render_scm_template_with_message('sample_images_group_add.html',
                                                     ex.message,
                                                     'danger',
                                                     ex)
@@ -2305,7 +2305,7 @@ def add_sample_images_group(topic_id):
         logger.info(message)
 
         return redirect_with_message(url_for('list_sample_images', topic_id=topic_id), message, 'info')
-    return render_scm_template('add_sample_images_group.html',
+    return render_scm_template('sample_images_group_add.html',
                                topic_rec=topic_rec)
 
 @app.route('/update_sample_images_group/<int:sample_images_group_id>', methods=['GET', 'POST'])
@@ -2336,7 +2336,7 @@ def update_sample_images_group(sample_images_group_id):
             flash(message, 'info')
         except ScmException as ex:
             db.session.rollback()
-            return render_scm_template_with_message('update_sample_images_group.html',
+            return render_scm_template_with_message('sample_images_group_update.html',
                                                     ex.message,
                                                     'danger',
                                                     ex,
@@ -2344,7 +2344,7 @@ def update_sample_images_group(sample_images_group_id):
                                                     sample_images_group_rec=sample_images_group_rec,
                                                     sample_image_path_recs=sample_image_path_recs)
     
-    return render_scm_template('update_sample_images_group.html',
+    return render_scm_template('sample_images_group_update.html',
                                topic_recs=topic_recs,
                                sample_images_group_rec=sample_images_group_rec,
                                sample_image_path_recs=sample_image_path_recs)
