@@ -28,7 +28,9 @@
 <table class="table table-striped">
   <thead>
     <tr>
+      <th>Id</th>
       <th>Name</th>
+      <th>Type</th>
       <th>Registered on<i class="fa fa-sort-asc"></i></th>
       <th>Cost estimation</th>
       <th></th>
@@ -37,10 +39,26 @@
   <tbody>
     {% for subformula_dto in subformula_dtos.items %}
     <tr>
+      <td>{{subformula_dto.subformula_id}}</td>
       <td><a href="{{ url_for('subformula_details', 
-	   subformula_id=subformula_dto.subformula_id) }}">{{subformula_dto.name}}</a></td>
+      subformula_id=subformula_dto.subformula_id) }}">{{subformula_dto.name}}</a></td>
+      
+      {% if subformula_dto.subformula_type == 0 %}
+        <td>Base</td>
+      {% elif subformula_dto.subformula_type == 1 %}
+        <td>Filling</td>
+      {% elif subformula_dto.subformula_type == 2 %}
+        <td>Cream</td>
+      {% endif %}
+
       <td>{{subformula_dto.registered_on}}</td>
-      <td><a href="{{ url_for('subformula_cost_estimation_details', subformula_id=subformula_dto.subformula_id) }}">{{subformula_dto.total_cost}}</a></td>
+      <td style="text-align:right">
+        <a href="{{ url_for('subformula_cost_estimation_details', subformula_id=subformula_dto.subformula_id) }}">
+          {{subformula_dto.total_cost}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </a></td>
       <td><a href="{{ url_for('update_subformula', 
 		                  subformula_id=subformula_dto.subformula_id) }}"
                       class="btn btn-default pullright">Update</a></td>
