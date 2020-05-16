@@ -22,7 +22,7 @@ function validate_add_update_subformula()
 
             if (material_choices_i.selectedIndex == material_choices_j.selectedIndex)
             {
-                message = `Duplicated material ${material_choices_i.options[material_choices_i.selectedIndex].text}!`
+                message = `Duplicated material ${material_choices_i.options[material_choices_i.selectedIndex].text} (${material_choices_i.options[material_choices_i.selectedIndex].value})!`
                 window.alert(message)
                 return false;
             }
@@ -35,7 +35,7 @@ function validate_add_update_subformula()
         if (material_amount_i.value.trim() == "")
         {
             var material_choices_i = materials_list[i].children[0]
-            message = `Please specify amount of material ${material_choices_i.options[material_choices_i.selectedIndex].text}!`
+            message = `Please specify amount of material ${material_choices_i.options[material_choices_i.selectedIndex].text} (${material_choices_i.options[material_choices_i.selectedIndex].value})!`
             window.alert(message)
             return false;
         }
@@ -45,6 +45,36 @@ function validate_add_update_subformula()
 }
 
 // FORMULA
+
+function validate_add_update_formula()
+{
+    var formula_name = document.getElementById("formula_name")
+    if (formula_name.value.trim() == "")
+    {
+        message = `Please specify formula's name!`
+        window.alert(message)
+        return false;
+    }
+
+    var subformulas_list = document.getElementsByName("subformula[]")
+    var len = subformulas_list.length
+
+    for (var i=0; i < len-1; i++)
+    {
+        var subformula_choices_i = subformulas_list[i].children[3]
+        for (var j=i+1; j < len; j++)
+        {
+            var subformula_choices_j = subformulas_list[j].children[3]
+
+            if (subformula_choices_i.selectedIndex == subformula_choices_j.selectedIndex)
+            {
+                message = `Duplicated subformula ${subformula_choices_i.options[subformula_choices_i.selectedIndex].text} (${subformula_choices_i.options[subformula_choices_i.selectedIndex].value})!`
+                window.alert(message)
+                return false;
+            }
+        }
+    }
+}
 
 function add_another_subformula()
 {

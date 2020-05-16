@@ -6,10 +6,10 @@
 
 <div class="row">  
     <h1>Add a new formula</h1>
-    <form method="POST" action="">
+    <form method="POST" action="" onsubmit="return validate_add_update_formula();">
       <div class="form-group">
 	    <label for="formula_name">Formula name</label>
-	    <input type="text" name="formula_name"><br>
+	    <input type="text" id="formula_name" name="formula_name"><br>
       </div>
 
       <div class="form-group">
