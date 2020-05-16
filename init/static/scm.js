@@ -1,3 +1,49 @@
+// SUBFORMULA
+
+function validate_add_update_subformula()
+{
+    var subformula_name = document.getElementById("subformula_name")
+    if (subformula_name.value.trim() == "")
+    {
+        message = `Please specify subformula's name!`
+        window.alert(message)
+        return false;
+    }
+
+    var materials_list = document.getElementsByName("material[]")
+    var len = materials_list.length
+    
+    for (var i = 0; i < len-1; i++)
+    {
+        var material_choices_i = materials_list[i].children[0]
+        for (var j = i+1; j < len; j++)
+        {
+            var material_choices_j = materials_list[j].children[0]
+
+            if (material_choices_i.selectedIndex == material_choices_j.selectedIndex)
+            {
+                message = `Duplicated material ${material_choices_i.options[material_choices_i.selectedIndex].text}!`
+                window.alert(message)
+                return false;
+            }
+        }
+    }
+
+    for (var i = 0; i < len; i++)
+    {
+        var material_amount_i = materials_list[i].children[1]
+        if (material_amount_i.value.trim() == "")
+        {
+            var material_choices_i = materials_list[i].children[0]
+            message = `Please specify amount of material ${material_choices_i.options[material_choices_i.selectedIndex].text}!`
+            window.alert(message)
+            return false;
+        }
+    }
+
+    return true;
+}
+
 // FORMULA
 
 function add_another_subformula()
