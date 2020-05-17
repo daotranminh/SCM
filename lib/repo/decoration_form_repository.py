@@ -18,6 +18,18 @@ class DecorationFormRepository:
             order_by(DecorationForm.name). \
             all()
 
+    def get_paginated_decoration_forms(self,
+                                       page,
+                                       per_page,
+                                       search_text):
+        decoration_form_recs = DecorationForm.query
+        if search_text is not None and search_text != '':
+            search_pattern = '%' + search_text + '%'
+            decoration_form_recs = decoration_form_recs.filter(DecorationForm.name.ilike(search_pattern))
+
+        decoration_form_recs = decoration_form_recs.order_by(DecorationForm.name)
+        return decoration_form_recs.paginate(page, per_page, error_out=False)
+
     def get_decoration_form(self, id):
         return DecorationForm.query.filter(DecorationForm.id == id).first()
 

@@ -609,9 +609,17 @@ def update_decoration_form(decoration_form_id):
                                                     old_name=decoration_form_rec.name,
                                                     old_description=decoration_form_rec.description)
 
-@app.route('/list_decoration_forms', methods=['GET', 'POST'])
-def list_decoration_forms():
-    decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
+@app.route('/list_decoration_forms', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_decoration_forms/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_decoration_forms/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_decoration_forms/<int:page>/', methods=['GET', 'POST'])
+def list_decoration_forms(page):
+    per_page = int(config['PAGING']['decoration_forms_per_page'])
+    search_text = request.args.get('search_text')
+
+    decoration_form_recs = decoration_form_repo.get_paginated_decoration_forms(page,
+                                                                               per_page,
+                                                                               search_text)
     return render_scm_template('decoration_forms_list.html', decoration_form_recs=decoration_form_recs)
 
 ####################################################################################

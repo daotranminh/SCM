@@ -14,7 +14,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for decoration_form_rec in decoration_form_recs %}
+    {% for decoration_form_rec in decoration_form_recs.items %}
     <tr>
       <td><span data-toggle="tooltip" title="{{decoration_form_rec.description}}">{{decoration_form_rec.name}}</span></td>
       <td><a href="{{ url_for('update_decoration_form', decoration_form_id=decoration_form_rec.id) }}"
@@ -23,6 +23,30 @@
     {% endfor %}
   </tbody>
 </table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{decoration_form_recs.page}}/{{decoration_form_recs.pages}}</li>
+
+  {% if decoration_form_recs.has_prev %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_decoration_forms', 
+				 page=decoration_form_recs.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if decoration_form_recs.has_next %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_decoration_forms', 
+				 page=decoration_form_recs.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
+
 
 <a href="{{ url_for('add_decoration_form') }}"
    class="btn btn-default pullright">Add a new decoration form</a>
