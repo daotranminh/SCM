@@ -2300,10 +2300,18 @@ def update_delivery_method(delivery_method_id):
                                                     old_name=delivery_method_rec.name,
                                                     old_description=delivery_method_rec.description)
 
-@app.route('/list_delivery_methods', methods=['GET', 'POST'])
-def list_delivery_methods():
-    delivery_methods = delivery_method_repo.get_all_delivery_methods()
-    return render_scm_template('delivery_methods_list.html', delivery_methods=delivery_methods)
+@app.route('/list_delivery_methods', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_delivery_methods/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_delivery_methods/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_delivery_methods/<int:page>/', methods=['GET', 'POST'])
+def list_delivery_methods(page):
+    per_page = int(config['PAGING']['delivery_methods_per_page'])
+    search_text = request.args.get('search_text')
+
+    delivery_method_recs = delivery_method_repo.get_paginated_delivery_methods(page,
+                                                                           per_page,
+                                                                           search_text)
+    return render_scm_template('delivery_methods_list.html', delivery_method_recs=delivery_method_recs)
 
 @app.route('/list_sample_images', methods=['GET', 'POST'])
 def list_sample_images_default():

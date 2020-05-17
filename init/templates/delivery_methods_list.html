@@ -14,15 +14,39 @@
     </tr>
   </thead>
   <tbody>
-    {% for delivery_method in delivery_methods %}
+    {% for delivery_method_rec in delivery_method_recs.items %}
     <tr>
-      <td><span data-toggle="tooltip" title="{{delivery_method.description}}">{{delivery_method.name}}</span></td>
-      <td><a href="{{ url_for('update_delivery_method', delivery_method_id=delivery_method.id) }}"
+      <td><span data-toggle="tooltip" title="{{delivery_method_rec.description}}">{{delivery_method_rec.name}}</span></td>
+      <td><a href="{{ url_for('update_delivery_method', delivery_method_id=delivery_method_rec.id) }}"
 	     class="btn btn-default pullright">Update</a></td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{delivery_method_recs.page}}/{{delivery_method_recs.pages}}</li>
+
+  {% if delivery_method_recs.has_prev %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_delivery_methods', 
+				 page=delivery_method_recs.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if delivery_method_recs.has_next %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_delivery_methods', 
+				 page=delivery_method_recs.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
+
 
 <a href="{{ url_for('add_delivery_method') }}"
    class="btn btn-default pullright">Add a new delivery method</a>

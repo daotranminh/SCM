@@ -18,6 +18,18 @@ class DeliveryMethodRepository:
             order_by(DeliveryMethod.name). \
             all()
 
+    def get_paginated_delivery_methods(self,
+                                       page,
+                                       per_page,
+                                       search_text):
+        delivery_method_recs = DeliveryMethod.query
+        if search_text is not None and search_text != '':
+            search_pattern = '%' + search_text + '%'
+            delivery_method_recs = delivery_method_recs.filter(DeliveryMethod.name.ilike(search_pattern))
+
+        delivery_method_recs = delivery_method_recs.order_by(DeliveryMethod.name)
+        return delivery_method_recs.paginate(page, per_page, error_out=False)
+
     def get_delivery_method(self, id):
         return DeliveryMethod.query.filter(DeliveryMethod.id == id).first()
 
