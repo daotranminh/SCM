@@ -2,6 +2,7 @@ import logging
 
 from init import config
 from dto.material_dto import MaterialDto
+from dto.paginated_scm import PaginatedScm
 from utilities.scm_logger import ScmLogger
 
 class MaterialManager:
@@ -25,10 +26,15 @@ class MaterialManager:
         self.formula_subformula_repo = formula_subformula_repo
         self.formula_repo = formula_repo
 
-    def get_material_dtos(self):
-        materials = self.material_repo.get_all_materials()
+    def get_paginated_material_dtos(self,
+                                    page,
+                                    per_page,
+                                    search_text):
+        pageinated_material_recs = self.material_repo.get_paginated_materials(page,
+                                                               per_page,
+                                                               search_text)
         material_dtos = []
-        for material in materials:
+        for material in pageinated_material_recs.items:
             material_version = self.material_version_repo.get_latest_version_of_material(material.id)
             material_dto = MaterialDto(material.id,
                                        material.name,
@@ -40,8 +46,15 @@ class MaterialManager:
                                        material_version.unit_price)
             material_dtos.append(material_dto)
 
-        return material_dtos
+        paginated_material_dtos = PaginatedScm(material_dtos,
+                                               pageinated_material_recs.has_prev,
+                                               pageinated_material_recs.has_next,
+                                               pageinated_material_recs.prev_num,
+                                               pageinated_material_recs.next_num,
+                                               pageinated_material_recs.page,
+                                               pageinated_material_recs.pages)
 
+        return paginated_material_dtos
 
     def add_material(self,
                      name,

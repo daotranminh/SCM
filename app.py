@@ -767,10 +767,18 @@ def show_material_unit_price_history(material_id):
     return render_scm_template('material_history.html',
                                material_rec=material_rec,
                                material_versions=material_versions)
-    
-@app.route('/list_materials', methods=['GET', 'POST'])
-def list_materials():
-    material_dtos = material_manager.get_material_dtos()
+
+@app.route('/list_materials', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_materials/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_materials/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_materials/<int:page>/', methods=['GET', 'POST'])
+def list_materials(page):
+    per_page = int(config['PAGING']['materials_per_page'])
+    search_text = request.args.get('search_text')
+
+    material_dtos = material_manager.get_paginated_material_dtos(page,
+                                                                 per_page,
+                                                                 search_text)
     return render_scm_template('materials_list.html', material_dtos=material_dtos)
 
 ####################################################################################

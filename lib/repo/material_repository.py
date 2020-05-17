@@ -18,6 +18,18 @@ class MaterialRepository:
             order_by(Material.name). \
             all()
 
+    def get_paginated_materials(self,
+                                page,
+                                per_page,
+                                search_text):
+        material_recs = Material.query
+        if search_text is not None and search_text != '':
+            search_pattern = '%' + search_text + '%'
+            material_recs = material_recs.filter(Material.name.ilike(search_pattern))
+
+        material_recs = material_recs.order_by(Material.name)
+        return material_recs.paginate(page, per_page, error_out=False)
+
     def get_material(self, id):
         return Material.query.filter(Material.id == id).first()
 
