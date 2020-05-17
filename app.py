@@ -560,9 +560,17 @@ def update_box(box_id):
                                                     old_unit_count=box_rec.unit_count,
                                                     old_unit_price=box_rec.old_unit_price)
 
-@app.route('/list_boxes', methods=['GET', 'POST'])
-def list_boxes():
-    box_recs = box_repo.get_all_boxes()
+@app.route('/list_boxes', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_boxes/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_boxes/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_boxes/<int:page>/', methods=['GET', 'POST'])
+def list_boxes(page):
+    per_page = int(config['PAGING']['boxes_per_page'])
+    search_text = request.args.get('search_text')
+
+    box_recs = box_repo.get_paginated_boxes(page,
+                                            per_page,
+                                            search_text)
     return render_scm_template('box_list.html', box_recs=box_recs)
 
 ####################################################################################

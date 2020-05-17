@@ -21,6 +21,18 @@ class BoxRepository:
             order_by(Box.name). \
             all()
 
+    def get_paginated_boxes(self,
+                            page,
+                            per_page,
+                            search_text):
+        box_recs = Box.query
+        if search_text is not None and search_text != '':
+            search_pattern = '%' + search_text + '%'
+            box_recs = box_recs.filter(Box.name.ilike(search_pattern))
+
+        box_recs = box_recs.order_by(Box.name)
+        return box_recs.paginate(page, per_page, error_out=False)            
+
     def add_box(self,
                 name,
                 description,

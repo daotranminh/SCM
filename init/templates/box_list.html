@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for box_rec in box_recs %}
+    {% for box_rec in box_recs.items %}
     <tr>
       <td><span data-toggle="tooltip" title="{{box_rec.description}}">{{box_rec.name}}</span></td>
       <td>{{box_rec.unit_price}} / {{box_rec.unit_count}}</td>
@@ -25,6 +25,29 @@
     {% endfor %}
   </tbody>
 </table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{box_recs.page}}/{{box_recs.pages}}</li>
+
+  {% if box_recs.has_prev %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_boxes', 
+				 page=box_recs.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if box_recs.has_next %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_boxes', 
+				 page=box_recs.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
 
 <a href="{{ url_for('add_box') }}"
    class="btn btn-default pullright">Add a new box</a>
