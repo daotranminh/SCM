@@ -312,10 +312,18 @@ def update_taste(taste_id):
                                                     old_name=taste_rec.name,
                                                     old_description=taste_rec.description)            
 
-@app.route('/list_tastes', methods=['GET', 'POST'])
-def list_tastes():
-    tastes = taste_repo.get_all_tastes()
-    return render_scm_template('tastes_list.html', tastes=tastes)
+@app.route('/list_tastes', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_tastes/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_tastes/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_tastes/<int:page>/', methods=['GET', 'POST'])
+def list_tastes(page):
+    per_page = int(config['PAGING']['tastes_per_page'])
+    search_text = request.args.get('search_text')
+
+    taste_recs = taste_repo.get_paginated_tastes(page,
+                                                per_page,
+                                                search_text)
+    return render_scm_template('tastes_list.html', taste_recs=taste_recs)
 
 ####################################################################################
 # TOPIC

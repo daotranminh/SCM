@@ -15,17 +15,40 @@
     </tr>
   </thead>
   <tbody>
-    {% for taste in tastes %}
+    {% for taste_rec in taste_recs.items %}
     <tr>
-      <td><span data-toggle="tooltip" title="{{taste.description}}">{{taste.name}}</span></td>
-      <td><a href="{{ url_for('update_taste', taste_id=taste.id) }}"
+      <td><span data-toggle="tooltip" title="{{taste_rec.description}}">{{taste_rec.name}}</span></td>
+      <td><a href="{{ url_for('update_taste', taste_id=taste_rec.id) }}"
        class="btn btn-default pullright">Update</a></td>
-       <td><a href="{{ url_for('list_subformulas_per_taste', taste_id=taste.id) }}"
+       <td><a href="{{ url_for('list_subformulas_per_taste', taste_id=taste_rec.id) }}"
         class="btn btn-default pullright">Subformulas</a></td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{taste_recs.page}}/{{taste_recs.pages}}</li>
+
+  {% if taste_recs.has_prev %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_tastes', 
+				 page=taste_recs.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if taste_recs.has_next %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_tastes', 
+				 page=taste_recs.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
 
 <a href="{{ url_for('add_taste') }}"
    class="btn btn-default pullright">Add a new taste</a>
