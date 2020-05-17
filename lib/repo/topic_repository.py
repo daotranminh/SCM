@@ -18,6 +18,18 @@ class TopicRepository:
             order_by(Topic.name). \
             all()
 
+    def get_paginated_topics(self,
+                             page,
+                             per_page,
+                             search_text):
+        topic_recs = Topic.query
+        if search_text is not None and search_text != '':
+            search_pattern = '%' + search_text + '%'
+            topic_recs = topic_recs.filter(Topic.name.ilike(search_pattern))
+
+        topic_recs = topic_recs.order_by(Topic.name)
+        return topic_recs.paginate(page, per_page, error_out=False)
+
     def get_topic(self, id):
         return Topic.query.filter(Topic.id == id).first()
 

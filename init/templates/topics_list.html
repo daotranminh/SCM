@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for topic_dto in topic_dtos %}
+    {% for topic_dto in topic_dtos.items %}
     <tr>
       <td><span data-toggle="tooltip" title="{{topic_dto.description}}">{{topic_dto.name}}</span></td>
       <td>{{topic_dto.parent_topic_name}}</td>      
@@ -25,6 +25,29 @@
     {% endfor %}
   </tbody>
 </table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{topic_dtos.page}}/{{topic_dtos.pages}}</li>
+
+  {% if topic_dtos.has_prev %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_topics', 
+				 page=topic_dtos.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if topic_dtos.has_next %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_topics', 
+				 page=box_recs.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
 
 <a href="{{ url_for('add_topic') }}"
    class="btn btn-default pullright">Add a new topic</a>

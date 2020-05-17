@@ -398,9 +398,18 @@ def update_topic(topic_id):
                                                     topic_rec=topic_rec,
                                                     topic_recs=topic_recs)            
 
-@app.route('/list_topics', methods=['GET', 'POST'])
-def list_topics():
-    topic_dtos = topic_manager.get_topic_dtos()
+@app.route('/list_topics', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_topics/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_topics/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_topics/<int:page>/', methods=['GET', 'POST'])
+def list_topics(page):
+    per_page = int(config['PAGING']['topics_per_page'])
+    search_text = request.args.get('search_text')
+
+    topic_dtos = topic_manager.get_paginated_topic_dtos(page,
+                                                        per_page,
+                                                        search_text)
+
     return render_scm_template('topics_list.html', topic_dtos=topic_dtos)
 
 ####################################################################################
