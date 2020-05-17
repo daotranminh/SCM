@@ -475,9 +475,17 @@ def update_plate(plate_id):
                                                     old_unit_count=plate_rec.unit_count,
                                                     old_unit_price=plate_rec.old_unit_price)
 
-@app.route('/list_plates', methods=['GET', 'POST'])
-def list_plates():
-    plate_recs = plate_repo.get_all_plates()
+@app.route('/list_plates', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_plates/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_plates/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_plates/<int:page>/', methods=['GET', 'POST'])
+def list_plates(page):
+    per_page = int(config['PAGING']['plates_per_page'])
+    search_text = request.args.get('search_text')
+
+    plate_recs = plate_repo.get_paginated_plates(page,
+                                                 per_page,
+                                                 search_text)
     return render_scm_template('plate_list.html', plate_recs=plate_recs)
 
 ####################################################################################

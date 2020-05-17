@@ -21,6 +21,18 @@ class PlateRepository:
             order_by(Plate.name). \
             all()
 
+    def get_paginated_plates(self,
+                             page,
+                             per_page,
+                             search_text):
+        plate_recs = Plate.query
+        if search_text is not None and search_text != '':
+            search_pattern = '%' + search_text + '%'
+            plate_recs = plate_recs.filter(Plate.name.ilike(search_pattern))
+
+        plate_recs = plate_recs.order_by(Plate.name)
+        return plate_recs.paginate(page, per_page, error_out=False)            
+
     def add_plate(self,
                   name,
                   description,

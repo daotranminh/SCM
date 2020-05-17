@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for plate_rec in plate_recs %}
+    {% for plate_rec in plate_recs.items %}
     <tr>
       <td><span data-toggle="tooltip" title="{{plate_rec.description}}">{{plate_rec.name}}</span></td>
       <td>{{plate_rec.unit_price}} / {{plate_rec.unit_count}}</td>
@@ -25,6 +25,29 @@
     {% endfor %}
   </tbody>
 </table>
+
+<ul class="pagination pull-right">
+  <li class="page-item pagenumber">{{plate_recs.page}}/{{plate_recs.pages}}</li>
+
+  {% if plate_recs.has_prev %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_plates', 
+				 page=plate_recs.prev_num) }}">Previous</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Previous</a></li>
+  {% endif %}
+
+  {% if plate_recs.has_next %}
+  <li class="page-item"><a class="page-link"
+			   href="{{ url_for('list_plates', 
+				 page=plate_recs.next_num) }}">Next</a></li>
+  {% else %}
+  <li class="page-item"><a class="page-link btn disabled"
+			   href="#">Next</a></li>
+  {% endif %}
+</ul>
+<br/>
 
 <a href="{{ url_for('add_plate') }}"
    class="btn btn-default pullright">Add a new plate</a>
