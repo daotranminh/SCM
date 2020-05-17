@@ -682,9 +682,16 @@ def update_decoration_technique(decoration_technique_id):
                                                     old_name=decoration_technique_rec.name,
                                                     old_description=decoration_technique_rec.description)
 
-@app.route('/list_decoration_techniques', methods=['GET', 'POST'])
-def list_decoration_techniques():
-    decoration_technique_recs = decoration_technique_repo.get_all_decoration_techniques()
+@app.route('/list_decoration_techniques', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_decoration_techniques/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/list_decoration_techniques/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_decoration_techniques/<int:page>/', methods=['GET', 'POST'])
+def list_decoration_techniques(page):
+    per_page = int(config['PAGING']['decoration_techniques_per_page'])
+    search_text = request.args.get('search_text')
+    decoration_technique_recs = decoration_technique_repo.get_paginated_decoration_techniques(page,
+                                                                                              per_page,
+                                                                                              search_text)
     return render_scm_template('decoration_techniques_list.html', decoration_technique_recs=decoration_technique_recs)
 
 ####################################################################################

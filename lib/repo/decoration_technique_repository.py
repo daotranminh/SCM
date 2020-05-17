@@ -18,6 +18,18 @@ class DecorationTechniqueRepository:
             order_by(DecorationTechnique.name). \
             all()
 
+    def get_paginated_decoration_techniques(self,
+                                            page,
+                                            per_page,
+                                            search_text):
+        decoration_technique_recs = DecorationTechnique.query
+        if search_text is not None and search_text != '':
+            search_pattern = '%' + search_text + '%'
+            decoration_technique_recs = decoration_technique_recs.filter(DecorationTechnique.name.ilike(search_pattern))
+
+        decoration_technique_recs = decoration_technique_recs.order_by(DecorationTechnique.name)
+        return decoration_technique_recs.paginate(page, per_page, error_out=False)
+
     def get_decoration_technique(self, id):
         return DecorationTechnique.query.filter(DecorationTechnique.id == id).first()
 
