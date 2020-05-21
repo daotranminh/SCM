@@ -26,6 +26,23 @@ class MaterialManager:
         self.formula_subformula_repo = formula_subformula_repo
         self.formula_repo = formula_repo
 
+    def get_material_dtos(self):
+        material_recs = self.material_repo.get_all_materials()
+        
+        material_dtos = []
+        for material_rec in material_recs:
+            material_version = self.material_version_repo.get_latest_version_of_material(material_rec.id)
+            material_dto = MaterialDto(material_rec.id,
+                                       material_rec.name,
+                                       material_rec.description,
+                                       material_rec.is_organic,
+                                       material_rec.unit_amount,
+                                       material_rec.unit,
+                                       material_version.id,
+                                       material_version.unit_price)
+            material_dtos.append(material_dto)
+        return material_dtos
+
     def get_paginated_material_dtos(self,
                                     page,
                                     per_page,
