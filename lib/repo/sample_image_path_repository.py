@@ -55,8 +55,7 @@ class SampleImagePathRepository:
         try:
             sample_image_path_rec = SampleImagePath(sample_images_group_id=sample_images_group_id,
                                                     file_path=file_path)
-            self.db.session.add(sample_image_path_rec)
-            delete_cost_estimation_of_product
+            self.db.session.add(sample_image_path_rec)            
         except sqlalchemy.exc.SQLAlchemyError as ex:
             message = 'Error: failed to add sample_image_path record. Detail: %s' % (str(ex))
             SampleImagePathRepository.logger.error(message)
