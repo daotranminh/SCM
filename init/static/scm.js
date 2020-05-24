@@ -61,12 +61,14 @@ function validate_add_update_formula()
 
     for (var i=0; i < len-1; i++)
     {
+        var taste_choices_i = subformulas_list[i].children[1]
         var subformula_choices_i = subformulas_list[i].children[3]
         for (var j=i+1; j < len; j++)
         {
+            var taste_choices_j = subformulas_list[j].children[1]
             var subformula_choices_j = subformulas_list[j].children[3]
 
-            if (subformula_choices_i.selectedIndex == subformula_choices_j.selectedIndex)
+            if (taste_choices_i.selectedIndex == taste_choices_j.selectedIndex && subformula_choices_i.selectedIndex == subformula_choices_j.selectedIndex)
             {
                 message = `Duplicated subformula ${subformula_choices_i.options[subformula_choices_i.selectedIndex].text} (${subformula_choices_i.options[subformula_choices_i.selectedIndex].value})!`
                 window.alert(message)
