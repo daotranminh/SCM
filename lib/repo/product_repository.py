@@ -65,8 +65,8 @@ class ProductRepository:
             filter(Product.id == product_id). \
             join(decoration_form_query, Product.decoration_form_id == decoration_form_query.c.id). \
             join(decoration_technique_query, Product.decoration_technique_id == decoration_technique_query.c.id). \
-            join(plate_query, Product.plate_id == plate_query.c.id). \
-            join(box_query, Product.box_id == box_query.c.id). \
+            outerjoin(plate_query, Product.plate_id == plate_query.c.id). \
+            outerjoin(box_query, Product.box_id == box_query.c.id). \
             outerjoin(formula_query, Product.formula_id == formula_query.c.id). \
             outerjoin(sample_images_group_query, Product.sample_images_group_id == sample_images_group_query.c.id)
             
