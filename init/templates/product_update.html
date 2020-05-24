@@ -58,7 +58,33 @@
 	        {% endfor %}
 	        </select>
 		</div>
-		
+
+		<p>
+			<label for="plate_id">Plate</label>
+			<select id="plate_id" name="plate_id">
+			{% for plate_rec in plate_recs %}
+			  {% if plate_rec.id == selected_plate_id %}
+				<option value="{{plate_rec.id}}" selected>{{plate_rec.name}}</option>
+			  {% else %}
+				<option value="{{plate_rec.id}}">{{plate_rec.name}}</option>
+			  {% endif %}
+			  {% endfor %}
+			</select>
+		  </p>
+  
+		  <p>
+			<label for="box_id">Box</label>
+			<select id="box_id" name="box_id">
+			{% for box_rec in box_recs %}
+			  {% if box_rec.id == selected_box_id %}
+				<option value="{{box_rec.id}}" selected>{{box_rec.name}}</option>
+			  {% else %}
+				<option value="{{box_rec.id}}">{{box_rec.name}}</option>
+			  {% endif %}
+			  {% endfor %}
+			</select>
+		  </p>
+  
 		<div class="form-group">
             <label for="box_status">Box status</label>
             <select id="box_status" name="box_status">
