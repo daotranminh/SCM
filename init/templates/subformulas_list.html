@@ -57,7 +57,6 @@
   {% if subformula_dtos.has_prev %}
   <li class="page-item"><a class="page-link"
          href="{{ url_for('list_subformulas', 
-         taste_id=taste_rec.id,
 				 page=subformula_dtos.prev_num) }}">Previous</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
@@ -67,7 +66,6 @@
   {% if subformula_dtos.has_next %}
   <li class="page-item"><a class="page-link"
          href="{{ url_for('list_subformulas', 
-         taste_id=taste_rec.id,
 				 page=subformula_dtos.next_num) }}">Next</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
