@@ -491,13 +491,14 @@ function add_new_product_to_order()
     var newProductName = args[9]
     var product_amount = args[10]
     var formulaId = args[11]
-    var decorationFormId = args[12]
-    var decorationTechniqueId = args[13]
-    var boxToBeReturned = args[14]
-    var priceToCustomersStr = args[15]
-    var paidByCustomer = args[16]
-    var plateId = args[17]
-    var boxId = args[18]
+    var formulaAmount = args[12]
+    var decorationFormId = args[13]
+    var decorationTechniqueId = args[14]
+    var boxToBeReturned = args[15]
+    var priceToCustomersStr = args[16]
+    var paidByCustomer = args[17]
+    var plateId = args[18]
+    var boxId = args[19]
 
     if (newProductName == "")
     {
@@ -521,6 +522,7 @@ function add_new_product_to_order()
         "&new_product_name_arg=" + newProductName +
         "&product_amount_arg=" + product_amount +
         "&formula_id_arg=" + formulaId +
+        "&formula_amount_arg=" + formulaAmount +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
         "&box_to_be_returned_arg=" + boxToBeReturned +
@@ -549,17 +551,20 @@ function add_product_to_order()
     var product_name = next_product.children[2].children[1]
     var product_amount = next_product.children[3].children[1]
     var formula_choices = next_product.children[4].children[1]
-    var decoration_form_choices = next_product.children[5].children[1]    
-    var decoration_technique_choices = next_product.children[6].children[1]
-    var plate_choices = next_product.children[7].children[1]
-    var box_choices = next_product.children[8].children[1]
-    var delete_btn = next_product.children[9].children[0]
+    var formula_amount = next_product.children[5].children[1]
+    var decoration_form_choices = next_product.children[6].children[1]
+    var decoration_technique_choices = next_product.children[7].children[1]
+    var plate_choices = next_product.children[8].children[1]
+    var box_choices = next_product.children[9].children[1]
+    var delete_btn = next_product.children[10].children[0]
 
     product_name.id = "product_name_" + len.toString()
     product_name.value = ""
     product_amount.id = "product_amount_" + len.toString()
     product_amount.value = "1"
     formula_choices.id = "formula_choices_" + len.toString()
+    formula_amount.id = "formula_amount_" + len.toString()
+    formula_amount.value = "1"
     decoration_form_choices.id = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.id = "decoration_technique_choices_" + len.toString()
     plate_choices.id = "plate_choices_" + len.toString()
@@ -569,6 +574,7 @@ function add_product_to_order()
     product_name.name = "product_name_" + len.toString()
     product_amount.name = "product_amount_" + len.toString()
     formula_choices.name = "formula_choices_" + len.toString()
+    formula_amount.name = "formula_amount_" + len.toString()
     decoration_form_choices.name = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.name = "decoration_technique_choices_" + len.toString()
     plate_choices.name = "plate_choices_" + len.toString()
@@ -610,15 +616,17 @@ function delete_product_in_add_order(control)
         var product_name = product.children[2].children[1]
         var product_amount = product.children[3].children[1]
         var formula_choices = product.children[4].children[1]
-        var decoration_form_choices = product.children[5].children[1]    
-        var decoration_technique_choices = product.children[6].children[1]
-        var plate_choices = product.children[7].children[1]
-        var box_choices = product.children[8].children[1]
-        var delete_btn = product.children[9].children[0]
+        var formula_amount = product.children[5].children[1]
+        var decoration_form_choices = product.children[6].children[1]    
+        var decoration_technique_choices = product.children[7].children[1]
+        var plate_choices = product.children[8].children[1]
+        var box_choices = product.children[9].children[1]
+        var delete_btn = product.children[10].children[0]
 
         product_name.id = "product_name_" + i.toString()
         product_amount.id = "product_amount_" + i.toString()
         formula_choices.id = "formula_choices_" + i.toString()
+        formula_amount.id = "formula_amount_" + i.toString()
 	    decoration_form_choices.id = "decoration_form_choices_" + i.toString()
         decoration_technique_choices.id = "decoration_technique_choices_" + i.toString()
         plate_choices.id = "plate_choices_" + i.toString()
@@ -628,6 +636,7 @@ function delete_product_in_add_order(control)
         product_name.name = "product_name_" + i.toString()
         product_amount.name = "product_amount_" + i.toString()
         formula_choices.name = "formula_choices_" + i.toString()
+        formula_amount.name = "formula_amount_" + i.toString()
 	    decoration_form_choices.name = "decoration_form_choices_" + i.toString()
         decoration_technique_choices.name = "decoration_technique_choices_" + i.toString()
         plate_choices.name = "plate_choices_" + i.toString()
