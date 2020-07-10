@@ -177,7 +177,7 @@ class ProductCEO:
         plate_rec = self.plate_repo.get_plate(product_rec.plate_id)
         box_rec = self.box_repo.get_box(product_rec.box_id)
 
-        new_product_cost = new_formula_cost + (plate_rec.unit_price / plate_rec.unit_count) + (box_rec.unit_price / box_rec.unit_count)
+        new_product_cost = new_formula_cost * product_rec.formula_amount + (plate_rec.unit_price / plate_rec.unit_count) + (box_rec.unit_price / box_rec.unit_count)
         message = 'New cost of product %s is %s' % (product_id, new_product_cost)
         ProductCEO.logger.info(message)
         
