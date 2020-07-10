@@ -24,6 +24,7 @@ class ProductDto:
                  box_name,
                  formula_id,
                  formula_name,
+                 formula_amount,
                  price_to_customer,
                  sample_images_group_id,
                  sample_images_group_name,
@@ -43,7 +44,8 @@ class ProductDto:
         self.box_id = box_id
         self.box_name = box_name
         self.formula_id = formula_id
-        self.formula_name = formula_name        
+        self.formula_name = formula_name
+        self.formula_amount = formula_amount
         self.price_to_customer = price_to_customer
         self.sample_images_group_id = sample_images_group_id
         self.sample_images_group_name = sample_images_group_name
