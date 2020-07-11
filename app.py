@@ -1353,7 +1353,6 @@ def __extract_order_props(props_dict):
     product_names = []
     product_amounts = []
     formula_ids = []
-    formula_amounts = []
     decoration_form_ids = []
     decoration_technique_ids = []
     plate_ids = []
@@ -1365,7 +1364,6 @@ def __extract_order_props(props_dict):
         product_name_id = 'product_name_' + str(i)
         product_amount_id = 'product_amount_' + str(i)
         formula_choices_id = 'formula_choices_' + str(i)
-        formula_amount_id = 'formula_amount_' + str(i)
         decoration_form_choices_id = 'decoration_form_choices_' + str(i)
         decoration_technique_choices_id = 'decoration_technique_choices_' + str(i)
         plate_choices_id = 'plate_choices_' + str(i)
@@ -1376,7 +1374,6 @@ def __extract_order_props(props_dict):
             product_names.append(props_dict[product_name_id])
             product_amounts.append(props_dict[product_amount_id])
             formula_ids.append(int(props_dict[formula_choices_id]))
-            formula_amounts.append(Decimal(props_dict[formula_amount_id]))
             decoration_form_ids.append(int(props_dict[decoration_form_choices_id]))
             decoration_technique_ids.append(int(props_dict[decoration_technique_choices_id]))
             plate_ids.append(int(props_dict[plate_choices_id]))
@@ -1398,7 +1395,6 @@ def __extract_order_props(props_dict):
            product_names, \
            product_amounts, \
            formula_ids, \
-           formula_amounts, \
            decoration_form_ids, \
            decoration_technique_ids, \
            plate_ids, \
@@ -1425,7 +1421,6 @@ def add_order():
             product_names, \
             product_amounts, \
             formula_ids, \
-            formula_amounts, \
             decoration_form_ids, \
             decoration_technique_ids, \
             plate_ids, \
@@ -1440,7 +1435,6 @@ def add_order():
                                                     product_names,
                                                     product_amounts,
                                                     formula_ids,
-                                                    formula_amounts,
                                                     decoration_form_ids,
                                                     decoration_technique_ids,
                                                     plate_ids,
@@ -1846,7 +1840,6 @@ def add_new_product_to_order(order_id):
     new_product_name = request.args.get('new_product_name_arg')
     product_amount = int(request.args.get('product_amount_arg'))    
     formula_id = int(request.args.get('formula_id_arg'))
-    formula_amount = Decimal(request.args.get('formula_amount_arg'))
     decoration_form_id = int(request.args.get('decoration_form_id_arg'))
     decoration_technique_id = int(request.args.get('decoration_technique_id_arg'))
     plate_id = int(request.args.get('plate_id_arg'))
@@ -1860,7 +1853,6 @@ def add_new_product_to_order(order_id):
                                 product_amount,
                                 order_id,
                                 formula_id,
-                                formula_amount,
                                 decoration_form_id,
                                 decoration_technique_id,
                                 plate_id,
