@@ -107,6 +107,12 @@ class ProductCEO:
 
                     message = 'Formula of product %s changed to %s. New formula cost = %s' % (product_id, formula_id, formula_cost)
                     ProductCEO.logger.info(message)
+            else:
+                formula_rec = self.formula_repo.get_formula(formula_id)
+                if formula_rec.has_up_to_date_cost_estimation == True:
+                    formula_cost = formula_rec.total_cost
+                else:
+                    formula_cost = self.formula_director.estimate_formula_cost(formula_id)
 
             plate_rec = None
             if product_rec.plate_id != plate_id:
