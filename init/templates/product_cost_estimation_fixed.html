@@ -48,14 +48,8 @@
             <td></td>
             <td></td>
             <td>{{ fixed_subformula_recs[i].total_cost }} x {{fixed_subformula_recs[i].count}}</td>
-        </tr>        
+        </tr>
     {% endfor %}
-    <tr>
-        <td><b>Formula total</b></td>
-        <td></td>
-        <td></td>
-        <td>{{ fixed_formula_rec.total_cost * product_rec.formula_amount }} = {{ fixed_formula_rec.total_cost }} x {{ product_rec.formula_amount }}</td>
-    </tr>
     <tr>
         <td><b>Plate</b></td>
         <td>{{fixed_plate_rec.name}}</td>
