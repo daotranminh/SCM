@@ -1838,7 +1838,7 @@ def update_order(order_id):
 @app.route('/add_new_product_to_order/<int:order_id>', methods=['GET', 'POST'])
 def add_new_product_to_order(order_id):
     new_product_name = request.args.get('new_product_name_arg')
-    product_amount = int(request.args.get('product_amount_arg'))    
+    product_amount = Decimal(request.args.get('product_amount_arg'))    
     formula_id = int(request.args.get('formula_id_arg'))
     decoration_form_id = int(request.args.get('decoration_form_id_arg'))
     decoration_technique_id = int(request.args.get('decoration_technique_id_arg'))
@@ -1983,7 +1983,7 @@ def __extract_update_product_args(product_rec, args):
 
     product_amount = args.get('product_amount_arg')
     if product_amount is not None:
-        product_amount = int(product_amount)
+        product_amount = Decimal(product_amount)
     else:
         product_amount = product_rec.amount        
         
@@ -2081,7 +2081,7 @@ def update_product(product_id):
         try:
             remaining_product_image_path_ids = __extract_remaining_image_path_ids(request.form, 'existing_product_image_')
             current_product_name = request.form['product_name']
-            product_amount = int(request.form['product_amount'])
+            product_amount = Decimal(request.form['product_amount'])
             selected_decoration_form_id = int(request.form['decoration_form_id'])
             selected_decoration_technique_id = int(request.form['decoration_technique_id'])
             selected_plate_id = int(request.form['plate_id'])

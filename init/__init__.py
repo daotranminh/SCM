@@ -211,7 +211,7 @@ class Product(db.Model):
     total_cost = Column(Numeric(10, 2))
     has_up_to_date_cost_estimation = Column(Boolean, default=False)
     price_to_customer = Column(Numeric(10, 2))
-    amount = Column(Integer, default=1)
+    amount = Column(Numeric(10, 2), default=1)
 
 class ProductCostEstimation(db.Model):
     __tablename__ = 'product_cost_estimation'
