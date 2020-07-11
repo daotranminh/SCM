@@ -118,6 +118,7 @@ class ProductRepository:
                        plate_id,
                        box_id,
                        formula_id,
+                       formula_amount,
                        box_status,
                        box_returned_on,
                        sample_images_group_id):
@@ -130,6 +131,7 @@ class ProductRepository:
                                 plate_id,
                                 box_id,
                                 formula_id,
+                                formula_amount,
                                 box_status,
                                 box_returned_on,
                                 sample_images_group_id)
@@ -143,6 +145,7 @@ class ProductRepository:
                            plate_id,
                            box_id,
                            formula_id,
+                           formula_amount,
                            box_status,
                            box_returned_on,
                            sample_images_group_id):        
@@ -153,6 +156,7 @@ class ProductRepository:
         product_rec.plate_id = plate_id
         product_rec.box_id = box_id
         product_rec.formula_id = formula_id
+        product_rec.formula_amount = formula_amount
         product_rec.box_status = box_status
         product_rec.box_returned_on = box_returned_on
         product_rec.sample_images_group_id = sample_images_group_id
