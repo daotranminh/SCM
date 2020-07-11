@@ -270,6 +270,7 @@ function extract_update_order_args()
     var newProductName = document.getElementById("new_product_name").value
     var product_amount = document.getElementById("product_amount").value
     var formulaId = document.getElementById("formula_id").value
+    var formulaAmount = document.getElementById("formula_amount").value
     var decorationFormId = document.getElementById("decoration_form_id").value
     var decorationTechniqueId = document.getElementById("decoration_technique_id").value
     var boxToBeReturned = document.getElementById("box_to_be_returned").checked
@@ -299,13 +300,14 @@ function extract_update_order_args()
             newProductName,         // 9
             product_amount,         // 10
             formulaId,              // 11
-            decorationFormId,       // 12
-            decorationTechniqueId,  // 13
-            boxToBeReturned,        // 14
-            priceToCustomersStr,    // 15
-            paidByCustomer,         // 16
-            plateId,                // 17
-            boxId]                  // 18
+            formulaAmount,          // 12
+            decorationFormId,       // 13
+            decorationTechniqueId,  // 14
+            boxToBeReturned,        // 15
+            priceToCustomersStr,    // 16
+            paidByCustomer,         // 17
+            plateId,                // 18
+            boxId]                  // 19
 }
 
 function delete_product_in_update_order(delete_btn)
@@ -338,13 +340,14 @@ function delete_product_in_update_order(delete_btn)
     var newProductName = args[9]
     var product_amount = args[10]
     var formulaId = args[11]
-    var decorationFormId = args[12]
-    var decorationTechniqueId = args[13]
-    var boxToBeReturned = args[14]
-    var priceToCustomersStr = args[15]
-    var paidByCustomer = args[16]
-    var plateId = args[17]
-    var boxId = args[18]
+    var formulaAmount = args[12]
+    var decorationFormId = args[13]
+    var decorationTechniqueId = args[14]
+    var boxToBeReturned = args[15]
+    var priceToCustomersStr = args[16]
+    var paidByCustomer = args[17]
+    var plateId = args[18]
+    var boxId = args[19]
 
     currentHref = location.href
     currentHrefComponents = currentHref.split("/")
@@ -362,6 +365,7 @@ function delete_product_in_update_order(delete_btn)
         "&new_product_name_arg=" + newProductName +
         "&product_amount_arg=" + product_amount +
         "&formula_id_arg=" + formulaId +
+        "&formula_amount_arg=" + formulaAmount +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
         "&box_to_be_returned_arg=" + boxToBeReturned +

@@ -1592,6 +1592,8 @@ def __extract_update_order_args(order_rec, args):
     else:
         chosen_formula_id_arg = int(chosen_formula_id_arg)
 
+    chosen_formula_amount_arg = Decimal(args.get('chosen_formula_amount_arg'))
+
     chosen_decoration_form_id_arg = args.get('chosen_decoration_form_id_arg')
     if chosen_decoration_form_id_arg is None or chosen_decoration_form_id_arg == '':
         chosen_decoration_form_id_arg = -1
@@ -1641,6 +1643,7 @@ def __extract_update_order_args(order_rec, args):
         new_product_name_arg, \
         product_amount_arg, \
         chosen_formula_id_arg, \
+        chosen_formula_amount_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
         chosen_plate_id_arg, \
@@ -1688,6 +1691,7 @@ def update_order(order_id):
         new_product_name_arg, \
         product_amount_arg, \
         chosen_formula_id_arg, \
+        chosen_formula_amount_arg, \
         chosen_decoration_form_id_arg, \
         chosen_decoration_techinque_id_arg, \
         chosen_plate_id_arg, \
@@ -1738,6 +1742,7 @@ def update_order(order_id):
                                     new_product_name=new_product_name_arg,
                                     product_amount=product_amount_arg,
                                     chosen_formula_id=chosen_formula_id_arg,
+                                    chosen_formula_amount=chosen_formula_amount,
                                     chosen_decoration_form_id=chosen_decoration_form_id_arg,
                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
                                     chosen_plate_id=chosen_plate_id_arg,
@@ -1821,6 +1826,7 @@ def update_order(order_id):
                                                     product_amount=product_amount_arg,
                                                     chosen_taste_id=chosen_taste_id_arg,
                                                     chosen_formula_id=chosen_formula_id_arg,
+                                                    chosen_formula_amount=chosen_formula_amount,
                                                     chosen_decoration_form_id=chosen_decoration_form_id_arg,
                                                     chosen_decoration_technique_id=chosen_decoration_techinque_id_arg,
                                                     chosen_plate_id=chosen_plate_id,
@@ -1886,10 +1892,11 @@ def add_new_product_to_order(order_id):
                                              new_product_name_arg=[request.args.get('new_product_name_arg')],
                                              product_amount_arg=[request.args.get('product_amount_arg')],                                             
                                              chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                             chosen_formula_amount_arg=[request.args.get('formula_amount_arg')],
                                              chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
-                                             chosen_plate_id_arg=[request.args.get('formula_id_arg')],
-                                             chosen_box_id_arg=[request.args.get('formula_id_arg')],
+                                             chosen_plate_id_arg=[request.args.get('plate_id_arg')],
+                                             chosen_box_id_arg=[request.args.get('box_id_arg')],
                                              box_to_be_returned_arg=[request.args.get('box_to_be_returned_arg')]
                                              ),
                                              message,
@@ -1914,6 +1921,7 @@ def add_new_product_to_order(order_id):
                                  new_product_name_arg=[''],
                                  product_amount_arg=['1'],                                 
                                  chosen_formula_id_arg=['-1'],
+                                 chosen_formula_amount_arg=['1'],
                                  chosen_decoration_form_id_arg=['-1'],
                                  chosen_decoration_technique_id_arg=['-1'],
                                  chosen_plate_id_arg=['-1'],
@@ -2209,6 +2217,7 @@ def delete_product(product_id):
                                              new_product_name_arg=[request.args.get('new_product_name_arg')],
                                              product_amount_arg=[request.args.get('product_amount_arg')],
                                              chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                             chosen_formula_amount_arg=[request.args.get('formula_amount_arg')],
                                              chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                              chosen_plate_id_arg=[request.args.get('plate_id_arg')],
@@ -2237,6 +2246,7 @@ def delete_product(product_id):
                                  new_product_name_arg=[request.args.get('new_product_name_arg')],
                                  product_amount_arg=[request.args.get('product_amount_arg')],
                                  chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                 chosen_formula_amount_arg=[request.args.get('formula_amount_arg')],
                                  chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                  chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                  chosen_plate_id_arg=[request.args.get('plate_id_arg')],
