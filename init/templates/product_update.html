@@ -17,7 +17,7 @@
 		
 		<p>
 			<label for="product_amount">Amount</label>
-			<input type="number" style="text-align:right" id="product_amount" name="product_amount" min="1" value="{{product_rec.amount}}"/>
+			<input type="number" style="text-align:right" id="product_amount" name="product_amount" min="1" value="1"/>
 	  	</p>
 
 		<div class="form-group">
@@ -31,12 +31,7 @@
 	            {% endif %}
 	        {% endfor %}
 	        </select>
-		</div>
-
-		<p>
-			<label for="formula_amount">Formula Amount</label>
-			<input type="number" step="0.01" style="text-align:right" id="formula_amount" name="formula_amount" min="0.01" value="{{product_rec.formula_amount}}"/>
-	  	</p>
+		</div>		
 
         <div class="form-group">
 	        <label for="decoration_form_id">Decoration form</label>

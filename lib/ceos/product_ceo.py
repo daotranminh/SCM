@@ -81,7 +81,6 @@ class ProductCEO:
                        plate_id,
                        box_id,
                        formula_id,
-                       formula_amount,
                        box_status,
                        box_returned_on,
                        sample_images_group_id,
@@ -92,8 +91,7 @@ class ProductCEO:
 
         if product_rec.formula_id != formula_id or \
             product_rec.plate_id != plate_id or \
-            product_rec.box_id != box_id or \
-            product_rec.formula_amount != formula_amount:
+            product_rec.box_id != box_id:
         
             formula_cost = 0
             if product_rec.formula_id != formula_id:
@@ -111,7 +109,7 @@ class ProductCEO:
 
                     message = 'Formula of product %s changed to %s. New formula cost = %s' % (product_id, formula_id, formula_cost)
                     ProductCEO.logger.info(message)
-                    message = 'New cost from formula of product %s' % (product_id, formula_cost * formula_amount)
+                    message = 'New cost from formula of product %s' % (product_id, formula_cost * product_rec.formula_amount)
                     ProductCEO.logger.info(message)
             else:
                 formula_rec = self.formula_repo.get_formula(formula_id)
@@ -119,10 +117,6 @@ class ProductCEO:
                     formula_cost = formula_rec.total_cost
                 else:
                     formula_cost = self.formula_director.estimate_formula_cost(formula_id)
-
-            if product_rec.formula_amount != formula_amount:
-                message = 'Formula_amount of product %s changed to %s' % (product_id, formula_amount)
-                ProductCEO.logger.info(message)
 
             plate_rec = None
             if product_rec.plate_id != plate_id:
@@ -135,16 +129,16 @@ class ProductCEO:
 
             box_rec = None
             if product_rec.box_id != box_id:
-                box_rec = self.box_repo.get_box(box_id)        
+                box_rec = self.box_repo.get_box(box_id)
                 message = 'Box of product %s changed to %s. New box cost = %s' % (product_id, box_id, box_rec.unit_price / box_rec.unit_count)
                 ProductCEO.logger.info(message)
             else:
                 box_rec = self.box_repo.get_box(product_rec.box_id)
             box_cost = box_rec.unit_price / box_rec.unit_count
 
-            self.product_repo.update_cost_product_rec(product_rec, formula_cost * formula_amount + plate_cost + box_cost)
+            self.product_repo.update_cost_product_rec(product_rec, formula_cost * product_rec.formula_amount + plate_cost + box_cost)
         
-            message = 'New cost of product %s is %s' % (product_id, formula_cost  * formula_amount + plate_cost + box_cost)
+            message = 'New cost of product %s is %s' % (product_id, formula_cost  * product_rec.formula_amount + plate_cost + box_cost)
             ProductCEO.logger.info(message)
 
             self.order_repo.set_flag_has_up_to_date_cost_estimation(product_rec.order_id, False)
@@ -162,7 +156,6 @@ class ProductCEO:
                                              plate_id,
                                              box_id,
                                              formula_id,
-                                             formula_amount,
                                              box_status,
                                              box_returned_on,
                                              sample_images_group_id)

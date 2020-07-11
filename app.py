@@ -2101,8 +2101,6 @@ def update_product(product_id):
             if selected_formula_id == -1:
                 selected_formula_id = None
 
-            selected_formula_amount = Decimal(request.form['formula_amount'])
-
             selected_sample_images_group_id = int(request.form['sample_images_group_id'])
             if selected_sample_images_group_id == -1:
                 selected_sample_images_group_id = None
@@ -2118,7 +2116,6 @@ def update_product(product_id):
                                        selected_plate_id,
                                        selected_box_id,
                                        selected_formula_id,
-                                       selected_formula_amount,
                                        selected_box_status,
                                        chosen_box_returned_on,
                                        selected_sample_images_group_id,
