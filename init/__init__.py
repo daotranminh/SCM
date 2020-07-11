@@ -202,7 +202,6 @@ class Product(db.Model):
     decoration_form_id = Column(Integer, ForeignKey(DecorationForm.id))
     decoration_technique_id = Column(Integer, ForeignKey(DecorationTechnique.id))
     formula_id = Column(Integer, ForeignKey(Formula.id))
-    formula_amount = Column(Numeric(10, 2), default=1)
     plate_id = Column(Integer, ForeignKey(Plate.id))
     box_id = Column(Integer, ForeignKey(Box.id))
     sample_images_group_id = Column(Integer, ForeignKey(SampleImagesGroup.id))

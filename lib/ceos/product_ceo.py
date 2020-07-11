@@ -107,8 +107,6 @@ class ProductCEO:
 
                     message = 'Formula of product %s changed to %s. New formula cost = %s' % (product_id, formula_id, formula_cost)
                     ProductCEO.logger.info(message)
-                    message = 'New cost from formula of product %s' % (product_id, formula_cost * product_rec.formula_amount)
-                    ProductCEO.logger.info(message)
 
             plate_rec = None
             if product_rec.plate_id != plate_id:
