@@ -31,7 +31,8 @@ class OrderRepository:
                                                 customer_query.c.name, \
                                                 delivery_method_query.c.name). \
             join(customer_query, Order.customer_id == customer_query.c.id). \
-            join(delivery_method_query, Order.delivery_method_id == delivery_method_query.c.id)
+            join(delivery_method_query, Order.delivery_method_id == delivery_method_query.c.id). \
+            order_by(desc(Order.delivery_appointment))
 
         paginated_order_dtos = order_dto_query.paginate(page, per_page, error_out=False)
 
