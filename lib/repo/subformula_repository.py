@@ -1,6 +1,7 @@
 import logging
 
 from flask_sqlalchemy import sqlalchemy
+from sqlalchemy import desc
 
 from init import SubFormula, FormulaSubFormula, Taste, CostEstimation, config
 from utilities.scm_enums import ErrorCodes
@@ -45,7 +46,8 @@ class SubFormulaRepository:
     def get_paginated_subformulas(self,
                                   page,
                                   per_page,
-                                  search_text):
+                                  search_text,
+                                  sorting_criteria):
         taste_query = self.db.session.query(Taste.id, Taste.name). \
             subquery()
 
@@ -62,7 +64,20 @@ class SubFormulaRepository:
             subformula_query = subformula_query.filter((SubFormula.name.ilike(search_pattern)) |
                                                 (SubFormula.description.ilike(search_pattern)))
 
-        subformula_query = subformula_query.order_by(SubFormula.name)
+        if sorting_criteria == 'subformula_name_asc':
+            subformula_query = subformula_query.order_by(SubFormula.name)
+        elif sorting_criteria == 'subformula_name_desc':
+            subformula_query = subformula_query.order_by(desc(SubFormula.name))
+        elif sorting_criteria == 'taste_name_asc':
+            subformula_query = subformula_query.order_by(taste_query.c.name)
+        elif sorting_criteria == 'taste_name_desc':
+            subformula_query = subformula_query.order_by(desc(taste_query.c.name))
+        elif sorting_criteria == 'cost_estimation_asc':
+            subformula_query = subformula_query.order_by(cost_estimation_query.c.total_cost)
+        elif sorting_criteria == 'cost_estimation_desc':
+            subformula_query = subformula_query.order_by(desc(cost_estimation_query.c.total_cost))
+        else:
+            subformula_query = subformula_query.order_by(SubFormula.name)
         
         return subformula_query.paginate(page, per_page, error_out=False)
 

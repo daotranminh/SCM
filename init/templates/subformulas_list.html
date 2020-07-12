@@ -4,7 +4,7 @@
 
 {% from "includes/_formhelpers.html" import render_field %}
 
-{% if search_text == '' %}
+{% if search_text is none or search_text == '' %}
   <input type="text" class="form-control" placeholder="Filter..." id="searchInput">
 {% else %}
   <input type="text" class="form-control" value="{{search_text}}" id="searchInput">  
@@ -15,11 +15,45 @@
   <thead>
     <tr>
       <th>Id</th>
-      <th>Name</th>
-      <th>Taste</th>
+      {% if current_sorting_criteria == 'subformula_name_desc' %}
+      <th>Name <a href="{{ url_for('list_subformulas',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['subformula_name_asc']) }}"><i class="fa fa-sort-asc"></i></a></th>
+      {% else %}
+      <th>Name <a href="{{ url_for('list_subformulas',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['subformula_name_desc']) }}"><i class="fa fa-sort-desc"></i></a></th>
+      {% endif %}
+
+      {% if current_sorting_criteria == 'taste_name_desc' %}
+      <th>Taste <a href="{{ url_for('list_subformulas',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['taste_name_asc']) }}"><i class="fa fa-sort-asc"></i></a></th>
+      {% else %}
+      <th>Taste <a href="{{ url_for('list_subformulas',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['taste_name_desc']) }}"><i class="fa fa-sort-desc"></i></a></th>
+      {% endif %}
+
       <th>Type</th>
-      <th>Registered on<i class="fa fa-sort-asc"></i></th>
-      <th style="text-align:right">Cost estimation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+
+      <th>Registered on</th>
+      
+      {% if current_sorting_criteria == 'cost_estimation_desc' %}
+      <th style="text-align:right">Cost estimation <a href="{{ url_for('list_subformulas',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['cost_estimation_asc']) }}"><i class="fa fa-sort-asc"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+      {% else %}
+      <th style="text-align:right">Cost estimation <a href="{{ url_for('list_subformulas',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['cost_estimation_desc']) }}"><i class="fa fa-sort-desc"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+      {% endif %}
       <th></th>
     </tr>
   </thead>
@@ -57,7 +91,9 @@
   {% if subformula_dtos.has_prev %}
   <li class="page-item"><a class="page-link"
          href="{{ url_for('list_subformulas', 
-				 page=subformula_dtos.prev_num) }}">Previous</a></li>
+         page=subformula_dtos.prev_num,
+         search_text=[search_text],
+         sorting_criteria=[current_sorting_criteria]) }}">Previous</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
 			   href="#">Previous</a></li>
@@ -66,7 +102,9 @@
   {% if subformula_dtos.has_next %}
   <li class="page-item"><a class="page-link"
          href="{{ url_for('list_subformulas', 
-				 page=subformula_dtos.next_num) }}">Next</a></li>
+         page=subformula_dtos.next_num,
+         search_text=[search_text],
+         sorting_criteria=[current_sorting_criteria]) }}">Next</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
 			   href="#">Next</a></li>

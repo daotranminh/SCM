@@ -962,18 +962,22 @@ def customer_details(customer_id):
 def list_subformulas(page):
     per_page = int(config['PAGING']['subformulas_per_page'])
     search_text = request.args.get('search_text')
+    sorting_criteria = request.args.get('sorting_criteria')
 
     subformula_dtos, db_changed = subformula_manager.get_paginated_subformula_dtos(
         page,
         per_page,
-        search_text)
+        search_text,
+        sorting_criteria)
 
     if db_changed == True:
         db.session.commit()
                                                                   
     return render_scm_template('subformulas_list.html',
                                 search_text=search_text,
-                                subformula_dtos=subformula_dtos)
+                                subformula_dtos=subformula_dtos,
+                                page=page,
+                                current_sorting_criteria=sorting_criteria)
 
 @app.route('/list_subformulas_per_taste', methods=['GET', 'POST'])
 @app.route('/list_subformulas_per_taste/', methods=['GET', 'POST'])

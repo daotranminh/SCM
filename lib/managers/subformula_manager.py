@@ -134,11 +134,13 @@ class SubFormulaManager:
     def get_paginated_subformula_dtos(self,
                                       page,
                                       per_page,
-                                      search_text):
+                                      search_text,
+                                      sorting_criteria):
         paginated_subformula_infos = self.subformula_repo.get_paginated_subformulas(
             page,
             per_page,
-            search_text)
+            search_text,
+            sorting_criteria)
         return self.__post_process_subformula_infos(paginated_subformula_infos)
 
     def get_paginated_subformula_dtos_per_taste(self,
