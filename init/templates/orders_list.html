@@ -9,7 +9,7 @@
 {% if search_text == '' %}
 <input type="text" class="form-control" placeholder="Filter..." id="searchInput">
 {% else %}
-<input type="text" class="form-control" placeholder="{{search_text}}" id="searchInput">
+<input type="text" class="form-control" value="{{search_text}}" id="searchInput">
 {% endif %}
 
 <table class="table table-striped">
@@ -105,7 +105,9 @@
   {% if order_dtos.has_prev %}
   <li class="page-item"><a class="page-link"
 			   href="{{ url_for('list_orders', 
-				 page=order_dtos.prev_num) }}">Previous</a></li>
+         page=order_dtos.prev_num,
+         search_text=[search_text],
+         sorting_criteria=[current_sorting_criteria]) }}">Previous</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
 			   href="#">Previous</a></li>
@@ -114,7 +116,9 @@
   {% if order_dtos.has_next %}
   <li class="page-item"><a class="page-link"
 			   href="{{ url_for('list_orders', 
-				 page=order_dtos.next_num) }}">Next</a></li>
+         page=order_dtos.next_num,
+         search_text=[search_text],
+         sorting_criteria=[current_sorting_criteria]) }}">Next</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
 			   href="#">Next</a></li>
