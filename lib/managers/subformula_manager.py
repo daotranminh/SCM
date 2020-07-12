@@ -147,12 +147,15 @@ class SubFormulaManager:
                                                 taste_id,
                                                 page,
                                                 per_page,
-                                                search_text):
+                                                search_text,
+                                                sorting_criteria):
         paginated_subformula_infos = self.subformula_repo.get_paginated_subformulas_per_taste(
             taste_id,
             page,
             per_page,
-            search_text)
+            search_text,
+            sorting_criteria)
+
         return self.__post_process_subformula_infos(paginated_subformula_infos)
         
     def add_subformula(self,

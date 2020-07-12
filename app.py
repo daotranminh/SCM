@@ -1001,12 +1001,14 @@ def list_subformulas_per_taste_default():
 def list_subformulas_per_taste(taste_id, page):
     per_page = int(config['PAGING']['subformulas_per_page'])
     search_text = request.args.get('search_text')
+    sorting_criteria = request.args.get('sorting_criteria')
     
     subformula_dtos, db_changed = subformula_manager.get_paginated_subformula_dtos_per_taste(
         taste_id,
         page,
         per_page,
-        search_text)
+        search_text,
+        sorting_criteria)
 
     if db_changed == True:
         db.session.commit()
@@ -1018,7 +1020,9 @@ def list_subformulas_per_taste(taste_id, page):
                                 search_text=search_text,
                                 taste_rec=taste_rec,
                                 taste_recs=taste_recs,
-                                subformula_dtos=subformula_dtos)
+                                subformula_dtos=subformula_dtos,
+                                page=page,
+                                current_sorting_criteria=sorting_criteria)
 
 def __extract_subformula_props(props_dict):
     subformula_name = props_dict['subformula_name']
