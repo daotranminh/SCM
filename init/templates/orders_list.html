@@ -22,19 +22,35 @@
   </thead>
   <tbody>
     {% for order_dto in order_dtos.items %}
+    {% if order_dto.order_status_name == 'Delivered' %}
+      <tr>
+        <td><a href="{{ url_for('order_details', 
+		    order_id=order_dto.order_id) }}"  color="#D3D3D3">{{order_dto.order_id}}</a></td>
+        <td><a href="{{ url_for('customer_details',
+		    customer_id=order_dto.customer_id)}}">{{order_dto.customer_name}}</a></td>
+        <td><font color="#A0A0A0">{{order_dto.delivery_appointment}}</font></td>
+        <td><font color="#A0A0A0">{{order_dto.order_status_name}}</font></td>
+        <td style="text-align:right"><font color="#A0A0A0">{{order_dto.total_cost}}</font></td>
+        <td style="text-align:right"><font color="#A0A0A0">{{order_dto.price_to_customer}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+        <td><a href="{{ url_for('update_order',
+		    order_id=order_dto.order_id) }}"
+        class="btn btn-default pullright"><font color="#A0A0A0">Update</font></a></td>      
+    </tr>
+    {% else %}
     <tr>
       <td><a href="{{ url_for('order_details', 
-		   order_id=order_dto.order_id) }}">{{order_dto.order_id}}</a></td>
+      order_id=order_dto.order_id) }}">{{order_dto.order_id}}</a></td>
       <td><a href="{{ url_for('customer_details',
-		   customer_id=order_dto.customer_id)}}">{{order_dto.customer_name}}</a></td>
+      customer_id=order_dto.customer_id)}}">{{order_dto.customer_name}}</a></td>
       <td>{{order_dto.delivery_appointment}}</td>
       <td>{{order_dto.order_status_name}}</td>
       <td style="text-align:right">{{order_dto.total_cost}}</td>
       <td style="text-align:right">{{order_dto.price_to_customer}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td><a href="{{ url_for('update_order',
-		   order_id=order_dto.order_id) }}"
-	     class="btn btn-default pullright">Update</a></td>
-    </tr>
+      order_id=order_dto.order_id) }}"
+      class="btn btn-default pullright">Update</a></td>      
+  </tr>
+    {% endif %}
     {% endfor %}
   </tbody>
 </table>
