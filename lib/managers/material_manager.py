@@ -46,10 +46,12 @@ class MaterialManager:
     def get_paginated_material_dtos(self,
                                     page,
                                     per_page,
-                                    search_text):
+                                    search_text,
+                                    sorting_criteria):
         pageinated_material_recs = self.material_repo.get_paginated_materials(page,
-                                                               per_page,
-                                                               search_text)
+                                                                              per_page,
+                                                                              search_text,
+                                                                              sorting_criteria)
         material_dtos = []
         for material in pageinated_material_recs.items:
             material_version = self.material_version_repo.get_latest_version_of_material(material.id)

@@ -1,6 +1,7 @@
 import logging
 
 from flask_sqlalchemy import sqlalchemy
+from sqlalchemy import desc
 
 from init import Material, config
 from utilities.scm_enums import ErrorCodes
@@ -21,13 +22,20 @@ class MaterialRepository:
     def get_paginated_materials(self,
                                 page,
                                 per_page,
-                                search_text):
+                                search_text,
+                                sorting_criteria):
         material_recs = Material.query
         if search_text is not None and search_text != '':
             search_pattern = '%' + search_text + '%'
             material_recs = material_recs.filter(Material.name.ilike(search_pattern))
 
-        material_recs = material_recs.order_by(Material.name)
+        if sorting_criteria == 'material_name_asc':
+            material_recs = material_recs.order_by(Material.name)
+        elif sorting_criteria == 'material_name_desc':
+            material_recs = material_recs.order_by(desc(Material.name))
+        else:
+            material_recs = material_recs.order_by(Material.name)
+
         return material_recs.paginate(page, per_page, error_out=False)
 
     def get_material(self, id):

@@ -823,11 +823,17 @@ def show_material_unit_price_history(material_id):
 def list_materials(page):
     per_page = int(config['PAGING']['materials_per_page'])
     search_text = request.args.get('search_text')
+    sorting_criteria = request.args.get('sorting_criteria')
 
     material_dtos = material_manager.get_paginated_material_dtos(page,
                                                                  per_page,
-                                                                 search_text)
-    return render_scm_template('materials_list.html', material_dtos=material_dtos)
+                                                                 search_text,
+                                                                 sorting_criteria)
+    return render_scm_template('materials_list.html', 
+                                material_dtos=material_dtos,
+                                page=page,
+                                search_text=search_text,
+                                current_sorting_criteria=sorting_criteria)
 
 ####################################################################################
 # CUSTOMERS

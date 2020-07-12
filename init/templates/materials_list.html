@@ -6,11 +6,27 @@
 
 {% from "includes/_formhelpers.html" import render_field %}
 
+{% if search_text == '' %}
+<input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+{% else %}
+<input type="text" class="form-control" value="{{search_text}}" id="searchInput">
+{% endif %}
+
 <table class="table table-striped">
   <thead>
     <tr>
       <th>Id</th>
-      <th>Name</th>
+      {% if current_sorting_criteria == 'material_name_desc' %}
+      <th>Name <a href="{{ url_for('list_materials',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['material_name_asc']) }}"><i class="fa fa-sort-asc"></i></a></th>
+      {% else %}
+      <th>Name <a href="{{ url_for('list_materials',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['material_name_desc']) }}"><i class="fa fa-sort-desc"></i></a></th>
+      {% endif %}
       <th>Is organic</th>
       <th style="text-align:right">Unit price</th>
       <th style="text-align:right">Unit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
@@ -43,7 +59,9 @@
   {% if material_dtos.has_prev %}
   <li class="page-item"><a class="page-link"
 			   href="{{ url_for('list_materials', 
-				 page=material_dtos.prev_num) }}">Previous</a></li>
+         page=material_dtos.prev_num,
+         search_text=[search_text],
+         sorting_criteria=[current_sorting_criteria]) }}">Previous</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
 			   href="#">Previous</a></li>
@@ -52,7 +70,9 @@
   {% if material_dtos.has_next %}
   <li class="page-item"><a class="page-link"
 			   href="{{ url_for('list_materials', 
-				 page=material_dtos.next_num) }}">Next</a></li>
+         page=material_dtos.next_num,
+         search_text=[search_text],
+         sorting_criteria=[current_sorting_criteria]) }}">Next</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
 			   href="#">Next</a></li>
@@ -62,5 +82,14 @@
 
 <a href="{{ url_for('add_material') }}"
    class="btn btn-default pullright">Add a new material</a>
+
+<script>
+  $("#searchInput").keyup(function(e) {
+    if (e.keyCode == 13) {
+      let search_text = this.value
+      location.href = "/list_materials/1/?search_text=" + search_text
+    }
+  })
+</script>
 
 {% endblock %}
