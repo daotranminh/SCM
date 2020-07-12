@@ -6,10 +6,26 @@
 
 {% from "includes/_formhelpers.html" import render_field %}
 
+{% if search_text is none or search_text == '' %}
+<input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+{% else %}
+<input type="text" class="form-control" value="{{search_text}}" id="searchInput">
+{% endif %}
+
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Name</th>
+      {% if current_sorting_criteria == 'taste_name_desc' %}
+      <th>Name <a href="{{ url_for('list_tastes',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['taste_name_asc']) }}"><i class="fa fa-sort-asc"></i></a></th>
+      {% else %}
+      <th>Name <a href="{{ url_for('list_tastes',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['taste_name_desc']) }}"><i class="fa fa-sort-desc"></i></a></th>
+      {% endif %}
       <th></th>
       <th></th>
     </tr>
@@ -33,7 +49,9 @@
   {% if taste_recs.has_prev %}
   <li class="page-item"><a class="page-link"
 			   href="{{ url_for('list_tastes', 
-				 page=taste_recs.prev_num) }}">Previous</a></li>
+         page=taste_recs.prev_num,
+         search_text=[search_text],
+         sorting_criteria=[current_sorting_criteria]) }}">Previous</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
 			   href="#">Previous</a></li>
@@ -42,7 +60,9 @@
   {% if taste_recs.has_next %}
   <li class="page-item"><a class="page-link"
 			   href="{{ url_for('list_tastes', 
-				 page=taste_recs.next_num) }}">Next</a></li>
+         page=taste_recs.next_num,
+         search_text=[search_text],
+         sorting_criteria=[current_sorting_criteria]) }}">Next</a></li>
   {% else %}
   <li class="page-item"><a class="page-link btn disabled"
 			   href="#">Next</a></li>
@@ -52,5 +72,14 @@
 
 <a href="{{ url_for('add_taste') }}"
    class="btn btn-default pullright">Add a new taste</a>
+
+<script>
+  $("#searchInput").keyup(function(e) {
+    if (e.keyCode == 13) {
+      let search_text = this.value
+      location.href = "/list_tastes/1/?search_text=" + search_text
+    }
+  })
+</script>
 
 {% endblock %}

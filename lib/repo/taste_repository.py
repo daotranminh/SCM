@@ -1,6 +1,7 @@
 import logging
 
 from flask_sqlalchemy import sqlalchemy
+from sqlalchemy import desc
 
 from init import Taste, config
 from utilities.scm_enums import ErrorCodes
@@ -21,13 +22,20 @@ class TasteRepository:
     def get_paginated_tastes(self,
                              page,
                              per_page,
-                             search_text):
+                             search_text,
+                             sorting_criteria):
         taste_recs = Taste.query
         if search_text is not None and search_text != '':
             search_pattern = '%' + search_text + '%'
             taste_recs = taste_recs.filter(Taste.name.ilike(search_pattern))
 
-        taste_recs = taste_recs.order_by(Taste.name)
+        if sorting_criteria == 'taste_name_asc':
+            taste_recs = taste_recs.order_by(Taste.name)
+        elif sorting_criteria == 'taste_name_desc':
+            taste_recs = taste_recs.order_by(desc(Taste.name))
+        else:
+            taste_recs = taste_recs.order_by(Taste.name)
+
         return taste_recs.paginate(page, per_page, error_out=False)            
 
     def get_taste(self, id):

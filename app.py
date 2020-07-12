@@ -319,11 +319,18 @@ def update_taste(taste_id):
 def list_tastes(page):
     per_page = int(config['PAGING']['tastes_per_page'])
     search_text = request.args.get('search_text')
+    sorting_criteria = request.args.get('sorting_criteria')
 
     taste_recs = taste_repo.get_paginated_tastes(page,
                                                 per_page,
-                                                search_text)
-    return render_scm_template('tastes_list.html', taste_recs=taste_recs)
+                                                search_text,
+                                                sorting_criteria)
+
+    return render_scm_template('tastes_list.html', 
+                                taste_recs=taste_recs,
+                                page=page,
+                                search_text=search_text,
+                                current_sorting_criteria=sorting_criteria)
 
 ####################################################################################
 # TOPIC
