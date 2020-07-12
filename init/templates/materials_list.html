@@ -6,7 +6,7 @@
 
 {% from "includes/_formhelpers.html" import render_field %}
 
-{% if search_text == '' %}
+{% if search_text is none or search_text == '' %}
 <input type="text" class="form-control" placeholder="Filter..." id="searchInput">
 {% else %}
 <input type="text" class="form-control" value="{{search_text}}" id="searchInput">
