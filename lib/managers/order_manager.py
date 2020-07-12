@@ -45,8 +45,12 @@ class OrderManager:
     def get_paginated_order_dtos(self,
                                  page,
                                  per_page,
-                                 search_text):
-        paginated_order_dtos = self.order_repo.get_paginated_order_dtos(page, per_page, search_text)
+                                 search_text,
+                                 sorting_criteria):
+        paginated_order_dtos = self.order_repo.get_paginated_order_dtos(page, 
+                                                                        per_page, 
+                                                                        search_text, 
+                                                                        sorting_criteria)
         order_dtos = []
         for order_rec, customer_name, delivery_method_name in paginated_order_dtos.items:
             order_status_name = self.__get_order_status_name(order_rec.order_status)

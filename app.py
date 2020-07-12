@@ -1458,10 +1458,14 @@ def add_order():
                                 plate_recs=plate_recs,
                                 box_recs=box_recs)
 
-def __lazy_get_order_dtos(page, per_page, search_text):
+def __lazy_get_order_dtos(page, 
+                          per_page, 
+                          search_text,
+                          sorting_criteria):
     paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
                                                                   per_page,
-                                                                  search_text)
+                                                                  search_text,
+                                                                  sorting_criteria)
     db_changed = False
     checked_formula_ids_set = set()
     formula_ids_set = set()
@@ -1476,18 +1480,26 @@ def __lazy_get_order_dtos(page, per_page, search_text):
 
 @app.route('/list_orders', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_orders/', methods=['GET', 'POST'], defaults={'page':1})
-@app.route('/list_orders<int:page>', methods=['GET', 'POST'])
 @app.route('/list_orders/<int:page>', methods=['GET', 'POST'])
+@app.route('/list_orders/<int:page>/', methods=['GET', 'POST'])
 def list_orders(page):
     per_page = int(config['PAGING']['orders_per_page'])
     search_text = request.args.get('search_text')
+    sorting_criteria = request.args.get('sorting_criteria')
 
-    paginated_order_dtos, db_changed = __lazy_get_order_dtos(page, per_page, search_text)
+    paginated_order_dtos, db_changed = __lazy_get_order_dtos(page, 
+                                                             per_page, 
+                                                             search_text, 
+                                                             sorting_criteria)
 
     if db_changed == True:
         db.session.commit()
 
-    return render_scm_template('orders_list.html', order_dtos=paginated_order_dtos)
+    return render_scm_template('orders_list.html', 
+                                page=page, 
+                                search_text=search_text, 
+                                order_dtos=paginated_order_dtos,
+                                current_sorting_criteria=sorting_criteria)
 
 def __lazy_get_product_dtos(order_id):
     db_changed = False

@@ -22,7 +22,8 @@ class OrderRepository:
     def get_paginated_order_dtos(self,
                                 page,
                                 per_page,
-                                search_text):
+                                search_text,
+                                sorting_criteria):
 
         customer_query = self.db.session.query(Customer.id, Customer.name).subquery()
         delivery_method_query = self.db.session.query(DeliveryMethod.id, DeliveryMethod.name).subquery()
@@ -31,8 +32,30 @@ class OrderRepository:
                                                 customer_query.c.name, \
                                                 delivery_method_query.c.name). \
             join(customer_query, Order.customer_id == customer_query.c.id). \
-            join(delivery_method_query, Order.delivery_method_id == delivery_method_query.c.id). \
-            order_by(desc(Order.delivery_appointment))
+            join(delivery_method_query, Order.delivery_method_id == delivery_method_query.c.id)
+
+        if search_text is not None and search_text != '':
+            search_pattern = '%' + search_text + '%'
+            order_dto_query = order_dto_query.filter(customer_query.c.name.ilike(search_pattern))
+
+        if sorting_criteria == 'customer_name_asc':
+            order_dto_query = order_dto_query.order_by(customer_query.c.name)
+        elif sorting_criteria == 'customer_name_desc':
+            order_dto_query = order_dto_query.order_by(desc(customer_query.c.name))
+        elif sorting_criteria == 'delivery_appointment_asc':
+            order_dto_query = order_dto_query.order_by(Order.delivery_appointment)
+        elif sorting_criteria == 'delivery_appointment_desc':
+            order_dto_query = order_dto_query.order_by(desc(Order.delivery_appointment))
+        elif sorting_criteria == 'cost_estimation_asc':
+            order_dto_query = order_dto_query.order_by(Order.total_cost)
+        elif sorting_criteria == 'cost_estimation_desc':
+            order_dto_query = order_dto_query.order_by(desc(Order.total_cost))
+        elif sorting_criteria == 'price_to_customer_asc':
+            order_dto_query = order_dto_query.order_by(Order.price_to_customer)
+        elif sorting_criteria == 'price_to_customer_desc':
+            order_dto_query = order_dto_query.order_by(desc(Order.price_to_customer))
+        else:
+            order_dto_query = order_dto_query.order_by(desc(Order.delivery_appointment))
 
         paginated_order_dtos = order_dto_query.paginate(page, per_page, error_out=False)
 

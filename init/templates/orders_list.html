@@ -6,17 +6,61 @@
 
 {% from "includes/_formhelpers.html" import render_field %}
 
+{% if search_text == '' %}
 <input type="text" class="form-control" placeholder="Filter..." id="searchInput">
+{% else %}
+<input type="text" class="form-control" placeholder="{{search_text}}" id="searchInput">
+{% endif %}
 
 <table class="table table-striped">
   <thead>
     <tr>
       <th>Order Id</th>
-      <th>Customer</th>
-      <th>Delivery appointment</th>
+      {% if current_sorting_criteria == 'customer_name_desc' %}
+        <th>Customer <a href="{{ url_for('list_orders',
+          page=page,
+          search_text=[search_text],
+          sorting_criteria=['customer_name_asc']) }}"><i class="fa fa-sort-asc"></i></a></th>
+      {% else %}
+        <th>Customer <a href="{{ url_for('list_orders',
+          page=page,
+          search_text=[search_text],
+          sorting_criteria=['customer_name_desc']) }}"><i class="fa fa-sort-desc"></i></a></th>
+      {% endif %}
+      {% if current_sorting_criteria == 'delivery_appointment_desc' %}
+        <th>Delivery appointment <a href="{{ url_for('list_orders',
+          page=page,
+          search_text=[search_text],
+          sorting_criteria=['delivery_appointment_asc']) }}"><i class="fa fa-sort-asc"></i></a></th>
+      {% else %}
+        <th>Delivery appointment <a href="{{ url_for('list_orders',
+          page=page,
+          search_text=[search_text],
+          sorting_criteria=['delivery_appointment_desc']) }}"><i class="fa fa-sort-desc"></i></a></th>
+      {% endif %}
       <th>Order status</th>
-      <th style="text-align:right">Cost estimation</th>
-      <th style="text-align:right">Price to customer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+      {% if current_sorting_criteria == 'cost_estimation_desc' %}
+      <th style="text-align:right">Cost estimation <a href="{{ url_for('list_orders',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['cost_estimation_asc']) }}"><i class="fa fa-sort-asc"></i></a></th>
+      {% else %}
+      <th style="text-align:right">Cost estimation <a href="{{ url_for('list_orders',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['cost_estimation_desc']) }}"><i class="fa fa-sort-desc"></i></a></th>
+      {% endif %}
+      {% if current_sorting_criteria == 'price_to_customer_desc' %}
+      <th style="text-align:right">Price to customer <a href="{{ url_for('list_orders',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['price_to_customer_asc']) }}"><i class="fa fa-sort-asc"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+      {% else %}
+      <th style="text-align:right">Price to customer <a href="{{ url_for('list_orders',
+        page=page,
+        search_text=[search_text],
+        sorting_criteria=['price_to_customer_desc']) }}"><i class="fa fa-sort-desc"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+      {%endif %}
       <th></th>
     </tr>
   </thead>
