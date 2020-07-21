@@ -1374,10 +1374,13 @@ def __extract_order_props(props_dict):
     product_names = []
     product_amounts = []
     formula_ids = []
+    formula_amounts = []
     decoration_form_ids = []
     decoration_technique_ids = []
     plate_ids = []
+    plate_counts = []
     box_ids = []
+    box_counts = []
     boxes_to_be_returned = []
 
     i = 0
@@ -1385,20 +1388,26 @@ def __extract_order_props(props_dict):
         product_name_id = 'product_name_' + str(i)
         product_amount_id = 'product_amount_' + str(i)
         formula_choices_id = 'formula_choices_' + str(i)
+        formula_amount_id = 'formula_amount_' + str(i)
         decoration_form_choices_id = 'decoration_form_choices_' + str(i)
         decoration_technique_choices_id = 'decoration_technique_choices_' + str(i)
         plate_choices_id = 'plate_choices_' + str(i)
+        plate_count_id = 'plate_count_' + str(i)
         box_choices_id = 'box_choices_' + str(i)
+        box_count_id = 'box_count_' + str(i)
         box_to_be_returned_id = 'box_to_be_returned_' + str(i)
         
         if product_name_id in props_dict:
             product_names.append(props_dict[product_name_id])
             product_amounts.append(props_dict[product_amount_id])
             formula_ids.append(int(props_dict[formula_choices_id]))
+            formula_amounts.append(Decimal(props_dict[formula_amount_id]))
             decoration_form_ids.append(int(props_dict[decoration_form_choices_id]))
             decoration_technique_ids.append(int(props_dict[decoration_technique_choices_id]))
             plate_ids.append(int(props_dict[plate_choices_id]))
+            plate_counts.append(int(props_dict[plate_count_id]))
             box_ids.append(int(props_dict[box_choices_id]))
+            box_counts.append(int(props_dict[box_count_id]))
 
             if box_to_be_returned_id in props_dict:
                 boxes_to_be_returned.append(True)
@@ -1416,10 +1425,13 @@ def __extract_order_props(props_dict):
            product_names, \
            product_amounts, \
            formula_ids, \
+           formula_amounts, \
            decoration_form_ids, \
            decoration_technique_ids, \
            plate_ids, \
+           plate_counts, \
            box_ids, \
+           box_counts, \
            boxes_to_be_returned
 
 @app.route('/add_order', methods=['GET', 'POST'])
@@ -1442,10 +1454,13 @@ def add_order():
             product_names, \
             product_amounts, \
             formula_ids, \
+            formula_amounts, \
             decoration_form_ids, \
             decoration_technique_ids, \
             plate_ids, \
+            plate_counts, \
             box_ids, \
+            box_counts, \
             boxes_to_be_returned = __extract_order_props(request.form)
 
             new_order_id = order_chairman.add_order(customer_id,
@@ -1456,10 +1471,13 @@ def add_order():
                                                     product_names,
                                                     product_amounts,
                                                     formula_ids,
+                                                    formula_amounts,
                                                     decoration_form_ids,
                                                     decoration_technique_ids,
                                                     plate_ids,
+                                                    plate_counts,
                                                     box_ids,
+                                                    box_counts,
                                                     boxes_to_be_returned)
             db.session.commit()
 

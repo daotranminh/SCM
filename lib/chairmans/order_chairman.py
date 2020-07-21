@@ -27,10 +27,13 @@ class OrderChairman:
                   product_names,
                   product_amounts,
                   formula_ids,
+                  formula_amounts,
                   decoration_form_ids,
                   decoration_technique_ids,
                   plate_ids,
+                  plate_counts,
                   box_ids,
+                  box_counts,
                   boxes_to_be_returned):
         new_order_id = self.order_repo.add_order(customer_id,
                                                 delivery_method_id,
@@ -44,10 +47,13 @@ class OrderChairman:
                                                           product_amounts[i],
                                                           new_order_id,
                                                           formula_ids[i],
+                                                          formula_amounts[i],
                                                           decoration_form_ids[i],
                                                           decoration_technique_ids[i],
                                                           plate_ids[i],
+                                                          plate_counts[i],
                                                           box_ids[i],
+                                                          box_counts[i],
                                                           boxes_to_be_returned[i])
             product_rec = self.product_repo.get_product(new_product_id)
             order_cost += product_rec.total_cost * product_rec.amount

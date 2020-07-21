@@ -33,19 +33,25 @@ class ProductCEO:
                     amount,
                     order_id,
                     formula_id,
+                    formula_amount,
                     decoration_form_id,
                     decoration_technique_id,
                     plate_id,
+                    plate_count,
                     box_id,
+                    box_count,
                     box_to_be_returned):
         new_product_id = self.product_repo.add_product(name,
                                                       amount,
                                                       order_id,
                                                       formula_id,
+                                                      formula_amount,
                                                       decoration_form_id,
                                                       decoration_technique_id,
                                                       plate_id,
+                                                      plate_count,
                                                       box_id,
+                                                      box_count,
                                                       box_to_be_returned)
         
         product_rec = self.product_repo.get_product(new_product_id)
@@ -57,13 +63,15 @@ class ProductCEO:
             self.product_cost_estimation_repo.add_product_cost_estimation(new_product_id, cost_estimation_rec.id)
             total_product_cost += (cost_estimation_rec.total_cost * count)
 
+        total_product_cost *= formula_amount
+
         if plate_id != -1:
             plate_rec = self.plate_repo.get_plate(plate_id)
-            total_product_cost += plate_rec.unit_price / plate_rec.unit_count
+            total_product_cost += plate_count * plate_rec.unit_price / plate_rec.unit_count
 
         if box_id != -1:
             box_rec = self.box_repo.get_box(box_id)
-            total_product_cost += box_rec.unit_price / box_rec.unit_count
+            total_product_cost += box_count * box_rec.unit_price / box_rec.unit_count
             
         self.product_repo.update_cost_product_rec(product_rec, total_product_cost)
         self.order_repo.set_flag_has_up_to_date_cost_estimation(order_id, False)

@@ -80,10 +80,13 @@ class ProductRepository:
                     amount,
                     order_id,                    
                     formula_id,
+                    formula_amount,
                     decoration_form_id,
                     decoration_technique_id,
                     plate_id,
+                    plate_count,
                     box_id,
+                    box_count,
                     box_to_be_returned):
         try:
             box_status = int(BoxStatus.BOX_NOT_NEEDED_TO_BE_RETURNED)
@@ -93,11 +96,14 @@ class ProductRepository:
             product_rec = Product(name=name, 
                                   amount=amount,
                                   order_id=order_id,
-                                  formula_id=formula_id,                                  
+                                  formula_id=formula_id,
+                                  formula_amount=formula_amount,                                 
                                   decoration_form_id=decoration_form_id,
                                   decoration_technique_id=decoration_technique_id,
                                   plate_id=plate_id,
+                                  plate_count=plate_count,
                                   box_id=box_id,
+                                  box_count=box_count,
                                   box_status=box_status)
             self.db.session.add(product_rec)
             self.db.session.flush()
