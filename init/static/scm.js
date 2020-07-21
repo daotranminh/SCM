@@ -549,10 +549,13 @@ function add_product_to_order()
     var product_name = next_product.children[2].children[1]
     var product_amount = next_product.children[3].children[1]
     var formula_choices = next_product.children[4].children[1]
+    var formula_amount = next_product.children[4].children[2]
     var decoration_form_choices = next_product.children[5].children[1]    
     var decoration_technique_choices = next_product.children[6].children[1]
     var plate_choices = next_product.children[7].children[1]
+    var plate_count = next_product.children[7].children[2]
     var box_choices = next_product.children[8].children[1]
+    var box_count = next_product.children[8].children[2]
     var delete_btn = next_product.children[9].children[0]
 
     product_name.id = "product_name_" + len.toString()
@@ -560,19 +563,25 @@ function add_product_to_order()
     product_amount.id = "product_amount_" + len.toString()
     product_amount.value = "1"
     formula_choices.id = "formula_choices_" + len.toString()
+    formula_amount.id = "formula_amount_" + len.toString()
     decoration_form_choices.id = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.id = "decoration_technique_choices_" + len.toString()
     plate_choices.id = "plate_choices_" + len.toString()
+    plate_count.id = "plate_count_" + len.toString()
     box_choices.id = "box_choices_" + len.toString()
+    box_coount.id = "box_count_" + len.toString()
     delete_btn.id = "delete_product_" + len.toString()
 
     product_name.name = "product_name_" + len.toString()
     product_amount.name = "product_amount_" + len.toString()
     formula_choices.name = "formula_choices_" + len.toString()
+    formula_amount.name = "formula_amount_" + len.toString()
     decoration_form_choices.name = "decoration_form_choices_" + len.toString()
     decoration_technique_choices.name = "decoration_technique_choices_" + len.toString()
     plate_choices.name = "plate_choices_" + len.toString()
+    plate_count.name = "plate_count_" + len.toString()
     box_choices.name = "box_choices_" + len.toString()
+    box_count.name = "box_count_" + len.toString()
 
     last_product.insertAdjacentElement("afterend", next_product)
     return false;
@@ -610,28 +619,37 @@ function delete_product_in_add_order(control)
         var product_name = product.children[2].children[1]
         var product_amount = product.children[3].children[1]
         var formula_choices = product.children[4].children[1]
+        var formula_amount = product.children[4].children[2]
         var decoration_form_choices = product.children[5].children[1]    
         var decoration_technique_choices = product.children[6].children[1]
         var plate_choices = product.children[7].children[1]
+        var plate_count = product.children[7].children[2]
         var box_choices = product.children[8].children[1]
+        var box_count = product.children[8].children[2]
         var delete_btn = product.children[9].children[0]
 
         product_name.id = "product_name_" + i.toString()
         product_amount.id = "product_amount_" + i.toString()
         formula_choices.id = "formula_choices_" + i.toString()
+        formula_amount.id = "formula_amount_" + i.toString()
 	    decoration_form_choices.id = "decoration_form_choices_" + i.toString()
         decoration_technique_choices.id = "decoration_technique_choices_" + i.toString()
         plate_choices.id = "plate_choices_" + i.toString()
+        plate_count.id = "plate_count_" + i.toString()
         box_choices.id = "box_choices_" + i.toString()
+        box_count.id = "box_count_" + i.toString()
 	    delete_btn.id = "delete_product_" + i.toString()
 
         product_name.name = "product_name_" + i.toString()
         product_amount.name = "product_amount_" + i.toString()
         formula_choices.name = "formula_choices_" + i.toString()
+        formula_amount.name = "formula_amount_" + i.toString()
 	    decoration_form_choices.name = "decoration_form_choices_" + i.toString()
         decoration_technique_choices.name = "decoration_technique_choices_" + i.toString()
         plate_choices.name = "plate_choices_" + i.toString()
+        plate_count.name = "plate_count_" + i.toString()
         box_choices.name = "box_choices_" + i.toString()
+        box_count.name = "box_count_" + i.toString()
     }    
 }
 

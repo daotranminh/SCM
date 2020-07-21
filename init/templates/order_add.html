@@ -57,6 +57,8 @@
                         <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
                         {% endfor %}
                   </select>
+                  <label for="formula_amount_0">Formula amount</label>
+                  <input type="number" step="0.01" style="text-align:right" id="formula_amount_0" name="formula_amount_0" min="0.01" value="1"/>
             </p>
             
             <p>
@@ -88,6 +90,8 @@
                         {% endif %}
                   {% endfor %}
                   </select>
+                  <label for="plate_count_0">Plate count</label>
+                  <input type="number" step="1" style="text-align:right" id="plate_count_0" name="plate_count_0" min="0" value="1"/>
             </p>
 
             <p>
@@ -101,7 +105,9 @@
                         {% endif %}
                   {% endfor %}
                   </select>
-                  </p>
+                  <label for="box_count_0">Plate count</label>
+                  <input type="number" step="1" style="text-align:right" id="box_count_0" name="box_count_0" min="0" value="1"/>
+            </p>
 
             <p>
                   <label for="box_to_be_returned_0">Box to be returned</label><br>
