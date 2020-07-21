@@ -85,8 +85,11 @@ class ProductCEO:
                        decoration_form_id,
                        decoration_technique_id,
                        plate_id,
+                       plate_count,
                        box_id,
+                       box_count,
                        formula_id,
+                       formula_amount,
                        box_status,
                        box_returned_on,
                        sample_images_group_id,
@@ -97,7 +100,10 @@ class ProductCEO:
 
         if product_rec.formula_id != formula_id or \
             product_rec.plate_id != plate_id or \
-            product_rec.box_id != box_id:
+            product_rec.box_id != box_id or \
+            product_rec.formula_amount != formula_amount or \
+            product_rec.plate_count != plate_count or \
+            product_rec.box_count != box_count:
         
             formula_cost = 0
             if product_rec.formula_id != formula_id:
@@ -140,9 +146,12 @@ class ProductCEO:
                 box_rec = self.box_repo.get_box(product_rec.box_id)
             box_cost = box_rec.unit_price / box_rec.unit_count
 
-            self.product_repo.update_cost_product_rec(product_rec, formula_cost + plate_cost + box_cost)
+            new_product_cost = formula_cost * formula_amount + \
+                plate_cost * plate_count + \
+                box_cost * box_count
+            self.product_repo.update_cost_product_rec(product_rec, new_product_cost)
         
-            message = 'New cost of product %s is %s' % (product_id, formula_cost + plate_cost + box_cost)
+            message = 'New cost of product %s is %s' % (product_id, new_product_cost)
             ProductCEO.logger.info(message)
 
             self.order_repo.set_flag_has_up_to_date_cost_estimation(product_rec.order_id, False)
@@ -158,8 +167,11 @@ class ProductCEO:
                                              decoration_form_id,
                                              decoration_technique_id,
                                              plate_id,
+                                             plate_count,
                                              box_id,
+                                             box_count,
                                              formula_id,
+                                             formula_amount,
                                              box_status,
                                              box_returned_on,
                                              sample_images_group_id)

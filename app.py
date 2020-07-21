@@ -2056,17 +2056,35 @@ def __extract_update_product_args(product_rec, args):
     else:
         selected_plate_id = product_rec.plate_id
 
+    selected_plate_count = args.get('plate_count_arg')
+    if selected_plate_count is not None:
+        selected_plate_count = int(selected_plate_count)
+    else:
+        selected_plate_count = product_rec.plate_count
+
     selected_box_id = args.get('box_id_arg')
     if selected_box_id is not None:
         selected_box_id = int(selected_box_id)
     else:
         selected_box_id = product_rec.box_id
 
+    selected_box_count = args.get('box_count_arg')
+    if selected_box_count is not None:
+        selected_box_count = int(selected_box_count)
+    else:
+        selected_box_count = product_rec.box_count
+
     selected_formula_id = args.get('formula_id_arg')
     if selected_formula_id is not None:
         selected_formula_id = int(selected_formula_id)
     else:
         selected_formula_id = product_rec.formula_id
+
+    selected_formula_amount = args.get('formula_amount_arg')
+    if selected_formula_amount is not None:
+        selected_formula_amount = Decimal(selected_formula_amount)
+    else:
+        selected_formula_amount = product_rec.formula_amount
 
     selected_box_status = args.get('box_status_arg')
     if selected_box_status is not None:
@@ -2086,8 +2104,11 @@ def __extract_update_product_args(product_rec, args):
             selected_decoration_form_id, \
             selected_decoration_technique_id, \
             selected_plate_id, \
+            selected_plate_count, \
             selected_box_id, \
+            selected_box_count, \
             selected_formula_id, \
+            selected_formula_amount, \
             selected_box_status, \
             chosen_box_returned_on, \
             selected_sample_images_group_id
@@ -2114,8 +2135,11 @@ def update_product(product_id):
             selected_decoration_form_id, \
             selected_decoration_technique_id, \
             selected_plate_id, \
+            selected_plate_count, \
             selected_box_id, \
+            selected_box_count, \
             selected_formula_id, \
+            selected_formula_amount, \
             selected_box_status, \
             chosen_box_returned_on, \
             selected_sample_images_group_id = __extract_update_product_args(product_rec, request.args)
@@ -2136,13 +2160,16 @@ def update_product(product_id):
             selected_decoration_form_id = int(request.form['decoration_form_id'])
             selected_decoration_technique_id = int(request.form['decoration_technique_id'])
             selected_plate_id = int(request.form['plate_id'])
+            selected_plate_count = int(request.form['plate_count'])
             selected_box_id = int(request.form['box_id'])
+            selected_box_count = int(request.form['box_count'])
             selected_box_status = int(request.form['box_status'])
             chosen_box_returned_on = request.form['box_returned_on']
             
             selected_formula_id = int(request.form['formula_id'])
             if selected_formula_id == -1:
                 selected_formula_id = None
+            selected_formula_amount = Decimal(request.form['formula_amount'])
 
             selected_sample_images_group_id = int(request.form['sample_images_group_id'])
             if selected_sample_images_group_id == -1:
@@ -2157,8 +2184,11 @@ def update_product(product_id):
                                        selected_decoration_form_id,
                                        selected_decoration_technique_id,
                                        selected_plate_id,
+                                       selected_plate_count,
                                        selected_box_id,
+                                       selected_box_count,
                                        selected_formula_id,
+                                       selected_formula_amount,
                                        selected_box_status,
                                        chosen_box_returned_on,
                                        selected_sample_images_group_id,
@@ -2190,10 +2220,13 @@ def update_product(product_id):
                                                     latest_3_sample_image_paths=latest_3_sample_image_paths,
                                                     current_product_name=current_product_name,
                                                     selected_formula_id=selected_formula_id,
+                                                    selected_formula_amount=selected_formula_amount,
                                                     selected_decoration_form_id=selected_decoration_form_id,
                                                     selected_decoration_technique_id=selected_decoration_technique_id,
                                                     selected_plate_id=selected_plate_id,
+                                                    selected_plate_count=selected_plate_count,
                                                     selected_box_id=selected_box_id,
+                                                    selected_box_count=selected_box_count,
                                                     selected_box_status=selected_box_status,
                                                     chosen_box_returned_on=chosen_box_returned_on,
                                                     selected_sample_images_group_id=selected_sample_images_group_id,
@@ -2213,8 +2246,11 @@ def update_product(product_id):
                                selected_decoration_form_id=selected_decoration_form_id,
                                selected_decoration_technique_id=selected_decoration_technique_id,
                                selected_plate_id=selected_plate_id,
+                               seletec_plate_count=selected_plate_count,
                                selected_box_id=selected_box_id,
+                               selected_box_count=selected_box_count,
                                selected_formula_id=selected_formula_id,
+                               selected_formula_amount=selected_formula_amount,
                                selected_box_status=selected_box_status,
                                chosen_box_returned_on=chosen_box_returned_on,
                                selected_sample_images_group_id=selected_sample_images_group_id,

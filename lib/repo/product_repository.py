@@ -145,8 +145,11 @@ class ProductRepository:
                            decoration_form_id,
                            decoration_technique_id,
                            plate_id,
+                           plate_count,
                            box_id,
+                           box_count,
                            formula_id,
+                           formula_amount,
                            box_status,
                            box_returned_on,
                            sample_images_group_id):        
@@ -155,8 +158,11 @@ class ProductRepository:
         product_rec.decoration_form_id = decoration_form_id
         product_rec.decoration_technique_id = decoration_technique_id
         product_rec.plate_id = plate_id
+        product_rec.plate_count = plate_count
         product_rec.box_id = box_id
+        product_rec.box_count = box_count
         product_rec.formula_id = formula_id
+        product_rec.formula_amount = formula_amount
         product_rec.box_status = box_status
         product_rec.box_returned_on = box_returned_on
         product_rec.sample_images_group_id = sample_images_group_id

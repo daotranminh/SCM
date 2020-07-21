@@ -30,7 +30,9 @@
 	            <option value="{{formula_rec.id}}">{{formula_rec.name}}</option>
 	            {% endif %}
 	        {% endfor %}
-	        </select>
+			</select>
+			<label for="formula_amount">Formula amount</label>
+            <input type="number" step="0.01" style="text-align:right" id="formula_amount" name="formula_amount" min="0.01" value="{{product_rec.formula_amount}}"/>
 		</div>		
 
         <div class="form-group">
@@ -70,6 +72,8 @@
 			  {% endif %}
 			  {% endfor %}
 			</select>
+			<label for="plate_count">Plate count</label>
+            <input type="number" step="1" style="text-align:right" id="plate_count" name="plate_count" min="0" value="{{product_rec.plate_count}}"/>
 		  </p>
   
 		  <p>
@@ -83,6 +87,8 @@
 			  {% endif %}
 			  {% endfor %}
 			</select>
+			<label for="box_count">Box count</label>
+            <input type="number" step="1" style="text-align:right" id="box_count" name="box_count" min="0" value="{{product_rec.box_count}}"/>
 		  </p>
   
 		<div class="form-group">
@@ -233,8 +239,13 @@ function reload_after_select_changed()
 	var productId = document.getElementById("product_id").value
 	var productName = document.getElementById("product_name").value	
 	var formulaId = document.getElementById("formula_id").value
+	var formulaAmount = document.getElementById("formula_amount").value
 	var decorationFormId = document.getElementById("decoration_form_id").value 
-	var decorationTechniqueId = document.getElementById("decoration_technique_id").value 	
+	var decorationTechniqueId = document.getElementById("decoration_technique_id").value
+	var plateId = document.getElementById("plate_id").value
+	var plateCount = document.getElementById("plate_count").value
+	var boxId = document.getElementById("box_id").value
+	var boxCount = document.getElementById("box_count").value
 	var boxStatus = document.getElementById("box_status").value
 	var sampleImagesGroupId = document.getElementById("sample_images_group_id").value
 	var boxReturnedOn = document.getElementById("box_returned_on").value
@@ -245,7 +256,7 @@ function reload_after_select_changed()
 	{
 		var subs = existingProductImages[i].src.split("/")
 		var imgPath = subs.slice(3, subs.length).join("/")
-		existingProductImagesStr = existingProductImagesStr + "/" +imgPath + "!!!"
+		existingProductImagesStr = existingProductImagesStr + "/" + imgPath + "!!!"
 	}
 
 	currentHref = location.href
@@ -257,6 +268,11 @@ function reload_after_select_changed()
 		"&decoration_form_id_arg=" + decorationFormId +
 		"&decoration_technique_id_arg=" + decorationTechniqueId + 
 		"&formula_id_arg=" + formulaId +
+		"&formula_amount_arg=" + formulaAmount +
+		"&plate_id_arg=" + plateId +
+		"&plate_amount_arg=" + plateAmount +
+		"&box_id_arg=" + boxId +
+		"&box_amount_arg=" + boxAmount +
 		"&box_status_arg=" + boxStatus + 
 		"&sample_images_group_id_arg=" + sampleImagesGroupId +
 		"&box_returned_on_arg=" + boxReturnedOn +
