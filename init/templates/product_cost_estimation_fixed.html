@@ -51,16 +51,22 @@
         </tr>
     {% endfor %}
     <tr>
+        <td><b>Formula total</b></td>
+        <td></td>
+        <td></td>
+        <td><b>{{ fixed_formula_rec.total_cost }} x {{ product_rec.formula_amount }}</b></td>
+    </tr>
+    <tr>
         <td><b>Plate</b></td>
         <td>{{fixed_plate_rec.name}}</td>
         <td></td>
-        <td>{{ fixed_plate_rec.unit_price / fixed_plate_rec.unit_count }}</td>
+        <td>{{ fixed_plate_rec.unit_price / fixed_plate_rec.unit_count }} x {{ product_rec.plate_count }}</td>
     </tr>
     <tr>
         <td><b>Box</b></td>
         <td>{{fixed_box_rec.name}}</td>
         <td></td>
-        <td>{{ fixed_box_rec.unit_price / fixed_box_rec.unit_count }}</td>
+        <td>{{ fixed_box_rec.unit_price / fixed_box_rec.unit_count }} x {{ product_rec.box_count }}</td>
     </tr>
     <tr>
         <td><b>Prodduct total cost</b></td>

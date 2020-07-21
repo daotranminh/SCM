@@ -54,19 +54,19 @@
         <td><b>Formula total</b></td>
         <td></td>
         <td></td>
-        <td><b>{{ formula_rec.total_cost }}</b></td>
+        <td><b>{{ formula_rec.total_cost }} x {{ product_rec.formula_amount }}</b></td>
     </tr>
     <tr>
         <td><b>Plate</b></td>
         <td>{{plate_rec.name}}</td>
         <td></td>
-        <td>{{ plate_rec.unit_price / plate_rec.unit_count }}</td>
+        <td>{{ plate_rec.unit_price / plate_rec.unit_count }} x {{ product_rec.plate_count }}</td>
     </tr>
     <tr>
         <td><b>Box</b></td>
         <td>{{box_rec.name}}</td>
         <td></td>
-        <td>{{ box_rec.unit_price / box_rec.unit_count }}</td>
+        <td>{{ box_rec.unit_price / box_rec.unit_count }} x {{ product_rec.box_count }}</td>
     </tr>
     <tr>
         <td><b>Total product cost</b></td>
