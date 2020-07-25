@@ -343,7 +343,7 @@ function delete_product_in_update_order(delete_btn)
     var message = args[8]
     var newProductName = args[9]
     var product_amount = args[10]
-    var subformulaId = args[11]
+    var formulaId = args[11]
     var formulaAmount = args[12]
     var decorationFormId = args[13]
     var decorationTechniqueId = args[14]
@@ -370,7 +370,7 @@ function delete_product_in_update_order(delete_btn)
         "&message_arg=" + message +
         "&new_product_name_arg=" + newProductName +
         "&product_amount_arg=" + product_amount +
-        "&subformula_id_arg=" + subformulaId +
+        "&formula_id_arg=" + formulaId +
         "&formula_amount_arg=" + formulaAmount +
         "&decoration_form_id_arg=" + decorationFormId +
         "&decoration_technique_id_arg=" + decorationTechniqueId +
