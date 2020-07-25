@@ -1921,10 +1921,13 @@ def add_new_product_to_order(order_id):
     new_product_name = request.args.get('new_product_name_arg')
     product_amount = Decimal(request.args.get('product_amount_arg'))    
     formula_id = int(request.args.get('formula_id_arg'))
+    formula_amount = Decimal(request.args.get('formula_amount_arg'))
     decoration_form_id = int(request.args.get('decoration_form_id_arg'))
     decoration_technique_id = int(request.args.get('decoration_technique_id_arg'))
     plate_id = int(request.args.get('plate_id_arg'))
+    plate_count = int(request.args.get('plate_count_arg'))
     box_id = int(request.args.get('box_id_arg'))
+    box_count = int(request.args.get('box_count_arg'))
     
     box_to_be_returned_arg = request.args.get('box_to_be_returned_arg')
     box_to_be_returned = box_to_be_returned_arg.upper() == 'TRUE'
@@ -1934,10 +1937,13 @@ def add_new_product_to_order(order_id):
                                 product_amount,
                                 order_id,
                                 formula_id,
+                                formula_amount,
                                 decoration_form_id,
                                 decoration_technique_id,
                                 plate_id,
+                                plate_count,
                                 box_id,
+                                box_count,
                                 box_to_be_returned)
         db.session.commit()
     except ScmException as ex:
@@ -2321,10 +2327,13 @@ def delete_product(product_id):
                                              new_product_name_arg=[request.args.get('new_product_name_arg')],
                                              product_amount_arg=[request.args.get('product_amount_arg')],
                                              chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                             chosen_formula_amount_arg=[request.args.get('formula_amount_arg')],
                                              chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                              chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                              chosen_plate_id_arg=[request.args.get('plate_id_arg')],
+                                             chosen_plate_count_arg=[request.args.get('plate_count_arg')],
                                              chosen_box_id_arg=[request.args.get('box_id_arg')],
+                                             chosen_box_count_arg=[request.args.get('box_count_arg')],
                                              box_to_be_returned_arg=[request.args.get('box_to_be_returned_arg')]
                                              ),
                                              message,
@@ -2349,10 +2358,13 @@ def delete_product(product_id):
                                  new_product_name_arg=[request.args.get('new_product_name_arg')],
                                  product_amount_arg=[request.args.get('product_amount_arg')],
                                  chosen_formula_id_arg=[request.args.get('formula_id_arg')],
+                                 chosen_formula_amount_arg=[request.args.get('formula_amount_arg')],
                                  chosen_decoration_form_id_arg=[request.args.get('decoration_form_id_arg')],
                                  chosen_decoration_technique_id_arg=[request.args.get('decoration_technique_id_arg')],
                                  chosen_plate_id_arg=[request.args.get('plate_id_arg')],
+                                 chosen_plate_count_arg=[request.args.get('plate_count_arg')],
                                  chosen_box_id_arg=[request.args.get('box_id_arg')],
+                                 chosen_box_count_arg=[request.args.get('box_count_arg')],
                                  box_to_be_returned_arg=[request.args.get('box_to_be_returned_arg')]
                                  ),
                                  message,
