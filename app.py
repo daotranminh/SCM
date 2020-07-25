@@ -2243,9 +2243,10 @@ def update_product(product_id):
             product_image_path_recs = product_image_path_repo.get_product_image_paths(product_id)
             
             message = 'Successfully updated product %s (%s)' % (current_product_name, product_id)
-            logger.info(message)
-            
+            logger.info(message)            
             flash(message, 'info')
+            
+            return redirect(url_for('update_order', order_id=product_rec.order_id))
         except ScmException as ex:
             db.session.rollback()
             return render_scm_template_with_message('sample_images_group_update.html',
