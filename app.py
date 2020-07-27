@@ -882,10 +882,12 @@ def add_customer():
                                                     ex.message,
                                                     'danger',
                                                     ex,
+                                                    title='Add a new customer',
                                                     customer_rec=None,
                                                     customer_recs=customer_recs)
     else:
         return render_scm_template('customer_add_update.html', 
+                                   title='Add a new customer',
                                    customer_rec=None,
                                    customer_recs=customer_recs)
 
@@ -896,6 +898,7 @@ def update_customer(customer_id):
     customer_rec = customer_repo.get_customer(customer_id)
     if request.method == 'GET':
         return render_scm_template('customer_add_update.html',
+                                   title='Update customer',
                                    customer_rec=customer_rec,
                                    customer_recs=customer_recs)
     elif request.method == 'POST':
@@ -930,6 +933,7 @@ def update_customer(customer_id):
                                                     ex.message,
                                                     'danger',
                                                     ex,
+                                                    title='Update customer',
                                                     customer_rec=customer_rec,
                                                     customer_recs=customer_recs)            
 
