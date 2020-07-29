@@ -1364,6 +1364,10 @@ def update_formula(formula_id):
                                                     subformula_recs=subformula_recs,
                                                     subformula_counts=subformula_counts)
 
+@app.route('/export_formula_pdf/<int:formula_id>', methods=['GET', 'POST'])
+def export_formula_pdf(formula_id):
+    formula_director.export_formula_pdf(formula_id)
+
 ####################################################################################
 # ORDER
 ####################################################################################

@@ -1,9 +1,11 @@
+import os
 import logging
 
 from init import config
 from dto.formula_dto import FormulaDto
 from dto.paginated_scm import PaginatedScm
 from utilities.scm_logger import ScmLogger
+from utilities.pdf_generator import PdfGenerator
 
 class FormulaDirector:
     logger = ScmLogger(__name__)
@@ -164,3 +166,30 @@ class FormulaDirector:
         for parent_product_rec in parent_product_recs:
             self.product_repo.set_flag_has_up_to_date_cost_estimation_product_rec(parent_product_rec, False)
             self.order_repo.set_flag_has_up_to_date_cost_estimation(parent_product_rec.order_id, False)
+
+    def export_formula_pdf(self, formula_id):
+        pdf_generator = PdfGenerator()
+
+        formula_rec, \
+        subformula_recs, \
+        subformula_counts, \
+        taste_names, \
+        material_dtos, \
+        begin_material_dtos, \
+        end_material_dtos = self.formula_manager.get_formula_details(formula_id)
+
+        jinja_template_filepath = 'formula_pdf.html'
+        output_pdf_filepath = 'download/formula_%s.pdf' % formula_id
+
+        template_vars = { 'formula_rec' : formula_rec,
+                          'subformula_recs' : subformula_recs,
+                          'subformula_counts' : subformula_counts,
+                          'taste_names' : taste_names,
+                          'material_dtos' : material_dtos,
+                          'begin_material_dtos' : begin_material_dtos,
+                          'end_material_dtos' : end_material_dtos }
+
+        pdf_generator.generate(
+            jinja_template_filepath,
+            template_vars,
+            output_pdf_filepath)
