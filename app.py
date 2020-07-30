@@ -937,9 +937,34 @@ def update_customer(customer_id):
                                                     customer_rec=customer_rec,
                                                     customer_recs=customer_recs)            
 
-@app.route('/show_customer_order_history/<int:customer_id>', methods=['GET', 'POST'])
-def show_customer_order_history(customer_id):
-    pass
+@app.route('/show_customer_order_history/<int:customer_id>', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/show_customer_order_history/<int:customer_id>/', methods=['GET', 'POST'], defaults={'page':1})
+@app.route('/show_customer_order_history/<int:customer_id>/<int:page>', methods=['GET', 'POST'])
+@app.route('/show_customer_order_history/<int:customer_id>/<int:page>/', methods=['GET', 'POST'])
+def show_customer_order_history(customer_id, page):
+    per_page = int(config['PAGING']['orders_per_page'])
+    search_text = request.args.get('search_text')
+    sorting_criteria = request.args.get('sorting_criteria')
+
+    paginated_order_dtos, db_changed = __lazy_get_order_dtos_per_customer(customer_id,
+                                                                          page, 
+                                                                          per_page, 
+                                                                          search_text, 
+                                                                          sorting_criteria)
+
+    if db_changed == True:
+        db.session.commit()
+
+    customer_rec = customer_repo.get_customer(customer_id)
+
+    return render_scm_template('orders_list_per_customer.html', 
+                                customer_rec=customer_rec,
+                                page=page, 
+                                search_text=search_text, 
+                                order_dtos=paginated_order_dtos,
+                                current_sorting_criteria=sorting_criteria)
+
+    __lazy_get_order_dtos_per_customer
 
 @app.route('/list_customers', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_customers/', methods=['GET', 'POST'], defaults={'page':1})
@@ -1516,14 +1541,7 @@ def add_order():
                                 plate_recs=plate_recs,
                                 box_recs=box_recs)
 
-def __lazy_get_order_dtos(page, 
-                          per_page, 
-                          search_text,
-                          sorting_criteria):
-    paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
-                                                                  per_page,
-                                                                  search_text,
-                                                                  sorting_criteria)
+def __update_order_cost_estimation(paginated_order_dtos):
     db_changed = False
     checked_formula_ids_set = set()
     formula_ids_set = set()
@@ -1535,6 +1553,28 @@ def __lazy_get_order_dtos(page,
             db_changed = True
 
     return paginated_order_dtos, db_changed
+
+def __lazy_get_order_dtos(page, 
+                          per_page, 
+                          search_text,
+                          sorting_criteria):
+    paginated_order_dtos = order_manager.get_paginated_order_dtos(page,
+                                                                  per_page,
+                                                                  search_text,
+                                                                  sorting_criteria)
+    return __update_order_cost_estimation(paginated_order_dtos)
+
+def __lazy_get_order_dtos_per_customer(customer_id,
+                                       page, 
+                                       per_page, 
+                                       search_text,
+                                       sorting_criteria):
+    paginated_order_dtos_per_customer = order_manager.get_paginated_order_dtos_per_customer(customer_id,
+                                                                                            page,
+                                                                                            per_page,
+                                                                                            search_text,
+                                                                                            sorting_criteria)
+    return __update_order_cost_estimation(paginated_order_dtos_per_customer)
 
 @app.route('/list_orders', methods=['GET', 'POST'], defaults={'page':1})
 @app.route('/list_orders/', methods=['GET', 'POST'], defaults={'page':1})

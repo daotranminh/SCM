@@ -42,6 +42,47 @@ class OrderManager:
 
         return order_dto
 
+    def get_paginated_order_dtos_per_customer(self,
+                                              customer_id,
+                                              page,
+                                              per_page,
+                                              search_text,
+                                              sorting_criteria):
+        paginated_order_dtos_per_customer = self.order_repo.get_paginated_order_dtos_per_customer(customer_id,
+                                                                                                  page, 
+                                                                                                  per_page, 
+                                                                                                  search_text, 
+                                                                                                  sorting_criteria)
+        order_dtos = []
+        for order_rec, delivery_method_name in paginated_order_dtos_per_customer.items:
+            order_status_name = self.__get_order_status_name(order_rec.order_status)
+            payment_status_name = self.__get_payment_status_name(order_rec.payment_status)
+
+            order_dto = OrderDto(order_rec.id,
+                                 order_rec.customer_id,
+                                 '',
+                                 order_rec.ordered_on,
+                                 order_rec.delivery_appointment,
+                                 delivery_method_name,
+                                 order_rec.message,
+                                 order_status_name,
+                                 order_rec.delivered_on,
+                                 payment_status_name,
+                                 order_rec.paid_on,
+                                 order_rec.total_cost,
+                                 order_rec.has_up_to_date_cost_estimation,
+                                 order_rec.price_to_customer)
+            order_dtos.append(order_dto)
+
+        paginated_order_dtos_per_customer1 = PaginatedScm(order_dtos,
+                                                          paginated_order_dtos_per_customer.has_prev,
+                                                          paginated_order_dtos_per_customer.has_next,
+                                                          paginated_order_dtos_per_customer.prev_num,
+                                                          paginated_order_dtos_per_customer.next_num,
+                                                          paginated_order_dtos_per_customer.page,
+                                                          paginated_order_dtos_per_customer.pages)
+        return paginated_order_dtos_per_customer1
+
     def get_paginated_order_dtos(self,
                                  page,
                                  per_page,
