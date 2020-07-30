@@ -5,7 +5,7 @@ import json
 import decimal
 from decimal import Decimal
 
-from flask import Flask, Response, render_template, request, flash, redirect, make_response, session, url_for
+from flask import Flask, Response, render_template, request, flash, redirect, make_response, session, url_for, send_file
 from werkzeug.utils import secure_filename
 
 from init import app, db, config
@@ -1366,7 +1366,18 @@ def update_formula(formula_id):
 
 @app.route('/export_formula_pdf/<int:formula_id>', methods=['GET', 'POST'])
 def export_formula_pdf(formula_id):
-    formula_director.export_formula_pdf(formula_id)
+    output_pdf_filename = formula_director.export_formula_pdf(config['DEFAULT']['download_dir'], formula_id)    
+    return render_scm_template('download.html',
+                                download_message='Click the download button to get the file',
+                                filename=output_pdf_filename)
+
+####################################################################################
+# DOWNLOAD
+####################################################################################
+
+@app.route('/download/<string:filename>')
+def download_file(filename):
+    return send_file(os.path.join(config['DEFAULT']['download_dir'], filename))
 
 ####################################################################################
 # ORDER

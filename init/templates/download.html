@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Download file</h1>
+
+<br/><p>{{download_message}} {{filename}}</p><br/>
+
+<div class="container" align="left">
+    <a href="/download/{{filename}}" target="blank">
+            <button class="btn btn-primary">Download</button>
+    </a>
+</div>
+
+{% endblock %}

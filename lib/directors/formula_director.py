@@ -167,7 +167,7 @@ class FormulaDirector:
             self.product_repo.set_flag_has_up_to_date_cost_estimation_product_rec(parent_product_rec, False)
             self.order_repo.set_flag_has_up_to_date_cost_estimation(parent_product_rec.order_id, False)
 
-    def export_formula_pdf(self, formula_id):
+    def export_formula_pdf(self, download_dir, formula_id):
         pdf_generator = PdfGenerator()
 
         formula_rec, \
@@ -179,7 +179,8 @@ class FormulaDirector:
         end_material_dtos = self.formula_manager.get_formula_details(formula_id)
 
         jinja_template_filepath = 'formula_pdf.html'
-        output_pdf_filepath = 'download/formula_%s.pdf' % formula_id
+        output_pdf_filename = 'formula_%s.pdf' % formula_id
+        output_pdf_filepath = os.path.join(download_dir, output_pdf_filename)
 
         template_vars = { 'formula_rec' : formula_rec,
                           'subformula_recs' : subformula_recs,
@@ -193,3 +194,5 @@ class FormulaDirector:
             jinja_template_filepath,
             template_vars,
             output_pdf_filepath)
+
+        return output_pdf_filename
