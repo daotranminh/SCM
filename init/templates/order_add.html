@@ -12,7 +12,11 @@
             <label for="customer_id">Customer</label>
             <select id="customer_id" name="customer_id">
               {% for customer_rec in customer_recs %}
-              <option value="{{customer_rec.id}}">{{customer_rec.name}}</option>
+              {% if customer_rec.id == pre_chosen_customer_id %}
+                  <option value="{{customer_rec.id}}" selected>{{customer_rec.name}}</option>
+              {% else %}
+                  <option value="{{customer_rec.id}}">{{customer_rec.name}}</option>
+              {% endif %}
               {% endfor %}
             </select>
       </div>

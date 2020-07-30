@@ -115,7 +115,7 @@
 </ul>
 <br/>
 
-<a href="{{ url_for('add_order') }}"
+<a href="{{ url_for('add_order', pre_chosen_customer_id=customer_rec.id) }}"
    class="btn btn-default pullright">Add a new order</a>
 
 <script>

@@ -1478,8 +1478,11 @@ def __extract_order_props(props_dict):
            box_counts, \
            boxes_to_be_returned
 
-@app.route('/add_order', methods=['GET', 'POST'])
-def add_order():
+@app.route('/add_order', methods=['GET', 'POST'], defaults={'pre_chosen_customer_id':1})
+@app.route('/add_order/', methods=['GET', 'POST'], defaults={'pre_chosen_customer_id':1})
+@app.route('/add_order/<int:pre_chosen_customer_id>', methods=['GET', 'POST'])
+@app.route('/add_order/<int:pre_chosen_customer_id>/', methods=['GET', 'POST'])
+def add_order(pre_chosen_customer_id):
     customer_recs = customer_repo.get_all_customers()
     delivery_method_recs = delivery_method_repo.get_all_delivery_methods()    
     decoration_form_recs = decoration_form_repo.get_all_decoration_forms()
@@ -1533,6 +1536,7 @@ def add_order():
             db.session.rollback()
 
     return render_scm_template('order_add.html', 
+                                pre_chosen_customer_id=pre_chosen_customer_id,
                                 customer_recs=customer_recs,
                                 delivery_method_recs=delivery_method_recs,
                                 decoration_form_recs=decoration_form_recs,
