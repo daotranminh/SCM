@@ -45,10 +45,10 @@
         <input type="number" style="text-align:right" id="subformula_single_cost_{{i}}" name="subformula_single_cost_{{i}}" value="{{subformula_cost_dict[subformula_recs[i].id]}}" disabled/>
 
         <label for="subformula_count_{{i}}">Count</label>
-        <input type="number" style="text-align:right" id="subformula_count_{{i}}" name="subformula_count_{{i}}" min="1" value="{{subformula_counts[i]}}" onchange="subformula_count_change(this)"/>
+        <input type="number" step="0.01" style="text-align:right" id="subformula_count_{{i}}" name="subformula_count_{{i}}" min="0.01" value="{{subformula_counts[i]}}" onchange="subformula_count_change(this)"/>
 
         <label for="subformula_cost_{{i}}">Cost</label>
-        <input type="number" style="text-align:right" id="subformula_cost_{{i}}" name="subformula_cost_{{i}}" value="{{(subformula_cost_dict[subformula_recs[i].id]|float) * subformula_counts[i]}}" disabled/>
+        <input type="number" style="text-align:right" id="subformula_cost_{{i}}" name="subformula_cost_{{i}}" value="{{(subformula_cost_dict[subformula_recs[i].id]|float) * (subformula_counts[i]|float)}}" disabled/>
 
         <button type="button" class="btn btn-default pullright" id="delete_subformula_{{i}}" onclick="delete_subformula(this);">Delete</button>
       </div>

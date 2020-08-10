@@ -36,7 +36,7 @@
       <input type="number" style="text-align:right" id="subformula_single_cost_0" name="subformula_single_cost_0" value="{{subformula_cost_dict[taste_subformula_dict[taste_recs[0].id][0]]}}" disabled/>
       
       <label for="subformula_count_0">Count</label>
-      <input type="number" style="text-align:right" id="subformula_count_0" name="subformula_count_0" min="1" value="1" onchange="subformula_count_change(this)"/>
+      <input type="number" step="0.01" style="text-align:right" id="subformula_count_0" name="subformula_count_0" min="0.01" value="1" onchange="subformula_count_change(this)"/>
 
       <label for="subformula_cost_0">Cost</label>
       <input type="number" style="text-align:right" id="subformula_cost_0" name="subformula_cost_0" value="{{subformula_cost_dict[taste_subformula_dict[taste_recs[0].id][0]]}}" disabled/>
