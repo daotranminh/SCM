@@ -1281,7 +1281,7 @@ def __extract_formula_props(props_dict):
             break
 
         subformula_id = int(props_dict[subformula_choices_i])
-        subformula_count = int(props_dict[subformula_count_i])
+        subformula_count = Decimal(props_dict[subformula_count_i])
             
         subformula_ids.append(subformula_id)
         subformula_counts.append(subformula_count)
