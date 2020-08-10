@@ -78,7 +78,7 @@ class FormulaSubFormula(db.Model):
     id = Column(Integer, autoincrement=True, primary_key=True)
     formula_id = Column(Integer, ForeignKey(Formula.id))
     subformula_id = Column(Integer, ForeignKey(SubFormula.id))
-    count = Column(Integer, default=1)
+    count = Column(Numeric(10, 2), default=1)
 
 class MaterialSubFormula(db.Model):
     __tablename__ = 'material_subformula'
@@ -253,7 +253,7 @@ class FixedSubFormula(db.Model):
     description = Column(String(400))
     note = Column(String(10000))
     total_cost = Column(Numeric(10, 2))
-    count = Column(Integer)
+    count = Column(Numeric(10, 2))
     fixed_on = Column(DateTime(), default=datetime.datetime.utcnow)
 
 class FixedMaterialSubFormula(db.Model):
