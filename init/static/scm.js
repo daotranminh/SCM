@@ -587,7 +587,7 @@ function add_product_to_order()
     plate_choices.id = "plate_choices_" + len.toString()
     plate_count.id = "plate_count_" + len.toString()
     box_choices.id = "box_choices_" + len.toString()
-    box_coount.id = "box_count_" + len.toString()
+    box_count.id = "box_count_" + len.toString()
     delete_btn.id = "delete_product_" + len.toString()
 
     product_name.name = "product_name_" + len.toString()
