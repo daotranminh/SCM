@@ -24,7 +24,8 @@ class OrderDto:
                  paid_on,
                  total_cost,
                  has_up_to_date_cost_estimation,
-                 price_to_customer):
+                 price_to_customer,
+                 paid_by_customer):
         self.order_id = order_id
         self.customer_id = customer_id
         self.customer_name = customer_name
@@ -39,3 +40,4 @@ class OrderDto:
         self.total_cost = total_cost
         self.has_up_to_date_cost_estimation = has_up_to_date_cost_estimation
         self.price_to_customer = price_to_customer
+        self.paid_by_customer = paid_by_customer

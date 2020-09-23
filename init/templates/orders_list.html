@@ -61,6 +61,7 @@
         search_text=[search_text],
         sorting_criteria=['price_to_customer_desc']) }}"><i class="fa fa-sort-desc"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
       {%endif %}
+      <th>Paid by customer</th>
       <th></th>
     </tr>
   </thead>
@@ -76,6 +77,7 @@
         <td><font color="#A0A0A0">{{order_dto.order_status_name}}</font></td>
         <td style="text-align:right"><font color="#A0A0A0">{{order_dto.total_cost}}</font></td>
         <td style="text-align:right"><font color="#A0A0A0">{{order_dto.price_to_customer}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+        <td style="text-align:right"><font color="#A0A0A0">{{order_dto.paid_by_customer}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
         <td><a href="{{ url_for('update_order',
 		    order_id=order_dto.order_id) }}"
         class="btn btn-default pullright"><font color="#A0A0A0">Update</font></a></td>      
@@ -90,6 +92,7 @@
       <td>{{order_dto.order_status_name}}</td>
       <td style="text-align:right">{{order_dto.total_cost}}</td>
       <td style="text-align:right">{{order_dto.price_to_customer}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td style="text-align:right">{{order_dto.paid_by_customer}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td><a href="{{ url_for('update_order',
       order_id=order_dto.order_id) }}"
       class="btn btn-default pullright">Update</a></td>      
